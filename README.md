@@ -376,8 +376,8 @@ await walletClient.writeContract({
 | Feature | Hexploration | Plundrix |
 |---------|-------------|----------|
 | Contracts | 12+ (Board, Controller, Queue, Gameplay, ...) | 1 (PlundrixGame) |
-| Randomness | Chainlink VRF v2 / Band Protocol | On-chain pseudo-random (blockhash) |
-| Autoloop | Required (`runUpdate()` keeper) | Not needed |
+| Randomness | Mock VRF or Chainlink VRF v2 | On-chain pseudo-random (blockhash) |
+| Automation | AutoLoop worker (or Chainlink Automation) | Not needed |
 | Zones | 100 (10x10 hex grid) | Single zone (the vault) |
 | Players | 1-4 | 2-4 |
 | Complexity | High (exploration, inventory, cards, day/night) | Low (3 actions, 5 locks) |
