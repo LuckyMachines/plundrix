@@ -2,18 +2,23 @@
 
 A single-zone heist game where 2-4 rival operatives compete to crack a vault with 5 locks. Each round, players choose one of three actions. First player to crack all 5 locks wins.
 
-## Install Game Core
+## Quick Start
 
-`yarn add @luckymachines/game-core`
+```bash
+# Build contracts
+forge build
 
-or
+# Deploy to Sepolia
+forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
 
-`npm install @luckymachines/game-core`
+# Run the SPA
+cd app && npm install && npm run dev
+```
 
 ## Import ABI
 
 ```js
-import PlundrixABI from "@luckymachines/game-core/games/plundrix/abi/PlundrixGame.json";
+import PlundrixABI from "./abi/PlundrixGame.json";
 ```
 
 ---
@@ -56,6 +61,36 @@ Unlike Hexploration (which uses multiple contracts, Chainlink VRF, and an autolo
 - **No VRF** -- uses on-chain pseudo-randomness (`keccak256(blockhash, gameID, round, timestamp, seed)`)
 - **No autoloop** -- no `_gamesNeedUpdates` queue, no `runUpdate()`, no off-chain keeper
 - **No external dependencies** beyond OpenZeppelin
+
+---
+
+# Deployment
+
+```bash
+# 1. Create .env at repo root
+# PRIVATE_KEY=0x...
+# SEPOLIA_RPC_URL=https://...
+
+# 2. Deploy
+forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
+
+# 3. Note the deployed contract address from output
+```
+
+---
+
+# Frontend
+
+The SPA in `app/` is built with:
+
+- **React** + **Vite** for fast development
+- **Wagmi** + **viem** for wallet connection and contract interaction
+
+To run:
+
+```bash
+cd app && npm install && npm run dev
+```
 
 ---
 
@@ -203,7 +238,7 @@ All events have `gameID` as an `indexed` parameter for efficient filtering.
 ```js
 import { createPublicClient, createWalletClient, http, parseAbi } from "viem";
 import { sepolia } from "viem/chains";
-import PlundrixABI from "@luckymachines/game-core/games/plundrix/abi/PlundrixGame.json";
+import PlundrixABI from "./abi/PlundrixGame.json";
 
 const PLUNDRIX_ADDRESS = "0x..."; // deployed address
 
