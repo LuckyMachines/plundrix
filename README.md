@@ -55,7 +55,7 @@ import PlundrixABI from "./abi/PlundrixGame.json";
 └───────────────────────────────┘
 ```
 
-Unlike Hexploration (which uses multiple contracts, Chainlink VRF, and an autoloop keeper), Plundrix is intentionally minimal:
+Unlike [Hexploration](https://github.com/LuckyMachines/hexploration) (which uses multiple contracts, Chainlink VRF, and an autoloop keeper), Plundrix is intentionally minimal:
 
 - **Single contract** -- no GameBoard, PlayZone, PlayerRegistry, GameEvents, or GameController needed
 - **No VRF** -- uses on-chain pseudo-randomness (`keccak256(blockhash, gameID, round, timestamp, seed)`)
@@ -81,15 +81,50 @@ forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
 
 # Frontend
 
-The SPA in `app/` is built with:
+The SPA in `app/` is built with React, Vite, Wagmi, viem, and Tailwind CSS. Dark vault/bunker-themed UI with retro-terminal aesthetics -- uppercase text, monospace data, CRT-style panels.
 
-- **React** + **Vite** for fast development
-- **Wagmi** + **viem** for wallet connection and contract interaction
+## Pages
 
-To run:
+- **`/`** -- Operations Console. Browse all games with status badges (OPEN/ACTIVE/COMPLETE), player counts, and current round. Create new games or join open ones.
+- **`/game/:gameId`** -- Routes between three views based on game state:
+  - **Lobby** -- Crew manifest showing registered operatives, join and start buttons
+  - **Vault Bench** -- Active gameplay interface (see below)
+  - **Game Over** -- Final briefing with winner and player stats
+
+## Vault Bench (Active Game)
+
+The main gameplay screen:
+
+- **Lock Rack** -- Visual vault face showing 5 lock states (cracked vs locked) with a progress bar
+- **Round Console** -- Current round number, phase indicator, 5-minute timeout dial, and "All Actions In" badge
+- **Player Dossiers** -- Compact cards for each operative showing locks cracked (dot indicators), tool count, stun status, and action submission seal
+- **Action Panel** -- Three-column layout:
+  - **Pick** (Set Tension) -- Arc dial showing success chance (40% base + 15% per tool, max 95%, 0% if stunned)
+  - **Search** (Sweep Compartment) -- Signal meter showing chance (60% normal, 30% stunned)
+  - **Sabotage** (Cut Line) -- Target selector dropdown, always 100% success
+- **Resolve Sequence** -- Phased animation after round resolution: Pick/Search results, stun clears, sabotage events, winner reveal
+- **Event Log** -- Real-time feed of on-chain game events
+
+## Contract Integration
+
+The SPA interacts with a single PlundrixGame contract via custom Wagmi hooks. Reads poll at 3-5s intervals (game state, player state, all-actions-submitted checks). Writes handle game creation, registration, action submission, and round resolution. All 10 contract events are watched in real-time.
+
+## Help System
+
+Built-in Field Manual modal with tabs: Mission Brief, Actions, Equipment, and How to Play.
+
+## Running
 
 ```bash
 cd app && npm install && npm run dev
+```
+
+## Environment Variables
+
+```
+VITE_RPC_URL                     # Sepolia RPC endpoint (optional, falls back to public)
+VITE_WALLETCONNECT_PROJECT_ID    # WalletConnect project ID (optional)
+VITE_CONTRACT_ADDRESS            # Deployed PlundrixGame contract address
 ```
 
 ---
@@ -295,7 +330,7 @@ await walletClient.writeContract({
 
 ---
 
-# Comparison with Hexploration
+# Comparison with [Hexploration](https://github.com/LuckyMachines/hexploration)
 
 | Feature | Hexploration | Plundrix |
 |---------|-------------|----------|
@@ -307,4 +342,4 @@ await walletClient.writeContract({
 | Complexity | High (exploration, inventory, cards, day/night) | Low (3 actions, 5 locks) |
 | Deploy | Multi-step (factory, zones, decks, tokens) | Single contract deploy |
 
-Both games demonstrate game-core's patterns (RBAC roles, event-driven state, on-chain gameplay) at different complexity levels.
+Both games demonstrate [game-core](https://github.com/LuckyMachines/game-core)'s patterns (RBAC roles, event-driven state, on-chain gameplay) at different complexity levels.
