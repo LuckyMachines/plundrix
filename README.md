@@ -1,6 +1,47 @@
 # Plundrix
 
-A single-zone heist game where 2-4 rival operatives compete to crack a vault with 5 locks. Each round, players choose one of three actions. First player to crack all 5 locks wins.
+A fully on-chain competitive heist game. You and up to 3 rival operatives are locked in a vault room. Five locks stand between you and the score. Pick locks, scrounge for tools, or sabotage your rivals -- first to crack all 5 locks wins. Every round resolves on-chain with no hidden state.
+
+Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) patterns. Single self-contained contract -- deploy once and play.
+
+## Why Play
+
+- **Pure strategy meets chance** -- three simple actions create deep mind-games. Do you pick aggressively, tool up for a big run, or sabotage the leader? Every round is a bet.
+- **Fully on-chain** -- game state, randomness, and resolution all happen in one smart contract. No server, no hidden deck, no trust required.
+- **Fast games** -- rounds resolve in seconds. A full game takes 5-15 rounds. No long waits, no keeper bots needed.
+- **Minimal deployment** -- one contract, one deploy command. No multi-step factory setup, no VRF subscriptions, no off-chain workers.
+
+## The Game
+
+2-4 players compete to be the first to crack all **5 locks** on a vault.
+
+### How It Works
+
+1. **Join** -- players register for an open game (2-4 players)
+2. **Each round** -- every player secretly submits one of three actions:
+   - **PICK** -- attempt to crack a lock (40% base chance + 15% per tool, max 95%)
+   - **SEARCH** -- look for lockpicking tools (60% chance, accumulate up to 5)
+   - **SABOTAGE** -- stun a rival and steal one of their tools (always succeeds)
+3. **Resolve** -- all actions resolve simultaneously. Picks and searches go first, then sabotages apply stuns for next round.
+4. **Win** -- first player to crack all 5 locks wins immediately.
+
+### Key Mechanics
+
+- **Tool stacking** -- each tool adds +15% to your pick chance. With 4 tools you're at 95%. The tension: do you spend rounds searching, or go for picks early?
+- **Sabotage & stun** -- sabotaging a player stuns them for one round (PICK auto-fails, SEARCH drops to 30%) and steals a tool. A well-timed sabotage can swing the game.
+- **Simultaneous resolution** -- all players act at once, so you can't react to what others do. Read your opponents and commit.
+- **Timeout** -- if not all actions are submitted within 5 minutes, the round can be resolved anyway. No stalling.
+
+### At a Glance
+
+| | |
+|---|---|
+| **Players** | 2-4 per game |
+| **Goal** | Crack all 5 locks first |
+| **Actions** | Pick, Search, Sabotage |
+| **Rounds** | Simultaneous, ~5-15 per game |
+| **Randomness** | On-chain pseudo-random (blockhash + keccak256) |
+| **Contracts** | 1 (PlundrixGame.sol) |
 
 ## Quick Start
 
