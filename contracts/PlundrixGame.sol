@@ -69,6 +69,11 @@ contract PlundrixGame is AccessControlEnumerable {
     mapping(uint256 => mapping(address => uint256)) private _playerIndex;
     mapping(uint256 => mapping(address => PendingAction)) private _pendingActions;
 
+    modifier validGame(uint256 gameID) {
+        require(_gameExists(gameID), "Game does not exist");
+        _;
+    }
+
     // --- Events ---
     event GameCreated(
         uint256 indexed gameID,
@@ -85,6 +90,8 @@ contract PlundrixGame is AccessControlEnumerable {
     event ActionSubmitted(
         uint256 indexed gameID,
         address player,
+        Action action,
+        address sabotageTarget,
         uint256 round,
         uint256 timeStamp
     );
@@ -149,7 +156,7 @@ contract PlundrixGame is AccessControlEnumerable {
      * @notice Register the caller as a player in an open game.
      * @param gameID The game to join.
      */
-    function registerPlayer(uint256 gameID) external {
+    function registerPlayer(uint256 gameID) external validGame(gameID) {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.OPEN, "Game not open for registration");
         require(game.playerCount < MAX_GAME_PLAYERS, "Game is full");
@@ -170,12 +177,17 @@ contract PlundrixGame is AccessControlEnumerable {
     }
 
     /**
-     * @notice Start a game. Requires GAME_MASTER_ROLE and at least MIN_GAME_PLAYERS registered.
+     * @notice Start a game. Can be called by GAME_MASTER_ROLE or any registered player.
      * @param gameID The game to start.
      */
-    function startGame(uint256 gameID) external onlyRole(GAME_MASTER_ROLE) {
+    function startGame(
+        uint256 gameID
+    ) external validGame(gameID) {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.OPEN, "Game not open");
+        bool canStart = hasRole(GAME_MASTER_ROLE, msg.sender) ||
+            _playerIndex[gameID][msg.sender] > 0;
+        require(canStart, "Not authorized to start");
         require(
             game.playerCount >= MIN_GAME_PLAYERS,
             "Not enough players"
@@ -200,7 +212,7 @@ contract PlundrixGame is AccessControlEnumerable {
         uint256 gameID,
         Action action,
         address sabotageTarget
-    ) external {
+    ) external validGame(gameID) {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.ACTIVE, "Game not active");
 
@@ -237,6 +249,8 @@ contract PlundrixGame is AccessControlEnumerable {
         emit ActionSubmitted(
             gameID,
             msg.sender,
+            action,
+            sabotageTarget,
             game.currentRound,
             block.timestamp
         );
@@ -248,7 +262,7 @@ contract PlundrixGame is AccessControlEnumerable {
      * @notice Resolve the current round. Can be called by anyone once all actions are in or timeout is reached.
      * @param gameID The game to resolve.
      */
-    function resolveRound(uint256 gameID) external {
+    function resolveRound(uint256 gameID) external validGame(gameID) {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.ACTIVE, "Game not active");
         require(
@@ -428,6 +442,7 @@ contract PlundrixGame is AccessControlEnumerable {
     )
         external
         view
+        validGame(gameID)
         returns (
             uint256 locksCracked,
             uint256 tools,
@@ -459,6 +474,7 @@ contract PlundrixGame is AccessControlEnumerable {
     )
         external
         view
+        validGame(gameID)
         returns (
             GameState state,
             uint256 currentRound,
@@ -485,7 +501,7 @@ contract PlundrixGame is AccessControlEnumerable {
     function getPlayerAddress(
         uint256 gameID,
         uint256 playerIndex
-    ) external view returns (address) {
+    ) external view validGame(gameID) returns (address) {
         return _players[gameID][playerIndex].addr;
     }
 
@@ -495,7 +511,7 @@ contract PlundrixGame is AccessControlEnumerable {
      */
     function allActionsSubmitted(
         uint256 gameID
-    ) public view returns (bool) {
+    ) public view validGame(gameID) returns (bool) {
         GameInfo storage game = _games[gameID];
         for (uint256 i = 1; i <= game.playerCount; i++) {
             if (
@@ -512,5 +528,9 @@ contract PlundrixGame is AccessControlEnumerable {
      */
     function totalGames() external view returns (uint256) {
         return _gameIdCounter.current();
+    }
+
+    function _gameExists(uint256 gameID) internal view returns (bool) {
+        return gameID > 0 && gameID <= _gameIdCounter.current();
     }
 }

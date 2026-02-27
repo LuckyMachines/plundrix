@@ -31,6 +31,11 @@ function formatEventDescription(event) {
   const { name, args } = event;
   const addr = args?.player || args?.attacker || args?.winner;
   const short = addr ? truncateAddress(addr) : '';
+  const actionNameById = {
+    1: 'PICK',
+    2: 'SEARCH',
+    3: 'SABOTAGE',
+  };
 
   switch (name) {
     case 'GameCreated':
@@ -40,7 +45,7 @@ function formatEventDescription(event) {
     case 'GameStarted':
       return `Operation is now active`;
     case 'ActionSubmitted':
-      return `${short} submitted action`;
+      return `${short} committed ${actionNameById[Number(args?.action)] || 'ACTION'}`;
     case 'RoundResolved':
       return `Round ${args?.round?.toString()} resolved`;
     case 'LockCracked':

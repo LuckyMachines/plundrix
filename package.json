@@ -4,13 +4,19 @@
   "description": "On-chain multiplayer heist game — crack the vault before your rivals.",
   "scripts": {
     "build": "forge build",
-    "test": "forge test",
+    "anvil": "anvil --port 18645",
+    "deploy:local": "node scripts/deploy-local.mjs",
+    "sync:abi": "node scripts/sync-abi.mjs",
+    "test:sol": "forge test",
+    "test:js": "vitest run test/plundrix.test.js",
+    "test": "npm run test:sol && npm run test:js",
     "dev": "cd app && npm run dev"
   },
   "author": "Max Meier",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "dotenv": "^17.3.1",
-    "viem": "^2.46.2"
+    "viem": "^2.46.2",
+    "vitest": "^3.2.4"
   }
 }

@@ -1,13 +1,24 @@
 import { useReadContract } from 'wagmi';
-import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS } from '../config/contract';
+import {
+  PLUNDRIX_ABI,
+  PLUNDRIX_ADDRESS,
+  IS_CONTRACT_CONFIGURED,
+} from '../config/contract';
+import { toGameId } from '../lib/gameId';
 
 export function usePlayerState(gameId, playerAddr) {
+  const parsedGameId = toGameId(gameId);
+
   const { data, isLoading, error, refetch } = useReadContract({
     address: PLUNDRIX_ADDRESS,
     abi: PLUNDRIX_ABI,
     functionName: 'getPlayerState',
-    args: gameId && playerAddr ? [BigInt(gameId), playerAddr] : undefined,
-    query: { enabled: !!gameId && !!playerAddr, refetchInterval: 5000 },
+    args: parsedGameId && playerAddr ? [parsedGameId, playerAddr] : undefined,
+    query: {
+      enabled:
+        IS_CONTRACT_CONFIGURED && parsedGameId !== null && !!playerAddr,
+      refetchInterval: 5000,
+    },
   });
 
   return {

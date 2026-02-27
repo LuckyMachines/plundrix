@@ -1,15 +1,25 @@
 import { useState, useCallback, useRef } from 'react';
 import { useWatchContractEvent } from 'wagmi';
-import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS } from '../config/contract';
+import {
+  PLUNDRIX_ABI,
+  PLUNDRIX_ADDRESS,
+  IS_CONTRACT_CONFIGURED,
+} from '../config/contract';
+import { toGameId } from '../lib/gameId';
 
 export function useGameEvents(gameId) {
+  const parsedGameId = toGameId(gameId);
   const [events, setEvents] = useState([]);
   const [latestRoundEvents, setLatestRoundEvents] = useState(null);
   const eventsRef = useRef([]);
 
   const addEvent = useCallback((name, log) => {
     const gameIDFromLog = log.args?.gameID;
-    if (gameId && gameIDFromLog !== undefined && BigInt(gameId) !== gameIDFromLog) return;
+    if (
+      parsedGameId !== null &&
+      gameIDFromLog !== undefined &&
+      parsedGameId !== gameIDFromLog
+    ) return;
 
     const entry = {
       name,
@@ -24,13 +34,36 @@ export function useGameEvents(gameId) {
       eventsRef.current = next;
       return next;
     });
-  }, [gameId]);
+  }, [parsedGameId]);
 
-  const collectRoundEvents = useCallback((blockNumber) => {
-    // Use ref to get the latest events including those added in the same block
+  const collectRoundEvents = useCallback((resolvedLog) => {
+    const resolvedBlockNumber = resolvedLog?.blockNumber;
+    const resolvedRound = resolvedLog?.args?.round;
+    const resolvedGameId = resolvedLog?.args?.gameID;
+
+    if (
+      resolvedBlockNumber === undefined ||
+      resolvedRound === undefined ||
+      resolvedGameId === undefined
+    ) {
+      return;
+    }
+
+    // Use ref to include events added in the same microtask.
     setTimeout(() => {
       const current = eventsRef.current;
-      const roundBatch = current.filter((e) => e.blockNumber === blockNumber);
+      const roundBatch = current.filter((event) => {
+        if (event.args?.gameID !== resolvedGameId) return false;
+
+        // Include the full resolve transaction output.
+        if (event.blockNumber === resolvedBlockNumber) return true;
+
+        // Include prior action commits for this exact round.
+        return (
+          event.name === 'ActionSubmitted' &&
+          event.args?.round === resolvedRound
+        );
+      });
       setLatestRoundEvents(roundBatch);
     }, 50);
   }, []);
@@ -40,7 +73,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'GameCreated',
     onLogs: (logs) => logs.forEach((l) => addEvent('GameCreated', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -48,7 +81,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'PlayerJoined',
     onLogs: (logs) => logs.forEach((l) => addEvent('PlayerJoined', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -56,7 +89,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'GameStarted',
     onLogs: (logs) => logs.forEach((l) => addEvent('GameStarted', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -64,7 +97,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'ActionSubmitted',
     onLogs: (logs) => logs.forEach((l) => addEvent('ActionSubmitted', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -73,11 +106,9 @@ export function useGameEvents(gameId) {
     eventName: 'RoundResolved',
     onLogs: (logs) => {
       logs.forEach((l) => addEvent('RoundResolved', l));
-      if (logs[0]?.blockNumber !== undefined) {
-        collectRoundEvents(logs[0].blockNumber);
-      }
+      logs.forEach((l) => collectRoundEvents(l));
     },
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -85,7 +116,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'LockCracked',
     onLogs: (logs) => logs.forEach((l) => addEvent('LockCracked', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -93,7 +124,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'ToolFound',
     onLogs: (logs) => logs.forEach((l) => addEvent('ToolFound', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -101,7 +132,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'PlayerSabotaged',
     onLogs: (logs) => logs.forEach((l) => addEvent('PlayerSabotaged', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -109,7 +140,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'PlayerStunned',
     onLogs: (logs) => logs.forEach((l) => addEvent('PlayerStunned', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   useWatchContractEvent({
@@ -117,7 +148,7 @@ export function useGameEvents(gameId) {
     abi: PLUNDRIX_ABI,
     eventName: 'GameWon',
     onLogs: (logs) => logs.forEach((l) => addEvent('GameWon', l)),
-    enabled: !!gameId,
+    enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 
   const clearEvents = useCallback(() => {

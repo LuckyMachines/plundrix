@@ -2,7 +2,7 @@ import PhaseIndicator from './PhaseIndicator';
 import TimeoutDial from './TimeoutDial';
 import { formatBigInt } from '../../lib/formatting';
 
-export default function RoundConsole({ currentRound, roundStartTime, allSubmitted, gameState }) {
+export default function RoundConsole({ currentRound, roundStartTime, allSubmitted, gameState, canResolve }) {
   return (
     <div className="flex flex-col items-center gap-4">
       {/* Round number */}
@@ -27,6 +27,15 @@ export default function RoundConsole({ currentRound, roundStartTime, allSubmitte
           <span className="w-1.5 h-1.5 rounded-full bg-oxide-green animate-pulse" />
           <span className="font-mono text-[10px] text-oxide-green uppercase tracking-wider">
             All Actions In
+          </span>
+        </div>
+      )}
+
+      {canResolve && (
+        <div className="flex items-center gap-2 px-3 py-1.5 border border-blueprint/40 bg-blueprint/10 rounded">
+          <span className="w-1.5 h-1.5 rounded-full bg-blueprint animate-pulse" />
+          <span className="font-mono text-[10px] text-blueprint uppercase tracking-wider">
+            Resolve Ready
           </span>
         </div>
       )}

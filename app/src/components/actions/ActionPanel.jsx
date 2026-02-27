@@ -7,6 +7,9 @@ import SabotageControl from './SabotageControl';
 
 export default function ActionPanel({
   gameId,
+  isConfigured,
+  configError,
+  registered,
   stunned,
   actionSubmitted,
   tools,
@@ -15,7 +18,9 @@ export default function ActionPanel({
 }) {
   const { submitAction, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
 
-  const disabled = actionSubmitted || isPending || isConfirming;
+  const spectator = !!currentAddress && !registered;
+  const disconnected = !currentAddress;
+  const disabled = !isConfigured || disconnected || spectator || actionSubmitted || isPending || isConfirming;
 
   const handlePick = () => {
     submitAction(gameId, Action.PICK);
@@ -42,6 +47,22 @@ export default function ActionPanel({
           </span>
         )}
       </div>
+
+      {!isConfigured && (
+        <p className="font-mono text-[10px] text-signal-red mb-3">{configError}</p>
+      )}
+
+      {disconnected && (
+        <p className="font-mono text-[10px] text-vault-text-dim mb-3">
+          Connect your wallet to submit round actions.
+        </p>
+      )}
+
+      {spectator && (
+        <p className="font-mono text-[10px] text-vault-text-dim mb-3">
+          You are spectating this operation. Join during OPEN state to play.
+        </p>
+      )}
 
       {/* 3-column action controls */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

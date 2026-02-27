@@ -1,49 +1,87 @@
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS } from '../config/contract';
+import {
+  PLUNDRIX_ABI,
+  PLUNDRIX_ADDRESS,
+  IS_CONTRACT_CONFIGURED,
+  CONTRACT_CONFIG_ERROR,
+} from '../config/contract';
+import { toGameId } from '../lib/gameId';
+
+function ensureConfigured() {
+  if (!IS_CONTRACT_CONFIGURED) {
+    throw new Error(CONTRACT_CONFIG_ERROR || 'Contract is not configured');
+  }
+}
 
 export function useGameActions() {
   const { writeContractAsync, data: hash, isPending, error } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
-  const createGame = () =>
-    writeContractAsync({
+  const createGame = () => {
+    ensureConfigured();
+    return writeContractAsync({
       address: PLUNDRIX_ADDRESS,
       abi: PLUNDRIX_ABI,
       functionName: 'createGame',
     });
+  };
 
-  const registerPlayer = (gameId) =>
-    writeContractAsync({
+const registerPlayer = (gameId) => {
+    ensureConfigured();
+    const parsedGameId = toGameId(gameId);
+    if (parsedGameId === null) {
+      throw new Error('Invalid game ID');
+    }
+    return writeContractAsync({
       address: PLUNDRIX_ADDRESS,
       abi: PLUNDRIX_ABI,
       functionName: 'registerPlayer',
-      args: [BigInt(gameId)],
+      args: [parsedGameId],
     });
+  };
 
-  const startGame = (gameId) =>
-    writeContractAsync({
+  const startGame = (gameId) => {
+    ensureConfigured();
+    const parsedGameId = toGameId(gameId);
+    if (parsedGameId === null) {
+      throw new Error('Invalid game ID');
+    }
+    return writeContractAsync({
       address: PLUNDRIX_ADDRESS,
       abi: PLUNDRIX_ABI,
       functionName: 'startGame',
-      args: [BigInt(gameId)],
+      args: [parsedGameId],
     });
+  };
 
-  const submitAction = (gameId, action, sabotageTarget = '0x0000000000000000000000000000000000000000') =>
-    writeContractAsync({
+  const submitAction = (gameId, action, sabotageTarget = '0x0000000000000000000000000000000000000000') => {
+    ensureConfigured();
+    const parsedGameId = toGameId(gameId);
+    if (parsedGameId === null) {
+      throw new Error('Invalid game ID');
+    }
+    return writeContractAsync({
       address: PLUNDRIX_ADDRESS,
       abi: PLUNDRIX_ABI,
       functionName: 'submitAction',
-      args: [BigInt(gameId), action, sabotageTarget],
+      args: [parsedGameId, action, sabotageTarget],
     });
+  };
 
-  const resolveRound = (gameId) =>
-    writeContractAsync({
+  const resolveRound = (gameId) => {
+    ensureConfigured();
+    const parsedGameId = toGameId(gameId);
+    if (parsedGameId === null) {
+      throw new Error('Invalid game ID');
+    }
+    return writeContractAsync({
       address: PLUNDRIX_ADDRESS,
       abi: PLUNDRIX_ABI,
       functionName: 'resolveRound',
-      args: [BigInt(gameId)],
+      args: [parsedGameId],
     });
+  };
 
   return {
     createGame,
@@ -56,5 +94,7 @@ export function useGameActions() {
     isConfirming,
     isSuccess,
     error,
+    isConfigured: IS_CONTRACT_CONFIGURED,
+    configError: CONTRACT_CONFIG_ERROR,
   };
 }

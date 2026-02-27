@@ -4,7 +4,6 @@ import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { useAllActionsSubmitted } from '../../hooks/useAllActionsSubmitted';
-import { useHasRole } from '../../hooks/useHasRole';
 import { useGameActions } from '../../hooks/useGameActions';
 import { useGameEvents } from '../../hooks/useGameEvents';
 import { ROUND_TIMEOUT } from '../../lib/constants';
@@ -21,10 +20,18 @@ export default function VaultBench({ gameId }) {
   const { address } = useAccount();
   const { state, currentRound, playerCount, roundStartTime, isLoading: gameLoading } = useGameInfo(gameId);
   const { players, isLoading: playersLoading } = useGamePlayers(gameId, playerCount);
-  const { locksCracked, tools, stunned, actionSubmitted, isLoading: playerLoading } = usePlayerState(gameId, address);
-  const { allSubmitted, isLoading: allSubLoading } = useAllActionsSubmitted(gameId);
-  const { hasRole } = useHasRole(address);
-  const { resolveRound, hash: resolveHash, isPending: resolvePending, isConfirming: resolveConfirming, isSuccess: resolveSuccess, error: resolveError } = useGameActions();
+  const { locksCracked, tools, stunned, registered, actionSubmitted } = usePlayerState(gameId, address);
+  const { allSubmitted } = useAllActionsSubmitted(gameId);
+  const {
+    resolveRound,
+    hash: resolveHash,
+    isPending: resolvePending,
+    isConfirming: resolveConfirming,
+    isSuccess: resolveSuccess,
+    error: resolveError,
+    isConfigured,
+    configError,
+  } = useGameActions();
   const { events, latestRoundEvents } = useGameEvents(gameId);
 
   // Resolution sequence visibility
@@ -79,6 +86,7 @@ export default function VaultBench({ gameId }) {
             roundStartTime={roundStartTime}
             allSubmitted={allSubmitted}
             gameState={state}
+            canResolve={canResolve}
           />
         </div>
 
@@ -104,7 +112,10 @@ export default function VaultBench({ gameId }) {
       <div className="border border-vault-border rounded bg-vault-panel p-4">
         <ActionPanel
           gameId={gameId}
+          isConfigured={isConfigured}
+          configError={configError}
           stunned={stunned}
+          registered={registered}
           actionSubmitted={actionSubmitted}
           tools={tools}
           players={players}
@@ -126,7 +137,7 @@ export default function VaultBench({ gameId }) {
             </div>
             <button
               onClick={() => resolveRound(gameId)}
-              disabled={resolvePending || resolveConfirming}
+              disabled={!isConfigured || resolvePending || resolveConfirming}
               className={`
                 py-2 px-6 rounded font-mono text-xs uppercase tracking-[0.2em]
                 border transition-all duration-200
@@ -146,6 +157,11 @@ export default function VaultBench({ gameId }) {
             isSuccess={resolveSuccess}
             error={resolveError}
           />
+          {!isConfigured && (
+            <p className="font-mono text-[10px] text-signal-red mt-2">
+              {configError}
+            </p>
+          )}
         </div>
       )}
 

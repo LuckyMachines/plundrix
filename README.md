@@ -49,6 +49,12 @@ Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) 
 # Build contracts
 forge build
 
+# Run local anvil on a project-specific port
+npm run anvil
+
+# In another shell, deploy locally (auto-writes app/.env.local + syncs ABI)
+npm run deploy:local
+
 # Deploy to Sepolia
 forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
 
@@ -111,8 +117,15 @@ Unlike [Hexploration](https://github.com/LuckyMachines/hexploration) (which uses
 # 1. Create .env at repo root
 # PRIVATE_KEY=0x...
 # SEPOLIA_RPC_URL=https://...
+# ANVIL_RPC_URL=http://127.0.0.1:18645
 
-# 2. Deploy
+# 2a. Deploy to local anvil (default fallback key works out of the box)
+npm run deploy:local
+# Writes:
+# - app/.env.local (VITE_CONTRACT_ADDRESS + VITE_FOUNDRY_RPC_URL)
+# - synced ABI files in abi/ and app/src/config/
+
+# 2b. Or deploy to Sepolia
 forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
 
 # 3. Note the deployed contract address from output
@@ -160,13 +173,22 @@ Built-in Field Manual modal with tabs: Mission Brief, Actions, Equipment, and Ho
 cd app && npm install && npm run dev
 ```
 
+For local play, start anvil first:
+
+```bash
+npm run anvil
+```
+
 ## Environment Variables
 
 ```
 VITE_RPC_URL                     # Sepolia RPC endpoint (optional, falls back to public)
 VITE_WALLETCONNECT_PROJECT_ID    # WalletConnect project ID (optional)
 VITE_CONTRACT_ADDRESS            # Deployed PlundrixGame contract address
+VITE_FOUNDRY_RPC_URL             # Local anvil RPC (default: http://127.0.0.1:18645)
 ```
+
+Local deploy automation writes `app/.env.local` for you.
 
 ---
 
@@ -227,7 +249,7 @@ First player to crack all **5 locks** wins the game.
 
 1. **Create** -- Anyone calls `createGame()` to create a new game (state: `OPEN`)
 2. **Register** -- Players call `registerPlayer(gameID)` to join (2-4 players)
-3. **Start** -- Game master calls `startGame(gameID)` (state: `OPEN` → `ACTIVE`)
+3. **Start** -- Any registered player (or game master) calls `startGame(gameID)` (state: `OPEN` -> `ACTIVE`)
 4. **Play** -- Each round:
    - All players call `submitAction(gameID, action, target)`
    - Anyone calls `resolveRound(gameID)` when all actions are in (or timeout reached)
@@ -249,7 +271,7 @@ Join an open game. Reverts if game is not `OPEN`, is full, or caller already reg
 
 ### `startGame(uint256 gameID)`
 
-Start the game. Requires `GAME_MASTER_ROLE`. Reverts if fewer than 2 players.
+Start the game. Callable by any registered player or `GAME_MASTER_ROLE`. Reverts if fewer than 2 players.
 
 ## Player Actions
 
@@ -296,8 +318,8 @@ Total number of games created.
 |-------|-----------|------|
 | `GameCreated` | `gameID`, `creator`, `timeStamp` | New game created |
 | `PlayerJoined` | `gameID`, `player`, `playerIndex`, `timeStamp` | Player registered |
-| `GameStarted` | `gameID`, `timeStamp` | Game master started the game |
-| `ActionSubmitted` | `gameID`, `player`, `round`, `timeStamp` | Player submitted an action |
+| `GameStarted` | `gameID`, `timeStamp` | Game transitioned to ACTIVE |
+| `ActionSubmitted` | `gameID`, `player`, `action`, `sabotageTarget`, `round`, `timeStamp` | Player submitted an action |
 | `RoundResolved` | `gameID`, `round`, `timeStamp` | Round finished resolving |
 | `LockCracked` | `gameID`, `player`, `totalCracked`, `timeStamp` | Player cracked a lock |
 | `ToolFound` | `gameID`, `player`, `totalTools`, `timeStamp` | Player found a tool |
@@ -384,3 +406,4 @@ await walletClient.writeContract({
 | Deploy | Multi-step (factory, zones, decks, tokens) | Single contract deploy |
 
 Both games demonstrate [game-core](https://github.com/LuckyMachines/game-core)'s patterns (RBAC roles, event-driven state, on-chain gameplay) at different complexity levels.
+

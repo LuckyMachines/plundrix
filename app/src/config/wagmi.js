@@ -3,6 +3,7 @@ import { sepolia, foundry } from 'wagmi/chains';
 import { injected, walletConnect } from 'wagmi/connectors';
 
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+const foundryRpcUrl = import.meta.env.VITE_FOUNDRY_RPC_URL || 'http://127.0.0.1:18645';
 
 export const config = createConfig({
   chains: [foundry, sepolia],
@@ -12,6 +13,6 @@ export const config = createConfig({
   ],
   transports: {
     [sepolia.id]: http(import.meta.env.VITE_RPC_URL || undefined),
-    [foundry.id]: http('http://127.0.0.1:8117'),
+    [foundry.id]: http(foundryRpcUrl),
   },
 });

@@ -1,5 +1,9 @@
 import { useReadContract } from 'wagmi';
-import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS } from '../config/contract';
+import {
+  PLUNDRIX_ABI,
+  PLUNDRIX_ADDRESS,
+  IS_CONTRACT_CONFIGURED,
+} from '../config/contract';
 import { keccak256, toHex } from 'viem';
 
 const GAME_MASTER_ROLE = keccak256(toHex('GAME_MASTER_ROLE'));
@@ -10,7 +14,7 @@ export function useHasRole(address) {
     abi: PLUNDRIX_ABI,
     functionName: 'hasRole',
     args: address ? [GAME_MASTER_ROLE, address] : undefined,
-    query: { enabled: !!address },
+    query: { enabled: IS_CONTRACT_CONFIGURED && !!address },
   });
 
   return { hasRole: !!data, isLoading, error };

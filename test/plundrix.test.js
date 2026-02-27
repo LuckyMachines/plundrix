@@ -26,7 +26,7 @@ const artifact = JSON.parse(
 const abi = artifact.abi;
 const bytecode = artifact.bytecode.object;
 
-const ANVIL_PORT = 8546;
+const ANVIL_PORT = Number(process.env.TEST_ANVIL_PORT || 19645);
 const RPC_URL = `http://127.0.0.1:${ANVIL_PORT}`;
 
 // Anvil default pre-funded accounts
@@ -280,6 +280,47 @@ describe('PlundrixGame', () => {
     });
   });
 
+  // --- Game Existence Validation ---
+
+  describe('game existence validation', () => {
+    let nonExistentGameId;
+
+    beforeAll(async () => {
+      const total = await read('totalGames');
+      nonExistentGameId = total + 1n;
+    });
+
+    it('rejects registerPlayer on non-existent game', async () => {
+      await expect(exec(1, 'registerPlayer', [nonExistentGameId])).rejects.toThrow(
+        /Game does not exist/
+      );
+    });
+
+    it('rejects startGame on non-existent game', async () => {
+      await expect(exec(0, 'startGame', [nonExistentGameId])).rejects.toThrow(
+        /Game does not exist/
+      );
+    });
+
+    it('rejects submitAction on non-existent game', async () => {
+      await expect(
+        exec(1, 'submitAction', [nonExistentGameId, PICK, zeroAddress])
+      ).rejects.toThrow(/Game does not exist/);
+    });
+
+    it('rejects resolveRound on non-existent game', async () => {
+      await expect(exec(0, 'resolveRound', [nonExistentGameId])).rejects.toThrow(
+        /Game does not exist/
+      );
+    });
+
+    it('rejects getGameInfo on non-existent game', async () => {
+      await expect(read('getGameInfo', [nonExistentGameId])).rejects.toThrow(
+        /Game does not exist/
+      );
+    });
+  });
+
   // --- Game Start ---
 
   describe('game start', () => {
@@ -292,8 +333,10 @@ describe('PlundrixGame', () => {
       await exec(2, 'registerPlayer', [gameId]);
     });
 
-    it('rejects start from non-GM account', async () => {
-      await expect(exec(1, 'startGame', [gameId])).rejects.toThrow();
+    it('rejects start from unregistered non-GM account', async () => {
+      await expect(exec(3, 'startGame', [gameId])).rejects.toThrow(
+        /Not authorized to start/
+      );
     });
 
     it('rejects start with fewer than 2 players', async () => {
@@ -305,8 +348,8 @@ describe('PlundrixGame', () => {
       );
     });
 
-    it('starts the game and emits GameStarted', async () => {
-      const receipt = await exec(0, 'startGame', [gameId]);
+    it('starts the game from a registered non-GM account', async () => {
+      const receipt = await exec(1, 'startGame', [gameId]);
       const events = getEvents(receipt, 'GameStarted');
       expect(events.length).toBe(1);
       expect(events[0].args.gameID).toBe(gameId);
@@ -345,6 +388,7 @@ describe('PlundrixGame', () => {
       const events = getEvents(receipt, 'ActionSubmitted');
       expect(events.length).toBe(1);
       expect(events[0].args.player).toBe(addr(1));
+      expect(Number(events[0].args.action)).toBe(PICK);
       expect(events[0].args.round).toBe(1n);
     });
 

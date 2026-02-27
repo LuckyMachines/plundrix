@@ -17,6 +17,7 @@ export default function GameLobby({ gameId }) {
   const { players, isLoading: loadingPlayers } = useGamePlayers(gameId, count);
   const { registered: isRegistered, isLoading: loadingPlayer } = usePlayerState(gameId, address);
   const { hasRole: isGameMaster } = useHasRole(address);
+  const canStart = !!address && (isGameMaster || isRegistered);
 
   // --- write actions ---
   const {
@@ -27,6 +28,8 @@ export default function GameLobby({ gameId }) {
     isConfirming,
     isSuccess,
     error,
+    isConfigured,
+    configError,
   } = useGameActions();
 
   if (loadingInfo) {
@@ -90,10 +93,16 @@ export default function GameLobby({ gameId }) {
 
         {/* Action buttons */}
         <div className="flex flex-wrap gap-3 pt-2 border-t border-vault-border/50">
+          {!address && (
+            <p className="self-center font-mono text-[10px] text-vault-text-dim italic">
+              Connect a wallet to join or start this operation.
+            </p>
+          )}
+
           {!isRegistered && address && (
             <button
               onClick={() => registerPlayer(gameId)}
-              disabled={isPending || isConfirming}
+              disabled={!isConfigured || isPending || isConfirming}
               className="px-4 py-2 bg-tungsten/10 border border-tungsten/40 rounded text-tungsten text-xs font-mono tracking-widest uppercase
                          hover:bg-tungsten/20 hover:border-tungsten/60 transition-colors
                          disabled:opacity-40 disabled:cursor-not-allowed"
@@ -108,10 +117,10 @@ export default function GameLobby({ gameId }) {
             </button>
           )}
 
-          {isGameMaster && (
+          {canStart && (
             <button
               onClick={() => startGame(gameId)}
-              disabled={isPending || isConfirming || count < 2}
+              disabled={!isConfigured || loadingPlayer || isPending || isConfirming || count < 2}
               className="px-4 py-2 bg-oxide-green/10 border border-oxide-green/40 rounded text-oxide-green text-xs font-mono tracking-widest uppercase
                          hover:bg-oxide-green/20 hover:border-oxide-green/60 transition-colors
                          disabled:opacity-40 disabled:cursor-not-allowed"
@@ -126,9 +135,21 @@ export default function GameLobby({ gameId }) {
             </button>
           )}
 
-          {isGameMaster && count < 2 && (
+          {canStart && count < 2 && (
             <p className="self-center font-mono text-[10px] text-vault-text-dim italic">
               Minimum 2 operatives required to begin.
+            </p>
+          )}
+
+          {!canStart && address && (
+            <p className="self-center font-mono text-[10px] text-vault-text-dim italic">
+              Join the crew to unlock start authority.
+            </p>
+          )}
+
+          {!isConfigured && (
+            <p className="self-center font-mono text-[10px] text-signal-red">
+              {configError}
             </p>
           )}
         </div>

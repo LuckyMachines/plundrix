@@ -15,6 +15,8 @@ export default function GameBrowser() {
     isConfirming,
     isSuccess,
     error: txError,
+    isConfigured,
+    configError,
   } = useGameActions();
 
   const count = totalGames !== undefined ? Number(totalGames) : 0;
@@ -33,7 +35,7 @@ export default function GameBrowser() {
         {address && (
           <button
             onClick={() => createGame()}
-            disabled={isPending || isConfirming}
+            disabled={!isConfigured || isPending || isConfirming}
             className="px-4 py-2 bg-tungsten/10 border border-tungsten/40 rounded text-tungsten text-xs font-mono tracking-widest uppercase
                        hover:bg-tungsten/20 hover:border-tungsten/60 transition-colors
                        disabled:opacity-40 disabled:cursor-not-allowed"
@@ -59,6 +61,14 @@ export default function GameBrowser() {
             isSuccess={isSuccess}
             error={txError}
           />
+        </div>
+      )}
+
+      {!isConfigured && (
+        <div className="px-6 pt-4">
+          <p className="font-mono text-[10px] text-signal-red tracking-wider uppercase">
+            {configError}
+          </p>
         </div>
       )}
 
