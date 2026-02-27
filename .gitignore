@@ -4,3 +4,9 @@ broadcast/
 node_modules/
 .env
 **/.DS_Store
+anvil.log
+anvil.err.log
+.local-dev-pids.json
+app/.env.local
+app/vite.log
+app/vite.err.log

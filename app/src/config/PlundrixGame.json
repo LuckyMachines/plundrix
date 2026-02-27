@@ -491,6 +491,18 @@
         "internalType": "address"
       },
       {
+        "name": "action",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum PlundrixGame.Action"
+      },
+      {
+        "name": "sabotageTarget",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
         "name": "round",
         "type": "uint256",
         "indexed": false,
