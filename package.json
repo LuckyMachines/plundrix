@@ -6,6 +6,8 @@
     "build": "forge build",
     "anvil": "anvil --port 18645",
     "deploy:local": "node scripts/deploy-local.mjs",
+    "dev:local:start": "powershell -ExecutionPolicy Bypass -File scripts/start-local-dev.ps1",
+    "dev:local:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-local-dev.ps1",
     "sync:abi": "node scripts/sync-abi.mjs",
     "test:sol": "forge test",
     "test:js": "vitest run test/plundrix.test.js",

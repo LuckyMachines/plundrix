@@ -55,6 +55,9 @@ npm run anvil
 # In another shell, deploy locally (auto-writes app/.env.local + syncs ABI)
 npm run deploy:local
 
+# Optional: one command to start local anvil + deploy + Vite
+npm run dev:local:start
+
 # Deploy to Sepolia
 forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
 
@@ -177,6 +180,18 @@ For local play, start anvil first:
 
 ```bash
 npm run anvil
+```
+
+Or use the all-in-one starter:
+
+```bash
+npm run dev:local:start
+```
+
+To stop background local services started by the script:
+
+```bash
+npm run dev:local:stop
 ```
 
 ## Environment Variables
