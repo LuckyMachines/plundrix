@@ -15,7 +15,7 @@ export default function SearchControl({ onSubmit, disabled, stunned, tools = 0 }
       ${disabled ? 'border-vault-border bg-vault-dark/30 opacity-60' : 'border-vault-border bg-vault-panel'}
     `}>
       {/* Label */}
-      <h4 className="font-mono text-[10px] text-vault-text-dim uppercase tracking-[0.25em] mb-3">
+      <h4 className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
         Sweep Compartment
       </h4>
 
@@ -50,18 +50,18 @@ export default function SearchControl({ onSubmit, disabled, stunned, tools = 0 }
         `}>
           {chance}%
         </span>
-        <span className="font-mono text-[9px] text-vault-text-dim uppercase">
+        <span className="font-mono text-[11px] text-vault-text-dim uppercase">
           signal
         </span>
       </div>
 
       {/* Socket info */}
-      <p className="font-mono text-[10px] text-vault-text-dim text-center mb-1 leading-relaxed">
+      <p className="font-mono text-xs text-vault-text-dim text-center mb-1 leading-relaxed">
         Tool tray has <span className="text-vault-text">{openSockets}</span> open socket{openSockets !== 1 ? 's' : ''}
       </p>
 
       {stunned && (
-        <p className="font-mono text-[10px] text-signal-red/70 text-center mb-1">
+        <p className="font-mono text-xs text-signal-red/70 text-center mb-1">
           Signal degraded
         </p>
       )}
@@ -86,3 +86,4 @@ export default function SearchControl({ onSubmit, disabled, stunned, tools = 0 }
     </div>
   );
 }
+

@@ -27,11 +27,11 @@ export default function LockRack({ locksCracked = 0 }) {
           />
         </div>
         <div className="flex justify-between mt-1">
-          <span className="font-mono text-[9px] text-vault-text-dim uppercase">
+          <span className="font-mono text-[11px] text-vault-text-dim uppercase">
             {cracked} / {TOTAL_LOCKS}
           </span>
           {cracked >= TOTAL_LOCKS && (
-            <span className="font-mono text-[9px] text-tungsten-bright uppercase tracking-wider animate-pulse">
+            <span className="font-mono text-[11px] text-tungsten-bright uppercase tracking-wider animate-pulse">
               Vault Open
             </span>
           )}
@@ -40,3 +40,4 @@ export default function LockRack({ locksCracked = 0 }) {
     </div>
   );
 }
+

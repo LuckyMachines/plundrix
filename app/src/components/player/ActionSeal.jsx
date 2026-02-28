@@ -18,9 +18,10 @@ export default function ActionSeal({ visible }) {
         {/* Seal circle */}
         <circle cx="8" cy="11" r="2.5" fill="currentColor" fillOpacity="0.2" stroke="currentColor" />
       </svg>
-      <span className="font-mono text-[10px] text-blueprint uppercase tracking-wider">
+      <span className="font-mono text-xs text-blueprint uppercase tracking-wider">
         Action Sealed
       </span>
     </div>
   );
 }
+

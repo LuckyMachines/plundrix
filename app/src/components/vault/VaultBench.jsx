@@ -131,7 +131,7 @@ export default function VaultBench({ gameId }) {
               <h4 className="font-mono text-xs text-oxide-green uppercase tracking-wider">
                 {allSubmitted ? 'All actions submitted' : 'Round timeout reached'}
               </h4>
-              <p className="font-mono text-[10px] text-vault-text-dim mt-1">
+              <p className="font-mono text-xs text-vault-text-dim mt-1">
                 Resolve to advance to the next round.
               </p>
             </div>
@@ -158,7 +158,7 @@ export default function VaultBench({ gameId }) {
             error={resolveError}
           />
           {!isConfigured && (
-            <p className="font-mono text-[10px] text-signal-red mt-2">
+            <p className="font-mono text-xs text-signal-red mt-2">
               {configError}
             </p>
           )}
@@ -179,3 +179,4 @@ export default function VaultBench({ gameId }) {
     </div>
   );
 }
+

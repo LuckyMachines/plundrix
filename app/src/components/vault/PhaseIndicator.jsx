@@ -27,7 +27,7 @@ export default function PhaseIndicator({ gameState, allSubmitted }) {
           <div key={phase.key} className="flex items-center">
             <div
               className={`
-                px-2 py-1 text-[10px] font-mono uppercase tracking-wider
+                px-2 py-1 text-xs font-mono uppercase tracking-wider
                 border transition-all duration-300
                 ${isActive
                   ? 'border-tungsten/60 bg-tungsten/15 text-tungsten-bright shadow-[0_0_8px_rgba(196,149,106,0.15)]'
@@ -48,3 +48,4 @@ export default function PhaseIndicator({ gameState, allSubmitted }) {
     </div>
   );
 }
+

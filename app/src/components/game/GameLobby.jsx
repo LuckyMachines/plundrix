@@ -61,7 +61,7 @@ export default function GameLobby({ gameId }) {
       <div className="px-6 py-5 space-y-5">
         {/* Crew manifest */}
         <div>
-          <h3 className="font-mono text-[10px] tracking-[0.3em] text-vault-text-dim uppercase mb-3">
+          <h3 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-3">
             Crew Manifest ({count} enrolled)
           </h3>
 
@@ -83,7 +83,7 @@ export default function GameLobby({ gameId }) {
                     {truncateAddress(addr)}
                   </span>
                   {addr?.toLowerCase() === address?.toLowerCase() && (
-                    <span className="text-[10px] text-tungsten/70 uppercase tracking-wider">(you)</span>
+                    <span className="text-xs text-tungsten/70 uppercase tracking-wider">(you)</span>
                   )}
                 </li>
               ))}
@@ -94,7 +94,7 @@ export default function GameLobby({ gameId }) {
         {/* Action buttons */}
         <div className="flex flex-wrap gap-3 pt-2 border-t border-vault-border/50">
           {!address && (
-            <p className="self-center font-mono text-[10px] text-vault-text-dim italic">
+            <p className="self-center font-mono text-xs text-vault-text-dim italic">
               Connect a wallet to join or start this operation.
             </p>
           )}
@@ -136,19 +136,19 @@ export default function GameLobby({ gameId }) {
           )}
 
           {canStart && count < 2 && (
-            <p className="self-center font-mono text-[10px] text-vault-text-dim italic">
+            <p className="self-center font-mono text-xs text-vault-text-dim italic">
               Minimum 2 operatives required to begin.
             </p>
           )}
 
           {!canStart && address && (
-            <p className="self-center font-mono text-[10px] text-vault-text-dim italic">
+            <p className="self-center font-mono text-xs text-vault-text-dim italic">
               Join the crew to unlock start authority.
             </p>
           )}
 
           {!isConfigured && (
-            <p className="self-center font-mono text-[10px] text-signal-red">
+            <p className="self-center font-mono text-xs text-signal-red">
               {configError}
             </p>
           )}
@@ -166,3 +166,4 @@ export default function GameLobby({ gameId }) {
     </div>
   );
 }
+

@@ -29,7 +29,7 @@ function PlayerRow({ gameId, playerAddr, winner }) {
             {truncateAddress(playerAddr)}
           </span>
           {isWinner && (
-            <span className="font-display text-[10px] tracking-widest uppercase text-tungsten-bright border border-tungsten/30 rounded px-1.5 py-0.5 bg-tungsten/5">
+            <span className="font-display text-xs tracking-widest uppercase text-tungsten-bright border border-tungsten/30 rounded px-1.5 py-0.5 bg-tungsten/5">
               WINNER
             </span>
           )}
@@ -216,7 +216,7 @@ export default function GameOver({ gameId }) {
       {/* Bottom classification */}
       <div className="flex items-center justify-center gap-2">
         <div className="h-px w-12 bg-vault-border" />
-        <span className="font-display text-[10px] tracking-[0.4em] text-vault-text-dim uppercase">
+        <span className="font-display text-xs tracking-[0.4em] text-vault-text-dim uppercase">
           End of Report
         </span>
         <div className="h-px w-12 bg-vault-border" />
@@ -224,3 +224,4 @@ export default function GameOver({ gameId }) {
     </div>
   );
 }
+

@@ -33,7 +33,7 @@ export default function PickControl({ onSubmit, disabled, stunned, tools }) {
       ${isJammed ? 'opacity-50' : ''}
     `}>
       {/* Label */}
-      <h4 className="font-mono text-[10px] text-vault-text-dim uppercase tracking-[0.25em] mb-3">
+      <h4 className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
         Set Tension
       </h4>
 
@@ -89,11 +89,11 @@ export default function PickControl({ onSubmit, disabled, stunned, tools }) {
 
       {/* Status text */}
       {isJammed ? (
-        <p className="font-mono text-[10px] text-signal-red text-center mb-3 leading-relaxed">
+        <p className="font-mono text-xs text-signal-red text-center mb-3 leading-relaxed">
           Pick mechanism jammed
         </p>
       ) : (
-        <p className="font-mono text-[10px] text-vault-text-dim text-center mb-3 leading-relaxed">
+        <p className="font-mono text-xs text-vault-text-dim text-center mb-3 leading-relaxed">
           {Number(tools)} tool{Number(tools) !== 1 ? 's' : ''} applied
         </p>
       )}
@@ -116,3 +116,4 @@ export default function PickControl({ onSubmit, disabled, stunned, tools }) {
     </div>
   );
 }
+

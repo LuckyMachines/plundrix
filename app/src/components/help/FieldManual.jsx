@@ -23,7 +23,7 @@ export default function FieldManual() {
           <h2 className="font-display text-lg tracking-[0.25em] text-tungsten uppercase">
             Field Manual
           </h2>
-          <span className="font-mono text-[10px] text-vault-text-dim tracking-wider uppercase">
+          <span className="font-mono text-xs text-vault-text-dim tracking-wider uppercase">
             Plundrix // Ops Reference
           </span>
         </div>
@@ -59,3 +59,4 @@ export default function FieldManual() {
     </div>
   );
 }
+

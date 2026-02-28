@@ -33,7 +33,7 @@ export default function GamePage() {
           </p>
           <Link
             to="/"
-            className="inline-block mt-4 font-mono text-[10px] tracking-wider uppercase text-tungsten border border-tungsten/30 rounded px-3 py-1 hover:bg-tungsten/10"
+            className="inline-block mt-4 font-mono text-xs tracking-wider uppercase text-tungsten border border-tungsten/30 rounded px-3 py-1 hover:bg-tungsten/10"
           >
             Return to Console
           </Link>
@@ -54,12 +54,12 @@ export default function GamePage() {
           <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
             Failed to load game data for #{gameId}
           </p>
-          <p className="font-mono text-[10px] text-vault-text-dim mt-2 break-all">
+          <p className="font-mono text-xs text-vault-text-dim mt-2 break-all">
             {error?.shortMessage || error?.message || String(error)}
           </p>
           <Link
             to="/"
-            className="inline-block mt-4 font-mono text-[10px] tracking-wider uppercase text-tungsten border border-tungsten/30 rounded px-3 py-1 hover:bg-tungsten/10"
+            className="inline-block mt-4 font-mono text-xs tracking-wider uppercase text-tungsten border border-tungsten/30 rounded px-3 py-1 hover:bg-tungsten/10"
           >
             Return to Console
           </Link>
@@ -80,3 +80,4 @@ export default function GamePage() {
     </div>
   );
 }
+

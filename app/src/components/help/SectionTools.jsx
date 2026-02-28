@@ -46,9 +46,10 @@ export default function SectionTools() {
         Base chance is <span className="text-tungsten">40%</span> with zero tools, capped
         at <span className="text-tungsten">95%</span> with {MAX_TOOLS - 1}+ tools.
       </p>
-      <p className="text-vault-text-dim mt-1 text-[10px]">
+      <p className="text-vault-text-dim mt-1 text-xs">
         Formula: min(40 + tools &times; 15, 95)
       </p>
     </div>
   );
 }
+

@@ -17,7 +17,7 @@ export default function SabotageControl({ onSubmit, disabled, stunned, players =
       ${disabled ? 'border-vault-border bg-vault-dark/30 opacity-60' : 'border-signal-red/20 bg-vault-panel'}
     `}>
       {/* Label */}
-      <h4 className="font-mono text-[10px] text-signal-red/80 uppercase tracking-[0.25em] mb-3">
+      <h4 className="font-mono text-xs text-signal-red/80 uppercase tracking-[0.25em] mb-3">
         Cut Line
       </h4>
 
@@ -36,7 +36,7 @@ export default function SabotageControl({ onSubmit, disabled, stunned, players =
 
       {/* Target selector */}
       <div className="w-full mb-3">
-        <label className="font-mono text-[9px] text-vault-text-dim uppercase tracking-wider block mb-1">
+        <label className="font-mono text-[11px] text-vault-text-dim uppercase tracking-wider block mb-1">
           Target
         </label>
         <select
@@ -61,12 +61,12 @@ export default function SabotageControl({ onSubmit, disabled, stunned, players =
       </div>
 
       {/* Flavor text */}
-      <p className="font-mono text-[10px] text-vault-text-dim text-center mb-1 italic leading-relaxed">
+      <p className="font-mono text-xs text-vault-text-dim text-center mb-1 italic leading-relaxed">
         No RNG &mdash; certainty
       </p>
 
       {stunned && (
-        <p className="font-mono text-[10px] text-signal-red/70 text-center mb-1">
+        <p className="font-mono text-xs text-signal-red/70 text-center mb-1">
           Disoriented but operational
         </p>
       )}
@@ -91,3 +91,4 @@ export default function SabotageControl({ onSubmit, disabled, stunned, players =
     </div>
   );
 }
+

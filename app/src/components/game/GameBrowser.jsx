@@ -28,7 +28,7 @@ export default function GameBrowser() {
     <div className="border border-vault-border rounded bg-vault-surface">
       {/* Header bar */}
       <div className="border-b border-vault-border px-6 py-4 flex items-center justify-between">
-        <h2 className="font-mono text-[10px] tracking-[0.3em] text-vault-text-dim uppercase">
+        <h2 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase">
           Active Operations
         </h2>
 
@@ -66,7 +66,7 @@ export default function GameBrowser() {
 
       {!isConfigured && (
         <div className="px-6 pt-4">
-          <p className="font-mono text-[10px] text-signal-red tracking-wider uppercase">
+          <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
             {configError}
           </p>
         </div>
@@ -86,7 +86,7 @@ export default function GameBrowser() {
             <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
               Failed to load operations
             </p>
-            <p className="font-mono text-[10px] text-vault-text-dim break-all max-w-lg mx-auto">
+            <p className="font-mono text-xs text-vault-text-dim break-all max-w-lg mx-auto">
               {error?.shortMessage || error?.message || String(error)}
             </p>
           </div>
@@ -107,3 +107,4 @@ export default function GameBrowser() {
     </div>
   );
 }
+

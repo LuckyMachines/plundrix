@@ -73,7 +73,7 @@ export default function LockModule({ index = 0, cracked = false }) {
 
       {/* Label */}
       <span className={`
-        font-mono text-[9px] uppercase tracking-widest mt-1
+        font-mono text-[11px] uppercase tracking-widest mt-1
         ${cracked ? 'text-tungsten-bright' : 'text-vault-text-dim'}
       `}>
         {cracked ? 'CRACKED' : `LOCK ${index + 1}`}
@@ -88,3 +88,4 @@ export default function LockModule({ index = 0, cracked = false }) {
     </div>
   );
 }
+

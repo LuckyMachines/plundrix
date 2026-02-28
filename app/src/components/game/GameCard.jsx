@@ -40,7 +40,7 @@ export default function GameCard({ gameId }) {
                 OP-{String(gameId).padStart(3, '0')}
               </span>
               <span
-                className={`font-mono text-[10px] tracking-widest uppercase rounded px-2 py-0.5 border ${stateColor}`}
+                className={`font-mono text-xs tracking-widest uppercase rounded px-2 py-0.5 border ${stateColor}`}
               >
                 {stateLabel}
               </span>
@@ -49,7 +49,7 @@ export default function GameCard({ gameId }) {
             {/* Details row */}
             <div className="flex items-center gap-6">
               <div>
-                <p className="font-mono text-[10px] tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
+                <p className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
                   Operatives
                 </p>
                 <p className="font-mono text-xs text-vault-text">
@@ -59,7 +59,7 @@ export default function GameCard({ gameId }) {
 
               {stateNum === GameState.ACTIVE && (
                 <div>
-                  <p className="font-mono text-[10px] tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
+                  <p className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
                     Round
                   </p>
                   <p className="font-mono text-xs text-vault-text">
@@ -74,3 +74,4 @@ export default function GameCard({ gameId }) {
     </button>
   );
 }
+

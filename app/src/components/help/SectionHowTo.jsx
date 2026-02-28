@@ -55,7 +55,7 @@ export default function SectionHowTo() {
         {STEPS.map((s) => (
           <div key={s.num} className="flex items-start gap-3">
             <span className="shrink-0 w-5 h-5 flex items-center justify-center rounded-full
-                           border border-tungsten/40 bg-tungsten/10 text-tungsten text-[10px] font-bold">
+                           border border-tungsten/40 bg-tungsten/10 text-tungsten text-xs font-bold">
               {s.num}
             </span>
             <div>
@@ -81,3 +81,4 @@ export default function SectionHowTo() {
     </div>
   );
 }
+

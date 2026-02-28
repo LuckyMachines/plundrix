@@ -56,7 +56,7 @@ export default function PlayerDossier({ gameId, address, isCurrentUser = false }
         </div>
 
         {stunned && (
-          <span className="font-mono text-[9px] text-signal-red uppercase tracking-wider">
+          <span className="font-mono text-[11px] text-signal-red uppercase tracking-wider">
             Stunned
           </span>
         )}
@@ -64,7 +64,7 @@ export default function PlayerDossier({ gameId, address, isCurrentUser = false }
 
       {/* Lock progress dots */}
       <div className="flex items-center gap-1 mb-2">
-        <span className="font-mono text-[9px] text-vault-text-dim uppercase tracking-wider mr-1.5">
+        <span className="font-mono text-[11px] text-vault-text-dim uppercase tracking-wider mr-1.5">
           Locks
         </span>
         {Array.from({ length: TOTAL_LOCKS }, (_, i) => (
@@ -79,14 +79,14 @@ export default function PlayerDossier({ gameId, address, isCurrentUser = false }
             `}
           />
         ))}
-        <span className="font-mono text-[9px] text-vault-text-dim ml-1.5">
+        <span className="font-mono text-[11px] text-vault-text-dim ml-1.5">
           {cracked}/{TOTAL_LOCKS}
         </span>
       </div>
 
       {/* Tool tray */}
       <div className="mb-2">
-        <span className="font-mono text-[9px] text-vault-text-dim uppercase tracking-wider block mb-1">
+        <span className="font-mono text-[11px] text-vault-text-dim uppercase tracking-wider block mb-1">
           Tools ({formatBigInt(tools)})
         </span>
         <ToolTray toolCount={toolCount} />
@@ -97,3 +97,4 @@ export default function PlayerDossier({ gameId, address, isCurrentUser = false }
     </div>
   );
 }
+

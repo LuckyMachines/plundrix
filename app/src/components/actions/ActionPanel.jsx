@@ -42,24 +42,24 @@ export default function ActionPanel({
           Action Console
         </h3>
         {actionSubmitted && (
-          <span className="font-mono text-[9px] text-blueprint uppercase tracking-wider border border-blueprint/30 rounded px-2 py-0.5 bg-blueprint/5">
+          <span className="font-mono text-[11px] text-blueprint uppercase tracking-wider border border-blueprint/30 rounded px-2 py-0.5 bg-blueprint/5">
             Submitted
           </span>
         )}
       </div>
 
       {!isConfigured && (
-        <p className="font-mono text-[10px] text-signal-red mb-3">{configError}</p>
+        <p className="font-mono text-xs text-signal-red mb-3">{configError}</p>
       )}
 
       {disconnected && (
-        <p className="font-mono text-[10px] text-vault-text-dim mb-3">
+        <p className="font-mono text-xs text-vault-text-dim mb-3">
           Connect your wallet to submit round actions.
         </p>
       )}
 
       {spectator && (
-        <p className="font-mono text-[10px] text-vault-text-dim mb-3">
+        <p className="font-mono text-xs text-vault-text-dim mb-3">
           You are spectating this operation. Join during OPEN state to play.
         </p>
       )}
@@ -98,3 +98,4 @@ export default function ActionPanel({
     </div>
   );
 }
+

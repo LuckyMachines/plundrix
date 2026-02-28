@@ -40,7 +40,7 @@ export default function SectionActions() {
           <div key={a.action} className={`border rounded p-3 bg-vault-dark/40 ${a.color}`}>
             <div className="flex items-baseline justify-between mb-1">
               <span className="font-display tracking-widest uppercase text-sm">{a.name}</span>
-              <span className="text-vault-text-dim text-[10px] tracking-wider">{a.label}</span>
+              <span className="text-vault-text-dim text-xs tracking-wider">{a.label}</span>
             </div>
             <p className="text-vault-text">{a.desc}</p>
           </div>
@@ -55,7 +55,7 @@ export default function SectionActions() {
       <div className="border border-vault-border rounded overflow-hidden">
         <table className="w-full text-center">
           <thead>
-            <tr className="bg-vault-dark text-vault-text-dim text-[10px] uppercase tracking-wider">
+            <tr className="bg-vault-dark text-vault-text-dim text-xs uppercase tracking-wider">
               <th className="px-3 py-2 text-left">Tools</th>
               <th className="px-3 py-2">Normal</th>
               <th className="px-3 py-2">Stunned</th>
@@ -73,10 +73,11 @@ export default function SectionActions() {
         </table>
       </div>
 
-      <p className="text-vault-text-dim text-[10px] mt-2">
+      <p className="text-vault-text-dim text-xs mt-2">
         Search success: {searchChance(false)}% normal / {searchChance(true)}% stunned.
         Sabotage always succeeds but costs your action for the round.
       </p>
     </div>
   );
 }
+
