@@ -1,7 +1,5 @@
 import { useAccount, useSwitchChain } from 'wagmi';
-import { foundry, sepolia } from 'wagmi/chains';
-
-const SUPPORTED_CHAINS = [foundry, sepolia];
+import { defaultSwitchChainId, supportedChains } from '../../config/wagmi';
 
 export default function NetworkBadge() {
   const { chain, isConnected } = useAccount();
@@ -16,7 +14,8 @@ export default function NetworkBadge() {
     );
   }
 
-  const isSupported = chain && SUPPORTED_CHAINS.some((c) => c.id === chain.id);
+  const isSupported =
+    chain && supportedChains.some((supported) => supported.id === chain.id);
 
   return (
     <div className="flex items-center gap-2">
@@ -29,7 +28,7 @@ export default function NetworkBadge() {
 
       {isSupported ? (
         <select
-          value={chain.id}
+          value={chain?.id ?? defaultSwitchChainId}
           onChange={(e) => switchChain({ chainId: Number(e.target.value) })}
           disabled={isPending}
           className="
@@ -40,15 +39,19 @@ export default function NetworkBadge() {
             disabled:opacity-40 disabled:cursor-not-allowed
           "
         >
-          {SUPPORTED_CHAINS.map((c) => (
-            <option key={c.id} value={c.id} className="bg-vault-dark text-vault-text">
-              {c.name}
+          {supportedChains.map((supported) => (
+            <option
+              key={supported.id}
+              value={supported.id}
+              className="bg-vault-dark text-vault-text"
+            >
+              {supported.name}
             </option>
           ))}
         </select>
       ) : (
         <button
-          onClick={() => switchChain({ chainId: foundry.id })}
+          onClick={() => switchChain({ chainId: defaultSwitchChainId })}
           disabled={isPending}
           className="
             border border-signal-red/50 bg-signal-red/10 rounded
@@ -58,7 +61,7 @@ export default function NetworkBadge() {
             disabled:opacity-40 disabled:cursor-not-allowed
           "
         >
-          {isPending ? 'Switching...' : 'Wrong Network'}
+          {isPending ? 'Switching...' : 'Switch Network'}
         </button>
       )}
     </div>

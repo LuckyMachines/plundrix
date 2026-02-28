@@ -234,9 +234,11 @@ VITE_RPC_URL                     # Sepolia RPC endpoint (optional, falls back to
 VITE_WALLETCONNECT_PROJECT_ID    # WalletConnect project ID (optional)
 VITE_CONTRACT_ADDRESS            # Deployed PlundrixGame contract address
 VITE_FOUNDRY_RPC_URL             # Local anvil RPC (auto-written by deploy/local play scripts)
+VITE_ENABLE_FOUNDRY              # Optional; set true to include Foundry chain outside local dev
 ```
 
 Local deploy automation writes `app/.env.local` for you.
+Leave `VITE_ENABLE_FOUNDRY` unset in hosted environments to avoid browser localhost/private-network permission prompts.
 
 ---
 
