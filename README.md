@@ -210,6 +210,23 @@ To stop background local services started by the script:
 npm run dev:local:stop
 ```
 
+## Deploy SPA on Railway
+
+Railway can deploy the React SPA as a web service from this repo.
+
+1. Create a new Railway project from the GitHub repo.
+2. In service settings set **Root Directory** to `/app` (this is a monorepo).
+3. Set build/start commands:
+   - **Build Command:** `npm run build`
+   - **Start Command:** `npm run start`
+4. Set environment variables in Railway:
+   - `VITE_CONTRACT_ADDRESS` (required, your deployed contract)
+   - `VITE_RPC_URL` (recommended for Sepolia/public read RPC)
+   - `VITE_WALLETCONNECT_PROJECT_ID` (optional)
+5. Deploy.
+
+The start command serves the built SPA from `dist/` on `0.0.0.0:$PORT` with SPA route fallback.
+
 ## Environment Variables
 
 ```
