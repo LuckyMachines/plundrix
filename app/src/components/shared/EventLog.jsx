@@ -1,17 +1,22 @@
 import { useEffect, useRef } from 'react';
 import { truncateAddress } from '../../lib/formatting';
+import { getOutcomeReasonLabel } from '../../lib/outcomes';
 
 const EVENT_COLORS = {
   GameCreated: 'text-blueprint',
   PlayerJoined: 'text-oxide-green',
   GameStarted: 'text-tungsten',
   ActionSubmitted: 'text-vault-text-dim',
+  ActionOutcome: 'text-blueprint',
   RoundResolved: 'text-blueprint',
+  RoundAutoResolved: 'text-blueprint',
   LockCracked: 'text-tungsten',
   ToolFound: 'text-oxide-green',
   PlayerSabotaged: 'text-signal-red',
   PlayerStunned: 'text-signal-red-dim',
   GameWon: 'text-tungsten-bright',
+  AutomationSettingsUpdated: 'text-blueprint',
+  RoundEntropyProvided: 'text-blueprint',
 };
 
 const EVENT_ICONS = {
@@ -19,12 +24,16 @@ const EVENT_ICONS = {
   PlayerJoined: '+',
   GameStarted: '\u25B6',
   ActionSubmitted: '\u2022',
+  ActionOutcome: '\u25CE',
   RoundResolved: '\u2500',
+  RoundAutoResolved: '\u2699',
   LockCracked: '\u2713',
   ToolFound: '\u2691',
   PlayerSabotaged: '\u2716',
   PlayerStunned: '\u26A1',
   GameWon: '\u2605',
+  AutomationSettingsUpdated: '\u2699',
+  RoundEntropyProvided: '\u2606',
 };
 
 function formatEventDescription(event) {
@@ -46,8 +55,12 @@ function formatEventDescription(event) {
       return `Operation is now active`;
     case 'ActionSubmitted':
       return `${short} committed ${actionNameById[Number(args?.action)] || 'ACTION'}`;
+    case 'ActionOutcome':
+      return `${truncateAddress(args?.player)} ${actionNameById[Number(args?.action)] || 'ACTION'} -> ${getOutcomeReasonLabel(args?.reason)}`;
     case 'RoundResolved':
       return `Round ${args?.round?.toString()} resolved`;
+    case 'RoundAutoResolved':
+      return `Round ${args?.round?.toString()} auto-resolved by ${truncateAddress(args?.resolver)}`;
     case 'LockCracked':
       return `${short} cracked lock #${args?.totalCracked?.toString()}`;
     case 'ToolFound':
@@ -58,6 +71,10 @@ function formatEventDescription(event) {
       return `${short} is stunned`;
     case 'GameWon':
       return `${truncateAddress(args?.winner)} breached the vault!`;
+    case 'AutomationSettingsUpdated':
+      return `Automation ${args?.autoResolveEnabled ? 'enabled' : 'disabled'} / delay ${args?.autoResolveDelay?.toString?.()}s`;
+    case 'RoundEntropyProvided':
+      return `Round ${args?.round?.toString()} entropy provided by ${truncateAddress(args?.provider)}`;
     default:
       return name;
   }

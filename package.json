@@ -4,10 +4,11 @@
   "description": "On-chain multiplayer heist game — crack the vault before your rivals.",
   "scripts": {
     "build": "forge build",
-    "anvil": "anvil --port 18645",
+    "anvil": "powershell -ExecutionPolicy Bypass -File scripts/run-anvil.ps1",
     "deploy:local": "node scripts/deploy-local.mjs",
     "dev:local:start": "powershell -ExecutionPolicy Bypass -File scripts/start-local-dev.ps1",
     "dev:local:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-local-dev.ps1",
+    "play:local": "npm run dev:local:start",
     "sync:abi": "node scripts/sync-abi.mjs",
     "test:sol": "forge test",
     "test:js": "vitest run test/plundrix.test.js",

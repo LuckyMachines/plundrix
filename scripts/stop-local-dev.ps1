@@ -2,7 +2,6 @@ $ErrorActionPreference = 'Stop'
 
 $root = Split-Path -Parent $PSScriptRoot
 $pidFile = Join-Path $root '.local-dev-pids.json'
-$knownPorts = @(18645, 18646)
 
 function Stop-IfRunning {
   param([int]$PidValue)
@@ -16,24 +15,23 @@ function Stop-IfRunning {
 
 function Stop-ByPort {
   param([int]$Port)
+  if (-not $Port) { return }
   $conns = Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue
   foreach ($conn in $conns) {
     Stop-IfRunning -PidValue $conn.OwningProcess
   }
 }
 
-if (Test-Path $pidFile) {
-  $json = Get-Content $pidFile -Raw | ConvertFrom-Json
-  Stop-IfRunning -PidValue $json.vite_pid
-  Stop-IfRunning -PidValue $json.anvil_pid
-  Remove-Item -Force $pidFile
-  Write-Output 'Stopped local dev services from pid file.'
-}
-
-foreach ($port in $knownPorts) {
-  Stop-ByPort -Port $port
-}
-
 if (-not (Test-Path $pidFile)) {
-  Write-Output 'Local dev cleanup complete.'
+  Write-Output 'No local dev pid file found for this project.'
+  return
 }
+
+$json = Get-Content $pidFile -Raw | ConvertFrom-Json
+Stop-IfRunning -PidValue $json.vite_pid
+Stop-IfRunning -PidValue $json.anvil_pid
+Stop-ByPort -Port $json.vite_port
+Stop-ByPort -Port $json.anvil_port
+
+Remove-Item -Force $pidFile
+Write-Output 'Stopped local dev services from pid file.'

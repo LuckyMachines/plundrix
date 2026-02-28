@@ -63,3 +63,37 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+html.readable-ui {
+  font-size: 20px;
+}
+
+@media (min-width: 1280px) {
+  html.readable-ui {
+    font-size: 21px;
+  }
+}
+
+@media (min-resolution: 2dppx) {
+  html.readable-ui {
+    font-size: 22px;
+  }
+}
+
+html.readable-ui body {
+  line-height: 1.6;
+  color: #e6e6ef;
+}
+
+html.readable-ui .font-mono {
+  font-weight: 500;
+}
+
+html.reduced-motion-ui *,
+html.reduced-motion-ui *::before,
+html.reduced-motion-ui *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

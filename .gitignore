@@ -10,3 +10,4 @@ anvil.err.log
 app/.env.local
 app/vite.log
 app/vite.err.log
+app/dist/

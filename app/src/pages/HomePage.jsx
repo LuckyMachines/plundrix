@@ -1,5 +1,6 @@
 import GameBrowser from '../components/game/GameBrowser';
 import ContractConfigNotice from '../components/shared/ContractConfigNotice';
+import QuickStartPanel from '../components/game/QuickStartPanel';
 
 export default function HomePage() {
   return (
@@ -11,6 +12,7 @@ export default function HomePage() {
         Select a game or create a new session
       </p>
       <ContractConfigNotice />
+      <QuickStartPanel />
       <GameBrowser />
     </div>
   );

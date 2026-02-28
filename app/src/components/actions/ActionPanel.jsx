@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Action } from '../../lib/constants';
 import { useGameActions } from '../../hooks/useGameActions';
 import TxStatus from '../shared/TxStatus';
@@ -21,6 +22,9 @@ export default function ActionPanel({
   const spectator = !!currentAddress && !registered;
   const disconnected = !currentAddress;
   const disabled = !isConfigured || disconnected || spectator || actionSubmitted || isPending || isConfirming;
+  const sabotageTargets = players.filter(
+    (addr) => addr?.toLowerCase() !== currentAddress?.toLowerCase()
+  );
 
   const handlePick = () => {
     submitAction(gameId, Action.PICK);
@@ -33,6 +37,42 @@ export default function ActionPanel({
   const handleSabotage = (targetAddress) => {
     submitAction(gameId, Action.SABOTAGE, targetAddress);
   };
+
+  useEffect(() => {
+    if (disabled) return;
+
+    const onKeyDown = (e) => {
+      const tag = e.target?.tagName?.toLowerCase();
+      const isTypingContext =
+        tag === 'input' || tag === 'textarea' || tag === 'select' || e.target?.isContentEditable;
+      if (isTypingContext) return;
+
+      if (e.key === '1') {
+        e.preventDefault();
+        handlePick();
+        return;
+      }
+
+      if (e.key === '2') {
+        e.preventDefault();
+        handleSearch();
+        return;
+      }
+
+      if (e.key === '3') {
+        e.preventDefault();
+        if (sabotageTargets.length === 1) {
+          handleSabotage(sabotageTargets[0]);
+          return;
+        }
+        const targetSelect = document.getElementById('sabotage-target-select');
+        targetSelect?.focus();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [disabled, sabotageTargets, handlePick, handleSearch, handleSabotage]);
 
   return (
     <div>
@@ -47,6 +87,12 @@ export default function ActionPanel({
           </span>
         )}
       </div>
+
+      <p className="font-mono text-xs text-vault-text-dim mb-3">
+        Hotkeys: <span className="text-vault-text">1</span> pick,{' '}
+        <span className="text-vault-text">2</span> search,{' '}
+        <span className="text-vault-text">3</span> sabotage target.
+      </p>
 
       {!isConfigured && (
         <p className="font-mono text-xs text-signal-red mb-3">{configError}</p>
@@ -84,6 +130,7 @@ export default function ActionPanel({
           stunned={stunned}
           players={players}
           currentAddress={currentAddress}
+          selectId="sabotage-target-select"
         />
       </div>
 

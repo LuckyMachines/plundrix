@@ -1,6 +1,6 @@
 import { truncateAddress } from '../../lib/formatting';
 
-export default function SabotageResult({ attacker, victim }) {
+export default function SabotageResult({ attacker, victim, detail }) {
   return (
     <div className="bg-vault-dark border border-signal-red/20 rounded px-4 py-3 animate-sabotage-shake">
       <div className="flex items-center justify-between">
@@ -37,6 +37,7 @@ export default function SabotageResult({ attacker, victim }) {
           </span>
         </div>
       </div>
+      {detail && <p className="font-mono text-xs text-vault-text-dim mt-2">{detail}</p>}
 
       {/* CSS animation keyframes injected via style tag */}
       <style>{`

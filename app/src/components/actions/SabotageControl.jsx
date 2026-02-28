@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { truncateAddress } from '../../lib/formatting';
 
-export default function SabotageControl({ onSubmit, disabled, stunned, players = [], currentAddress }) {
+export default function SabotageControl({
+  onSubmit,
+  disabled,
+  stunned,
+  players = [],
+  currentAddress,
+  selectId = 'sabotage-target-select',
+}) {
   const [target, setTarget] = useState('');
 
   const targets = players.filter(
@@ -40,6 +47,7 @@ export default function SabotageControl({ onSubmit, disabled, stunned, players =
           Target
         </label>
         <select
+          id={selectId}
           value={target}
           onChange={(e) => setTarget(e.target.value)}
           disabled={disabled}

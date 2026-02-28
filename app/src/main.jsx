@@ -5,6 +5,7 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { config } from './config/wagmi';
 import App from './App';
+import { AccessibilityProvider } from './context/AccessibilityContext';
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -13,9 +14,11 @@ createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <AccessibilityProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AccessibilityProvider>
       </QueryClientProvider>
     </WagmiProvider>
   </React.StrictMode>,

@@ -2,8 +2,6 @@ $ErrorActionPreference = 'Stop'
 
 $root = Split-Path -Parent $PSScriptRoot
 $app = Join-Path $root 'app'
-$anvilPort = 18645
-$vitePort = 18646
 $pidFile = Join-Path $root '.local-dev-pids.json'
 $anvilLog = Join-Path $root 'anvil.log'
 $anvilErr = Join-Path $root 'anvil.err.log'
@@ -13,6 +11,21 @@ $viteErr = Join-Path $app 'vite.err.log'
 function Test-PortListening {
   param([int]$Port)
   return [bool](Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue)
+}
+
+function Get-FreePort {
+  param(
+    [int]$StartPort,
+    [int]$EndPort = 65535
+  )
+
+  for ($port = $StartPort; $port -le $EndPort; $port++) {
+    if (-not (Test-PortListening -Port $port)) {
+      return $port
+    }
+  }
+
+  throw "No free port found in range $StartPort-$EndPort."
 }
 
 function Wait-ForAnvil {
@@ -31,20 +44,48 @@ function Wait-ForAnvil {
 
 function Wait-ForHttp {
   param([int]$Port)
-  $url = "http://127.0.0.1:$Port"
+  $urls = @("http://localhost:$Port", "http://127.0.0.1:$Port")
   for ($i = 0; $i -lt 40; $i++) {
-    try {
-      $resp = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
-      if ($resp.StatusCode -ge 200 -and $resp.StatusCode -lt 500) { return $true }
-    } catch {}
+    foreach ($url in $urls) {
+      try {
+        $resp = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
+        if ($resp.StatusCode -ge 200 -and $resp.StatusCode -lt 500) { return $true }
+      } catch {}
+    }
     Start-Sleep -Milliseconds 500
   }
   return $false
 }
 
+function Resolve-Port {
+  param(
+    [string]$EnvVar,
+    [int]$DefaultStart,
+    [int]$AvoidPort = 0
+  )
+
+  $requested = [Environment]::GetEnvironmentVariable($EnvVar)
+  if ($requested) {
+    $parsed = [int]$requested
+    if ($parsed -eq $AvoidPort) {
+      throw "$EnvVar cannot match reserved port $AvoidPort."
+    }
+    return $parsed
+  }
+
+  $candidate = Get-FreePort -StartPort $DefaultStart
+  if ($candidate -eq $AvoidPort) {
+    return Get-FreePort -StartPort ($candidate + 1)
+  }
+  return $candidate
+}
+
 if (Test-Path $pidFile) {
   Remove-Item -Force $pidFile
 }
+
+$anvilPort = Resolve-Port -EnvVar 'ANVIL_PORT' -DefaultStart 18645
+$vitePort = Resolve-Port -EnvVar 'VITE_PORT' -DefaultStart 18646 -AvoidPort $anvilPort
 
 $anvilPid = $null
 $vitePid = $null
@@ -66,8 +107,11 @@ if (-not (Wait-ForAnvil -Port $anvilPort)) {
   throw "Anvil failed to start on $anvilPort."
 }
 
+$anvilRpcUrl = "http://127.0.0.1:$anvilPort"
+
 Push-Location $root
 try {
+  $env:ANVIL_RPC_URL = $anvilRpcUrl
   node scripts/deploy-local.mjs | Out-Host
 } finally {
   Pop-Location
@@ -102,14 +146,16 @@ $pidPayload = @{
   vite_pid = $vitePid
   anvil_port = $anvilPort
   vite_port = $vitePort
+  anvil_rpc_url = $anvilRpcUrl
 } | ConvertTo-Json
 $pidPayload | Set-Content $pidFile
 
-Write-Output "ANVIL_PORT=$anvilPort"
-Write-Output "VITE_PORT=$vitePort"
-Write-Output "APP_URL=http://127.0.0.1:$vitePort"
-if ($contractAddress) { Write-Output "CONTRACT_ADDRESS=$contractAddress" }
-if ($anvilPid) { Write-Output "ANVIL_PID=$anvilPid" }
-if ($vitePid) { Write-Output "VITE_PID=$vitePid" }
-Write-Output "ANVIL_LOG=$anvilLog"
-Write-Output "VITE_LOG=$viteLog"
+Write-Host "ANVIL_PORT=$anvilPort"
+Write-Host "ANVIL_RPC_URL=$anvilRpcUrl"
+Write-Host "VITE_PORT=$vitePort"
+Write-Host "APP_URL=http://localhost:$vitePort"
+if ($contractAddress) { Write-Host "CONTRACT_ADDRESS=$contractAddress" }
+if ($anvilPid) { Write-Host "ANVIL_PID=$anvilPid" }
+if ($vitePid) { Write-Host "VITE_PID=$vitePid" }
+Write-Host "ANVIL_LOG=$anvilLog"
+Write-Host "VITE_LOG=$viteLog"

@@ -42,6 +42,8 @@ const keys = [
 const PICK = 1;
 const SEARCH = 2;
 const SABOTAGE = 3;
+const ACTION_NONE = 0;
+const OUTCOME_NO_SUBMISSION = 11;
 
 let anvilProcess;
 let publicClient;
@@ -175,10 +177,29 @@ describe('PlundrixGame', () => {
       expect(has).toBe(true);
     });
 
+    it('deployer has AUTO_RESOLVER_ROLE', async () => {
+      const role = await read('AUTO_RESOLVER_ROLE');
+      const has = await read('hasRole', [role, addr(0)]);
+      expect(has).toBe(true);
+    });
+
+    it('deployer has RANDOMIZER_ROLE', async () => {
+      const role = await read('RANDOMIZER_ROLE');
+      const has = await read('hasRole', [role, addr(0)]);
+      expect(has).toBe(true);
+    });
+
     it('non-admin does not have GAME_MASTER_ROLE', async () => {
       const role = await read('GAME_MASTER_ROLE');
       const has = await read('hasRole', [role, addr(1)]);
       expect(has).toBe(false);
+    });
+
+    it('automation settings default to disabled', async () => {
+      const settings = await read('getAutomationSettings');
+      expect(settings[0]).toBe(false);
+      expect(settings[1]).toBe(300n);
+      expect(settings[2]).toBe(false);
     });
   });
 
@@ -578,6 +599,13 @@ describe('PlundrixGame', () => {
       const events = getEvents(receipt, 'RoundResolved');
       expect(events.length).toBe(1);
       expect(events[0].args.round).toBe(1n);
+
+      const outcomes = getEvents(receipt, 'ActionOutcome');
+      expect(outcomes.length).toBe(2);
+      const missingPlayer = outcomes.find((e) => e.args.player === addr(2));
+      expect(missingPlayer).toBeDefined();
+      expect(Number(missingPlayer.args.action)).toBe(ACTION_NONE);
+      expect(Number(missingPlayer.args.reason)).toBe(OUTCOME_NO_SUBMISSION);
     });
 
     it('non-submitting player is unaffected (no crash)', async () => {
@@ -585,6 +613,60 @@ describe('PlundrixGame', () => {
       const info = await read('getGameInfo', [gameId]);
       expect(Number(info[0])).toBe(1); // still ACTIVE
       expect(info[1]).toBe(2n); // round 2
+    });
+  });
+
+  // --- Optional Automation / Entropy ---
+
+  describe('automation and entropy modes', () => {
+    let gameId;
+
+    beforeAll(async () => {
+      gameId = await setupGame([1, 2]);
+    });
+
+    afterAll(async () => {
+      await exec(0, 'configureAutomation', [false, 300n, false]);
+    });
+
+    it('updates automation settings', async () => {
+      await exec(0, 'configureAutomation', [true, 300n, false]);
+      const settings = await read('getAutomationSettings');
+      expect(settings[0]).toBe(true);
+      expect(settings[1]).toBe(300n);
+      expect(settings[2]).toBe(false);
+    });
+
+    it('can batch auto-resolve timed out games', async () => {
+      await exec(1, 'submitAction', [gameId, PICK, zeroAddress]);
+
+      await testClient.increaseTime({ seconds: 301 });
+      await testClient.mine({ blocks: 1 });
+
+      expect(await read('canAutoResolve', [gameId])).toBe(true);
+
+      const receipt = await exec(0, 'resolveTimedOutGames', [[gameId]]);
+      const autoEvents = getEvents(receipt, 'RoundAutoResolved');
+      expect(autoEvents.length).toBe(1);
+      expect(autoEvents[0].args.gameID).toBe(gameId);
+      expect(autoEvents[0].args.resolver).toBe(addr(0));
+    });
+
+    it('requires entropy when external entropy mode is enabled', async () => {
+      const entropyGameId = await setupGame([1, 2]);
+
+      await exec(0, 'configureAutomation', [false, 300n, true]);
+      await exec(1, 'submitAction', [entropyGameId, PICK, zeroAddress]);
+      await exec(2, 'submitAction', [entropyGameId, SEARCH, zeroAddress]);
+
+      await expect(exec(0, 'resolveRound', [entropyGameId])).rejects.toThrow(
+        /Entropy not ready/
+      );
+
+      await exec(0, 'provideRoundEntropy', [entropyGameId, 1n, 9999n]);
+      const receipt = await exec(0, 'resolveRound', [entropyGameId]);
+      const resolved = getEvents(receipt, 'RoundResolved');
+      expect(resolved.length).toBe(1);
     });
   });
 

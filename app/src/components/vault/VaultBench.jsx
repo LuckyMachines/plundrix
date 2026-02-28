@@ -12,9 +12,11 @@ import RoundConsole from './RoundConsole';
 import PlayerDossier from '../../components/player/PlayerDossier';
 import ActionPanel from '../../components/actions/ActionPanel';
 import ResolveSequence from '../../components/resolution/ResolveSequence';
+import ReplayTimeline from '../../components/resolution/ReplayTimeline';
 import EventLog from '../shared/EventLog';
 import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
+import MissionCoach from './MissionCoach';
 
 export default function VaultBench({ gameId }) {
   const { address } = useAccount();
@@ -32,7 +34,7 @@ export default function VaultBench({ gameId }) {
     isConfigured,
     configError,
   } = useGameActions();
-  const { events, latestRoundEvents } = useGameEvents(gameId);
+  const { events, latestRoundEvents, roundHistory } = useGameEvents(gameId);
 
   // Resolution sequence visibility
   const [showResolve, setShowResolve] = useState(false);
@@ -58,6 +60,24 @@ export default function VaultBench({ gameId }) {
 
   const canResolve = allSubmitted || timedOut;
   const isLoading = gameLoading || playersLoading;
+
+  useEffect(() => {
+    if (!canResolve) return;
+
+    const onKeyDown = (e) => {
+      if (e.key.toLowerCase() !== 'r') return;
+      if (resolvePending || resolveConfirming || !isConfigured) return;
+      const tag = e.target?.tagName?.toLowerCase();
+      const isTypingContext =
+        tag === 'input' || tag === 'textarea' || tag === 'select' || e.target?.isContentEditable;
+      if (isTypingContext) return;
+      e.preventDefault();
+      resolveRound(gameId);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [canResolve, resolvePending, resolveConfirming, isConfigured, resolveRound, gameId]);
 
   if (isLoading) {
     return (
@@ -109,6 +129,16 @@ export default function VaultBench({ gameId }) {
       </div>
 
       {/* ---- Action Panel ---- */}
+      <MissionCoach
+        connected={!!address}
+        registered={registered}
+        actionSubmitted={actionSubmitted}
+        stunned={stunned}
+        tools={tools}
+        canResolve={canResolve}
+        allSubmitted={allSubmitted}
+      />
+
       <div className="border border-vault-border rounded bg-vault-panel p-4">
         <ActionPanel
           gameId={gameId}
@@ -173,6 +203,8 @@ export default function VaultBench({ gameId }) {
           onComplete={() => setShowResolve(false)}
         />
       )}
+
+      <ReplayTimeline roundHistory={roundHistory} currentAddress={address} />
 
       {/* ---- Event Log ---- */}
       <EventLog events={events} />

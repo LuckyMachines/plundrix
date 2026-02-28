@@ -18,6 +18,12 @@ export default function GameLobby({ gameId }) {
   const { registered: isRegistered, isLoading: loadingPlayer } = usePlayerState(gameId, address);
   const { hasRole: isGameMaster } = useHasRole(address);
   const canStart = !!address && (isGameMaster || isRegistered);
+  const steps = [
+    { label: 'Connect wallet', done: !!address },
+    { label: 'Join operation', done: !!isRegistered },
+    { label: 'Minimum 2 crew', done: count >= 2 },
+    { label: 'Start operation', done: count >= 2 && canStart },
+  ];
 
   // --- write actions ---
   const {
@@ -59,6 +65,26 @@ export default function GameLobby({ gameId }) {
 
       {/* Body */}
       <div className="px-6 py-5 space-y-5">
+        <div className="border border-vault-border/70 bg-vault-dark/40 rounded p-3">
+          <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-vault-text-dim mb-2">
+            Launch Checklist
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {steps.map((step) => (
+              <div
+                key={step.label}
+                className={`font-mono text-xs px-2 py-1 rounded border ${
+                  step.done
+                    ? 'text-oxide-green border-oxide-green/30 bg-oxide-green/10'
+                    : 'text-vault-text-dim border-vault-border bg-vault-panel'
+                }`}
+              >
+                {step.done ? 'DONE' : 'PENDING'} // {step.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Crew manifest */}
         <div>
           <h3 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-3">

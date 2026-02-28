@@ -3,6 +3,9 @@ import PickResult from './PickResult';
 import SearchResult from './SearchResult';
 import SabotageResult from './SabotageResult';
 import WinnerReveal from './WinnerReveal';
+import { Action } from '../../lib/constants';
+import { getOutcomeReasonLabel } from '../../lib/outcomes';
+import { truncateAddress } from '../../lib/formatting';
 
 const PHASE_LABELS = [
   'PHASE 1: PICK & SEARCH',
@@ -21,7 +24,12 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
     if (!roundEvents || roundEvents.length === 0) return;
 
     // Determine which phases are needed
-    const hasSabotage = roundEvents.some((e) => e.name === 'PlayerSabotaged');
+    const hasSabotage =
+      roundEvents.some((e) => e.name === 'PlayerSabotaged') ||
+      roundEvents.some(
+        (e) =>
+          e.name === 'ActionOutcome' && Number(e.args?.action) === Action.SABOTAGE
+      );
     const hasWinner = roundEvents.some((e) => e.name === 'GameWon');
     const maxPhase = hasWinner ? 3 : hasSabotage ? 2 : 1;
 
@@ -53,6 +61,21 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
   const sabotageEvents = roundEvents.filter((e) => e.name === 'PlayerSabotaged');
   const gameWonEvent = roundEvents.find((e) => e.name === 'GameWon');
   const roundResolvedEvent = roundEvents.find((e) => e.name === 'RoundResolved');
+  const outcomeEvents = roundEvents.filter((e) => e.name === 'ActionOutcome');
+  const hasOutcomeEvents = outcomeEvents.length > 0;
+
+  const pickOutcomes = outcomeEvents.filter(
+    (e) => Number(e.args?.action) === Action.PICK
+  );
+  const searchOutcomes = outcomeEvents.filter(
+    (e) => Number(e.args?.action) === Action.SEARCH
+  );
+  const sabotageOutcomes = outcomeEvents.filter(
+    (e) => Number(e.args?.action) === Action.SABOTAGE
+  );
+  const noSubmissionOutcomes = outcomeEvents.filter(
+    (e) => Number(e.args?.action) === Action.NONE
+  );
 
   // Build pick/search results from ActionSubmitted events
   const actionEvents = roundEvents.filter((e) => e.name === 'ActionSubmitted');
@@ -78,34 +101,63 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
       {phase >= 0 && (
         <div className={`space-y-2 transition-opacity duration-300 ${phase === 0 ? 'opacity-100' : 'opacity-60'}`}>
           {/* Pick results */}
-          {pickPlayers.map((player) => {
-            const cracked = lockCrackedEvents.find(
-              (e) => e.args?.player?.toLowerCase() === player?.toLowerCase()
-            );
-            return (
-              <PickResult
-                key={`pick-${player}`}
-                player={player}
-                totalCracked={cracked?.args?.totalCracked}
-                success={!!cracked}
-              />
-            );
-          })}
+          {hasOutcomeEvents
+            ? pickOutcomes.map((outcome, i) => (
+                <PickResult
+                  key={`pick-outcome-${i}`}
+                  player={outcome.args?.player}
+                  totalCracked={outcome.args?.locksCracked}
+                  success={!!outcome.args?.success}
+                  detail={getOutcomeReasonLabel(outcome.args?.reason)}
+                />
+              ))
+            : pickPlayers.map((player) => {
+                const cracked = lockCrackedEvents.find(
+                  (e) => e.args?.player?.toLowerCase() === player?.toLowerCase()
+                );
+                return (
+                  <PickResult
+                    key={`pick-${player}`}
+                    player={player}
+                    totalCracked={cracked?.args?.totalCracked}
+                    success={!!cracked}
+                  />
+                );
+              })}
 
           {/* Search results */}
-          {searchPlayers.map((player) => {
-            const found = toolFoundEvents.find(
-              (e) => e.args?.player?.toLowerCase() === player?.toLowerCase()
-            );
-            return (
-              <SearchResult
-                key={`search-${player}`}
-                player={player}
-                totalTools={found?.args?.totalTools}
-                success={!!found}
-              />
-            );
-          })}
+          {hasOutcomeEvents
+            ? searchOutcomes.map((outcome, i) => (
+                <SearchResult
+                  key={`search-outcome-${i}`}
+                  player={outcome.args?.player}
+                  totalTools={outcome.args?.tools}
+                  success={!!outcome.args?.success}
+                  detail={getOutcomeReasonLabel(outcome.args?.reason)}
+                />
+              ))
+            : searchPlayers.map((player) => {
+                const found = toolFoundEvents.find(
+                  (e) => e.args?.player?.toLowerCase() === player?.toLowerCase()
+                );
+                return (
+                  <SearchResult
+                    key={`search-${player}`}
+                    player={player}
+                    totalTools={found?.args?.totalTools}
+                    success={!!found}
+                  />
+                );
+              })}
+
+          {noSubmissionOutcomes.map((outcome, i) => (
+            <div
+              key={`no-submit-${i}`}
+              className="border border-vault-border rounded bg-vault-dark px-4 py-2 font-mono text-xs text-vault-text-dim"
+            >
+              {truncateAddress(outcome.args?.player)} had no committed action this round.
+            </div>
+          ))}
         </div>
       )}
 
@@ -123,15 +175,24 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
       )}
 
       {/* Phase 3: Sabotage */}
-      {phase >= 2 && sabotageEvents.length > 0 && (
+      {phase >= 2 && (sabotageEvents.length > 0 || sabotageOutcomes.length > 0) && (
         <div className={`space-y-2 transition-opacity duration-300 ${phase === 2 ? 'opacity-100' : 'opacity-60'}`}>
-          {sabotageEvents.map((event, i) => (
-            <SabotageResult
-              key={`sab-${i}`}
-              attacker={event.args?.attacker}
-              victim={event.args?.victim}
-            />
-          ))}
+          {sabotageOutcomes.length > 0
+            ? sabotageOutcomes.map((outcome, i) => (
+                <SabotageResult
+                  key={`sab-outcome-${i}`}
+                  attacker={outcome.args?.player}
+                  victim={outcome.args?.sabotageTarget}
+                  detail={getOutcomeReasonLabel(outcome.args?.reason)}
+                />
+              ))
+            : sabotageEvents.map((event, i) => (
+                <SabotageResult
+                  key={`sab-${i}`}
+                  attacker={event.args?.attacker}
+                  victim={event.args?.victim}
+                />
+              ))}
         </div>
       )}
 

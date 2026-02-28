@@ -2,7 +2,7 @@
 
 A fully on-chain competitive heist game. You and up to 3 rival operatives are locked in a vault room. Five locks stand between you and the score. Pick locks, scrounge for tools, or sabotage your rivals -- first to crack all 5 locks wins. Every round resolves on-chain with no hidden state.
 
-Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) patterns. Single self-contained contract -- deploy once and play.
+Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) patterns. Single contract deploy, with optional autoloop and external entropy integrations when you need stronger liveness guarantees.
 
 ## Why Play
 
@@ -49,14 +49,17 @@ Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) 
 # Build contracts
 forge build
 
-# Run local anvil on a project-specific port
+# Run local anvil (auto-selects a free port, or set ANVIL_PORT)
 npm run anvil
 
-# In another shell, deploy locally (auto-writes app/.env.local + syncs ABI)
+# In another shell, deploy locally (uses ANVIL_RPC_URL if provided)
 npm run deploy:local
 
-# Optional: one command to start local anvil + deploy + Vite
-npm run dev:local:start
+# One command local play (auto picks free anvil/vite ports, deploys, starts SPA)
+npm run play:local
+
+# Stop local play services started by the script
+npm run dev:local:stop
 
 # Deploy to Sepolia
 forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
@@ -108,11 +111,10 @@ import PlundrixABI from "./abi/PlundrixGame.json";
 Plundrix currently ships in a minimal single-contract mode:
 
 - **Single contract** -- self-contained game lifecycle and state
-- **On-chain pseudo-randomness** -- uses `keccak256(blockhash, gameID, round, timestamp, seed)`
-- **No required keeper loop** -- rounds resolve when players submit or timeout conditions are met
+- **On-chain pseudo-randomness** -- uses `keccak256(blockhash, gameID, round, timestamp, optionalEntropy, seed)`
+- **Optional autoloop mode** -- `AUTO_RESOLVER_ROLE` can batch resolve timed-out rounds via `resolveTimedOutGames`
+- **Optional external entropy mode** -- `RANDOMIZER_ROLE` can provide round entropy via `provideRoundEntropy`
 - **No external dependencies** beyond OpenZeppelin
-
-If you want guaranteed liveness/completion guarantees, you can add an autoloop worker plus VRF integration to advance stalled games after a configured time window.
 
 ---
 
@@ -122,9 +124,10 @@ If you want guaranteed liveness/completion guarantees, you can add an autoloop w
 # 1. Create .env at repo root
 # PRIVATE_KEY=0x...
 # SEPOLIA_RPC_URL=https://...
-# ANVIL_RPC_URL=http://127.0.0.1:18645
+# ANVIL_RPC_URL=http://127.0.0.1:<anvil-port>   # optional override
 
 # 2a. Deploy to local anvil (default fallback key works out of the box)
+# If your anvil is on a non-default port, export ANVIL_RPC_URL first.
 npm run deploy:local
 # Writes:
 # - app/.env.local (VITE_CONTRACT_ADDRESS + VITE_FOUNDRY_RPC_URL)
@@ -157,16 +160,25 @@ The main gameplay screen:
 - **Lock Rack** -- Visual vault face showing 5 lock states (cracked vs locked) with a progress bar
 - **Round Console** -- Current round number, phase indicator, 5-minute timeout dial, and "All Actions In" badge
 - **Player Dossiers** -- Compact cards for each operative showing locks cracked (dot indicators), tool count, stun status, and action submission seal
+- **Mission Coach** -- Round-aware recommendations and keyboard shortcut hints
 - **Action Panel** -- Three-column layout:
   - **Pick** (Set Tension) -- Arc dial showing success chance (40% base + 15% per tool, max 95%, 0% if stunned)
   - **Search** (Sweep Compartment) -- Signal meter showing chance (60% normal, 30% stunned)
   - **Sabotage** (Cut Line) -- Target selector dropdown, always 100% success
-- **Resolve Sequence** -- Phased animation after round resolution: Pick/Search results, stun clears, sabotage events, winner reveal
+- **Resolve Sequence** -- Phased animation after round resolution with truthful `ActionOutcome` reasons (including failed and no-submission outcomes)
+- **Replay Timeline** -- Inspect prior resolved rounds and per-player outcome summaries
 - **Event Log** -- Real-time feed of on-chain game events
 
 ## Contract Integration
 
-The SPA interacts with a single PlundrixGame contract via custom Wagmi hooks. Reads poll at 3-5s intervals (game state, player state, all-actions-submitted checks). Writes handle game creation, registration, action submission, and round resolution. All 10 contract events are watched in real-time.
+The SPA interacts with a single PlundrixGame contract via custom Wagmi hooks. Reads poll at 3-5s intervals (game state, player state, all-actions-submitted checks). Writes handle game creation, registration, action submission, and round resolution, with optional automation/entropy settings support. Gameplay UI now consumes explicit `ActionOutcome` events for accurate round reporting.
+
+## Accessibility and Performance
+
+- **Readable mode toggle** -- larger typography and higher-contrast text for dense HUD readability
+- **Low-motion toggle** -- suppresses non-essential animations/transitions
+- **Keyboard shortcuts** -- `1` pick, `2` search, `3` sabotage target focus/quick-submit, `R` resolve
+- **Code splitting** -- lazy-loaded routes/manual + vendor chunking for faster first paint
 
 ## Help System
 
@@ -184,11 +196,13 @@ For local play, start anvil first:
 npm run anvil
 ```
 
-Or use the all-in-one starter:
+Or use the all-in-one local play starter:
 
 ```bash
-npm run dev:local:start
+npm run play:local
 ```
+
+`play:local` automatically selects free ports for Anvil and Vite, deploys the contract, writes `app/.env.local`, and prints the app URL.
 
 To stop background local services started by the script:
 
@@ -202,7 +216,7 @@ npm run dev:local:stop
 VITE_RPC_URL                     # Sepolia RPC endpoint (optional, falls back to public)
 VITE_WALLETCONNECT_PROJECT_ID    # WalletConnect project ID (optional)
 VITE_CONTRACT_ADDRESS            # Deployed PlundrixGame contract address
-VITE_FOUNDRY_RPC_URL             # Local anvil RPC (default: http://127.0.0.1:18645)
+VITE_FOUNDRY_RPC_URL             # Local anvil RPC (auto-written by deploy/local play scripts)
 ```
 
 Local deploy automation writes `app/.env.local` for you.
@@ -305,6 +319,22 @@ Submit an action for the current round. Must be a registered player. Each player
 
 Resolve the current round. Can be called by anyone. Requires either all actions submitted or round timeout reached.
 
+### `configureAutomation(bool autoResolveEnabled, uint256 autoResolveDelay, bool requireExternalEntropy)`
+
+Configure optional autoloop + entropy mode. Callable by `GAME_MASTER_ROLE`.
+
+- `autoResolveEnabled`: enables batch timed-out round resolution flow
+- `autoResolveDelay`: minimum seconds from round start before autoloop can resolve (must be `>= ROUND_TIMEOUT`)
+- `requireExternalEntropy`: forces `provideRoundEntropy` before round resolution
+
+### `provideRoundEntropy(uint256 gameID, uint256 round, uint256 entropy)`
+
+Inject optional round entropy (for VRF-worker style integrations). Callable by `RANDOMIZER_ROLE`.
+
+### `resolveTimedOutGames(uint256[] gameIDs) -> uint256 resolvedCount`
+
+Batch resolves timed-out games when autoloop is enabled. Callable by `AUTO_RESOLVER_ROLE`.
+
 ## View Functions
 
 ### `getPlayerState(uint256 gameID, address playerAddr) → (uint256 locksCracked, uint256 tools, bool stunned, bool registered, bool actionSubmitted)`
@@ -323,6 +353,18 @@ Get a player's address by 1-based index.
 
 Check if all players have submitted actions for the current round.
 
+### `canAutoResolve(uint256 gameID) -> bool`
+
+Returns whether the given game currently satisfies autoloop resolution conditions.
+
+### `getAutomationSettings() -> (bool autoResolveEnabled, uint256 autoResolveDelay, bool requireExternalEntropy)`
+
+Returns current automation + entropy mode settings.
+
+### `getRoundEntropy(uint256 gameID, uint256 round) -> uint256`
+
+Returns stored external entropy for a game round (0 means none provided).
+
 ### `totalGames() → uint256`
 
 Total number of games created.
@@ -337,14 +379,18 @@ Total number of games created.
 | `PlayerJoined` | `gameID`, `player`, `playerIndex`, `timeStamp` | Player registered |
 | `GameStarted` | `gameID`, `timeStamp` | Game transitioned to ACTIVE |
 | `ActionSubmitted` | `gameID`, `player`, `action`, `sabotageTarget`, `round`, `timeStamp` | Player submitted an action |
+| `ActionOutcome` | `gameID`, `round`, `player`, `action`, `success`, `reason`, `locksCracked`, `tools`, `stunned`, `sabotageTarget`, `timeStamp` | Per-player truthful round outcome |
 | `RoundResolved` | `gameID`, `round`, `timeStamp` | Round finished resolving |
+| `RoundAutoResolved` | `gameID`, `round`, `resolver`, `timeStamp` | Round resolved by autoloop worker |
 | `LockCracked` | `gameID`, `player`, `totalCracked`, `timeStamp` | Player cracked a lock |
 | `ToolFound` | `gameID`, `player`, `totalTools`, `timeStamp` | Player found a tool |
 | `PlayerSabotaged` | `gameID`, `attacker`, `victim`, `timeStamp` | Player sabotaged another |
 | `PlayerStunned` | `gameID`, `player`, `timeStamp` | Player was stunned |
 | `GameWon` | `gameID`, `winner`, `rounds`, `timeStamp` | Player won the game |
+| `AutomationSettingsUpdated` | `autoResolveEnabled`, `autoResolveDelay`, `requireExternalEntropy`, `updatedBy`, `timeStamp` | Optional automation settings changed |
+| `RoundEntropyProvided` | `gameID`, `round`, `entropy`, `provider`, `timeStamp` | External entropy supplied for a round |
 
-All events have `gameID` as an `indexed` parameter for efficient filtering.
+Gameplay events include `gameID` as an indexed parameter for efficient per-game filtering.
 
 ---
 

@@ -12,6 +12,19 @@
   },
   {
     "type": "function",
+    "name": "AUTO_RESOLVER_ROLE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "DEFAULT_ADMIN_ROLE",
     "inputs": [],
     "outputs": [
@@ -32,6 +45,19 @@
         "name": "",
         "type": "bytes32",
         "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_AUTO_RESOLVE_DELAY",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
@@ -71,6 +97,19 @@
         "name": "",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "RANDOMIZER_ROLE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
       }
     ],
     "stateMutability": "view"
@@ -122,6 +161,48 @@
   },
   {
     "type": "function",
+    "name": "canAutoResolve",
+    "inputs": [
+      {
+        "name": "gameID",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "configureAutomation",
+    "inputs": [
+      {
+        "name": "autoResolveEnabled",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "autoResolveDelay",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "requireExternalEntropy",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "createGame",
     "inputs": [],
     "outputs": [
@@ -132,6 +213,29 @@
       }
     ],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getAutomationSettings",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "autoResolveEnabled",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "autoResolveDelay",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "requireExternalEntropy",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -304,6 +408,30 @@
   },
   {
     "type": "function",
+    "name": "getRoundEntropy",
+    "inputs": [
+      {
+        "name": "gameID",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "round",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "grantRole",
     "inputs": [
       {
@@ -343,6 +471,29 @@
       }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "provideRoundEntropy",
+    "inputs": [
+      {
+        "name": "gameID",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "round",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "entropy",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -386,6 +537,25 @@
       }
     ],
     "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "resolveTimedOutGames",
+    "inputs": [
+      {
+        "name": "gameIDs",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "resolvedCount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable"
   },
   {
@@ -476,6 +646,79 @@
   },
   {
     "type": "event",
+    "name": "ActionOutcome",
+    "inputs": [
+      {
+        "name": "gameID",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "round",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "action",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum PlundrixGame.Action"
+      },
+      {
+        "name": "success",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "reason",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum PlundrixGame.OutcomeReason"
+      },
+      {
+        "name": "locksCracked",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "tools",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "stunned",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "sabotageTarget",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "timeStamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "ActionSubmitted",
     "inputs": [
       {
@@ -507,6 +750,43 @@
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
+      },
+      {
+        "name": "timeStamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "AutomationSettingsUpdated",
+    "inputs": [
+      {
+        "name": "autoResolveEnabled",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "autoResolveDelay",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "requireExternalEntropy",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      },
+      {
+        "name": "updatedBy",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
       },
       {
         "name": "timeStamp",
@@ -781,6 +1061,74 @@
         "type": "address",
         "indexed": true,
         "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoundAutoResolved",
+    "inputs": [
+      {
+        "name": "gameID",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "round",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "resolver",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "timeStamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoundEntropyProvided",
+    "inputs": [
+      {
+        "name": "gameID",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "round",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "entropy",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "provider",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "timeStamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
     "anonymous": false

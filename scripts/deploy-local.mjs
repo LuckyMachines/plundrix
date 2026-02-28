@@ -97,7 +97,7 @@ async function main() {
     'script',
     'script/DeployPlundrix.s.sol',
     '--rpc-url',
-    'anvil',
+    anvilRpcUrl,
     '--broadcast',
   ]);
 

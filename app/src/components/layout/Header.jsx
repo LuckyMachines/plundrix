@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import ConnectButton from '../wallet/ConnectButton';
 import NetworkBadge from '../wallet/NetworkBadge';
 import HelpButton from '../help/HelpButton';
+import AccessibilityToggle from './AccessibilityToggle';
 
 export default function Header({ onHelpClick }) {
   return (
@@ -13,6 +14,7 @@ export default function Header({ onHelpClick }) {
           </span>
         </Link>
         <div className="flex items-center gap-3">
+          <AccessibilityToggle />
           <HelpButton onClick={onHelpClick} />
           <NetworkBadge />
           <ConnectButton />
