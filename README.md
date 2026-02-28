@@ -105,12 +105,14 @@ import PlundrixABI from "./abi/PlundrixGame.json";
 └───────────────────────────────┘
 ```
 
-Unlike [Hexploration](https://github.com/LuckyMachines/hexploration) (which uses multiple contracts, Chainlink VRF, and an autoloop keeper), Plundrix is intentionally minimal:
+Plundrix currently ships in a minimal single-contract mode:
 
-- **Single contract** -- no GameBoard, PlayZone, PlayerRegistry, GameEvents, or GameController needed
-- **No VRF** -- uses on-chain pseudo-randomness (`keccak256(blockhash, gameID, round, timestamp, seed)`)
-- **No autoloop** -- no `_gamesNeedUpdates` queue, no `runUpdate()`, no off-chain keeper
+- **Single contract** -- self-contained game lifecycle and state
+- **On-chain pseudo-randomness** -- uses `keccak256(blockhash, gameID, round, timestamp, seed)`
+- **No required keeper loop** -- rounds resolve when players submit or timeout conditions are met
 - **No external dependencies** beyond OpenZeppelin
+
+If you want guaranteed liveness/completion guarantees, you can add an autoloop worker plus VRF integration to advance stalled games after a configured time window.
 
 ---
 
@@ -405,20 +407,4 @@ await walletClient.writeContract({
   args: [gameID],
 });
 ```
-
----
-
-# Comparison with [Hexploration](https://github.com/LuckyMachines/hexploration)
-
-| Feature | Hexploration | Plundrix |
-|---------|-------------|----------|
-| Contracts | 12+ (Board, Controller, Queue, Gameplay, ...) | 1 (PlundrixGame) |
-| Randomness | Mock VRF or Chainlink VRF v2 | On-chain pseudo-random (blockhash) |
-| Automation | AutoLoop worker (or Chainlink Automation) | Not needed |
-| Zones | 100 (10x10 hex grid) | Single zone (the vault) |
-| Players | 1-4 | 2-4 |
-| Complexity | High (exploration, inventory, cards, day/night) | Low (3 actions, 5 locks) |
-| Deploy | Multi-step (factory, zones, decks, tokens) | Single contract deploy |
-
-Both games demonstrate [game-core](https://github.com/LuckyMachines/game-core)'s patterns (RBAC roles, event-driven state, on-chain gameplay) at different complexity levels.
 
