@@ -4,6 +4,7 @@ import {
   createWalletClient,
   createTestClient,
   http,
+  encodeFunctionData,
   parseEventLogs,
   zeroAddress,
 } from 'viem';
@@ -25,6 +26,18 @@ const artifact = JSON.parse(
 );
 const abi = artifact.abi;
 const bytecode = artifact.bytecode.object;
+const proxyArtifact = JSON.parse(
+  readFileSync(
+    resolve(
+      root,
+      'out',
+      'ERC1967Proxy.sol',
+      'ERC1967Proxy.json'
+    ),
+    'utf8'
+  )
+);
+const proxyBytecode = proxyArtifact.bytecode.object;
 
 const ANVIL_PORT = Number(process.env.TEST_ANVIL_PORT || 19645);
 const RPC_URL = `http://127.0.0.1:${ANVIL_PORT}`;
@@ -44,12 +57,18 @@ const SEARCH = 2;
 const SABOTAGE = 3;
 const ACTION_NONE = 0;
 const OUTCOME_NO_SUBMISSION = 11;
+const DEFAULT_ADMIN = 0;
+const GAME_MASTER = 1;
+const PAUSER = 2;
+const UPGRADER = 3;
+const OPERATOR = 4;
 
 let anvilProcess;
 let publicClient;
 let testClient;
 let wallets;
 let contractAddress;
+let implementationAddress;
 
 function startAnvil() {
   return new Promise((resolvePromise, reject) => {
@@ -76,13 +95,40 @@ function startAnvil() {
 // --- Helpers ---
 
 async function deploy() {
-  const hash = await wallets[0].deployContract({
+  const implementationHash = await wallets[0].deployContract({
     abi,
     bytecode,
-    args: [wallets[0].account.address],
   });
-  const receipt = await publicClient.waitForTransactionReceipt({ hash });
-  return receipt.contractAddress;
+  const implementationReceipt = await publicClient.waitForTransactionReceipt({
+    hash: implementationHash,
+  });
+  implementationAddress = implementationReceipt.contractAddress;
+
+  const initData = encodeFunctionData({
+    abi,
+    functionName: 'initialize',
+    args: [
+      {
+        defaultAdmin: addr(DEFAULT_ADMIN),
+        gameMaster: addr(GAME_MASTER),
+        pauser: addr(PAUSER),
+        upgrader: addr(UPGRADER),
+        autoResolver: addr(OPERATOR),
+        randomizer: addr(OPERATOR),
+        startPaused: false,
+      },
+    ],
+  });
+
+  const proxyHash = await wallets[0].deployContract({
+    abi: proxyArtifact.abi,
+    bytecode: proxyBytecode,
+    args: [implementationAddress, initData],
+  });
+  const proxyReceipt = await publicClient.waitForTransactionReceipt({
+    hash: proxyHash,
+  });
+  return proxyReceipt.contractAddress;
 }
 
 async function exec(walletIndex, functionName, args = []) {
@@ -109,7 +155,7 @@ function getEvents(receipt, eventName) {
 }
 
 async function setupGame(playerWalletIndices) {
-  const receipt = await exec(0, 'createGame');
+  const receipt = await exec(GAME_MASTER, 'createGame');
   const events = getEvents(receipt, 'GameCreated');
   const gameId = events[0].args.gameID;
 
@@ -117,7 +163,7 @@ async function setupGame(playerWalletIndices) {
     await exec(i, 'registerPlayer', [gameId]);
   }
 
-  await exec(0, 'startGame', [gameId]);
+  await exec(GAME_MASTER, 'startGame', [gameId]);
   return gameId;
 }
 
@@ -165,33 +211,54 @@ describe('PlundrixGame', () => {
       expect(total).toBe(0n);
     });
 
+    it('locks the implementation initializer', async () => {
+      await expect(
+        wallets[0].writeContract({
+          address: implementationAddress,
+          abi,
+          functionName: 'initialize',
+          args: [
+            {
+              defaultAdmin: addr(DEFAULT_ADMIN),
+              gameMaster: addr(GAME_MASTER),
+              pauser: addr(PAUSER),
+              upgrader: addr(UPGRADER),
+              autoResolver: addr(OPERATOR),
+              randomizer: addr(OPERATOR),
+              startPaused: false,
+            },
+          ],
+        })
+      ).rejects.toThrow(/already initialized/);
+    });
+
     it('deployer has DEFAULT_ADMIN_ROLE', async () => {
       const role = await read('DEFAULT_ADMIN_ROLE');
-      const has = await read('hasRole', [role, addr(0)]);
+      const has = await read('hasRole', [role, addr(DEFAULT_ADMIN)]);
       expect(has).toBe(true);
     });
 
-    it('deployer has GAME_MASTER_ROLE', async () => {
+    it('configured game master has GAME_MASTER_ROLE', async () => {
       const role = await read('GAME_MASTER_ROLE');
-      const has = await read('hasRole', [role, addr(0)]);
+      const has = await read('hasRole', [role, addr(GAME_MASTER)]);
       expect(has).toBe(true);
     });
 
-    it('deployer has AUTO_RESOLVER_ROLE', async () => {
+    it('configured operator has AUTO_RESOLVER_ROLE', async () => {
       const role = await read('AUTO_RESOLVER_ROLE');
-      const has = await read('hasRole', [role, addr(0)]);
+      const has = await read('hasRole', [role, addr(OPERATOR)]);
       expect(has).toBe(true);
     });
 
-    it('deployer has RANDOMIZER_ROLE', async () => {
+    it('configured operator has RANDOMIZER_ROLE', async () => {
       const role = await read('RANDOMIZER_ROLE');
-      const has = await read('hasRole', [role, addr(0)]);
+      const has = await read('hasRole', [role, addr(OPERATOR)]);
       expect(has).toBe(true);
     });
 
-    it('non-admin does not have GAME_MASTER_ROLE', async () => {
+    it('default admin does not implicitly get GAME_MASTER_ROLE', async () => {
       const role = await read('GAME_MASTER_ROLE');
-      const has = await read('hasRole', [role, addr(1)]);
+      const has = await read('hasRole', [role, addr(DEFAULT_ADMIN)]);
       expect(has).toBe(false);
     });
 
@@ -200,6 +267,13 @@ describe('PlundrixGame', () => {
       expect(settings[0]).toBe(false);
       expect(settings[1]).toBe(300n);
       expect(settings[2]).toBe(false);
+    });
+
+    it('fee settings default to disabled at 2%', async () => {
+      const settings = await read('getFeeSettings');
+      expect(settings[0]).toBe(false);
+      expect(settings[1]).toBe(200n);
+      expect(settings[2]).toBe(addr(DEFAULT_ADMIN));
     });
   });
 
@@ -233,12 +307,12 @@ describe('PlundrixGame', () => {
     let gameId;
 
     it('creates a game and emits GameCreated', async () => {
-      const receipt = await exec(0, 'createGame');
+      const receipt = await exec(GAME_MASTER, 'createGame');
       const events = getEvents(receipt, 'GameCreated');
       expect(events.length).toBe(1);
       gameId = events[0].args.gameID;
       expect(gameId).toBe(1n);
-      expect(events[0].args.creator).toBe(addr(0));
+      expect(events[0].args.creator).toBe(addr(GAME_MASTER));
     });
 
     it('increments totalGames', async () => {
@@ -318,7 +392,7 @@ describe('PlundrixGame', () => {
     });
 
     it('rejects startGame on non-existent game', async () => {
-      await expect(exec(0, 'startGame', [nonExistentGameId])).rejects.toThrow(
+      await expect(exec(GAME_MASTER, 'startGame', [nonExistentGameId])).rejects.toThrow(
         /Game does not exist/
       );
     });
@@ -348,7 +422,7 @@ describe('PlundrixGame', () => {
     let gameId;
 
     beforeAll(async () => {
-      const receipt = await exec(0, 'createGame');
+      const receipt = await exec(GAME_MASTER, 'createGame');
       gameId = getEvents(receipt, 'GameCreated')[0].args.gameID;
       await exec(1, 'registerPlayer', [gameId]);
       await exec(2, 'registerPlayer', [gameId]);
@@ -361,10 +435,10 @@ describe('PlundrixGame', () => {
     });
 
     it('rejects start with fewer than 2 players', async () => {
-      const r = await exec(0, 'createGame');
+      const r = await exec(GAME_MASTER, 'createGame');
       const soloId = getEvents(r, 'GameCreated')[0].args.gameID;
       await exec(1, 'registerPlayer', [soloId]);
-      await expect(exec(0, 'startGame', [soloId])).rejects.toThrow(
+      await expect(exec(GAME_MASTER, 'startGame', [soloId])).rejects.toThrow(
         /Not enough players/
       );
     });
@@ -389,7 +463,7 @@ describe('PlundrixGame', () => {
     });
 
     it('rejects starting an already active game', async () => {
-      await expect(exec(0, 'startGame', [gameId])).rejects.toThrow(
+      await expect(exec(DEFAULT_ADMIN, 'startGame', [gameId])).rejects.toThrow(
         /Game not open/
       );
     });
@@ -626,11 +700,11 @@ describe('PlundrixGame', () => {
     });
 
     afterAll(async () => {
-      await exec(0, 'configureAutomation', [false, 300n, false]);
+      await exec(GAME_MASTER, 'configureAutomation', [false, 300n, false]);
     });
 
     it('updates automation settings', async () => {
-      await exec(0, 'configureAutomation', [true, 300n, false]);
+      await exec(GAME_MASTER, 'configureAutomation', [true, 300n, false]);
       const settings = await read('getAutomationSettings');
       expect(settings[0]).toBe(true);
       expect(settings[1]).toBe(300n);
@@ -645,17 +719,17 @@ describe('PlundrixGame', () => {
 
       expect(await read('canAutoResolve', [gameId])).toBe(true);
 
-      const receipt = await exec(0, 'resolveTimedOutGames', [[gameId]]);
+      const receipt = await exec(OPERATOR, 'resolveTimedOutGames', [[gameId]]);
       const autoEvents = getEvents(receipt, 'RoundAutoResolved');
       expect(autoEvents.length).toBe(1);
       expect(autoEvents[0].args.gameID).toBe(gameId);
-      expect(autoEvents[0].args.resolver).toBe(addr(0));
+      expect(autoEvents[0].args.resolver).toBe(addr(OPERATOR));
     });
 
     it('requires entropy when external entropy mode is enabled', async () => {
       const entropyGameId = await setupGame([1, 2]);
 
-      await exec(0, 'configureAutomation', [false, 300n, true]);
+      await exec(GAME_MASTER, 'configureAutomation', [false, 300n, true]);
       await exec(1, 'submitAction', [entropyGameId, PICK, zeroAddress]);
       await exec(2, 'submitAction', [entropyGameId, SEARCH, zeroAddress]);
 
@@ -663,10 +737,43 @@ describe('PlundrixGame', () => {
         /Entropy not ready/
       );
 
-      await exec(0, 'provideRoundEntropy', [entropyGameId, 1n, 9999n]);
+      await exec(OPERATOR, 'provideRoundEntropy', [entropyGameId, 1n, 9999n]);
       const receipt = await exec(0, 'resolveRound', [entropyGameId]);
       const resolved = getEvents(receipt, 'RoundResolved');
       expect(resolved.length).toBe(1);
+    });
+  });
+
+  describe('pause controls', () => {
+    it('admin can pause and unpause', async () => {
+      await exec(PAUSER, 'pause');
+      expect(await read('paused')).toBe(true);
+
+      await expect(exec(1, 'createGame')).rejects.toThrow(/Pausable: paused/);
+
+      await exec(PAUSER, 'unpause');
+      expect(await read('paused')).toBe(false);
+    });
+
+    it('game master can configure dormant fee while paused', async () => {
+      await exec(PAUSER, 'pause');
+      await exec(GAME_MASTER, 'configureFee', [true, addr(DEFAULT_ADMIN)]);
+
+      const settings = await read('getFeeSettings');
+      expect(settings[0]).toBe(true);
+      expect(settings[1]).toBe(200n);
+      expect(settings[2]).toBe(addr(DEFAULT_ADMIN));
+
+      const preview = await read('previewFee', [10000n]);
+      expect(preview[0]).toBe(200n);
+      expect(preview[1]).toBe(9800n);
+
+      await exec(GAME_MASTER, 'configureFee', [false, addr(DEFAULT_ADMIN)]);
+      await exec(PAUSER, 'unpause');
+    });
+
+    it('non-pauser cannot pause', async () => {
+      await expect(exec(1, 'pause')).rejects.toThrow(/is missing role/);
     });
   });
 

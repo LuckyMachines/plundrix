@@ -2,14 +2,26 @@
 
 A fully on-chain competitive heist game. You and up to 3 rival operatives are locked in a vault room. Five locks stand between you and the score. Pick locks, scrounge for tools, or sabotage your rivals -- first to crack all 5 locks wins. Every round resolves on-chain with no hidden state.
 
-Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) patterns. Single contract deploy, with optional autoloop and external entropy integrations when you need stronger liveness guarantees.
+Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) patterns. Deployed behind a UUPS proxy, with pause controls, separated launch roles, and optional autoloop plus external entropy integrations when you need stronger operational guarantees.
+
+## Current Status
+
+- Sepolia staging is live
+- current Sepolia proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
+- current Sepolia implementation: `0x6748415bce63c0fbf1e50ceb2128bfeac977224f`
+- staging is currently paused, with autoloop enabled and external entropy required
+- the 2% fee config exists onchain and is enabled on Sepolia for testing only
+- mainnet is not live yet
+- planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
+
+See [`docs/go-live-checklist.md`](docs/go-live-checklist.md) for the current launch checklist.
 
 ## Why Play
 
 - **Pure strategy meets chance** -- three simple actions create deep mind-games. Do you pick aggressively, tool up for a big run, or sabotage the leader? Every round is a bet.
 - **Fully on-chain** -- game state, randomness, and resolution all happen in one smart contract. No server, no hidden deck, no trust required.
 - **Fast games** -- rounds resolve in seconds. A full game takes 5-15 rounds. No long waits, no keeper bots needed.
-- **Minimal deployment** -- one contract, one deploy command. No multi-step factory setup, no VRF subscriptions, no off-chain workers.
+- **Operational controls** -- launch roles can be separated across admin, pauser, upgrader, game-master, randomizer, and autoloop operator without changing the app-facing proxy address.
 
 ## The Game
 
@@ -41,7 +53,7 @@ Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) 
 | **Actions** | Pick, Search, Sabotage |
 | **Rounds** | Simultaneous, ~5-15 per game |
 | **Randomness** | On-chain pseudo-random (blockhash + keccak256) |
-| **Contracts** | 1 (PlundrixGame.sol) |
+| **Contracts** | 2 on-chain objects (implementation + ERC1967 proxy) |
 
 ## Quick Start
 
@@ -61,8 +73,11 @@ npm run play:local
 # Stop local play services started by the script
 npm run dev:local:stop
 
-# Deploy to Sepolia
+# Deploy to Sepolia with Forge
 forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
+
+# Or use the KMS-backed deploy flow
+npm run deploy:kms
 
 # Run the SPA
 cd app && npm install && npm run dev
@@ -108,12 +123,15 @@ import PlundrixABI from "./abi/PlundrixGame.json";
 └───────────────────────────────┘
 ```
 
-Plundrix currently ships in a minimal single-contract mode:
+Plundrix currently ships as an upgradeable UUPS deployment:
 
-- **Single contract** -- self-contained game lifecycle and state
+- **Proxy + implementation** -- the frontend points at the proxy address, while logic lives in the implementation
 - **On-chain pseudo-randomness** -- uses `keccak256(blockhash, gameID, round, timestamp, optionalEntropy, seed)`
+- **Emergency pause** -- `PAUSER_ROLE` can freeze mutating gameplay/admin actions while keeping reads available
+- **Upgradeable** -- `UPGRADER_ROLE` can upgrade the proxy to a new implementation
 - **Optional autoloop mode** -- `AUTO_RESOLVER_ROLE` can batch resolve timed-out rounds via `resolveTimedOutGames`
 - **Optional external entropy mode** -- `RANDOMIZER_ROLE` can provide round entropy via `provideRoundEntropy`
+- **Dormant fee config** -- a fixed 2% fee policy exists for future paid modes, but it can remain disabled and does not collect funds by itself
 - **No external dependencies** beyond OpenZeppelin
 
 ---
@@ -123,7 +141,10 @@ Plundrix currently ships in a minimal single-contract mode:
 ```bash
 # 1. Create .env at repo root
 # PRIVATE_KEY=0x...
+# MAINNET_RPC_URL=https://...
+# BASE_RPC_URL=https://...
 # SEPOLIA_RPC_URL=https://...
+# BASE_SEPOLIA_RPC_URL=https://...
 # ANVIL_RPC_URL=http://127.0.0.1:<anvil-port>   # optional override
 
 # 2a. Deploy to local anvil (default fallback key works out of the box)
@@ -136,8 +157,27 @@ npm run deploy:local
 # 2b. Or deploy to Sepolia
 forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
 
-# 3. Note the deployed contract address from output
+# KMS-backed Sepolia / mainnet path
+npm run deploy:kms
+
+# 2c. Or deploy to Ethereum mainnet / Base with a private key
+forge script script/DeployPlundrix.s.sol --rpc-url mainnet --broadcast
+forge script script/DeployPlundrix.s.sol --rpc-url base --broadcast
+
+# 3. Use the printed `PlundrixGame` proxy address in the app and integrations
 ```
+
+For live deployment posture and launch sequencing, see:
+
+- [docs/go-live-checklist.md](docs/go-live-checklist.md)
+- [docs/mainnet-runbook.md](docs/mainnet-runbook.md)
+
+The repo now ships helper scripts for:
+
+- `npm run kms:address`
+- `npm run kms:fund`
+- `npm run deploy:kms`
+- `npm run autoloop:start`
 
 ---
 
@@ -171,7 +211,9 @@ The main gameplay screen:
 
 ## Contract Integration
 
-The SPA interacts with a single PlundrixGame contract via custom Wagmi hooks. Reads poll at 3-5s intervals (game state, player state, all-actions-submitted checks). Writes handle game creation, registration, action submission, and round resolution, with optional automation/entropy settings support. Gameplay UI now consumes explicit `ActionOutcome` events for accurate round reporting.
+The SPA interacts with the PlundrixGame proxy address via custom Wagmi hooks. Reads poll at 3-5s intervals (game state, player state, all-actions-submitted checks). Writes handle game creation, registration, action submission, round resolution, pause-aware admin flows, and optional automation/entropy settings support. Gameplay UI now consumes explicit `ActionOutcome` events for accurate round reporting.
+
+The hosted staging posture is Sepolia-first. Mainnet copy and launch messaging should continue to present the product as free-play beta until explicitly changed.
 
 ## Accessibility and Performance
 
@@ -210,6 +252,14 @@ To stop background local services started by the script:
 npm run dev:local:stop
 ```
 
+## Agent Service
+
+An optional read/recommendation service lives in `agent-service/README.md`. It now also powers the free-play competition layer: seasonal points, leaderboards, badges, session indexing, profiles, and explicit agent-ladder segmentation.
+
+```bash
+npm run agent:start
+```
+
 ## Deploy SPA on Railway
 
 Railway can deploy the React SPA as a web service from this repo.
@@ -233,8 +283,24 @@ The start command serves the built SPA from `dist/` on `0.0.0.0:$PORT` with SPA 
 VITE_RPC_URL                     # Sepolia RPC endpoint (optional, falls back to public)
 VITE_WALLETCONNECT_PROJECT_ID    # WalletConnect project ID (optional)
 VITE_CONTRACT_ADDRESS            # Deployed PlundrixGame contract address
+VITE_AGENT_SERVICE_URL           # Competition/agent service base URL
 VITE_FOUNDRY_RPC_URL             # Local anvil RPC (auto-written by deploy/local play scripts)
 VITE_ENABLE_FOUNDRY              # Optional; set true to include Foundry chain outside local dev
+```
+
+Launch-time deploy env vars:
+
+```
+DEFAULT_ADMIN_ADDRESS
+GAME_MASTER_ADDRESS
+PAUSER_ADDRESS
+UPGRADER_ADDRESS
+AUTO_RESOLVER_ADDRESS
+RANDOMIZER_ADDRESS
+START_PAUSED
+AUTO_RESOLVE_ENABLED
+AUTO_RESOLVE_DELAY
+REQUIRE_EXTERNAL_ENTROPY
 ```
 
 Local deploy automation writes `app/.env.local` for you.
@@ -338,6 +404,16 @@ Submit an action for the current round. Must be a registered player. Each player
 
 Resolve the current round. Can be called by anyone. Requires either all actions submitted or round timeout reached.
 
+## Admin Controls
+
+### `pause()`
+
+Callable by `PAUSER_ROLE`. Freezes mutating gameplay and automation functions while leaving reads available.
+
+### `unpause()`
+
+Callable by `PAUSER_ROLE`. Restores normal operation.
+
 ### `configureAutomation(bool autoResolveEnabled, uint256 autoResolveDelay, bool requireExternalEntropy)`
 
 Configure optional autoloop + entropy mode. Callable by `GAME_MASTER_ROLE`.
@@ -353,6 +429,14 @@ Inject optional round entropy (for VRF-worker style integrations). Callable by `
 ### `resolveTimedOutGames(uint256[] gameIDs) -> uint256 resolvedCount`
 
 Batch resolves timed-out games when autoloop is enabled. Callable by `AUTO_RESOLVER_ROLE`.
+
+### `configureFee(bool feeEnabled, address feeRecipient)`
+
+Configure the dormant 2% protocol fee policy for future paid modes. Callable by `GAME_MASTER_ROLE`.
+
+- this does not charge users by itself
+- current intended mainnet posture is `feeEnabled = false`
+- Sepolia may keep it enabled for testing
 
 ## View Functions
 
@@ -379,6 +463,14 @@ Returns whether the given game currently satisfies autoloop resolution condition
 ### `getAutomationSettings() -> (bool autoResolveEnabled, uint256 autoResolveDelay, bool requireExternalEntropy)`
 
 Returns current automation + entropy mode settings.
+
+### `getFeeSettings() -> (bool feeEnabled, uint256 feeBps, address feeRecipient)`
+
+Returns the current fee configuration. The fee basis points are fixed at `200` (2%).
+
+### `previewFee(uint256 amount) -> (uint256 feeAmount, uint256 netAmount)`
+
+Returns the fee and net amount for a hypothetical paid flow. If fee mode is disabled, this returns `(0, amount)`.
 
 ### `getRoundEntropy(uint256 gameID, uint256 round) -> uint256`
 
@@ -408,6 +500,7 @@ Total number of games created.
 | `GameWon` | `gameID`, `winner`, `rounds`, `timeStamp` | Player won the game |
 | `AutomationSettingsUpdated` | `autoResolveEnabled`, `autoResolveDelay`, `requireExternalEntropy`, `updatedBy`, `timeStamp` | Optional automation settings changed |
 | `RoundEntropyProvided` | `gameID`, `round`, `entropy`, `provider`, `timeStamp` | External entropy supplied for a round |
+| `FeeSettingsUpdated` | `feeEnabled`, `feeBps`, `feeRecipient`, `updatedBy`, `timeStamp` | Dormant fee policy changed |
 
 Gameplay events include `gameID` as an indexed parameter for efficient per-game filtering.
 

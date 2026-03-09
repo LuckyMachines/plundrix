@@ -53,11 +53,17 @@ function extractAddressFromBroadcast() {
 
   const json = JSON.parse(readFileSync(runLatest, 'utf8'));
   const txs = Array.isArray(json.transactions) ? json.transactions : [];
-  const deployment = txs.find(
-    (tx) =>
-      tx?.transactionType === 'CREATE' &&
-      (tx?.contractName === 'PlundrixGame' || tx?.contractAddress)
-  );
+  const deployment =
+    txs.find(
+      (tx) =>
+        tx?.transactionType === 'CREATE' &&
+        tx?.contractName === 'ERC1967Proxy'
+    ) ||
+    txs.find(
+      (tx) =>
+        tx?.transactionType === 'CREATE' &&
+        tx?.contractName === 'PlundrixGame'
+    );
 
   const addr = deployment?.contractAddress;
   if (typeof addr === 'string' && /^0x[a-fA-F0-9]{40}$/.test(addr)) {

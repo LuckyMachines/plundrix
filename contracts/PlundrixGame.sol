@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.8.17 <0.9.0;
 
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
@@ -11,13 +14,20 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  *         Each round, players choose PICK, SEARCH, or SABOTAGE. First to crack all 5 locks wins.
  *         Supports standalone play plus optional autoloop + external entropy integrations.
  */
-contract PlundrixGame is AccessControlEnumerable {
+contract PlundrixGame is
+    Initializable,
+    AccessControlEnumerableUpgradeable,
+    PausableUpgradeable,
+    UUPSUpgradeable
+{
     using Counters for Counters.Counter;
 
     // --- Roles ---
     bytes32 public constant GAME_MASTER_ROLE = keccak256("GAME_MASTER_ROLE");
     bytes32 public constant AUTO_RESOLVER_ROLE = keccak256("AUTO_RESOLVER_ROLE");
     bytes32 public constant RANDOMIZER_ROLE = keccak256("RANDOMIZER_ROLE");
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
     // --- Constants ---
     uint256 public constant TOTAL_LOCKS = 5;
@@ -26,6 +36,8 @@ contract PlundrixGame is AccessControlEnumerable {
     uint256 public constant MIN_GAME_PLAYERS = 2;
     uint256 public constant ROUND_TIMEOUT = 5 minutes;
     uint256 public constant MAX_AUTO_RESOLVE_DELAY = 1 days;
+    uint256 public constant FEE_BPS = 200;
+    uint256 public constant BASIS_POINTS_DENOMINATOR = 10_000;
 
     // --- Enums ---
     enum Action {
@@ -79,6 +91,16 @@ contract PlundrixGame is AccessControlEnumerable {
         address winner;
     }
 
+    struct LaunchConfiguration {
+        address defaultAdmin;
+        address gameMaster;
+        address pauser;
+        address upgrader;
+        address autoResolver;
+        address randomizer;
+        bool startPaused;
+    }
+
     // --- Storage ---
     Counters.Counter private _gameIdCounter;
 
@@ -91,6 +113,8 @@ contract PlundrixGame is AccessControlEnumerable {
     bool private _autoResolveEnabled;
     uint256 private _autoResolveDelay;
     bool private _requireExternalEntropy;
+    bool private _feeEnabled;
+    address private _feeRecipient;
 
     modifier validGame(uint256 gameID) {
         require(_gameExists(gameID), "Game does not exist");
@@ -185,19 +209,64 @@ contract PlundrixGame is AccessControlEnumerable {
         address indexed provider,
         uint256 timeStamp
     );
+    event FeeSettingsUpdated(
+        bool feeEnabled,
+        uint256 feeBps,
+        address feeRecipient,
+        address updatedBy,
+        uint256 timeStamp
+    );
 
     // --- Constructor ---
 
-    constructor(address adminAddress) {
-        _setupRole(DEFAULT_ADMIN_ROLE, adminAddress);
-        _setupRole(GAME_MASTER_ROLE, adminAddress);
-        _setupRole(AUTO_RESOLVER_ROLE, adminAddress);
-        _setupRole(RANDOMIZER_ROLE, adminAddress);
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(
+        LaunchConfiguration memory config
+    ) external initializer {
+        require(config.defaultAdmin != address(0), "Default admin required");
+        require(config.gameMaster != address(0), "Game master required");
+        require(config.pauser != address(0), "Pauser required");
+        require(config.upgrader != address(0), "Upgrader required");
+        require(config.autoResolver != address(0), "Auto resolver required");
+        require(config.randomizer != address(0), "Randomizer required");
+
+        __AccessControlEnumerable_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
+
+        _grantRole(DEFAULT_ADMIN_ROLE, config.defaultAdmin);
+        _grantRole(GAME_MASTER_ROLE, config.gameMaster);
+        _grantRole(AUTO_RESOLVER_ROLE, config.autoResolver);
+        _grantRole(RANDOMIZER_ROLE, config.randomizer);
+        _grantRole(PAUSER_ROLE, config.pauser);
+        _grantRole(UPGRADER_ROLE, config.upgrader);
 
         _autoResolveEnabled = false;
         _autoResolveDelay = ROUND_TIMEOUT;
         _requireExternalEntropy = false;
+        _feeEnabled = false;
+        _feeRecipient = config.defaultAdmin;
+
+        if (config.startPaused) {
+            _pause();
+        }
     }
+
+    function pause() external onlyRole(PAUSER_ROLE) {
+        _pause();
+    }
+
+    function unpause() external onlyRole(PAUSER_ROLE) {
+        _unpause();
+    }
+
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
     // --- Optional Automation / Entropy ---
 
@@ -237,13 +306,35 @@ contract PlundrixGame is AccessControlEnumerable {
     }
 
     /**
+     * @notice Configure the dormant protocol fee for future paid modes.
+     * @dev This does not collect any funds by itself. It only preserves fee policy onchain.
+     */
+    function configureFee(
+        bool feeEnabled,
+        address feeRecipient
+    ) external onlyRole(GAME_MASTER_ROLE) {
+        require(feeRecipient != address(0), "Fee recipient required");
+
+        _feeEnabled = feeEnabled;
+        _feeRecipient = feeRecipient;
+
+        emit FeeSettingsUpdated(
+            _feeEnabled,
+            FEE_BPS,
+            _feeRecipient,
+            msg.sender,
+            block.timestamp
+        );
+    }
+
+    /**
      * @notice Injects round entropy that can be sourced by a VRF worker.
      */
     function provideRoundEntropy(
         uint256 gameID,
         uint256 round,
         uint256 entropy
-    ) external onlyRole(RANDOMIZER_ROLE) validGame(gameID) {
+    ) external onlyRole(RANDOMIZER_ROLE) validGame(gameID) whenNotPaused {
         require(round > 0, "Round must be > 0");
         require(entropy > 0, "Entropy must be > 0");
         _roundEntropy[gameID][round] = entropy;
@@ -262,7 +353,12 @@ contract PlundrixGame is AccessControlEnumerable {
      */
     function resolveTimedOutGames(
         uint256[] calldata gameIDs
-    ) external onlyRole(AUTO_RESOLVER_ROLE) returns (uint256 resolvedCount) {
+    )
+        external
+        onlyRole(AUTO_RESOLVER_ROLE)
+        whenNotPaused
+        returns (uint256 resolvedCount)
+    {
         require(_autoResolveEnabled, "Auto resolve disabled");
         for (uint256 i = 0; i < gameIDs.length; i++) {
             if (_canAutoResolve(gameIDs[i])) {
@@ -278,7 +374,7 @@ contract PlundrixGame is AccessControlEnumerable {
      * @notice Create a new game. Anyone can create a game.
      * @return gameID The ID of the newly created game.
      */
-    function createGame() external returns (uint256 gameID) {
+    function createGame() external whenNotPaused returns (uint256 gameID) {
         _gameIdCounter.increment();
         gameID = _gameIdCounter.current();
 
@@ -291,7 +387,9 @@ contract PlundrixGame is AccessControlEnumerable {
      * @notice Register the caller as a player in an open game.
      * @param gameID The game to join.
      */
-    function registerPlayer(uint256 gameID) external validGame(gameID) {
+    function registerPlayer(
+        uint256 gameID
+    ) external validGame(gameID) whenNotPaused {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.OPEN, "Game not open for registration");
         require(game.playerCount < MAX_GAME_PLAYERS, "Game is full");
@@ -317,7 +415,7 @@ contract PlundrixGame is AccessControlEnumerable {
      */
     function startGame(
         uint256 gameID
-    ) external validGame(gameID) {
+    ) external validGame(gameID) whenNotPaused {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.OPEN, "Game not open");
         bool canStart = hasRole(GAME_MASTER_ROLE, msg.sender) ||
@@ -347,7 +445,7 @@ contract PlundrixGame is AccessControlEnumerable {
         uint256 gameID,
         Action action,
         address sabotageTarget
-    ) external validGame(gameID) {
+    ) external validGame(gameID) whenNotPaused {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.ACTIVE, "Game not active");
 
@@ -397,7 +495,9 @@ contract PlundrixGame is AccessControlEnumerable {
      * @notice Resolve the current round. Can be called by anyone once all actions are in or timeout is reached.
      * @param gameID The game to resolve.
      */
-    function resolveRound(uint256 gameID) external validGame(gameID) {
+    function resolveRound(
+        uint256 gameID
+    ) external validGame(gameID) whenNotPaused {
         _resolveRoundInternal(gameID, false);
     }
 
@@ -818,6 +918,29 @@ contract PlundrixGame is AccessControlEnumerable {
         );
     }
 
+    function getFeeSettings()
+        external
+        view
+        returns (
+            bool feeEnabled,
+            uint256 feeBps,
+            address feeRecipient
+        )
+    {
+        return (_feeEnabled, FEE_BPS, _feeRecipient);
+    }
+
+    function previewFee(
+        uint256 amount
+    ) external view returns (uint256 feeAmount, uint256 netAmount) {
+        if (!_feeEnabled || amount == 0) {
+            return (0, amount);
+        }
+
+        feeAmount = (amount * FEE_BPS) / BASIS_POINTS_DENOMINATOR;
+        netAmount = amount - feeAmount;
+    }
+
     function getRoundEntropy(
         uint256 gameID,
         uint256 round
@@ -860,4 +983,6 @@ contract PlundrixGame is AccessControlEnumerable {
         }
         return true;
     }
+
+    uint256[48] private __gap;
 }

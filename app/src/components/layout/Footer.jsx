@@ -8,14 +8,18 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-3 space-y-1 text-xs font-mono text-vault-text-dim">
         <div className="flex items-center justify-between">
           <span className="tracking-wider uppercase">
-          {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'No network'}
+            {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'No network'}
           </span>
           <span className="tracking-[0.2em] text-tungsten/60 uppercase font-display font-semibold">
             Plundrix
           </span>
         </div>
         <p className="text-center text-vault-text-dim">
-          Made with ❤️ by Lucky Machines, LLC · © 2026 - All rights reserved.
+          Made with love by Lucky Machines, LLC. Copyright 2026.
+        </p>
+        <p className="text-center text-vault-text-dim/90">
+          Free-play beta only. No cash prizes or monetary rewards are currently live. Sepolia may
+          enable test-only fee settings that do not represent a live production economy.
         </p>
       </div>
     </footer>

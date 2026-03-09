@@ -2,7 +2,7 @@ const STEPS = [
   {
     num: 1,
     title: 'Connect Wallet',
-    desc: 'Connect a Web3 wallet (MetaMask, WalletConnect, etc.) on the Sepolia test network.',
+    desc: 'Connect a Web3 wallet (MetaMask, WalletConnect, etc.) on the Sepolia staging network. Mainnet production is not live yet.',
   },
   {
     num: 2,

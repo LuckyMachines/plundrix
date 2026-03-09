@@ -26,3 +26,41 @@ export function pickChance(tools, stunned) {
 export function searchChance(stunned) {
   return stunned ? 30 : 60;
 }
+
+export function formatTimestamp(timestamp) {
+  if (!timestamp) return 'Pending';
+  return new Date(Number(timestamp) * 1000).toLocaleString([], {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+export function formatPercent(value) {
+  return `${Math.round((Number(value) || 0) * 100)}%`;
+}
+
+export function queueLabel(queue) {
+  switch (queue) {
+    case 'agent_ladder':
+      return 'Agent Ladder';
+    case 'mixed':
+      return 'Mixed Table';
+    case 'open':
+      return 'Open Table';
+    default:
+      return String(queue || 'Unknown');
+  }
+}
+
+export function profileTypeLabel(type) {
+  switch (type) {
+    case 'agent':
+      return 'Agent';
+    case 'bot':
+      return 'Bot';
+    default:
+      return 'Human';
+  }
+}
