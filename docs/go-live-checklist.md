@@ -33,10 +33,12 @@ Current Sepolia deployment:
 ## Product Messaging
 
 - [ ] UI says Sepolia staging is live
-- [ ] UI says mainnet production is coming soon
+- [ ] UI says mainnet free-play beta is coming soon
 - [ ] Mainnet launch is framed as free-play beta
 - [ ] No copy implies gambling, prizes, yield, or cash rewards
 - [ ] Bot and agent participation are disclosed clearly
+- [ ] Marketing site footer links to Terms and Privacy pages
+- [ ] Terms and Privacy pages match the free-play beta posture
 
 ## Mainnet Preconditions
 
@@ -118,4 +120,3 @@ Reference runbook:
 - [ ] Patch and deploy new implementation if needed
 - [ ] Upgrade proxy
 - [ ] Re-test before unpausing
-

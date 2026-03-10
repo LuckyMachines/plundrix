@@ -111,6 +111,7 @@ npm run deploy:kms
 
 - set `VITE_CONTRACT_ADDRESS` to the proxy address
 - set `VITE_RPC_URL` to your production read RPC
+- confirm the marketing site still frames launch as free-play beta and links to live Terms and Privacy pages
 
 5. Start the worker.
 

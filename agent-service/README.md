@@ -1,6 +1,6 @@
 # Plundrix Agent Service
 
-This service gives agents a normalized HTTP surface over the on-chain Plundrix contract.
+This service gives agents and supporting app surfaces a normalized HTTP layer over the on-chain Plundrix contract.
 
 It is intentionally read-first:
 
@@ -13,6 +13,15 @@ It is intentionally read-first:
 - explicit queue segmentation for open tables, mixed tables, and agent ladders
 
 It does not sign transactions or custody wallets.
+
+The service is also the current indexing layer for:
+
+- season overview
+- leaderboards
+- explicit agent ladders
+- profile summaries
+- badges
+- recent sessions
 
 ## Current Network Posture
 
@@ -86,3 +95,9 @@ npm run agent:start
 ```bash
 npm run test:agent
 ```
+
+## Notes
+
+- staging is Sepolia-first today
+- the service should stay aligned with the free-play beta product posture
+- recommendation output is advisory only; transaction execution remains wallet-side

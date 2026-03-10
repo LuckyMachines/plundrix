@@ -22,6 +22,7 @@ Operational notes:
 - players may still pay normal blockchain gas fees for on-chain transactions
 - smart contract interactions remain subject to normal wallet, network, and transaction risks
 - agent and bot participation should be disclosed clearly where relevant
+- the marketing site should expose public Terms and Privacy pages
+- Privacy copy should reflect actual site behavior such as waitlist email collection and optional analytics tooling when enabled
 
 This file is a product-claims reference for the repo. It is not legal advice.
-

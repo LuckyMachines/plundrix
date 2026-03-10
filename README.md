@@ -1,568 +1,285 @@
 # Plundrix
 
-A fully on-chain competitive heist game. You and up to 3 rival operatives are locked in a vault room. Five locks stand between you and the score. Pick locks, scrounge for tools, or sabotage your rivals -- first to crack all 5 locks wins. Every round resolves on-chain with no hidden state.
+Plundrix is a fully on-chain competitive vault-heist game. Two to four players race to crack five locks by choosing one action each round: `PICK`, `SEARCH`, or `SABOTAGE`.
 
-Built on [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) patterns. Deployed behind a UUPS proxy, with pause controls, separated launch roles, and optional autoloop plus external entropy integrations when you need stronger operational guarantees.
+The repo currently ships:
+
+- an upgradeable UUPS game contract with pause and role controls
+- a React app for local play and Sepolia staging
+- an agent/competition service for recommendations, profiles, sessions, badges, and ladders
+- KMS-backed deploy and autoloop tooling
 
 ## Current Status
 
 - Sepolia staging is live
 - current Sepolia proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
 - current Sepolia implementation: `0x6748415bce63c0fbf1e50ceb2128bfeac977224f`
-- staging is currently paused, with autoloop enabled and external entropy required
+- staging is paused by default
+- autoloop is enabled on Sepolia
+- external entropy is required on Sepolia
 - the 2% fee config exists onchain and is enabled on Sepolia for testing only
 - mainnet is not live yet
 - planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
 
-See [`docs/go-live-checklist.md`](docs/go-live-checklist.md) for the current launch checklist.
+Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
 
-## Why Play
+## Game Summary
 
-- **Pure strategy meets chance** -- three simple actions create deep mind-games. Do you pick aggressively, tool up for a big run, or sabotage the leader? Every round is a bet.
-- **Fully on-chain** -- game state, randomness, and resolution all happen in one smart contract. No server, no hidden deck, no trust required.
-- **Fast games** -- rounds resolve in seconds. A full game takes 5-15 rounds. No long waits, no keeper bots needed.
-- **Operational controls** -- launch roles can be separated across admin, pauser, upgrader, game-master, randomizer, and autoloop operator without changing the app-facing proxy address.
+- players: `2-4`
+- objective: crack all `5` locks first
+- actions per round:
+  - `PICK`: attempt to crack one lock
+  - `SEARCH`: find tools that improve future picks
+  - `SABOTAGE`: stun a rival and steal one tool if they have one
+- round model: simultaneous submission, then onchain resolution
+- timeout: rounds can resolve after `5 minutes` even if not all actions are submitted
 
-## The Game
+## Product Posture
 
-2-4 players compete to be the first to crack all **5 locks** on a vault.
+Plundrix is currently documented and staged as:
 
-### How It Works
+- free-play
+- no cash prizes or monetary rewards live
+- agent and bot participation supported
+- mainnet planned as a free-play beta, not a prize economy
 
-1. **Join** -- players register for an open game (2-4 players)
-2. **Each round** -- every player secretly submits one of three actions:
-   - **PICK** -- attempt to crack a lock (40% base chance + 15% per tool, max 95%)
-   - **SEARCH** -- look for lockpicking tools (60% chance, accumulate up to 5)
-   - **SABOTAGE** -- stun a rival and steal one of their tools (always succeeds)
-3. **Resolve** -- all actions resolve simultaneously. Picks and searches go first, then sabotages apply stuns for next round.
-4. **Win** -- first player to crack all 5 locks wins immediately.
+See [docs/legal-notes.md](docs/legal-notes.md) for the canonical product-claims posture.
 
-### Key Mechanics
+## Contract Architecture
 
-- **Tool stacking** -- each tool adds +15% to your pick chance. With 4 tools you're at 95%. The tension: do you spend rounds searching, or go for picks early?
-- **Sabotage & stun** -- sabotaging a player stuns them for one round (PICK auto-fails, SEARCH drops to 30%) and steals a tool. A well-timed sabotage can swing the game.
-- **Simultaneous resolution** -- all players act at once, so you can't react to what others do. Read your opponents and commit.
-- **Timeout** -- if not all actions are submitted within 5 minutes, the round can be resolved anyway. No stalling.
+`PlundrixGame` is deployed behind an `ERC1967Proxy` using UUPS upgrades.
 
-### At a Glance
+Key features:
 
-| | |
-|---|---|
-| **Players** | 2-4 per game |
-| **Goal** | Crack all 5 locks first |
-| **Actions** | Pick, Search, Sabotage |
-| **Rounds** | Simultaneous, ~5-15 per game |
-| **Randomness** | On-chain pseudo-random (blockhash + keccak256) |
-| **Contracts** | 2 on-chain objects (implementation + ERC1967 proxy) |
+- `DEFAULT_ADMIN_ROLE`, `GAME_MASTER_ROLE`, `PAUSER_ROLE`, `UPGRADER_ROLE`
+- optional `AUTO_RESOLVER_ROLE` for timed-out round batching
+- optional `RANDOMIZER_ROLE` for external entropy
+- `pause()` / `unpause()`
+- optional required external entropy mode
+- optional autoloop resolution mode
+- dormant 2% fee configuration for future paid modes
+
+Important constraint:
+
+- the contract can be upgraded
+- the app and integrations should always point at the proxy address, not the implementation
+
+## Repo Layout
+
+- `contracts/` - Solidity contracts
+- `script/` - Foundry deploy scripts
+- `test/` - Forge and JS tests
+- `app/` - React frontend
+- `agent-service/` - read/recommendation and competition indexing service
+- `ops/` - KMS deploy, funding, and autoloop worker scripts
+- `docs/` - runbooks, legal notes, and launch checklist
 
 ## Quick Start
 
 ```bash
-# Build contracts
+# install JS deps
+npm install
+cd app && npm install
+cd ..
+
+# build contracts
 forge build
 
-# Run local anvil (auto-selects a free port, or set ANVIL_PORT)
+# start local anvil
 npm run anvil
 
-# In another shell, deploy locally (uses ANVIL_RPC_URL if provided)
+# deploy locally
 npm run deploy:local
 
-# One command local play (auto picks free anvil/vite ports, deploys, starts SPA)
-npm run play:local
-
-# Stop local play services started by the script
-npm run dev:local:stop
-
-# Deploy to Sepolia with Forge
-forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
-
-# Or use the KMS-backed deploy flow
-npm run deploy:kms
-
-# Run the SPA
-cd app && npm install && npm run dev
+# start the frontend
+cd app && npm run dev
 ```
 
-## Import ABI
-
-```js
-import PlundrixABI from "./abi/PlundrixGame.json";
-```
-
----
-
-# Architecture Overview
-
-## Contract Diagram
-
-```
-┌───────────────────────────────┐
-│         PlundrixGame          │  (Single self-contained contract)
-│                               │
-│  ┌─────────────────────────┐  │
-│  │  RBAC (AccessControl)   │  │
-│  │  DEFAULT_ADMIN_ROLE     │  │
-│  │  GAME_MASTER_ROLE       │  │
-│  └─────────────────────────┘  │
-│                               │
-│  ┌─────────────────────────┐  │
-│  │  Game Lifecycle          │  │
-│  │  OPEN → ACTIVE → COMPLETE│ │
-│  └─────────────────────────┘  │
-│                               │
-│  ┌─────────────────────────┐  │
-│  │  Player Registration    │  │
-│  │  Built-in (2-4 players) │  │
-│  └─────────────────────────┘  │
-│                               │
-│  ┌─────────────────────────┐  │
-│  │  Turn Resolution        │  │
-│  │  Pseudo-random (block   │  │
-│  │  hash + keccak256)      │  │
-│  └─────────────────────────┘  │
-└───────────────────────────────┘
-```
-
-Plundrix currently ships as an upgradeable UUPS deployment:
-
-- **Proxy + implementation** -- the frontend points at the proxy address, while logic lives in the implementation
-- **On-chain pseudo-randomness** -- uses `keccak256(blockhash, gameID, round, timestamp, optionalEntropy, seed)`
-- **Emergency pause** -- `PAUSER_ROLE` can freeze mutating gameplay/admin actions while keeping reads available
-- **Upgradeable** -- `UPGRADER_ROLE` can upgrade the proxy to a new implementation
-- **Optional autoloop mode** -- `AUTO_RESOLVER_ROLE` can batch resolve timed-out rounds via `resolveTimedOutGames`
-- **Optional external entropy mode** -- `RANDOMIZER_ROLE` can provide round entropy via `provideRoundEntropy`
-- **Dormant fee config** -- a fixed 2% fee policy exists for future paid modes, but it can remain disabled and does not collect funds by itself
-- **No external dependencies** beyond OpenZeppelin
-
----
-
-# Deployment
+Or use the bundled local flow:
 
 ```bash
-# 1. Create .env at repo root
-# PRIVATE_KEY=0x...
-# MAINNET_RPC_URL=https://...
-# BASE_RPC_URL=https://...
-# SEPOLIA_RPC_URL=https://...
-# BASE_SEPOLIA_RPC_URL=https://...
-# ANVIL_RPC_URL=http://127.0.0.1:<anvil-port>   # optional override
-
-# 2a. Deploy to local anvil (default fallback key works out of the box)
-# If your anvil is on a non-default port, export ANVIL_RPC_URL first.
-npm run deploy:local
-# Writes:
-# - app/.env.local (VITE_CONTRACT_ADDRESS + VITE_FOUNDRY_RPC_URL)
-# - synced ABI files in abi/ and app/src/config/
-
-# 2b. Or deploy to Sepolia
-forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
-
-# KMS-backed Sepolia / mainnet path
-npm run deploy:kms
-
-# 2c. Or deploy to Ethereum mainnet / Base with a private key
-forge script script/DeployPlundrix.s.sol --rpc-url mainnet --broadcast
-forge script script/DeployPlundrix.s.sol --rpc-url base --broadcast
-
-# 3. Use the printed `PlundrixGame` proxy address in the app and integrations
+npm run play:local
 ```
 
-For live deployment posture and launch sequencing, see:
+That flow starts anvil, deploys the proxy, writes `app/.env.local`, and starts the frontend.
 
-- [docs/go-live-checklist.md](docs/go-live-checklist.md)
+## Testing
+
+```bash
+npm run test:agent
+npm run test:sol
+npm run test:js
+
+# or everything
+npm test
+```
+
+## Deployment
+
+### Local
+
+```bash
+npm run deploy:local
+```
+
+This writes:
+
+- `app/.env.local`
+- synced ABI files in `abi/`
+- synced ABI files in `app/src/config/`
+
+### Sepolia
+
+```bash
+forge script script/DeployPlundrix.s.sol --rpc-url sepolia --broadcast
+```
+
+Or the KMS-backed flow:
+
+```bash
+npm run deploy:kms
+```
+
+### Mainnet
+
+Planned launch posture:
+
+- `START_PAUSED=true`
+- `AUTO_RESOLVE_ENABLED=true`
+- `AUTO_RESOLVE_DELAY=300`
+- `REQUIRE_EXTERNAL_ENTROPY=true`
+- fee config deployed but disabled
+
+Runbook:
+
 - [docs/mainnet-runbook.md](docs/mainnet-runbook.md)
 
-The repo now ships helper scripts for:
+Checklist:
 
-- `npm run kms:address`
-- `npm run kms:fund`
-- `npm run deploy:kms`
-- `npm run autoloop:start`
+- [docs/go-live-checklist.md](docs/go-live-checklist.md)
 
----
+## Frontend
 
-# Frontend
+The app in `app/` is the player-facing UI.
 
-The SPA in `app/` is built with React, Vite, Wagmi, viem, and Tailwind CSS. Dark vault/bunker-themed UI with retro-terminal aesthetics -- uppercase text, monospace data, CRT-style panels.
+Current staging posture:
 
-## Pages
+- Sepolia-first
+- staging copy should say Sepolia is live
+- mainnet copy should remain free-play beta until intentionally changed
 
-- **`/`** -- Operations Console. Browse all games with status badges (OPEN/ACTIVE/COMPLETE), player counts, and current round. Create new games or join open ones.
-- **`/game/:gameId`** -- Routes between three views based on game state:
-  - **Lobby** -- Crew manifest showing registered operatives, join and start buttons
-  - **Vault Bench** -- Active gameplay interface (see below)
-  - **Game Over** -- Final briefing with winner and player stats
-
-## Vault Bench (Active Game)
-
-The main gameplay screen:
-
-- **Lock Rack** -- Visual vault face showing 5 lock states (cracked vs locked) with a progress bar
-- **Round Console** -- Current round number, phase indicator, 5-minute timeout dial, and "All Actions In" badge
-- **Player Dossiers** -- Compact cards for each operative showing locks cracked (dot indicators), tool count, stun status, and action submission seal
-- **Mission Coach** -- Round-aware recommendations and keyboard shortcut hints
-- **Action Panel** -- Three-column layout:
-  - **Pick** (Set Tension) -- Arc dial showing success chance (40% base + 15% per tool, max 95%, 0% if stunned)
-  - **Search** (Sweep Compartment) -- Signal meter showing chance (60% normal, 30% stunned)
-  - **Sabotage** (Cut Line) -- Target selector dropdown, always 100% success
-- **Resolve Sequence** -- Phased animation after round resolution with truthful `ActionOutcome` reasons (including failed and no-submission outcomes)
-- **Replay Timeline** -- Inspect prior resolved rounds and per-player outcome summaries
-- **Event Log** -- Real-time feed of on-chain game events
-
-## Contract Integration
-
-The SPA interacts with the PlundrixGame proxy address via custom Wagmi hooks. Reads poll at 3-5s intervals (game state, player state, all-actions-submitted checks). Writes handle game creation, registration, action submission, round resolution, pause-aware admin flows, and optional automation/entropy settings support. Gameplay UI now consumes explicit `ActionOutcome` events for accurate round reporting.
-
-The hosted staging posture is Sepolia-first. Mainnet copy and launch messaging should continue to present the product as free-play beta until explicitly changed.
-
-## Accessibility and Performance
-
-- **Readable mode toggle** -- larger typography and higher-contrast text for dense HUD readability
-- **Low-motion toggle** -- suppresses non-essential animations/transitions
-- **Keyboard shortcuts** -- `1` pick, `2` search, `3` sabotage target focus/quick-submit, `R` resolve
-- **Code splitting** -- lazy-loaded routes/manual + vendor chunking for faster first paint
-
-## Help System
-
-Built-in Field Manual modal with tabs: Mission Brief, Actions, Equipment, and How to Play.
-
-## Running
+Frontend env vars:
 
 ```bash
-cd app && npm install && npm run dev
+VITE_RPC_URL
+VITE_WALLETCONNECT_PROJECT_ID
+VITE_CONTRACT_ADDRESS
+VITE_AGENT_SERVICE_URL
+VITE_FOUNDRY_RPC_URL
+VITE_ENABLE_FOUNDRY
 ```
 
-For local play, start anvil first:
+Run:
 
 ```bash
-npm run anvil
+cd app
+npm run dev
 ```
 
-Or use the all-in-one local play starter:
+Build:
 
 ```bash
-npm run play:local
-```
-
-`play:local` automatically selects free ports for Anvil and Vite, deploys the contract, writes `app/.env.local`, and prints the app URL.
-
-To stop background local services started by the script:
-
-```bash
-npm run dev:local:stop
+cd app
+npm run build
 ```
 
 ## Agent Service
 
-An optional read/recommendation service lives in `agent-service/README.md`. It now also powers the free-play competition layer: seasonal points, leaderboards, badges, session indexing, profiles, and explicit agent-ladder segmentation.
+The optional service in `agent-service/` provides:
+
+- normalized game snapshots
+- per-player available-actions reads
+- history endpoints
+- recommendation endpoint
+- competition overview
+- leaderboard and agent-ladder endpoints
+- profiles, badges, and recent sessions
+
+Run:
 
 ```bash
 npm run agent:start
 ```
 
-## Deploy SPA on Railway
+More detail:
 
-Railway can deploy the React SPA as a web service from this repo.
+- [agent-service/README.md](agent-service/README.md)
 
-1. Create a new Railway project from the GitHub repo.
-2. In service settings set **Root Directory** to `/app` (this is a monorepo).
-3. Set build/start commands:
-   - **Build Command:** `npm run build`
-   - **Start Command:** `npm run start`
-4. Set environment variables in Railway:
-   - `VITE_CONTRACT_ADDRESS` (required, your deployed contract)
-   - `VITE_RPC_URL` (recommended for Sepolia/public read RPC)
-   - `VITE_WALLETCONNECT_PROJECT_ID` (optional)
-5. Deploy.
+## Main Operational Commands
 
-The start command serves the built SPA from `dist/` on `0.0.0.0:$PORT` with SPA route fallback.
-
-## Environment Variables
-
-```
-VITE_RPC_URL                     # Sepolia RPC endpoint (optional, falls back to public)
-VITE_WALLETCONNECT_PROJECT_ID    # WalletConnect project ID (optional)
-VITE_CONTRACT_ADDRESS            # Deployed PlundrixGame contract address
-VITE_AGENT_SERVICE_URL           # Competition/agent service base URL
-VITE_FOUNDRY_RPC_URL             # Local anvil RPC (auto-written by deploy/local play scripts)
-VITE_ENABLE_FOUNDRY              # Optional; set true to include Foundry chain outside local dev
+```bash
+npm run kms:address
+npm run kms:fund
+npm run deploy:kms
+npm run autoloop:start
 ```
 
-Launch-time deploy env vars:
+## Game Rules
 
-```
-DEFAULT_ADMIN_ADDRESS
-GAME_MASTER_ADDRESS
-PAUSER_ADDRESS
-UPGRADER_ADDRESS
-AUTO_RESOLVER_ADDRESS
-RANDOMIZER_ADDRESS
-START_PAUSED
-AUTO_RESOLVE_ENABLED
-AUTO_RESOLVE_DELAY
-REQUIRE_EXTERNAL_ENTROPY
-```
+### Action Outcomes
 
-Local deploy automation writes `app/.env.local` for you.
-Leave `VITE_ENABLE_FOUNDRY` unset in hosted environments to avoid browser localhost/private-network permission prompts.
+| Action | Effect | Success |
+| --- | --- | --- |
+| `PICK` | Attempt to crack a lock | `40%` base + `15%` per tool, max `95%`; auto-fails if stunned |
+| `SEARCH` | Look for tools | `60%`; `30%` if stunned |
+| `SABOTAGE` | Stun a rival and steal one tool if available | always succeeds |
 
----
+### Constants
 
-# Game Rules
+| Constant | Value |
+| --- | --- |
+| `TOTAL_LOCKS` | `5` |
+| `MAX_TOOLS` | `5` |
+| `MIN_GAME_PLAYERS` | `2` |
+| `MAX_GAME_PLAYERS` | `4` |
+| `ROUND_TIMEOUT` | `5 minutes` |
 
-## Actions
+### Win Condition
 
-Each round, every player submits one of three actions:
+First player to crack all five locks wins immediately.
 
-| Action | Effect | Success Rate |
-|--------|--------|-------------|
-| **PICK** | Attempt to crack a lock | Base 40% + 15% per tool held (max 95%). Auto-fails if stunned. |
-| **SEARCH** | Look for lockpicking tools | 60% (30% if stunned). Tools accumulate up to max 5. |
-| **SABOTAGE** | Target another player | Always succeeds. Stuns target for 1 round. Steals 1 tool if target has any. |
+## Contract Surface
 
-## Win Condition
+Core mutating functions:
 
-First player to crack all **5 locks** wins the game.
+- `createGame()`
+- `registerPlayer(uint256 gameId)`
+- `startGame(uint256 gameId)`
+- `submitAction(uint256 gameId, Action action, address sabotageTarget)`
+- `resolveRound(uint256 gameId)`
 
-## Stun Mechanic
+Operational/admin functions:
 
-- A sabotaged player is **stunned** for the following round
-- Stunned players: PICK auto-fails, SEARCH drops to 30% success
-- Stun clears after one round of being affected
-- Sabotage itself is not affected by stun
+- `pause()`
+- `unpause()`
+- `configureAutomation(...)`
+- `provideRoundEntropy(...)`
+- `resolveTimedOutGames(...)`
+- `configureFee(...)`
 
-## Round Resolution Order
+Useful views:
 
-1. **PICK and SEARCH** actions resolve first (using current stun state)
-2. **Existing stuns** are cleared
-3. **SABOTAGE** actions resolve (applying new stuns for next round, stealing tools)
-4. **Winner check** -- if any player has cracked all 5 locks, game ends
-5. **Round advances** if no winner
+- `getGameInfo(...)`
+- `getPlayerState(...)`
+- `allActionsSubmitted(...)`
+- `getAutomationSettings()`
+- `getFeeSettings()`
+- `previewFee(...)`
+- `getRoundEntropy(...)`
+- `totalGames()`
 
-## Constants
+## Additional Docs
 
-| Constant | Value | Description |
-|----------|-------|-------------|
-| `TOTAL_LOCKS` | 5 | Locks to crack to win |
-| `MAX_TOOLS` | 5 | Maximum tools a player can hold |
-| `MAX_GAME_PLAYERS` | 4 | Maximum players per game |
-| `MIN_GAME_PLAYERS` | 2 | Minimum players to start |
-| `ROUND_TIMEOUT` | 5 minutes | Time before round can resolve without all actions |
-
----
-
-# Game Lifecycle
-
-```
- ┌──────────┐    startGame()    ┌──────────┐    resolveRound()   ┌──────────┐
- │   OPEN   │ ───────────────→  │  ACTIVE  │  ───────────────→  │ COMPLETE │
- └──────────┘                   └──────────┘   (winner found)    └──────────┘
-      │                              │
-  createGame()                  submitAction()
-  registerPlayer()              resolveRound()
-                                  (loops until winner)
-```
-
-1. **Create** -- Anyone calls `createGame()` to create a new game (state: `OPEN`)
-2. **Register** -- Players call `registerPlayer(gameID)` to join (2-4 players)
-3. **Start** -- Any registered player (or game master) calls `startGame(gameID)` (state: `OPEN` -> `ACTIVE`)
-4. **Play** -- Each round:
-   - All players call `submitAction(gameID, action, target)`
-   - Anyone calls `resolveRound(gameID)` when all actions are in (or timeout reached)
-5. **Win** -- When a player cracks all 5 locks (state: `ACTIVE` → `COMPLETE`)
-
----
-
-# Function Reference
-
-## Game Lifecycle
-
-### `createGame() → uint256 gameID`
-
-Create a new game. No role required.
-
-### `registerPlayer(uint256 gameID)`
-
-Join an open game. Reverts if game is not `OPEN`, is full, or caller already registered.
-
-### `startGame(uint256 gameID)`
-
-Start the game. Callable by any registered player or `GAME_MASTER_ROLE`. Reverts if fewer than 2 players.
-
-## Player Actions
-
-### `submitAction(uint256 gameID, Action action, address sabotageTarget)`
-
-Submit an action for the current round. Must be a registered player. Each player submits once per round.
-
-- `action`: `1` = PICK, `2` = SEARCH, `3` = SABOTAGE
-- `sabotageTarget`: Target address (only checked for SABOTAGE, ignored otherwise)
-
-## Round Resolution
-
-### `resolveRound(uint256 gameID)`
-
-Resolve the current round. Can be called by anyone. Requires either all actions submitted or round timeout reached.
-
-## Admin Controls
-
-### `pause()`
-
-Callable by `PAUSER_ROLE`. Freezes mutating gameplay and automation functions while leaving reads available.
-
-### `unpause()`
-
-Callable by `PAUSER_ROLE`. Restores normal operation.
-
-### `configureAutomation(bool autoResolveEnabled, uint256 autoResolveDelay, bool requireExternalEntropy)`
-
-Configure optional autoloop + entropy mode. Callable by `GAME_MASTER_ROLE`.
-
-- `autoResolveEnabled`: enables batch timed-out round resolution flow
-- `autoResolveDelay`: minimum seconds from round start before autoloop can resolve (must be `>= ROUND_TIMEOUT`)
-- `requireExternalEntropy`: forces `provideRoundEntropy` before round resolution
-
-### `provideRoundEntropy(uint256 gameID, uint256 round, uint256 entropy)`
-
-Inject optional round entropy (for VRF-worker style integrations). Callable by `RANDOMIZER_ROLE`.
-
-### `resolveTimedOutGames(uint256[] gameIDs) -> uint256 resolvedCount`
-
-Batch resolves timed-out games when autoloop is enabled. Callable by `AUTO_RESOLVER_ROLE`.
-
-### `configureFee(bool feeEnabled, address feeRecipient)`
-
-Configure the dormant 2% protocol fee policy for future paid modes. Callable by `GAME_MASTER_ROLE`.
-
-- this does not charge users by itself
-- current intended mainnet posture is `feeEnabled = false`
-- Sepolia may keep it enabled for testing
-
-## View Functions
-
-### `getPlayerState(uint256 gameID, address playerAddr) → (uint256 locksCracked, uint256 tools, bool stunned, bool registered, bool actionSubmitted)`
-
-Get full player state. Returns zeroed values for unregistered addresses.
-
-### `getGameInfo(uint256 gameID) → (GameState state, uint256 currentRound, uint256 playerCount, uint256 roundStartTime, address winner)`
-
-Get high-level game info. `GameState`: `0` = OPEN, `1` = ACTIVE, `2` = COMPLETE.
-
-### `getPlayerAddress(uint256 gameID, uint256 playerIndex) → address`
-
-Get a player's address by 1-based index.
-
-### `allActionsSubmitted(uint256 gameID) → bool`
-
-Check if all players have submitted actions for the current round.
-
-### `canAutoResolve(uint256 gameID) -> bool`
-
-Returns whether the given game currently satisfies autoloop resolution conditions.
-
-### `getAutomationSettings() -> (bool autoResolveEnabled, uint256 autoResolveDelay, bool requireExternalEntropy)`
-
-Returns current automation + entropy mode settings.
-
-### `getFeeSettings() -> (bool feeEnabled, uint256 feeBps, address feeRecipient)`
-
-Returns the current fee configuration. The fee basis points are fixed at `200` (2%).
-
-### `previewFee(uint256 amount) -> (uint256 feeAmount, uint256 netAmount)`
-
-Returns the fee and net amount for a hypothetical paid flow. If fee mode is disabled, this returns `(0, amount)`.
-
-### `getRoundEntropy(uint256 gameID, uint256 round) -> uint256`
-
-Returns stored external entropy for a game round (0 means none provided).
-
-### `totalGames() → uint256`
-
-Total number of games created.
-
----
-
-# Event Reference
-
-| Event | Parameters | When |
-|-------|-----------|------|
-| `GameCreated` | `gameID`, `creator`, `timeStamp` | New game created |
-| `PlayerJoined` | `gameID`, `player`, `playerIndex`, `timeStamp` | Player registered |
-| `GameStarted` | `gameID`, `timeStamp` | Game transitioned to ACTIVE |
-| `ActionSubmitted` | `gameID`, `player`, `action`, `sabotageTarget`, `round`, `timeStamp` | Player submitted an action |
-| `ActionOutcome` | `gameID`, `round`, `player`, `action`, `success`, `reason`, `locksCracked`, `tools`, `stunned`, `sabotageTarget`, `timeStamp` | Per-player truthful round outcome |
-| `RoundResolved` | `gameID`, `round`, `timeStamp` | Round finished resolving |
-| `RoundAutoResolved` | `gameID`, `round`, `resolver`, `timeStamp` | Round resolved by autoloop worker |
-| `LockCracked` | `gameID`, `player`, `totalCracked`, `timeStamp` | Player cracked a lock |
-| `ToolFound` | `gameID`, `player`, `totalTools`, `timeStamp` | Player found a tool |
-| `PlayerSabotaged` | `gameID`, `attacker`, `victim`, `timeStamp` | Player sabotaged another |
-| `PlayerStunned` | `gameID`, `player`, `timeStamp` | Player was stunned |
-| `GameWon` | `gameID`, `winner`, `rounds`, `timeStamp` | Player won the game |
-| `AutomationSettingsUpdated` | `autoResolveEnabled`, `autoResolveDelay`, `requireExternalEntropy`, `updatedBy`, `timeStamp` | Optional automation settings changed |
-| `RoundEntropyProvided` | `gameID`, `round`, `entropy`, `provider`, `timeStamp` | External entropy supplied for a round |
-| `FeeSettingsUpdated` | `feeEnabled`, `feeBps`, `feeRecipient`, `updatedBy`, `timeStamp` | Dormant fee policy changed |
-
-Gameplay events include `gameID` as an indexed parameter for efficient per-game filtering.
-
----
-
-# Integration Example
-
-```js
-import { createPublicClient, createWalletClient, http, parseAbi } from "viem";
-import { sepolia } from "viem/chains";
-import PlundrixABI from "./abi/PlundrixGame.json";
-
-const PLUNDRIX_ADDRESS = "0x..."; // deployed address
-
-// Read game state
-const gameInfo = await publicClient.readContract({
-  address: PLUNDRIX_ADDRESS,
-  abi: PlundrixABI,
-  functionName: "getGameInfo",
-  args: [gameID],
-});
-
-// Register as a player
-await walletClient.writeContract({
-  address: PLUNDRIX_ADDRESS,
-  abi: PlundrixABI,
-  functionName: "registerPlayer",
-  args: [gameID],
-});
-
-// Submit a PICK action (action enum: 1=PICK, 2=SEARCH, 3=SABOTAGE)
-await walletClient.writeContract({
-  address: PLUNDRIX_ADDRESS,
-  abi: PlundrixABI,
-  functionName: "submitAction",
-  args: [gameID, 1, "0x0000000000000000000000000000000000000000"],
-});
-
-// Submit a SABOTAGE action targeting another player
-await walletClient.writeContract({
-  address: PLUNDRIX_ADDRESS,
-  abi: PlundrixABI,
-  functionName: "submitAction",
-  args: [gameID, 3, targetPlayerAddress],
-});
-
-// Listen for game events
-publicClient.watchContractEvent({
-  address: PLUNDRIX_ADDRESS,
-  abi: PlundrixABI,
-  eventName: "LockCracked",
-  onLogs: (logs) => {
-    console.log("Lock cracked!", logs);
-  },
-});
-
-// Resolve the round (anyone can call)
-await walletClient.writeContract({
-  address: PLUNDRIX_ADDRESS,
-  abi: PlundrixABI,
-  functionName: "resolveRound",
-  args: [gameID],
-});
-```
-
+- [docs/go-live-checklist.md](docs/go-live-checklist.md)
+- [docs/mainnet-runbook.md](docs/mainnet-runbook.md)
+- [docs/legal-notes.md](docs/legal-notes.md)
