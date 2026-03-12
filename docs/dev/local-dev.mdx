@@ -1,0 +1,244 @@
+---
+title: Local Development
+description: Run the full Plundrix stack locally — Anvil, contracts, frontend, and worker.
+---
+
+# Local Development
+
+Run the complete Plundrix stack on your machine for development and testing.
+
+---
+
+## Prerequisites
+
+- **Node.js** 20+
+- **Foundry** (forge, anvil, cast) — [install](https://book.getfoundry.sh/getting-started/installation)
+- **Git**
+
+---
+
+## Quick Start
+
+The fastest way to get everything running:
+
+```bash
+# Clone and install
+git clone https://github.com/LuckyMachines/plundrix.git
+cd plundrix
+
+npm install
+cd app && npm install && cd ..
+
+# Start everything (Anvil + deploy + frontend)
+npm run play:local
+```
+
+This runs `dev:local:start` which:
+1. Starts an Anvil instance on port 18645
+2. Deploys the contract to local Anvil
+3. Writes the contract address to `app/.env.local`
+4. Starts the Vite dev server
+
+---
+
+## Manual Setup
+
+If you prefer to run components individually:
+
+### 1. Start Anvil
+
+```bash
+npm run anvil
+# or directly:
+anvil --port 18645
+```
+
+### 2. Build Contracts
+
+```bash
+forge build
+```
+
+### 3. Deploy to Local Anvil
+
+```bash
+npm run deploy:local
+```
+
+This deploys the implementation + proxy and writes the address to `app/.env.local`.
+
+### 4. Sync ABI
+
+```bash
+npm run sync:abi
+```
+
+Copies the compiled ABI from `out/` to `app/src/config/PlundrixGame.json`.
+
+### 5. Start Frontend
+
+```bash
+cd app
+npm run dev
+```
+
+Opens at `http://localhost:5173`.
+
+---
+
+## Testing
+
+### Solidity Tests (Forge)
+
+```bash
+forge test           # Run all
+forge test -vv       # Verbose output
+forge test -vvvv     # Full trace
+forge test --match-test test_stakesGame  # Run specific test
+```
+
+Current test suite: **23 tests** covering:
+- Game creation, registration, start
+- Action submission and round resolution
+- Stun mechanics and tool theft
+- Timeout resolution with default moves
+- STAKES mode: entry fees, prize distribution, withdrawal
+- Pause controls and access control
+- Proxy upgrade storage preservation
+
+### JavaScript Tests (Vitest)
+
+```bash
+npm run test:js
+```
+
+Starts a temporary Anvil instance, deploys the contract, and runs integration tests. Covers:
+- Full deployment and role verification
+- Game lifecycle end-to-end
+- STAKES mode with ETH flow
+- Default moves for AFK players
+- Input validation and error cases
+
+### All Tests
+
+```bash
+npm test
+```
+
+Runs agent tests, Forge tests, and JS tests sequentially.
+
+---
+
+## Project Structure
+
+```
+plundrix/
+├── contracts/
+│   └── PlundrixGame.sol          # Main game contract
+├── test/
+│   ├── PlundrixGame.t.sol        # Forge tests
+│   └── plundrix.test.js          # Vitest integration tests
+├── script/
+│   ├── DeployPlundrix.s.sol      # Forge deploy script
+│   └── UpgradePlundrix.s.sol     # Forge upgrade script
+├── ops/
+│   ├── autoloop-worker.mjs       # Autoloop resolution worker
+│   ├── deploy-kms.mjs            # KMS-backed deploy
+│   ├── upgrade-kms.mjs           # KMS-backed upgrade
+│   ├── kms-lib.mjs               # GCP KMS signing library
+│   ├── kms-address.mjs           # Print KMS wallet address
+│   └── kms-fund.mjs              # Fund KMS wallet
+├── app/
+│   ├── src/
+│   │   ├── components/           # React components
+│   │   ├── hooks/                # wagmi hooks
+│   │   ├── config/               # Contract ABI + address
+│   │   ├── lib/                  # Constants, formatting, utilities
+│   │   ├── pages/                # Route pages
+│   │   └── context/              # React contexts
+│   ├── scripts/
+│   │   └── serve-dist.mjs        # Production static server
+│   └── railway.toml              # Railway deploy config
+├── docs/
+│   ├── dev/                      # Developer documentation (MDX)
+│   ├── legal-notes.md            # Legal posture reference
+│   ├── mainnet-runbook.md        # Mainnet deployment guide
+│   └── go-live-checklist.md      # Launch checklist
+└── agent-service/                # Optional AI agent players
+```
+
+---
+
+## Environment Variables
+
+### Root `.env`
+
+```bash
+SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+PRIVATE_KEY=0x...                    # For Forge script deploys
+ANVIL_RPC_URL=http://127.0.0.1:18645
+```
+
+### `app/.env`
+
+```bash
+VITE_CONTRACT_ADDRESS=0x...          # Proxy address
+VITE_RPC_URL=https://...             # Read RPC
+VITE_WALLETCONNECT_PROJECT_ID=       # Optional WalletConnect
+```
+
+### Worker / KMS (production)
+
+```bash
+CHAIN=sepolia
+RPC_URL=https://...
+CONTRACT_ADDRESS=0x...
+GCP_PROJECT=racerverse-custody
+GCP_KMS_LOCATION=us-east1
+GCP_KMS_KEYRING=ethereum-keys
+GCP_KMS_KEY=autoloop-deployer
+POLL_MS=15000
+ENTROPY_SOURCE_URL=https://api.drand.sh/public/latest
+```
+
+---
+
+## Interacting with Local Anvil
+
+Anvil comes with 10 pre-funded accounts. The deploy script uses account 0 as the deployer/admin.
+
+### Cast Commands
+
+```bash
+# Check total games
+cast call $CONTRACT_ADDRESS "totalGames()" --rpc-url http://127.0.0.1:18645
+
+# Create a game (as account 0)
+cast send $CONTRACT_ADDRESS "createGame()" \
+  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+  --rpc-url http://127.0.0.1:18645
+
+# Register player (as account 1)
+cast send $CONTRACT_ADDRESS "registerPlayer(uint256)" 1 \
+  --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d \
+  --rpc-url http://127.0.0.1:18645
+
+# Create a STAKES game
+cast send $CONTRACT_ADDRESS "createGame(uint8,uint256)" 1 10000000000000000 \
+  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+  --rpc-url http://127.0.0.1:18645
+
+# Register with entry fee for STAKES
+cast send $CONTRACT_ADDRESS "registerPlayer(uint256)" 2 \
+  --value 0.01ether \
+  --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d \
+  --rpc-url http://127.0.0.1:18645
+```
+
+### Time Manipulation
+
+```bash
+# Skip 5 minutes (trigger timeout)
+cast rpc anvil_increaseTime 301 --rpc-url http://127.0.0.1:18645
+cast rpc anvil_mine 1 --rpc-url http://127.0.0.1:18645
+```

@@ -1,0 +1,50 @@
+---
+title: Plundrix Developer Documentation
+description: Build on Plundrix — an on-chain multiplayer heist game with skill-based competition and prize pools.
+---
+
+# Plundrix Developer Docs
+
+Plundrix is an on-chain multiplayer heist game where 2-4 players race to crack a vault with 5 locks.
+Each round, players secretly choose an action (Pick, Search, or Sabotage), submit it on-chain,
+and outcomes resolve deterministically via smart contract logic and on-chain randomness.
+
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Frontend (React + Vite + wagmi)                    │
+│  Reads contract state, submits player transactions  │
+└──────────────────────┬──────────────────────────────┘
+                       │ JSON-RPC
+┌──────────────────────▼──────────────────────────────┐
+│  PlundrixGame.sol (UUPS Proxy)                      │
+│  Game logic, prize pool, access control             │
+└──────────────────────┬──────────────────────────────┘
+                       │
+       ┌───────────────┼───────────────┐
+       │               │               │
+┌──────▼─────┐  ┌──────▼─────┐  ┌──────▼──────┐
+│  Autoloop  │  │  Entropy   │  │  Agent      │
+│  Worker    │  │  (drand)   │  │  Service    │
+│  (KMS)     │  │            │  │  (optional) │
+└────────────┘  └────────────┘  └─────────────┘
+```
+
+| Layer | Tech | Purpose |
+|-------|------|---------|
+| Contract | Solidity 0.8.17, OpenZeppelin UUPS | Game state, actions, prize distribution |
+| Frontend | React 19, Vite, wagmi, viem | Player interface |
+| Autoloop | Node.js, GCP KMS | Resolves timed-out STAKES games |
+| Entropy | drand beacon | External randomness for fair outcomes |
+| Agent Service | Node.js | Optional AI players for matchmaking |
+
+## Quick Links
+
+- [Contract Reference](/dev/contract) — Functions, events, enums, and storage layout
+- [Game Modes](/dev/game-modes) — FREE vs STAKES, entry fees, and prize pools
+- [Game Lifecycle](/dev/lifecycle) — From creation to resolution to payout
+- [Actions & Mechanics](/dev/mechanics) — Pick, Search, Sabotage, stun, and default moves
+- [Integration Guide](/dev/integration) — Build a client, bot, or indexer against Plundrix
+- [Local Development](/dev/local-dev) — Run the full stack locally
+- [Deployment & Upgrades](/dev/deployment) — Sepolia, mainnet, KMS, and proxy upgrades

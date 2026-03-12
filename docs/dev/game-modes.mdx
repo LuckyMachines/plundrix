@@ -1,0 +1,153 @@
+---
+title: Game Modes
+description: FREE vs STAKES — how entry fees, prize pools, and the autoloop worker interact with each mode.
+---
+
+# Game Modes
+
+Plundrix supports two game modes that share identical gameplay mechanics but differ in economic behavior.
+
+## FREE Mode
+
+The default mode. No ETH changes hands.
+
+```solidity
+// Create a free game (original API — backward compatible)
+uint256 gameID = plundrix.createGame();
+
+// Or explicitly
+uint256 gameID = plundrix.createGame(GameMode.FREE, 0);
+```
+
+**Characteristics:**
+
+- No entry fee — `registerPlayer` must be called with `msg.value == 0`
+- No prize pool — winner gets bragging rights only
+- No autoloop — the worker skips FREE games entirely
+- **Default moves** handle AFK players — anyone can call `resolveRound()` after timeout and absent players auto-PICK
+- Games may stall if no one triggers resolution, but they will always converge toward completion via default moves
+
+**When to use:** Casual play, testing, learning the mechanics, environments where ETH transactions are impractical.
+
+## STAKES Mode
+
+Entry fees fund a prize pool. Winner takes the pot minus a 2% protocol fee.
+
+```solidity
+// Requires fee system to be enabled first
+// (GAME_MASTER_ROLE calls configureFee(true, feeRecipient))
+
+uint256 gameID = plundrix.createGame(GameMode.STAKES, 0.01 ether);
+```
+
+**Characteristics:**
+
+- Entry fee set at creation — every player pays the same amount on registration
+- Prize pot accumulates as players join: `pot = entryFee * playerCount`
+- Autoloop worker monitors and resolves timed-out STAKES games
+- Winner's prize credited to `_withdrawable` on game completion
+- Protocol fee (2%) credited to `_feeRecipient`
+- Pull-pattern withdrawal — winner calls `withdraw()` to claim
+
+**When to use:** Competitive play, skill-based competition with real stakes.
+
+### Prerequisites for STAKES
+
+Before any STAKES game can be created, the fee system must be enabled:
+
+```solidity
+// GAME_MASTER_ROLE only
+plundrix.configureFee(true, feeRecipientAddress);
+```
+
+If `_feeEnabled` is `false` or `_feeRecipient` is `address(0)`, creating a STAKES game reverts.
+
+---
+
+## Prize Distribution
+
+When a STAKES game completes (a player cracks all 5 locks):
+
+```
+Total Pot = entryFee * playerCount
+Fee       = pot * 200 / 10000  (2%)
+Prize     = pot - fee
+```
+
+Both the winner's prize and the fee recipient's share are credited atomically in the same transaction that resolves the winning round.
+
+### Example: 4-Player Game at 0.01 ETH
+
+| | Amount |
+|--|--------|
+| Total pot | 0.04 ETH |
+| Protocol fee (2%) | 0.0008 ETH |
+| Winner prize | 0.0392 ETH |
+
+### Withdrawal
+
+Prizes use a **pull pattern** (not push) to avoid reentrancy and gas issues:
+
+```solidity
+// Check balance
+uint256 balance = plundrix.withdrawableBalance(msg.sender);
+
+// Withdraw
+plundrix.withdraw(); // sends full balance to msg.sender
+```
+
+The `withdraw()` function:
+1. Reads `_withdrawable[msg.sender]`
+2. Zeros the balance (CEI pattern)
+3. Transfers ETH via low-level `call`
+4. Emits `Withdrawal(account, amount, timestamp)`
+
+---
+
+## Default Moves (AFK Handling)
+
+Both modes benefit from default moves, but they serve different purposes:
+
+| Mode | AFK Handling | Who Resolves |
+|------|-------------|--------------|
+| FREE | Default PICK on timeout | Any player or observer |
+| STAKES | Default PICK on timeout | Autoloop worker (automatic) |
+
+When `resolveRound()` is called after the 5-minute timeout, any player who hasn't submitted an action automatically receives a **PICK** action.
+
+**Why PICK?**
+- PICK advances the game toward completion (crack locks)
+- SEARCH only gathers tools — slower convergence
+- SABOTAGE requires a target player choice — any deterministic pick would create unfair bias
+- Default PICK ensures stalled games always converge
+
+A `DefaultActionAssigned` event is emitted for each AFK player so indexers and UIs can distinguish voluntary actions from defaults.
+
+---
+
+## Mode Detection
+
+### On-Chain
+
+```solidity
+(GameMode mode, uint256 entryFee, uint256 pot) = plundrix.getGameMode(gameID);
+```
+
+### JavaScript (viem)
+
+```javascript
+const [mode, entryFee, pot] = await publicClient.readContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'getGameMode',
+  args: [gameId],
+});
+
+// mode: 0 = FREE, 1 = STAKES
+// entryFee: BigInt in wei
+// pot: BigInt in wei (current accumulated pot)
+```
+
+### Backward Compatibility
+
+Games created with the original `createGame()` (no arguments) are always FREE. The `_gameMode` mapping defaults to `0` (FREE) for any game ID, including games created before the upgrade. No migration is needed.

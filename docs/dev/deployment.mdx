@@ -1,0 +1,250 @@
+---
+title: Deployment & Upgrades
+description: Deploy Plundrix to Sepolia or mainnet, upgrade the proxy, and manage KMS signers.
+---
+
+# Deployment & Upgrades
+
+Plundrix uses a UUPS proxy pattern. The proxy address stays the same across upgrades — only the implementation behind it changes.
+
+---
+
+## Architecture
+
+```
+┌─────────────────────┐
+│  ERC1967Proxy       │  ← Players interact with this address
+│  (permanent)        │
+└─────────┬───────────┘
+          │ delegatecall
+┌─────────▼───────────┐
+│  PlundrixGame       │  ← Replaceable implementation
+│  (upgradeable)      │
+└─────────────────────┘
+```
+
+**Key principle:** Storage lives in the proxy. Logic lives in the implementation. Upgrading swaps the logic without touching the data.
+
+---
+
+## Deploy Methods
+
+### Local (Anvil)
+
+```bash
+npm run deploy:local
+```
+
+Uses a Forge script with the default Anvil private key. Writes the proxy address to `app/.env.local`.
+
+### Sepolia / Mainnet (KMS)
+
+```bash
+# Set environment
+export CHAIN=sepolia
+export RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+export GCP_KMS_KEY=autoloop-deployer
+
+# Optional overrides (defaults to KMS signer address)
+export DEFAULT_ADMIN_ADDRESS=0x...
+export GAME_MASTER_ADDRESS=0x...
+export PAUSER_ADDRESS=0x...
+export UPGRADER_ADDRESS=0x...
+export AUTO_RESOLVER_ADDRESS=0x...
+export RANDOMIZER_ADDRESS=0x...
+
+# Deploy
+npm run deploy:kms
+```
+
+This:
+1. Deploys the `PlundrixGame` implementation via KMS-signed transaction
+2. Deploys the `ERC1967Proxy` pointing to the implementation, with `initialize()` encoded
+3. Optionally calls `configureAutomation()` if auto-resolve or entropy is enabled
+
+### Forge Script (Private Key)
+
+```bash
+PRIVATE_KEY=0x... \
+forge script script/DeployPlundrix.s.sol \
+  --rpc-url https://ethereum-sepolia-rpc.publicnode.com \
+  --broadcast
+```
+
+---
+
+## Upgrades
+
+### When to Upgrade
+
+Upgrade the proxy when you've made changes to `PlundrixGame.sol` and want them live. Common reasons:
+- New features (like STAKES mode)
+- Bug fixes
+- Gas optimizations
+
+### Upgrade Safety Checklist
+
+Before upgrading:
+
+1. **Storage layout** — New variables must go *before* `__gap`. Decrement `__gap` size accordingly. Never reorder or remove existing storage variables.
+2. **Function selectors** — New functions are fine. Changed signatures on existing functions will break callers.
+3. **Tests pass** — `forge test` and `npm run test:js` both green.
+4. **Build clean** — `forge build` with no errors.
+
+### Upgrade via KMS
+
+```bash
+export CHAIN=sepolia
+export RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+export PROXY_ADDRESS=0x1ff715d46470b4024d88a12838e08a60855f0ae2
+export GCP_KMS_KEY=autoloop-deployer
+
+node ops/upgrade-kms.mjs
+```
+
+Output:
+```
+chain=sepolia
+signer=0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79
+proxy=0x1ff715d46470b4024d88a12838e08a60855f0ae2
+implementationTx=0x...
+implementation=0x...
+upgradeTx=0x...
+Upgrade complete. No data migration needed.
+```
+
+### Upgrade via Forge Script
+
+```bash
+PROXY_ADDRESS=0x... \
+PRIVATE_KEY=0x... \
+forge script script/UpgradePlundrix.s.sol \
+  --rpc-url https://ethereum-sepolia-rpc.publicnode.com \
+  --broadcast
+```
+
+### Post-Upgrade Verification
+
+```bash
+# Sync ABI so frontend has new function signatures
+node scripts/sync-abi.mjs
+
+# Verify new functions are accessible
+cast call $PROXY_ADDRESS "getGameMode(uint256)" 1 --rpc-url $RPC_URL
+cast call $PROXY_ADDRESS "withdrawableBalance(address)" $ADDRESS --rpc-url $RPC_URL
+```
+
+---
+
+## KMS Wallet Management
+
+Plundrix uses GCP Cloud KMS for signing production transactions. Keys are HSM-backed secp256k1.
+
+### Current Keys
+
+| Key Name | Address | Purpose |
+|----------|---------|---------|
+| `autoloop-deployer` | `0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79` | Deploy, upgrade, autoloop, admin |
+| `plundrix-deployer` | `0xC7c627eC982988679D5D15E8ff9579fc0f0AB42f` | Future dedicated deployer |
+| `mint-signer` | `0x1d5DDB1431C0D15E5E211b0C5810177d38E4A971` | NFT minting (racerverse) |
+
+### Create a New Key
+
+```bash
+gcloud kms keys create KEY_NAME \
+  --keyring=ethereum-keys \
+  --location=us-east1 \
+  --project=racerverse-custody \
+  --purpose=asymmetric-signing \
+  --default-algorithm=ec-sign-secp256k1-sha256 \
+  --protection-level=hsm
+```
+
+### Get Key Address
+
+```bash
+GCP_KMS_KEY=KEY_NAME npm run kms:address
+```
+
+### Fund a Key
+
+```bash
+GCP_KMS_KEY=KEY_NAME npm run kms:fund
+```
+
+---
+
+## Post-Deploy Configuration
+
+After deploying, configure the contract before unpausing:
+
+### 1. Enable Fee System (for STAKES)
+
+```bash
+cast send $PROXY_ADDRESS \
+  "configureFee(bool,address)" true $FEE_RECIPIENT \
+  --private-key $PRIVATE_KEY \
+  --rpc-url $RPC_URL
+```
+
+### 2. Configure Automation
+
+```bash
+cast send $PROXY_ADDRESS \
+  "configureAutomation(bool,uint256,bool)" true 300 true \
+  --private-key $PRIVATE_KEY \
+  --rpc-url $RPC_URL
+```
+
+### 3. Start Worker
+
+```bash
+npm run autoloop:start
+```
+
+The worker only resolves STAKES games. FREE games rely on manual resolution with default moves for AFK players.
+
+### 4. Unpause
+
+```bash
+cast send $PROXY_ADDRESS "unpause()" \
+  --private-key $PRIVATE_KEY \
+  --rpc-url $RPC_URL
+```
+
+---
+
+## Railway Deployment (Frontend)
+
+The frontend deploys to Railway from the `app/` directory.
+
+### Configuration
+
+`app/railway.toml` handles build caching and start command:
+
+```toml
+[build]
+builder = "nixpacks"
+buildCommand = "npm install && npm run build"
+
+[build.nixpacksPlan.phases.install]
+cacheDirectories = ["node_modules"]
+
+[build.nixpacksPlan.phases.build]
+cacheDirectories = ["node_modules", ".vite"]
+
+[deploy]
+startCommand = "node scripts/serve-dist.mjs"
+```
+
+### Environment Variables (Railway)
+
+Set in the Railway dashboard:
+
+```
+VITE_CONTRACT_ADDRESS=0x1ff715d46470b4024d88a12838e08a60855f0ae2
+VITE_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+PORT=8080
+```
+
+Pushes to `main` auto-deploy if connected to Railway.

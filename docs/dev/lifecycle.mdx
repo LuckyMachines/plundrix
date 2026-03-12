@@ -1,0 +1,238 @@
+---
+title: Game Lifecycle
+description: The full lifecycle of a Plundrix game — from creation through rounds to prize payout.
+---
+
+# Game Lifecycle
+
+Every Plundrix game follows the same state machine regardless of mode.
+
+```
+OPEN ──▶ ACTIVE ──▶ COMPLETE
+ │         │            │
+ │  registerPlayer   GameWon
+ │  startGame        PrizeDistributed (STAKES)
+ │                   withdraw() (STAKES)
+ createGame
+```
+
+---
+
+## Phase 1: Creation (OPEN)
+
+A game is created by anyone. It starts in the `OPEN` state with zero players.
+
+```javascript
+// FREE game
+const hash = await walletClient.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'createGame',
+});
+
+// STAKES game
+const hash = await walletClient.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'createGame',
+  args: [1, parseEther('0.01')],  // GameMode.STAKES, 0.01 ETH entry
+});
+```
+
+**Events:** `GameCreated`, and additionally `GameCreatedWithStakes` for STAKES games.
+
+---
+
+## Phase 2: Registration (OPEN)
+
+Players join the game. Each call to `registerPlayer` increments `playerCount` and assigns a 1-based index.
+
+```javascript
+// FREE
+await walletClient.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'registerPlayer',
+  args: [gameId],
+});
+
+// STAKES — send exact entry fee
+await walletClient.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'registerPlayer',
+  args: [gameId],
+  value: parseEther('0.01'),
+});
+```
+
+**Constraints:**
+- Max 4 players per game
+- Cannot register twice
+- STAKES: `msg.value` must exactly equal `entryFee`
+- FREE: `msg.value` must be `0`
+
+**Events:** `PlayerJoined(gameID, player, playerIndex, timestamp)`
+
+---
+
+## Phase 3: Start (OPEN → ACTIVE)
+
+Any registered player or `GAME_MASTER_ROLE` can start the game once 2+ players have joined.
+
+```javascript
+await walletClient.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'startGame',
+  args: [gameId],
+});
+```
+
+Sets `currentRound = 1` and `roundStartTime = block.timestamp`.
+
+**Events:** `GameStarted(gameID, timestamp)`
+
+---
+
+## Phase 4: Rounds (ACTIVE)
+
+Each round has two phases: **Submit** and **Resolve**.
+
+### Submit Phase
+
+Each player submits exactly one action per round:
+
+```javascript
+await walletClient.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'submitAction',
+  args: [gameId, action, sabotageTarget],
+});
+```
+
+| Action | Value | `sabotageTarget` |
+|--------|-------|-----------------|
+| PICK | 1 | `address(0)` |
+| SEARCH | 2 | `address(0)` |
+| SABOTAGE | 3 | Target player address |
+
+**Events:** `ActionSubmitted`
+
+### Resolve Phase
+
+Resolution is triggered when either:
+- All players have submitted (`allActionsSubmitted(gameID) == true`), OR
+- 5 minutes have elapsed since `roundStartTime`
+
+```javascript
+await walletClient.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'resolveRound',
+  args: [gameId],
+});
+```
+
+**Resolution order:**
+1. **Default moves** — AFK players (timed-out only) get auto-PICK
+2. **PICK and SEARCH** — Resolved against current stun state
+3. **Clear stuns** — All existing stuns removed
+4. **SABOTAGE** — Processed, applying new stuns for next round
+5. **Clear pending actions** — Reset for next round
+6. **Winner check** — First player with `locksCracked >= 5` wins
+7. **Advance round** — Increment `currentRound`, reset `roundStartTime`
+
+**Events per player:** `ActionOutcome` (and optionally `DefaultActionAssigned`, `LockCracked`, `ToolFound`, `PlayerSabotaged`, `PlayerStunned`)
+
+**Events per round:** `RoundResolved`
+
+---
+
+## Phase 5: Completion (COMPLETE)
+
+When a player cracks their 5th lock, the game ends immediately during resolution.
+
+```
+game.state = COMPLETE
+game.winner = winningPlayer
+```
+
+**Events:** `GameWon(gameID, winner, rounds, timestamp)`
+
+### STAKES Prize Distribution
+
+For STAKES games, prize distribution happens atomically in the same transaction:
+
+```
+pot → zero (CEI pattern)
+feeAmount = pot * 200 / 10000
+_withdrawable[feeRecipient] += feeAmount
+_withdrawable[winner] += pot - feeAmount
+```
+
+**Events:** `PrizeDistributed(gameID, winner, prizeAmount, feeAmount, timestamp)`
+
+### Withdrawal
+
+The winner (and fee recipient) can claim their ETH at any time after the game completes:
+
+```javascript
+// Check balance
+const balance = await publicClient.readContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'withdrawableBalance',
+  args: [address],
+});
+
+// Withdraw
+await walletClient.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi,
+  functionName: 'withdraw',
+});
+```
+
+**Events:** `Withdrawal(account, amount, timestamp)`
+
+---
+
+## Timing Diagram
+
+```
+Round N:
+├─ roundStartTime ──────────────────────── roundStartTime + 300s
+│  ▲ Submit window                         ▲ Timeout
+│  │                                       │
+│  Players call submitAction()             Anyone can call resolveRound()
+│                                          AFK players auto-PICK
+│
+│  If all submit early ──▶ resolveRound() available immediately
+│
+Round N+1:
+├─ new roundStartTime ─────────────────── ...
+```
+
+---
+
+## State Queries
+
+Poll these to keep your UI or bot in sync:
+
+```javascript
+// Game state
+const [state, round, playerCount, roundStartTime, winner] =
+  await readContract('getGameInfo', [gameId]);
+
+// Player state
+const [locksCracked, tools, stunned, registered, actionSubmitted] =
+  await readContract('getPlayerState', [gameId, playerAddress]);
+
+// All submitted?
+const allIn = await readContract('allActionsSubmitted', [gameId]);
+
+// Mode info
+const [mode, entryFee, pot] = await readContract('getGameMode', [gameId]);
+```

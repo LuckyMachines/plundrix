@@ -1,0 +1,303 @@
+---
+title: Integration Guide
+description: Build a client, bot, or indexer against the Plundrix smart contract.
+---
+
+# Integration Guide
+
+Plundrix is a standard Solidity contract behind a UUPS proxy. You can interact with it using any EVM-compatible library.
+
+---
+
+## ABI
+
+The compiled ABI is available at:
+
+```
+out/PlundrixGame.sol/PlundrixGame.json    # Forge artifact (full)
+app/src/config/PlundrixGame.json          # Frontend copy (ABI only)
+```
+
+After building, sync the ABI to the frontend:
+
+```bash
+forge build
+node scripts/sync-abi.mjs
+```
+
+---
+
+## Reading Game State
+
+### viem (Recommended)
+
+```javascript
+import { createPublicClient, http } from 'viem';
+import { sepolia } from 'viem/chains';
+import PlundrixGameABI from './PlundrixGame.json';
+
+const PLUNDRIX_ADDRESS = '0x1ff715d46470b4024d88a12838e08a60855f0ae2';
+
+const client = createPublicClient({
+  chain: sepolia,
+  transport: http(),
+});
+
+// Total games
+const total = await client.readContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'totalGames',
+});
+
+// Game info
+const [state, round, playerCount, roundStartTime, winner] =
+  await client.readContract({
+    address: PLUNDRIX_ADDRESS,
+    abi: PlundrixGameABI,
+    functionName: 'getGameInfo',
+    args: [1n],
+  });
+
+// Game mode
+const [mode, entryFee, pot] = await client.readContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'getGameMode',
+  args: [1n],
+});
+
+// Player state
+const [locksCracked, tools, stunned, registered, actionSubmitted] =
+  await client.readContract({
+    address: PLUNDRIX_ADDRESS,
+    abi: PlundrixGameABI,
+    functionName: 'getPlayerState',
+    args: [1n, playerAddress],
+  });
+```
+
+### ethers.js
+
+```javascript
+import { Contract, JsonRpcProvider } from 'ethers';
+
+const provider = new JsonRpcProvider('https://ethereum-sepolia-rpc.publicnode.com');
+const plundrix = new Contract(PLUNDRIX_ADDRESS, PlundrixGameABI, provider);
+
+const total = await plundrix.totalGames();
+const [state, round, playerCount, roundStartTime, winner] =
+  await plundrix.getGameInfo(1n);
+```
+
+---
+
+## Writing Transactions
+
+### Create and Play a Game
+
+```javascript
+import { createWalletClient, http, parseEther } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { sepolia } from 'viem/chains';
+
+const account = privateKeyToAccount('0x...');
+const wallet = createWalletClient({
+  account,
+  chain: sepolia,
+  transport: http(),
+});
+
+// 1. Create a STAKES game
+const createHash = await wallet.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'createGame',
+  args: [1, parseEther('0.01')],  // STAKES, 0.01 ETH
+});
+
+// 2. Register (with entry fee for STAKES)
+const joinHash = await wallet.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'registerPlayer',
+  args: [gameId],
+  value: parseEther('0.01'),
+});
+
+// 3. Start (once 2+ players joined)
+await wallet.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'startGame',
+  args: [gameId],
+});
+
+// 4. Submit action
+await wallet.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'submitAction',
+  args: [gameId, 1, '0x0000000000000000000000000000000000000000'],
+  // action: 1 = PICK, sabotageTarget: zero address
+});
+
+// 5. Resolve round (when all submitted or timed out)
+await wallet.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'resolveRound',
+  args: [gameId],
+});
+
+// 6. Withdraw winnings (after game completes)
+await wallet.writeContract({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  functionName: 'withdraw',
+});
+```
+
+---
+
+## Event Indexing
+
+### Watch for Game Events
+
+```javascript
+const unwatch = client.watchContractEvent({
+  address: PLUNDRIX_ADDRESS,
+  abi: PlundrixGameABI,
+  eventName: 'ActionOutcome',
+  args: { gameID: gameId },
+  onLogs: (logs) => {
+    for (const log of logs) {
+      const { player, action, success, reason, locksCracked, tools } = log.args;
+      console.log(`${player}: action=${action} success=${success} reason=${reason}`);
+    }
+  },
+});
+```
+
+### Key Events for Indexers
+
+| Event | Use Case |
+|-------|----------|
+| `GameCreated` | Track new games |
+| `GameCreatedWithStakes` | Track STAKES games specifically |
+| `PlayerJoined` | Track registrations |
+| `GameStarted` | Game becomes active |
+| `ActionSubmitted` | Player committed an action |
+| `ActionOutcome` | Full resolution result per player |
+| `DefaultActionAssigned` | AFK player got auto-PICK |
+| `RoundResolved` | Round complete, next round started |
+| `GameWon` | Game ended, winner determined |
+| `PrizeDistributed` | Prize and fee amounts (STAKES only) |
+| `Withdrawal` | Player claimed their winnings |
+
+### Parsing ActionOutcome
+
+The `ActionOutcome` event contains the complete post-action state:
+
+```javascript
+event ActionOutcome(
+  uint256 indexed gameID,
+  uint256 indexed round,
+  address indexed player,
+  Action action,        // What action was taken
+  bool success,         // Did it succeed?
+  OutcomeReason reason, // Why it succeeded/failed
+  uint256 locksCracked, // Player's locks after this action
+  uint256 tools,        // Player's tools after this action
+  bool stunned,         // Player's stun state after this action
+  address sabotageTarget,
+  uint256 timeStamp
+);
+```
+
+---
+
+## Building a Bot
+
+A minimal game-playing bot needs to:
+
+1. **Find open games** — iterate `totalGames()` and check `getGameInfo()` for `state == OPEN`
+2. **Join** — call `registerPlayer()` (with value for STAKES)
+3. **Wait for start** — poll `getGameInfo()` for `state == ACTIVE`
+4. **Each round:**
+   - Read own state via `getPlayerState()`
+   - Read opponents' states for strategic decisions
+   - Choose and submit an action
+   - Wait for `allActionsSubmitted()` or timeout
+   - Call `resolveRound()` (or wait for someone else to)
+5. **On win** — call `withdraw()` (STAKES only)
+
+### Simple Strategy Example
+
+```javascript
+function chooseAction(myState, opponentStates, round) {
+  const { locksCracked, tools, stunned } = myState;
+
+  // If someone is about to win, sabotage them
+  const leader = opponentStates.find(o => o.locksCracked >= 4);
+  if (leader) {
+    return { action: 3, target: leader.address }; // SABOTAGE
+  }
+
+  // If we have enough tools, pick
+  if (tools >= 3) {
+    return { action: 1, target: zeroAddress }; // PICK
+  }
+
+  // Otherwise search for tools
+  return { action: 2, target: zeroAddress }; // SEARCH
+}
+```
+
+### Polling vs Events
+
+For bots, polling is simpler and more reliable:
+
+```javascript
+// Poll every 5 seconds
+setInterval(async () => {
+  const [state, round, , roundStartTime] = await readContract('getGameInfo', [gameId]);
+  if (state !== 1) return; // not active
+
+  const myState = await readContract('getPlayerState', [gameId, myAddress]);
+  if (myState[4]) return; // already submitted
+
+  const { action, target } = chooseAction(myState, ...);
+  await writeContract('submitAction', [gameId, action, target]);
+}, 5000);
+```
+
+---
+
+## Multicall for Efficiency
+
+Use viem's `multicall` to batch reads:
+
+```javascript
+const results = await client.multicall({
+  contracts: [
+    { address: PLUNDRIX_ADDRESS, abi, functionName: 'getGameInfo', args: [gameId] },
+    { address: PLUNDRIX_ADDRESS, abi, functionName: 'getGameMode', args: [gameId] },
+    { address: PLUNDRIX_ADDRESS, abi, functionName: 'getPlayerState', args: [gameId, player1] },
+    { address: PLUNDRIX_ADDRESS, abi, functionName: 'getPlayerState', args: [gameId, player2] },
+    { address: PLUNDRIX_ADDRESS, abi, functionName: 'allActionsSubmitted', args: [gameId] },
+  ],
+});
+```
+
+---
+
+## Network Configuration
+
+| Network | Chain ID | RPC |
+|---------|----------|-----|
+| Sepolia | 11155111 | `https://ethereum-sepolia-rpc.publicnode.com` |
+| Mainnet | 1 | TBD |
+| Local (Anvil) | 31337 | `http://127.0.0.1:18645` |
+
+The proxy address is the same across upgrades — only the implementation changes behind it.

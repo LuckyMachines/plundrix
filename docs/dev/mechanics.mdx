@@ -1,0 +1,186 @@
+---
+title: Actions & Mechanics
+description: Deep dive into Pick, Search, Sabotage, stun mechanics, tool economy, and probability tables.
+---
+
+# Actions & Mechanics
+
+Each round, every player chooses exactly one action. Actions resolve simultaneously — no player has information about others' choices when submitting.
+
+---
+
+## Pick (Action = 1)
+
+Attempt to crack the next lock on the vault.
+
+**Success formula:**
+
+```
+chance = min(40 + tools * 15, 95)
+```
+
+| Tools | Success Rate |
+|-------|-------------|
+| 0 | 40% |
+| 1 | 55% |
+| 2 | 70% |
+| 3 | 85% |
+| 4+ | 95% |
+
+**If stunned:** Automatically fails. No roll is made. Returns `PICK_FAILED_STUNNED`.
+
+**On success:** `locksCracked++` and emits `LockCracked`. If `locksCracked >= 5`, the game ends.
+
+**Strategy notes:**
+- At 0 tools, PICK is a coin flip. Search first unless you're behind.
+- At 3+ tools, PICK is strongly favored. Stop searching and start cracking.
+- The 95% cap means there's always a 5% chance of failure, even fully tooled.
+
+---
+
+## Search (Action = 2)
+
+Search a compartment for lockpicking equipment.
+
+**Success rate:**
+- Normal: **60%**
+- Stunned: **30%**
+
+**On success:** `tools++` (if below `MAX_TOOLS = 5`) and emits `ToolFound`.
+
+**Failure modes:**
+- `SEARCH_FAILED_ROLL` — RNG miss
+- `SEARCH_FAILED_MAX_TOOLS` — Already at 5 tools
+
+**Strategy notes:**
+- Search is the investment action — tools compound your PICK success rate.
+- Even when stunned, Search still has a 30% chance (unlike PICK which auto-fails).
+- Diminishing returns: going from 3→4 tools only gains +10% pick chance, but costs a round.
+
+---
+
+## Sabotage (Action = 3)
+
+Target another player. Always succeeds (no RNG). Costs your entire action for the round.
+
+**Effects:**
+1. **Stun** — Target is stunned for the *next* round (not the current one)
+2. **Tool theft** — If target has tools and attacker is below max, steal one tool
+
+**Outcomes:**
+- `SABOTAGE_SUCCESS_STEAL` — Stunned target + stole a tool
+- `SABOTAGE_SUCCESS_STUN_ONLY` — Stunned target, but attacker already at max tools
+- `SABOTAGE_SUCCESS_NO_TOOL` — Stunned target, but target had no tools to steal
+
+**Strategy notes:**
+- Sabotage is the defensive/aggressive action. Use it to slow down the leader.
+- The tool theft is a two-swing: you gain one, they lose one. A 2-tool net shift.
+- Costs you a round of progress — only worth it if the target is threatening to win.
+- Multiple players can sabotage the same target in one round (stun doesn't stack, but each attacker can steal a tool).
+
+---
+
+## Stun Mechanic
+
+Stun is the core disruption mechanic. It lasts exactly one round.
+
+**Timeline:**
+```
+Round N: Player A sabotages Player B
+         → B's PICK/SEARCH resolves normally this round
+         → B gets stunned flag set
+
+Round N+1: B is stunned
+           → PICK auto-fails
+           → SEARCH success drops to 30%
+           → Stun clears at end of resolution
+
+Round N+2: B is no longer stunned
+```
+
+**Key details:**
+- Stun is applied in **Phase 3** of resolution (after PICK/SEARCH in Phase 1)
+- Existing stuns are cleared in **Phase 2** (between PICK/SEARCH and SABOTAGE)
+- This means stun always affects the *next* round, never the current one
+- A player can be sabotaged by multiple opponents — the stun doesn't stack, but each can steal a tool
+
+---
+
+## Default Moves (AFK Handling)
+
+When `resolveRound()` is called after timeout and a player hasn't submitted:
+
+1. Player is assigned `Action.PICK` with `sabotageTarget = address(0)`
+2. `DefaultActionAssigned` event is emitted
+3. The PICK resolves normally through the standard resolution pipeline
+
+**Why PICK and not another action?**
+- PICK is the only action that can end the game (crack locks)
+- SEARCH only accumulates tools — slower convergence
+- SABOTAGE requires choosing a target — any deterministic selection creates unfair bias
+
+This ensures every game will eventually complete, even with fully AFK players.
+
+---
+
+## Randomness
+
+Each action's success is determined by pseudorandom number generation:
+
+```solidity
+uint256 rand = uint256(keccak256(abi.encodePacked(
+    blockhash(block.number - 1),
+    gameID,
+    round,
+    block.timestamp,
+    entropy,   // external entropy if provided
+    seed       // player index
+))) % 100;
+```
+
+The result is a number 0-99, compared against the action's success threshold.
+
+**External entropy:** When `requireExternalEntropy` is enabled, the `RANDOMIZER_ROLE` must call `provideRoundEntropy()` before a round can resolve. This entropy is sourced from the [drand](https://drand.love/) randomness beacon.
+
+**Security note:** On-chain randomness is not perfectly secure against block producers. For high-value STAKES games, external entropy from drand provides stronger guarantees. See the [mainnet runbook](/docs/mainnet-runbook) for risk analysis.
+
+---
+
+## Probability Cheat Sheet
+
+### Pick Success by Tool Count
+
+| Tools | Normal | Stunned |
+|-------|--------|---------|
+| 0 | 40% | 0% (auto-fail) |
+| 1 | 55% | 0% (auto-fail) |
+| 2 | 70% | 0% (auto-fail) |
+| 3 | 85% | 0% (auto-fail) |
+| 4 | 95% | 0% (auto-fail) |
+| 5 | 95% | 0% (auto-fail) |
+
+### Search Success
+
+| State | Rate |
+|-------|------|
+| Normal | 60% |
+| Stunned | 30% |
+
+### Sabotage
+
+| Condition | Rate |
+|-----------|------|
+| Always | 100% (stun applied) |
+| Tool theft | Automatic if target has tools and attacker below max |
+
+### Expected Rounds to Win (Solo PICK, No Interference)
+
+| Tools | E[rounds to crack 5 locks] |
+|-------|---------------------------|
+| 0 | ~12.5 rounds |
+| 1 | ~9.1 rounds |
+| 2 | ~7.1 rounds |
+| 3 | ~5.9 rounds |
+| 4+ | ~5.3 rounds |
+
+*Formula: 5 / successRate. Actual games vary due to opponent sabotage and search time.*
