@@ -1,0 +1,20 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install && npm run build"
+
+[build.nixpacksPlan.phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[build.nixpacksPlan.phases.install]
+cmds = ["npm install"]
+cacheDirectories = ["node_modules"]
+
+[build.nixpacksPlan.phases.build]
+cmds = ["npm run build"]
+cacheDirectories = ["node_modules", ".vite"]
+
+[deploy]
+startCommand = "node scripts/serve-dist.mjs"
+healthcheckPath = "/"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
