@@ -10,9 +10,19 @@ export default function Footer() {
           <span className="tracking-wider uppercase">
             {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'No network'}
           </span>
-          <span className="tracking-[0.2em] text-tungsten/60 uppercase font-display font-semibold">
-            Plundrix
-          </span>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tracking-wider uppercase hover:text-vault-text transition-colors"
+            >
+              Developer Docs
+            </a>
+            <span className="tracking-[0.2em] text-tungsten/60 uppercase font-display font-semibold">
+              Plundrix
+            </span>
+          </div>
         </div>
         <p className="text-center text-vault-text-dim">
           Made with love by Lucky Machines, LLC. Copyright 2026.

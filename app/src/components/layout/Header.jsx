@@ -33,6 +33,14 @@ export default function Header({ onHelpClick }) {
             >
               Sessions
             </Link>
+            <a
+              href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded border border-vault-border px-2.5 py-1 hover:bg-vault-panel/70"
+            >
+              Docs
+            </a>
           </nav>
         </div>
         <div className="flex items-center gap-3">
