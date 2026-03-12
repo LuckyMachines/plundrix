@@ -5,6 +5,7 @@ import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { useAllActionsSubmitted } from '../../hooks/useAllActionsSubmitted';
 import { useGameActions } from '../../hooks/useGameActions';
+import { useTxToast } from '../../hooks/useTxToast';
 import { useGameEvents } from '../../hooks/useGameEvents';
 import { ROUND_TIMEOUT } from '../../lib/constants';
 import LockRack from './LockRack';
@@ -34,6 +35,7 @@ export default function VaultBench({ gameId }) {
     isConfigured,
     configError,
   } = useGameActions();
+  useTxToast({ hash: resolveHash, isPending: resolvePending, isConfirming: resolveConfirming, isSuccess: resolveSuccess, error: resolveError }, 'Round resolution');
   const { events, latestRoundEvents, roundHistory } = useGameEvents(gameId);
 
   // Resolution sequence visibility

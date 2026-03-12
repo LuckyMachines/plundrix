@@ -3,6 +3,7 @@ import { useAccount } from 'wagmi';
 import { parseEther } from 'viem';
 import { useTotalGames } from '../../hooks/useTotalGames';
 import { useGameActions } from '../../hooks/useGameActions';
+import { useTxToast } from '../../hooks/useTxToast';
 import { GameMode } from '../../lib/constants';
 import GameCard from './GameCard';
 import Spinner from '../shared/Spinner';
@@ -22,6 +23,7 @@ export default function GameBrowser() {
     isConfigured,
     configError,
   } = useGameActions();
+  useTxToast({ hash, isPending, isConfirming, isSuccess, error: txError }, 'Game creation');
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createMode, setCreateMode] = useState(GameMode.FREE);

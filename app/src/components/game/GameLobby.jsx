@@ -5,6 +5,7 @@ import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { useHasRole } from '../../hooks/useHasRole';
 import { useGameActions } from '../../hooks/useGameActions';
+import { useTxToast } from '../../hooks/useTxToast';
 import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS, IS_CONTRACT_CONFIGURED } from '../../config/contract';
 import { truncateAddress } from '../../lib/formatting';
 import TxStatus from '../shared/TxStatus';
@@ -51,6 +52,7 @@ export default function GameLobby({ gameId }) {
     isConfigured,
     configError,
   } = useGameActions();
+  useTxToast({ hash, isPending, isConfirming, isSuccess, error }, 'Lobby');
 
   if (loadingInfo) {
     return (

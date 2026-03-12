@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Action } from '../../lib/constants';
 import { useGameActions } from '../../hooks/useGameActions';
+import { useTxToast } from '../../hooks/useTxToast';
 import TxStatus from '../shared/TxStatus';
 import PickControl from './PickControl';
 import SearchControl from './SearchControl';
@@ -18,6 +19,7 @@ export default function ActionPanel({
   currentAddress,
 }) {
   const { submitAction, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
+  useTxToast({ hash, isPending, isConfirming, isSuccess, error }, 'Action');
 
   const spectator = !!currentAddress && !registered;
   const disconnected = !currentAddress;

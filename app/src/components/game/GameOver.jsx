@@ -5,6 +5,7 @@ import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { useGameActions } from '../../hooks/useGameActions';
+import { useTxToast } from '../../hooks/useTxToast';
 import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS, IS_CONTRACT_CONFIGURED } from '../../config/contract';
 import { truncateAddress, formatBigInt } from '../../lib/formatting';
 import { TOTAL_LOCKS } from '../../lib/constants';
@@ -72,6 +73,7 @@ export default function GameOver({ gameId }) {
   const { winner, currentRound, playerCount, isLoading, error } = useGameInfo(gameId);
   const { players } = useGamePlayers(gameId, playerCount);
   const { withdraw, hash: withdrawHash, isPending: withdrawPending, isConfirming: withdrawConfirming, isSuccess: withdrawSuccess, error: withdrawError } = useGameActions();
+  useTxToast({ hash: withdrawHash, isPending: withdrawPending, isConfirming: withdrawConfirming, isSuccess: withdrawSuccess, error: withdrawError }, 'Withdrawal');
 
   // Read game mode info
   const { data: gameModeData } = useReadContract({

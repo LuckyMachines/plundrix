@@ -2,12 +2,14 @@ import { useAccount, useReadContract } from 'wagmi';
 import { formatEther } from 'viem';
 import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS, IS_CONTRACT_CONFIGURED } from '../config/contract';
 import { useGameActions } from '../hooks/useGameActions';
+import { useTxToast } from '../hooks/useTxToast';
 import TxStatus from './shared/TxStatus';
 import Spinner from './shared/Spinner';
 
 export default function WithdrawPanel() {
   const { address } = useAccount();
   const { withdraw, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
+  useTxToast({ hash, isPending, isConfirming, isSuccess, error }, 'Withdrawal');
 
   const { data: balance, isLoading } = useReadContract({
     address: PLUNDRIX_ADDRESS,
