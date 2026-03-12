@@ -141,6 +141,17 @@ async function exec(walletIndex, functionName, args = []) {
   return publicClient.waitForTransactionReceipt({ hash });
 }
 
+async function execWithValue(walletIndex, functionName, args = [], value = 0n) {
+  const hash = await wallets[walletIndex].writeContract({
+    address: contractAddress,
+    abi,
+    functionName,
+    args,
+    value,
+  });
+  return publicClient.waitForTransactionReceipt({ hash });
+}
+
 async function read(functionName, args = []) {
   return publicClient.readContract({
     address: contractAddress,
@@ -678,8 +689,8 @@ describe('PlundrixGame', () => {
       expect(outcomes.length).toBe(2);
       const missingPlayer = outcomes.find((e) => e.args.player === addr(2));
       expect(missingPlayer).toBeDefined();
-      expect(Number(missingPlayer.args.action)).toBe(ACTION_NONE);
-      expect(Number(missingPlayer.args.reason)).toBe(OUTCOME_NO_SUBMISSION);
+      // AFK player now gets default PICK instead of NO_SUBMISSION
+      expect(Number(missingPlayer.args.action)).toBe(PICK);
     });
 
     it('non-submitting player is unaffected (no crash)', async () => {
@@ -830,6 +841,167 @@ describe('PlundrixGame', () => {
       await expect(
         exec(1, 'submitAction', [completedGameId, PICK, zeroAddress])
       ).rejects.toThrow(/Game not active/);
+    });
+  });
+
+  // --- Stakes Mode ---
+
+  describe('stakes mode', () => {
+    const ENTRY_FEE = 10000000000000000n; // 0.01 ETH
+    let gameId;
+
+    beforeAll(async () => {
+      // Enable fee collection before creating stakes games
+      await exec(GAME_MASTER, 'configureFee', [true, addr(DEFAULT_ADMIN)]);
+    });
+
+    afterAll(async () => {
+      await exec(GAME_MASTER, 'configureFee', [false, addr(DEFAULT_ADMIN)]);
+    });
+
+    it('creates a STAKES game with entry fee', async () => {
+      const receipt = await exec(GAME_MASTER, 'createGame', [1, ENTRY_FEE]);
+      const events = getEvents(receipt, 'GameCreated');
+      expect(events.length).toBe(1);
+      gameId = events[0].args.gameID;
+    });
+
+    it('getGameMode returns correct mode, entryFee, and initial pot', async () => {
+      const mode = await read('getGameMode', [gameId]);
+      expect(Number(mode[0])).toBe(1); // STAKES
+      expect(mode[1]).toBe(ENTRY_FEE);
+      expect(mode[2]).toBe(0n); // pot starts at 0
+    });
+
+    it('registers players with exact entry fee', async () => {
+      await execWithValue(1, 'registerPlayer', [gameId], ENTRY_FEE);
+      await execWithValue(2, 'registerPlayer', [gameId], ENTRY_FEE);
+      const info = await read('getGameInfo', [gameId]);
+      expect(info[2]).toBe(2n);
+    });
+
+    it('pot accumulates entry fees', async () => {
+      const mode = await read('getGameMode', [gameId]);
+      expect(mode[2]).toBe(ENTRY_FEE * 2n);
+    });
+
+    it('plays stakes game to completion and winner can withdraw', async () => {
+      await exec(GAME_MASTER, 'startGame', [gameId]);
+
+      let gameState = 1;
+      let round = 0;
+
+      while (gameState === 1 && round < 100) {
+        await exec(1, 'submitAction', [gameId, PICK, zeroAddress]);
+        await exec(2, 'submitAction', [gameId, PICK, zeroAddress]);
+        await exec(0, 'resolveRound', [gameId]);
+        round++;
+
+        const info = await read('getGameInfo', [gameId]);
+        gameState = Number(info[0]);
+      }
+
+      expect(gameState).toBe(2); // COMPLETE
+
+      const info = await read('getGameInfo', [gameId]);
+      const winner = info[4];
+      expect(winner === addr(1) || winner === addr(2)).toBe(true);
+
+      // Winner should have withdrawable balance (pot minus 2% fee)
+      const winnerIndex = winner === addr(1) ? 1 : 2;
+      const balance = await read('withdrawableBalance', [winner]);
+      const expectedPrize = (ENTRY_FEE * 2n * 98n) / 100n; // 2% fee
+      expect(balance).toBe(expectedPrize);
+
+      // Withdraw
+      const receipt = await exec(winnerIndex, 'withdraw');
+      expect(receipt.status).toBe('success');
+
+      // Balance should be zero after withdrawal
+      const balanceAfter = await read('withdrawableBalance', [winner]);
+      expect(balanceAfter).toBe(0n);
+    });
+  });
+
+  // --- Default Move for AFK Players ---
+
+  describe('default move for AFK players', () => {
+    let gameId;
+
+    beforeAll(async () => {
+      gameId = await setupGame([1, 2]);
+    });
+
+    it('AFK player gets default PICK move on timeout instead of NO_SUBMISSION', async () => {
+      // Only player 1 submits
+      await exec(1, 'submitAction', [gameId, SEARCH, zeroAddress]);
+
+      // Advance past timeout
+      await testClient.increaseTime({ seconds: 301 });
+      await testClient.mine({ blocks: 1 });
+
+      const receipt = await exec(0, 'resolveRound', [gameId]);
+      const outcomes = getEvents(receipt, 'ActionOutcome');
+      expect(outcomes.length).toBe(2);
+
+      // Find the AFK player's outcome
+      const afkOutcome = outcomes.find((e) => e.args.player === addr(2));
+      expect(afkOutcome).toBeDefined();
+      // AFK player should get PICK (1) as default action, not ACTION_NONE (0)
+      expect(Number(afkOutcome.args.action)).toBe(PICK);
+    });
+
+    it('game advances normally after AFK default move', async () => {
+      const info = await read('getGameInfo', [gameId]);
+      expect(Number(info[0])).toBe(1); // still ACTIVE
+      expect(info[1]).toBe(2n); // round 2
+    });
+  });
+
+  // --- Free Game Rejects ETH ---
+
+  describe('free game rejects ETH', () => {
+    let gameId;
+
+    beforeAll(async () => {
+      const receipt = await exec(GAME_MASTER, 'createGame');
+      gameId = getEvents(receipt, 'GameCreated')[0].args.gameID;
+    });
+
+    it('reverts when registering with ETH on a free game', async () => {
+      await expect(
+        execWithValue(1, 'registerPlayer', [gameId], 10000000000000000n)
+      ).rejects.toThrow();
+    });
+  });
+
+  // --- Stakes Game Rejects Wrong Fee ---
+
+  describe('stakes game rejects wrong fee', () => {
+    const ENTRY_FEE = 10000000000000000n; // 0.01 ETH
+    const WRONG_FEE = 5000000000000000n; // 0.005 ETH
+    let gameId;
+
+    beforeAll(async () => {
+      await exec(GAME_MASTER, 'configureFee', [true, addr(DEFAULT_ADMIN)]);
+      const receipt = await exec(GAME_MASTER, 'createGame', [1, ENTRY_FEE]);
+      gameId = getEvents(receipt, 'GameCreated')[0].args.gameID;
+    });
+
+    afterAll(async () => {
+      await exec(GAME_MASTER, 'configureFee', [false, addr(DEFAULT_ADMIN)]);
+    });
+
+    it('reverts when registering with incorrect entry fee', async () => {
+      await expect(
+        execWithValue(1, 'registerPlayer', [gameId], WRONG_FEE)
+      ).rejects.toThrow();
+    });
+
+    it('reverts when registering with zero value on stakes game', async () => {
+      await expect(
+        exec(1, 'registerPlayer', [gameId])
+      ).rejects.toThrow();
     });
   });
 });

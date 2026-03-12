@@ -54,3 +54,10 @@ export const TOOL_NAMES = [
   'Shim',
   'Pick Gun',
 ];
+
+export const GameMode = { FREE: 0, STAKES: 1 };
+
+export const GAME_MODE_LABELS = {
+  [GameMode.FREE]: 'FREE',
+  [GameMode.STAKES]: 'STAKES',
+};

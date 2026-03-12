@@ -1,9 +1,11 @@
-import { useAccount } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
+import { formatEther } from 'viem';
 import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { useHasRole } from '../../hooks/useHasRole';
 import { useGameActions } from '../../hooks/useGameActions';
+import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS, IS_CONTRACT_CONFIGURED } from '../../config/contract';
 import { truncateAddress } from '../../lib/formatting';
 import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
@@ -17,6 +19,18 @@ export default function GameLobby({ gameId }) {
   const { players, isLoading: loadingPlayers } = useGamePlayers(gameId, count);
   const { registered: isRegistered, isLoading: loadingPlayer } = usePlayerState(gameId, address);
   const { hasRole: isGameMaster } = useHasRole(address);
+
+  // Read game mode info
+  const { data: gameModeData } = useReadContract({
+    address: PLUNDRIX_ADDRESS,
+    abi: PLUNDRIX_ABI,
+    functionName: 'getGameMode',
+    args: [gameId],
+    query: { enabled: IS_CONTRACT_CONFIGURED },
+  });
+  const [mode, entryFee, pot] = gameModeData || [0, 0n, 0n];
+  const isStakes = Number(mode) === 1;
+
   const canStart = !!address && (isGameMaster || isRegistered);
   const steps = [
     { label: 'Connect wallet', done: !!address },
@@ -58,13 +72,43 @@ export default function GameLobby({ gameId }) {
             #{gameId}
           </span>
         </div>
-        <span className="font-mono text-xs tracking-widest uppercase text-tungsten-bright border border-tungsten/30 rounded px-2 py-0.5 bg-tungsten/5">
-          Open
-        </span>
+        <div className="flex items-center gap-2">
+          {isStakes && (
+            <span className="font-mono text-xs tracking-widest uppercase text-signal-red border border-signal-red/30 rounded px-2 py-0.5 bg-signal-red/5">
+              Stakes
+            </span>
+          )}
+          <span className="font-mono text-xs tracking-widest uppercase text-tungsten-bright border border-tungsten/30 rounded px-2 py-0.5 bg-tungsten/5">
+            Open
+          </span>
+        </div>
       </div>
 
       {/* Body */}
       <div className="px-6 py-5 space-y-5">
+        {/* Stakes info */}
+        {isStakes && (
+          <div className="border border-signal-red/30 bg-signal-red/5 rounded p-3 space-y-1">
+            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-signal-red">
+              Stakes Mode
+            </h3>
+            <p className="font-mono text-xs text-vault-text">
+              Entry Fee: <span className="text-tungsten-bright">{formatEther(entryFee)} ETH</span>
+            </p>
+            <p className="font-mono text-xs text-vault-text">
+              Current Pot: <span className="text-tungsten-bright">{formatEther(pot)} ETH</span>
+            </p>
+          </div>
+        )}
+
+        {!isStakes && (
+          <div className="border border-vault-border/70 bg-vault-dark/30 rounded p-3">
+            <p className="font-mono text-xs text-vault-text-dim italic">
+              Free-play mode -- game may stall if players go AFK.
+            </p>
+          </div>
+        )}
+
         <div className="border border-vault-border/70 bg-vault-dark/40 rounded p-3">
           <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-vault-text-dim mb-2">
             Launch Checklist
@@ -127,7 +171,7 @@ export default function GameLobby({ gameId }) {
 
           {!isRegistered && address && (
             <button
-              onClick={() => registerPlayer(gameId)}
+              onClick={() => registerPlayer(gameId, isStakes ? entryFee : undefined)}
               disabled={!isConfigured || isPending || isConfirming}
               className="px-4 py-2 bg-tungsten/10 border border-tungsten/40 rounded text-tungsten text-xs font-mono tracking-widest uppercase
                          hover:bg-tungsten/20 hover:border-tungsten/60 transition-colors

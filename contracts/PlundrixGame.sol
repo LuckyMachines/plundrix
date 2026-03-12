@@ -47,6 +47,11 @@ contract PlundrixGame is
         SABOTAGE
     }
 
+    enum GameMode {
+        FREE,
+        STAKES
+    }
+
     enum GameState {
         OPEN,
         ACTIVE,
@@ -115,6 +120,11 @@ contract PlundrixGame is
     bool private _requireExternalEntropy;
     bool private _feeEnabled;
     address private _feeRecipient;
+
+    mapping(uint256 => GameMode) private _gameMode;
+    mapping(uint256 => uint256)  private _entryFee;
+    mapping(uint256 => uint256)  private _pot;
+    mapping(address => uint256)  private _withdrawable;
 
     modifier validGame(uint256 gameID) {
         require(_gameExists(gameID), "Game does not exist");
@@ -214,6 +224,32 @@ contract PlundrixGame is
         uint256 feeBps,
         address feeRecipient,
         address updatedBy,
+        uint256 timeStamp
+    );
+    event GameCreatedWithStakes(
+        uint256 indexed gameID,
+        address creator,
+        GameMode mode,
+        uint256 entryFee,
+        uint256 timeStamp
+    );
+    event PrizeDistributed(
+        uint256 indexed gameID,
+        address indexed winner,
+        uint256 prizeAmount,
+        uint256 feeAmount,
+        uint256 timeStamp
+    );
+    event Withdrawal(
+        address indexed account,
+        uint256 amount,
+        uint256 timeStamp
+    );
+    event DefaultActionAssigned(
+        uint256 indexed gameID,
+        uint256 indexed round,
+        address indexed player,
+        Action action,
         uint256 timeStamp
     );
 
@@ -384,16 +420,48 @@ contract PlundrixGame is
     }
 
     /**
+     * @notice Create a game with a specific mode and optional entry fee.
+     * @param mode FREE or STAKES.
+     * @param entryFee Per-player entry fee in wei (must be 0 for FREE).
+     * @return gameID The ID of the newly created game.
+     */
+    function createGame(GameMode mode, uint256 entryFee) external whenNotPaused returns (uint256 gameID) {
+        if (mode == GameMode.STAKES) {
+            require(entryFee > 0, "Stakes game requires entry fee");
+            require(_feeEnabled, "Fee system not enabled");
+            require(_feeRecipient != address(0), "Fee recipient not set");
+        } else {
+            require(entryFee == 0, "Free game cannot have entry fee");
+        }
+        _gameIdCounter.increment();
+        gameID = _gameIdCounter.current();
+        _games[gameID].state = GameState.OPEN;
+        _gameMode[gameID] = mode;
+        _entryFee[gameID] = entryFee;
+        emit GameCreated(gameID, msg.sender, block.timestamp);
+        if (mode == GameMode.STAKES) {
+            emit GameCreatedWithStakes(gameID, msg.sender, mode, entryFee, block.timestamp);
+        }
+    }
+
+    /**
      * @notice Register the caller as a player in an open game.
      * @param gameID The game to join.
      */
     function registerPlayer(
         uint256 gameID
-    ) external validGame(gameID) whenNotPaused {
+    ) external payable validGame(gameID) whenNotPaused {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.OPEN, "Game not open for registration");
         require(game.playerCount < MAX_GAME_PLAYERS, "Game is full");
         require(_playerIndex[gameID][msg.sender] == 0, "Already registered");
+
+        if (_gameMode[gameID] == GameMode.STAKES) {
+            require(msg.value == _entryFee[gameID], "Incorrect entry fee");
+            _pot[gameID] += msg.value;
+        } else {
+            require(msg.value == 0, "Free game does not accept ETH");
+        }
 
         game.playerCount++;
         uint256 idx = game.playerCount;
@@ -540,20 +608,29 @@ contract PlundrixGame is
             ];
 
             if (!pending.submitted) {
-                emit ActionOutcome(
-                    gameID,
-                    round,
-                    player.addr,
-                    Action.NONE,
-                    false,
-                    OutcomeReason.NO_SUBMISSION,
-                    player.locksCracked,
-                    player.tools,
-                    player.stunned,
-                    address(0),
-                    block.timestamp
-                );
-                continue;
+                if (timedOut) {
+                    // AFK player gets auto-PICK (never SABOTAGE — requires target choice)
+                    pending.action = Action.PICK;
+                    pending.sabotageTarget = address(0);
+                    pending.submitted = true;
+                    emit DefaultActionAssigned(gameID, round, player.addr, Action.PICK, block.timestamp);
+                    // Fall through to normal PICK resolution below
+                } else {
+                    emit ActionOutcome(
+                        gameID,
+                        round,
+                        player.addr,
+                        Action.NONE,
+                        false,
+                        OutcomeReason.NO_SUBMISSION,
+                        player.locksCracked,
+                        player.tools,
+                        player.stunned,
+                        address(0),
+                        block.timestamp
+                    );
+                    continue;
+                }
             }
 
             uint256 rand = _pseudoRandom(gameID, round, i);
@@ -659,6 +736,19 @@ contract PlundrixGame is
                     round,
                     block.timestamp
                 );
+
+                if (_gameMode[gameID] == GameMode.STAKES && _pot[gameID] > 0) {
+                    uint256 pot = _pot[gameID];
+                    _pot[gameID] = 0;
+                    uint256 feeAmount = 0;
+                    if (_feeEnabled && _feeRecipient != address(0)) {
+                        feeAmount = (pot * FEE_BPS) / BASIS_POINTS_DENOMINATOR;
+                        _withdrawable[_feeRecipient] += feeAmount;
+                    }
+                    _withdrawable[game.winner] += pot - feeAmount;
+                    emit PrizeDistributed(gameID, game.winner, pot - feeAmount, feeAmount, block.timestamp);
+                }
+
                 return;
             }
         }
@@ -984,5 +1074,26 @@ contract PlundrixGame is
         return true;
     }
 
-    uint256[48] private __gap;
+    // --- Withdraw & Stakes View ---
+
+    function withdraw() external {
+        uint256 amount = _withdrawable[msg.sender];
+        require(amount > 0, "Nothing to withdraw");
+        _withdrawable[msg.sender] = 0;
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Transfer failed");
+        emit Withdrawal(msg.sender, amount, block.timestamp);
+    }
+
+    function withdrawableBalance(address account) external view returns (uint256) {
+        return _withdrawable[account];
+    }
+
+    function getGameMode(uint256 gameID) external view validGame(gameID)
+        returns (GameMode mode, uint256 entryFee, uint256 pot)
+    {
+        return (_gameMode[gameID], _entryFee[gameID], _pot[gameID]);
+    }
+
+    uint256[44] private __gap;
 }

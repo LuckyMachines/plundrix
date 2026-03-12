@@ -124,6 +124,9 @@ async function tick() {
       continue;
     }
 
+    const [mode] = await readContract('getGameMode', [gameId]);
+    if (Number(mode) === 0) continue; // skip FREE games — they rely on default moves
+
     const allSubmitted = await readContract('allActionsSubmitted', [gameId]);
     const roundEntropy = requireExternalEntropy
       ? await readContract('getRoundEntropy', [gameId, currentRound])

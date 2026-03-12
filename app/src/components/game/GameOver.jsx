@@ -1,11 +1,15 @@
 import { Link } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
+import { formatEther } from 'viem';
 import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
+import { useGameActions } from '../../hooks/useGameActions';
+import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS, IS_CONTRACT_CONFIGURED } from '../../config/contract';
 import { truncateAddress, formatBigInt } from '../../lib/formatting';
 import { TOTAL_LOCKS } from '../../lib/constants';
 import Spinner from '../shared/Spinner';
+import TxStatus from '../shared/TxStatus';
 
 function PlayerRow({ gameId, playerAddr, winner }) {
   const { locksCracked, tools, isLoading } = usePlayerState(gameId, playerAddr);
@@ -67,6 +71,27 @@ export default function GameOver({ gameId }) {
   const { address } = useAccount();
   const { winner, currentRound, playerCount, isLoading, error } = useGameInfo(gameId);
   const { players } = useGamePlayers(gameId, playerCount);
+  const { withdraw, hash: withdrawHash, isPending: withdrawPending, isConfirming: withdrawConfirming, isSuccess: withdrawSuccess, error: withdrawError } = useGameActions();
+
+  // Read game mode info
+  const { data: gameModeData } = useReadContract({
+    address: PLUNDRIX_ADDRESS,
+    abi: PLUNDRIX_ABI,
+    functionName: 'getGameMode',
+    args: [gameId],
+    query: { enabled: IS_CONTRACT_CONFIGURED },
+  });
+  const [mode, entryFee, pot] = gameModeData || [0, 0n, 0n];
+  const isStakes = Number(mode) === 1;
+
+  // Read withdrawable balance for connected address
+  const { data: withdrawable } = useReadContract({
+    address: PLUNDRIX_ADDRESS,
+    abi: PLUNDRIX_ABI,
+    functionName: 'withdrawableBalance',
+    args: [address],
+    query: { enabled: !!address && IS_CONTRACT_CONFIGURED },
+  });
 
   const isCurrentUserWinner = winner?.toLowerCase() === address?.toLowerCase();
 
@@ -196,6 +221,55 @@ export default function GameOver({ gameId }) {
           </tbody>
         </table>
       </div>
+
+      {/* Stakes prize breakdown */}
+      {isStakes && (
+        <div className="border border-vault-border rounded bg-vault-panel overflow-hidden">
+          <div className="bg-vault-dark border-b border-vault-border px-4 py-2">
+            <span className="font-display text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+              Prize Breakdown
+            </span>
+          </div>
+          <div className="p-6 space-y-3">
+            <div className="flex justify-between font-mono text-xs">
+              <span className="text-vault-text-dim uppercase tracking-wider">Entry Fee</span>
+              <span className="text-vault-text">{formatEther(entryFee)} ETH</span>
+            </div>
+            <div className="flex justify-between font-mono text-xs">
+              <span className="text-vault-text-dim uppercase tracking-wider">Total Pot</span>
+              <span className="text-tungsten-bright">{formatEther(pot)} ETH</span>
+            </div>
+            {isCurrentUserWinner && withdrawable && withdrawable > 0n && (
+              <>
+                <div className="border-t border-vault-border pt-3 flex justify-between font-mono text-xs">
+                  <span className="text-vault-text-dim uppercase tracking-wider">Your Prize</span>
+                  <span className="text-oxide-green">{formatEther(withdrawable)} ETH</span>
+                </div>
+                <button
+                  onClick={() => withdraw()}
+                  disabled={withdrawPending || withdrawConfirming}
+                  className="w-full mt-2 py-2 rounded font-mono text-xs uppercase tracking-widest border border-oxide-green/40 bg-oxide-green/10 text-oxide-green hover:bg-oxide-green/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {withdrawPending || withdrawConfirming ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Spinner size="w-3 h-3" /> Claiming...
+                    </span>
+                  ) : (
+                    'Claim Prize'
+                  )}
+                </button>
+                <TxStatus
+                  hash={withdrawHash}
+                  isPending={withdrawPending}
+                  isConfirming={withdrawConfirming}
+                  isSuccess={withdrawSuccess}
+                  error={withdrawError}
+                />
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex items-center justify-center gap-4">

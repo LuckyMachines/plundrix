@@ -10,18 +10,31 @@ This runbook assumes:
 
 ## Why Prize Size Changes Risk
 
-This repo is currently planned as a free-play mainnet beta. There are no cash prizes in the launch plan.
+The game supports two modes: FREE (no entry fees, no prizes) and STAKES (entry fees fund a prize pool, winner takes pot minus 2% protocol fee). Higher-value STAKES games increase the incentive to manipulate anything that can influence outcomes.
 
-The reason prize size still matters conceptually is that higher-value games increase the incentive to manipulate anything that can influence outcomes.
-
-For Plundrix, the main risk is randomness. In a free-play game, weak entropy is mostly a fairness and reputation issue. In a paid game, it becomes a stronger attack incentive for:
+For Plundrix, the main risk is randomness. In a FREE game, weak entropy is mostly a fairness and reputation issue. In a STAKES game, it becomes a stronger attack incentive for:
 
 - transaction ordering
 - block producer influence
 - compromised entropy workers
 - leaked operator keys
 
-That is why mainnet launch should still require external entropy even for free-play beta.
+That is why mainnet launch should require external entropy regardless of game mode.
+
+## Fee Enablement
+
+Before STAKES games can be created, the fee mechanism must be enabled on the contract:
+
+```bash
+# Call from an account with the appropriate admin role
+configureFee(true, feeRecipient)
+```
+
+- `feeRecipient` is the address that receives the 2% protocol fee from STAKES prize pools
+- Fee enablement is a prerequisite for STAKES game creation; FREE games work regardless of fee configuration
+- No data migration is needed when upgrading: `GameMode.FREE == 0` matches uninitialized storage, so existing games are implicitly FREE
+
+The autoloop worker now only resolves STAKES games. FREE games use default moves and manual resolution.
 
 ## Required Environment
 
@@ -46,10 +59,9 @@ START_PAUSED=true
 AUTO_RESOLVE_ENABLED=true
 AUTO_RESOLVE_DELAY=300
 REQUIRE_EXTERNAL_ENTROPY=true
-# Fee exists in the contract but should stay off for free-play mainnet beta
-# configure after deploy if needed:
-# FEE_ENABLED=false
-# FEE_RECIPIENT=0x...
+# Fee configuration for STAKES mode
+FEE_ENABLED=true
+FEE_RECIPIENT=0x...
 ```
 
 Worker:
@@ -99,33 +111,42 @@ node scripts/sync-abi.mjs
 npm run deploy:kms
 ```
 
-3. Verify post-deploy state.
+3. Configure fee settings for STAKES mode.
+
+```bash
+# Call configureFee(true, feeRecipient) from the admin role
+# This must be done before any STAKES games can be created
+```
+
+4. Verify post-deploy state.
 
 - proxy address is the app-facing address
 - contract starts paused
 - `getAutomationSettings()` returns external entropy required
-- `getFeeSettings()` shows disabled for mainnet launch
+- `getFeeSettings()` shows enabled with correct fee recipient (if STAKES mode is active)
 - configured role holders match the launch plan
 
-4. Update app env/config.
+5. Update app env/config.
 
 - set `VITE_CONTRACT_ADDRESS` to the proxy address
 - set `VITE_RPC_URL` to your production read RPC
-- confirm the marketing site still frames launch as free-play beta and links to live Terms and Privacy pages
+- confirm the marketing site links to live Terms and Privacy pages
 
-5. Start the worker.
+6. Start the worker.
 
 ```bash
 npm run autoloop:start
 ```
 
-6. Unpause only after:
+Note: the autoloop worker only resolves STAKES games. FREE games use default moves and manual resolution.
+
+7. Unpause only after:
 
 - UI points at the proxy
 - worker is live
 - entropy source is healthy
 - test transactions succeeded on the production chain
-- fee remains disabled unless you intentionally change launch policy
+- fee configuration matches intended launch mode (enabled for STAKES, can remain disabled for FREE-only launch)
 
 ## Upgrades
 

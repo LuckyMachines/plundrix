@@ -27,7 +27,7 @@ export function useGameActions() {
     });
   };
 
-const registerPlayer = (gameId) => {
+const registerPlayer = (gameId, value) => {
     ensureConfigured();
     const parsedGameId = toGameId(gameId);
     if (parsedGameId === null) {
@@ -38,6 +38,7 @@ const registerPlayer = (gameId) => {
       abi: PLUNDRIX_ABI,
       functionName: 'registerPlayer',
       args: [parsedGameId],
+      ...(value ? { value } : {}),
     });
   };
 
@@ -83,8 +84,29 @@ const registerPlayer = (gameId) => {
     });
   };
 
+  const withdraw = () => {
+    ensureConfigured();
+    return writeContractAsync({
+      address: PLUNDRIX_ADDRESS,
+      abi: PLUNDRIX_ABI,
+      functionName: 'withdraw',
+    });
+  };
+
+  const createStakesGame = (entryFee) => {
+    ensureConfigured();
+    return writeContractAsync({
+      address: PLUNDRIX_ADDRESS,
+      abi: PLUNDRIX_ABI,
+      functionName: 'createGame',
+      args: [1, entryFee],
+    });
+  };
+
   return {
     createGame,
+    createStakesGame,
+    withdraw,
     registerPlayer,
     startGame,
     submitAction,

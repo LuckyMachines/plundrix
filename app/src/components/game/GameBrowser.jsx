@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useAccount } from 'wagmi';
+import { parseEther } from 'viem';
 import { useTotalGames } from '../../hooks/useTotalGames';
 import { useGameActions } from '../../hooks/useGameActions';
+import { GameMode } from '../../lib/constants';
 import GameCard from './GameCard';
 import Spinner from '../shared/Spinner';
 import TxStatus from '../shared/TxStatus';
@@ -10,6 +13,7 @@ export default function GameBrowser() {
   const { totalGames, isLoading, error } = useTotalGames();
   const {
     createGame,
+    createStakesGame,
     hash,
     isPending,
     isConfirming,
@@ -18,6 +22,10 @@ export default function GameBrowser() {
     isConfigured,
     configError,
   } = useGameActions();
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createMode, setCreateMode] = useState(GameMode.FREE);
+  const [entryFeeInput, setEntryFeeInput] = useState('0.01');
 
   const count = totalGames !== undefined ? Number(totalGames) : 0;
 
@@ -34,7 +42,7 @@ export default function GameBrowser() {
 
         {address && (
           <button
-            onClick={() => createGame()}
+            onClick={() => setShowCreateModal(true)}
             disabled={!isConfigured || isPending || isConfirming}
             className="px-4 py-2 bg-tungsten/10 border border-tungsten/40 rounded text-tungsten text-xs font-mono tracking-widest uppercase
                        hover:bg-tungsten/20 hover:border-tungsten/60 transition-colors
@@ -69,6 +77,74 @@ export default function GameBrowser() {
           <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
             {configError}
           </p>
+        </div>
+      )}
+
+      {/* Create Game Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="border border-vault-border rounded bg-vault-panel p-6 w-full max-w-sm space-y-4">
+            <h3 className="font-mono text-xs tracking-[0.3em] text-tungsten uppercase">
+              New Operation
+            </h3>
+
+            {/* Mode toggle */}
+            <div className="flex gap-2">
+              {[GameMode.FREE, GameMode.STAKES].map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setCreateMode(mode)}
+                  className={`flex-1 py-2 rounded font-mono text-xs uppercase tracking-widest border transition-colors ${
+                    createMode === mode
+                      ? 'border-tungsten/60 bg-tungsten/20 text-tungsten-bright'
+                      : 'border-vault-border bg-vault-dark/40 text-vault-text-dim hover:text-vault-text'
+                  }`}
+                >
+                  {mode === GameMode.FREE ? 'Free' : 'Stakes'}
+                </button>
+              ))}
+            </div>
+
+            {/* Entry fee input (STAKES only) */}
+            {createMode === GameMode.STAKES && (
+              <div className="space-y-1">
+                <label className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">
+                  Entry Fee (ETH)
+                </label>
+                <input
+                  type="text"
+                  value={entryFeeInput}
+                  onChange={(e) => setEntryFeeInput(e.target.value)}
+                  className="w-full px-3 py-2 rounded border border-vault-border bg-vault-dark text-tungsten font-mono text-sm focus:outline-none focus:border-tungsten/50"
+                  placeholder="0.01"
+                />
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="flex-1 py-2 rounded font-mono text-xs uppercase tracking-widest border border-vault-border bg-vault-dark/40 text-vault-text-dim hover:text-vault-text transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (createMode === GameMode.STAKES) {
+                    createStakesGame(parseEther(entryFeeInput));
+                  } else {
+                    createGame();
+                  }
+                  setShowCreateModal(false);
+                }}
+                disabled={!isConfigured || isPending || isConfirming}
+                className="flex-1 py-2 rounded font-mono text-xs uppercase tracking-widest border border-tungsten/40 bg-tungsten/10 text-tungsten hover:bg-tungsten/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Create
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

@@ -76,7 +76,7 @@ contract PlundrixGameTest is Test {
         );
     }
 
-    function test_resolveRound_emitsNoSubmissionActionOutcome() external {
+    function test_resolveRound_emitsDefaultPickForAfkPlayer() external {
         uint256 gameId = _createActiveTwoPlayerGame();
 
         vm.prank(player1);
@@ -89,7 +89,7 @@ contract PlundrixGameTest is Test {
 
         Vm.Log[] memory logs = vm.getRecordedLogs();
         uint256 outcomes;
-        bool sawNoSubmissionReason;
+        bool sawDefaultPick;
 
         for (uint256 i = 0; i < logs.length; i++) {
             if (logs[i].topics.length == 0 || logs[i].topics[0] != ACTION_OUTCOME_SIG) {
@@ -98,20 +98,19 @@ contract PlundrixGameTest is Test {
 
             outcomes++;
             address actingPlayer = address(uint160(uint256(logs[i].topics[3])));
-            (uint8 action, bool success, uint8 reason) = _decodeOutcome(
+            (uint8 action, , ) = _decodeOutcome(
                 logs[i].data
             );
 
             if (actingPlayer == player2) {
-                assertEq(action, uint8(PlundrixGame.Action.NONE));
-                assertFalse(success);
-                assertEq(reason, uint8(PlundrixGame.OutcomeReason.NO_SUBMISSION));
-                sawNoSubmissionReason = true;
+                // AFK player now gets default PICK instead of NO_SUBMISSION
+                assertEq(action, uint8(PlundrixGame.Action.PICK));
+                sawDefaultPick = true;
             }
         }
 
         assertEq(outcomes, 2, "two players should produce two action outcomes");
-        assertTrue(sawNoSubmissionReason, "missing no-submission outcome");
+        assertTrue(sawDefaultPick, "missing default PICK outcome for AFK player");
     }
 
     function test_entropyRequiredMode_blocksUntilEntropyProvided() external {
@@ -251,5 +250,296 @@ contract PlundrixGameTest is Test {
                 startPaused: false
             })
         );
+    }
+
+    // --- Stakes & Default Move Tests ---
+
+    function test_createStakesGame_setsMode() external {
+        vm.prank(gameMaster);
+        game.configureFee(true, admin);
+
+        vm.prank(player1);
+        uint256 gameId = game.createGame(PlundrixGame.GameMode.STAKES, 0.01 ether);
+
+        (PlundrixGame.GameMode mode, uint256 entryFee, uint256 pot) = game.getGameMode(gameId);
+        assertEq(uint8(mode), uint8(PlundrixGame.GameMode.STAKES));
+        assertEq(entryFee, 0.01 ether);
+        assertEq(pot, 0);
+    }
+
+    function test_createStakes_requiresFeeEnabled() external {
+        vm.expectRevert(bytes("Fee system not enabled"));
+        game.createGame(PlundrixGame.GameMode.STAKES, 0.01 ether);
+    }
+
+    function test_registerPlayer_stakesCollectsFee() external {
+        vm.prank(gameMaster);
+        game.configureFee(true, admin);
+
+        vm.prank(player1);
+        uint256 gameId = game.createGame(PlundrixGame.GameMode.STAKES, 0.01 ether);
+
+        vm.deal(player1, 1 ether);
+        vm.prank(player1);
+        game.registerPlayer{value: 0.01 ether}(gameId);
+
+        (, , uint256 pot) = game.getGameMode(gameId);
+        assertEq(pot, 0.01 ether);
+    }
+
+    function test_registerPlayer_stakesRejectsWrongValue() external {
+        vm.prank(gameMaster);
+        game.configureFee(true, admin);
+
+        vm.prank(player1);
+        uint256 gameId = game.createGame(PlundrixGame.GameMode.STAKES, 0.01 ether);
+
+        vm.deal(player1, 1 ether);
+        vm.prank(player1);
+        vm.expectRevert(bytes("Incorrect entry fee"));
+        game.registerPlayer{value: 0.005 ether}(gameId);
+    }
+
+    function test_registerPlayer_freeRejectsEth() external {
+        vm.prank(player1);
+        uint256 gameId = game.createGame();
+
+        vm.deal(player2, 1 ether);
+        vm.prank(player2);
+        vm.expectRevert(bytes("Free game does not accept ETH"));
+        game.registerPlayer{value: 0.01 ether}(gameId);
+    }
+
+    function test_stakesGame_winnerGetsPrize() external {
+        vm.prank(gameMaster);
+        game.configureFee(true, admin);
+
+        vm.prank(player1);
+        uint256 gameId = game.createGame(PlundrixGame.GameMode.STAKES, 0.01 ether);
+
+        vm.deal(player1, 1 ether);
+        vm.prank(player1);
+        game.registerPlayer{value: 0.01 ether}(gameId);
+
+        vm.deal(player2, 1 ether);
+        vm.prank(player2);
+        game.registerPlayer{value: 0.01 ether}(gameId);
+
+        vm.prank(player1);
+        game.startGame(gameId);
+
+        // Play until winner
+        uint256 gameState = 1;
+        uint256 round = 0;
+        while (gameState == 1 && round < 100) {
+            vm.prank(player1);
+            game.submitAction(gameId, PlundrixGame.Action.PICK, address(0));
+            vm.prank(player2);
+            game.submitAction(gameId, PlundrixGame.Action.PICK, address(0));
+            game.resolveRound(gameId);
+            round++;
+            (PlundrixGame.GameState state, , , , ) = game.getGameInfo(gameId);
+            gameState = uint256(state);
+        }
+
+        assertEq(gameState, 2); // COMPLETE
+        (, , , , address winner) = game.getGameInfo(gameId);
+
+        uint256 totalPot = 0.02 ether;
+        uint256 expectedFee = (totalPot * 200) / 10_000; // 2%
+        uint256 expectedPrize = totalPot - expectedFee;
+
+        assertEq(game.withdrawableBalance(winner), expectedPrize);
+    }
+
+    function test_stakesGame_feeRecipientGetsFee() external {
+        vm.prank(gameMaster);
+        game.configureFee(true, admin);
+
+        vm.prank(player1);
+        uint256 gameId = game.createGame(PlundrixGame.GameMode.STAKES, 0.01 ether);
+
+        vm.deal(player1, 1 ether);
+        vm.prank(player1);
+        game.registerPlayer{value: 0.01 ether}(gameId);
+
+        vm.deal(player2, 1 ether);
+        vm.prank(player2);
+        game.registerPlayer{value: 0.01 ether}(gameId);
+
+        vm.prank(player1);
+        game.startGame(gameId);
+
+        uint256 gameState = 1;
+        uint256 round = 0;
+        while (gameState == 1 && round < 100) {
+            vm.prank(player1);
+            game.submitAction(gameId, PlundrixGame.Action.PICK, address(0));
+            vm.prank(player2);
+            game.submitAction(gameId, PlundrixGame.Action.PICK, address(0));
+            game.resolveRound(gameId);
+            round++;
+            (PlundrixGame.GameState state, , , , ) = game.getGameInfo(gameId);
+            gameState = uint256(state);
+        }
+
+        uint256 totalPot = 0.02 ether;
+        uint256 expectedFee = (totalPot * 200) / 10_000;
+        assertEq(game.withdrawableBalance(admin), expectedFee);
+    }
+
+    function test_withdraw_sendsEth() external {
+        vm.prank(gameMaster);
+        game.configureFee(true, admin);
+
+        vm.prank(player1);
+        uint256 gameId = game.createGame(PlundrixGame.GameMode.STAKES, 0.01 ether);
+
+        vm.deal(player1, 1 ether);
+        vm.prank(player1);
+        game.registerPlayer{value: 0.01 ether}(gameId);
+
+        vm.deal(player2, 1 ether);
+        vm.prank(player2);
+        game.registerPlayer{value: 0.01 ether}(gameId);
+
+        vm.prank(player1);
+        game.startGame(gameId);
+
+        uint256 gameState = 1;
+        uint256 round = 0;
+        while (gameState == 1 && round < 100) {
+            vm.prank(player1);
+            game.submitAction(gameId, PlundrixGame.Action.PICK, address(0));
+            vm.prank(player2);
+            game.submitAction(gameId, PlundrixGame.Action.PICK, address(0));
+            game.resolveRound(gameId);
+            round++;
+            (PlundrixGame.GameState state, , , , ) = game.getGameInfo(gameId);
+            gameState = uint256(state);
+        }
+
+        (, , , , address winner) = game.getGameInfo(gameId);
+        uint256 balance = game.withdrawableBalance(winner);
+        assertTrue(balance > 0);
+
+        uint256 ethBefore = winner.balance;
+        vm.prank(winner);
+        game.withdraw();
+        assertEq(winner.balance, ethBefore + balance);
+        assertEq(game.withdrawableBalance(winner), 0);
+    }
+
+    function test_withdraw_revertsEmpty() external {
+        vm.prank(player1);
+        vm.expectRevert(bytes("Nothing to withdraw"));
+        game.withdraw();
+    }
+
+    function test_defaultMove_picksOnTimeout() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+
+        // Only player1 submits
+        vm.prank(player1);
+        game.submitAction(gameId, PlundrixGame.Action.PICK, address(0));
+
+        vm.warp(block.timestamp + game.ROUND_TIMEOUT() + 1);
+        vm.recordLogs();
+        game.resolveRound(gameId);
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 defaultActionSig = keccak256("DefaultActionAssigned(uint256,uint256,address,uint8,uint256)");
+        bool sawDefault = false;
+        for (uint256 i = 0; i < logs.length; i++) {
+            if (logs[i].topics.length > 0 && logs[i].topics[0] == defaultActionSig) {
+                sawDefault = true;
+                break;
+            }
+        }
+        assertTrue(sawDefault, "DefaultActionAssigned event missing");
+
+        // Player2 should have gotten a PICK outcome, not NO_SUBMISSION
+        bool sawPickForPlayer2 = false;
+        for (uint256 i = 0; i < logs.length; i++) {
+            if (logs[i].topics.length == 0 || logs[i].topics[0] != ACTION_OUTCOME_SIG) continue;
+            address actingPlayer = address(uint160(uint256(logs[i].topics[3])));
+            if (actingPlayer == player2) {
+                (uint8 action, , ) = _decodeOutcome(logs[i].data);
+                assertEq(action, uint8(PlundrixGame.Action.PICK), "AFK player should get PICK action");
+                sawPickForPlayer2 = true;
+            }
+        }
+        assertTrue(sawPickForPlayer2, "missing PICK outcome for AFK player");
+    }
+
+    function test_defaultMove_emitsEvent() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+
+        // Neither player submits
+        vm.warp(block.timestamp + game.ROUND_TIMEOUT() + 1);
+        vm.recordLogs();
+        game.resolveRound(gameId);
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 defaultActionSig = keccak256("DefaultActionAssigned(uint256,uint256,address,uint8,uint256)");
+        uint256 defaultCount = 0;
+        for (uint256 i = 0; i < logs.length; i++) {
+            if (logs[i].topics.length > 0 && logs[i].topics[0] == defaultActionSig) {
+                defaultCount++;
+            }
+        }
+        assertEq(defaultCount, 2, "both AFK players should get DefaultActionAssigned");
+    }
+
+    function test_defaultMove_notWhenAllSubmitted() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+
+        vm.prank(player1);
+        game.submitAction(gameId, PlundrixGame.Action.PICK, address(0));
+        vm.prank(player2);
+        game.submitAction(gameId, PlundrixGame.Action.SEARCH, address(0));
+
+        vm.recordLogs();
+        game.resolveRound(gameId);
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 defaultActionSig = keccak256("DefaultActionAssigned(uint256,uint256,address,uint8,uint256)");
+        for (uint256 i = 0; i < logs.length; i++) {
+            if (logs[i].topics.length > 0 && logs[i].topics[0] == defaultActionSig) {
+                revert("DefaultActionAssigned should not fire when all submitted");
+            }
+        }
+    }
+
+    function test_freeGame_backwardCompatible() external {
+        vm.prank(player1);
+        uint256 gameId = game.createGame();
+
+        (PlundrixGame.GameMode mode, uint256 entryFee, uint256 pot) = game.getGameMode(gameId);
+        assertEq(uint8(mode), uint8(PlundrixGame.GameMode.FREE));
+        assertEq(entryFee, 0);
+        assertEq(pot, 0);
+    }
+
+    function test_upgradePreservesStorage() external {
+        // Create a game with V1
+        vm.prank(player1);
+        uint256 gameId = game.createGame();
+        vm.prank(player1);
+        game.registerPlayer(gameId);
+
+        // Upgrade to V2
+        PlundrixGameV2 v2Impl = new PlundrixGameV2();
+        vm.prank(upgrader);
+        game.upgradeTo(address(v2Impl));
+
+        // Existing data intact
+        (PlundrixGame.GameState state, , uint256 playerCount, , ) = game.getGameInfo(gameId);
+        assertEq(uint8(state), uint8(PlundrixGame.GameState.OPEN));
+        assertEq(playerCount, 1);
+
+        // GameMode defaults to FREE (0) for pre-upgrade games
+        (PlundrixGame.GameMode mode, , ) = game.getGameMode(gameId);
+        assertEq(uint8(mode), uint8(PlundrixGame.GameMode.FREE));
     }
 }

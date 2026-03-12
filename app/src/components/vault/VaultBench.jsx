@@ -177,7 +177,11 @@ export default function VaultBench({ gameId }) {
                 }
               `}
             >
-              {resolvePending || resolveConfirming ? 'Resolving...' : 'Resolve Round'}
+              {resolvePending || resolveConfirming
+                ? 'Resolving...'
+                : timedOut && !allSubmitted
+                  ? 'Resolve (AFK players will auto-PICK)'
+                  : 'Resolve Round'}
             </button>
           </div>
           <TxStatus
