@@ -19,6 +19,22 @@ export default function Footer() {
             >
               Developer Docs
             </a>
+            <a
+              href="https://plundrix.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tracking-wider uppercase hover:text-vault-text transition-colors"
+            >
+              Terms
+            </a>
+            <a
+              href="https://plundrix.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tracking-wider uppercase hover:text-vault-text transition-colors"
+            >
+              Privacy
+            </a>
             <span className="tracking-[0.2em] text-tungsten/60 uppercase font-display font-semibold">
               Plundrix
             </span>
@@ -30,6 +46,10 @@ export default function Footer() {
         <p className="text-center text-vault-text-dim/90">
           Free-play beta only. No cash prizes or monetary rewards are currently live. Sepolia may
           enable test-only fee settings that do not represent a live production economy.
+        </p>
+        <p className="text-center text-vault-text-dim/90">
+          Some players may be AI agents or bots. Agent participation is tracked and labeled on
+          the leaderboard.
         </p>
       </div>
     </footer>
