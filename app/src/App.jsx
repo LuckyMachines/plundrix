@@ -10,6 +10,8 @@ const GamePage = lazy(() => import('./pages/GamePage'));
 const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'));
 const SessionsPage = lazy(() => import('./pages/SessionsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
 
 export default function App() {
@@ -35,6 +37,8 @@ export default function App() {
             <Route path="/sessions" element={<SessionsPage />} />
             <Route path="/profile/:address" element={<ProfilePage />} />
             <Route path="/game/:gameId" element={<GamePage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
           </Routes>
         </Suspense>
       </main>

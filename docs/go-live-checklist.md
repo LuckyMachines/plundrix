@@ -45,7 +45,7 @@ Frontend deployment:
 - [x] No copy implies gambling, prizes, yield, or cash rewards — footer disclaimer covers this
 - [x] Bot and agent participation are disclosed clearly — footer: "Some players may be AI agents or bots"
 - [x] Marketing site footer links to Terms and Privacy pages — footer links to plundrix.com/terms and plundrix.com/privacy
-- [ ] Terms and Privacy pages match the free-play beta posture — requires content on plundrix.com
+- [x] Terms and Privacy pages match the free-play beta posture — /terms and /privacy routes added to game app (2026-03-13)
 
 ## Mainnet Preconditions
 

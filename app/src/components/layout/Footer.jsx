@@ -1,4 +1,5 @@
 import { useAccount } from 'wagmi';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   const { chain, isConnected } = useAccount();
@@ -19,22 +20,18 @@ export default function Footer() {
             >
               Developer Docs
             </a>
-            <a
-              href="https://plundrix.com/terms"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/terms"
               className="tracking-wider uppercase hover:text-vault-text transition-colors"
             >
               Terms
-            </a>
-            <a
-              href="https://plundrix.com/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
+            </Link>
+            <Link
+              to="/privacy"
               className="tracking-wider uppercase hover:text-vault-text transition-colors"
             >
               Privacy
-            </a>
+            </Link>
             <span className="tracking-[0.2em] text-tungsten/60 uppercase font-display font-semibold">
               Plundrix
             </span>
