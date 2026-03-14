@@ -39,7 +39,7 @@ export default function PickControl({ onSubmit, disabled, stunned, tools }) {
 
       {/* Tension dial SVG */}
       <div className="relative mb-3">
-        <svg width="88" height="88" viewBox="0 0 88 88">
+        <svg viewBox="0 0 88 88" className="w-20 h-20 sm:w-[88px] sm:h-[88px]">
           {/* Background arc */}
           <path
             d={describeArc(ARC_CX, ARC_CY, ARC_RADIUS, startAngle, endAngle)}

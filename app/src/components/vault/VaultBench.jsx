@@ -95,7 +95,7 @@ export default function VaultBench({ gameId }) {
   return (
     <div className="space-y-6">
       {/* ---- Top instrument panel: 3 columns ---- */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Left: Lock Rack */}
         <div className="border border-vault-border rounded bg-vault-panel p-4 flex items-center justify-center overflow-hidden">
           <LockRack locksCracked={locksCracked} />

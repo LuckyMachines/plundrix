@@ -33,26 +33,20 @@
 
 html {
   /* Base scale for standard displays */
-  font-size: 17px;
+  font-size: 16px;
   text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (min-width: 640px) {
+  html {
+    font-size: 17px;
+  }
 }
 
 @media (min-width: 1280px) {
   html {
     font-size: 18px;
-  }
-}
-
-@media (min-resolution: 2dppx) {
-  html {
-    /* Slightly larger baseline for dense panels/retina monitors */
-    font-size: 19px;
-  }
-}
-
-@media (min-resolution: 3dppx) {
-  html {
-    font-size: 20px;
   }
 }
 
@@ -64,6 +58,44 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* --- Safe area padding for notched devices --- */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-x {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* --- Tighten letter-spacing on mobile --- */
+@media (max-width: 639px) {
+  .tracking-\[0\.3em\] {
+    letter-spacing: 0.18em;
+  }
+  .tracking-\[0\.25em\] {
+    letter-spacing: 0.15em;
+  }
+  .tracking-\[0\.22em\] {
+    letter-spacing: 0.12em;
+  }
+  .tracking-\[0\.2em\] {
+    letter-spacing: 0.12em;
+  }
+  .tracking-\[0\.4em\] {
+    letter-spacing: 0.22em;
+  }
+  .tracking-\[0\.35em\] {
+    letter-spacing: 0.2em;
+  }
+  .tracking-widest {
+    letter-spacing: 0.08em;
+  }
+}
+
+/* --- Readability mode --- */
 html.readable-ui {
   font-size: 20px;
 }
@@ -71,12 +103,6 @@ html.readable-ui {
 @media (min-width: 1280px) {
   html.readable-ui {
     font-size: 21px;
-  }
-}
-
-@media (min-resolution: 2dppx) {
-  html.readable-ui {
-    font-size: 22px;
   }
 }
 
@@ -89,6 +115,7 @@ html.readable-ui .font-mono {
   font-weight: 500;
 }
 
+/* --- Reduced motion --- */
 html.reduced-motion-ui *,
 html.reduced-motion-ui *::before,
 html.reduced-motion-ui *::after {
@@ -98,7 +125,7 @@ html.reduced-motion-ui *::after {
   scroll-behavior: auto !important;
 }
 
-/* Toast animations */
+/* --- Toast animations --- */
 @keyframes toast-in {
   0% {
     opacity: 0;
@@ -121,6 +148,31 @@ html.reduced-motion-ui *::after {
   }
 }
 
+/* Mobile toasts slide up from bottom instead */
+@media (max-width: 639px) {
+  @keyframes toast-in {
+    0% {
+      opacity: 0;
+      transform: translateY(100%) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes toast-out {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(100%) scale(0.95);
+    }
+  }
+}
+
 @keyframes toast-progress {
   0% {
     width: 100%;
@@ -128,4 +180,21 @@ html.reduced-motion-ui *::after {
   100% {
     width: 0%;
   }
+}
+
+/* --- Skeleton loading animation --- */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.skeleton {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, var(--color-vault-border) 25%, var(--color-vault-panel) 50%, var(--color-vault-border) 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
 }

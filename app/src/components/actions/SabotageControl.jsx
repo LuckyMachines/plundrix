@@ -54,7 +54,7 @@ export default function SabotageControl({
           className={`
             w-full bg-vault-dark border border-vault-border rounded
             font-mono text-xs text-vault-text
-            px-2 py-1.5 appearance-none cursor-pointer
+            px-3 py-3 min-h-[44px] appearance-none cursor-pointer
             focus:outline-none focus:border-signal-red/40
             disabled:opacity-50 disabled:cursor-not-allowed
           `}

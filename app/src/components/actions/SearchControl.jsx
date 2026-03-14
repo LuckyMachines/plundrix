@@ -20,7 +20,7 @@ export default function SearchControl({ onSubmit, disabled, stunned, tools = 0 }
       </h4>
 
       {/* Signal strength meter */}
-      <div className="flex items-end gap-1 h-14 mb-2">
+      <div className="flex items-end gap-1 h-12 sm:h-14 mb-2">
         {Array.from({ length: BAR_COUNT }, (_, i) => {
           const filled = i < filledBars;
           const height = 12 + i * 5;

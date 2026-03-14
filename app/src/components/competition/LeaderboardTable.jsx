@@ -51,7 +51,7 @@ export default function LeaderboardTable({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-sm font-mono text-vault-text-dim sm:min-w-[16rem]">
+              <div className="grid grid-cols-2 gap-3 text-sm font-mono text-vault-text-dim sm:min-w-[14rem]">
                 <div>
                   <div className="text-[11px] uppercase tracking-[0.2em]">Points</div>
                   <div className="text-lg text-vault-text">{entry.points}</div>

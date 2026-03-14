@@ -42,7 +42,7 @@ export default function TimeoutDial({ roundStartTime, timeout = ROUND_TIMEOUT })
 
   return (
     <div className="relative inline-flex items-center justify-center">
-      <svg width="96" height="96" viewBox="0 0 96 96" className="transform -rotate-90">
+      <svg viewBox="0 0 96 96" className="w-20 h-20 sm:w-24 sm:h-24 transform -rotate-90">
         {/* Background track */}
         <circle
           cx="48"

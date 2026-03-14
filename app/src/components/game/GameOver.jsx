@@ -194,34 +194,36 @@ export default function GameOver({ gameId }) {
           </span>
         </div>
 
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-vault-border bg-vault-dark/50">
-              <th className="px-4 py-2 text-left font-display text-xs tracking-widest text-vault-text-dim uppercase">
-                Operator
-              </th>
-              <th className="px-4 py-2 text-center font-display text-xs tracking-widest text-vault-text-dim uppercase">
-                Locks
-              </th>
-              <th className="px-4 py-2 text-center font-display text-xs tracking-widest text-vault-text-dim uppercase">
-                Tools
-              </th>
-              <th className="px-4 py-2 text-right font-display text-xs tracking-widest text-vault-text-dim uppercase">
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((playerAddr) => (
-              <PlayerRow
-                key={playerAddr}
-                gameId={gameId}
-                playerAddr={playerAddr}
-                winner={winner}
-              />
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[400px]">
+            <thead>
+              <tr className="border-b border-vault-border bg-vault-dark/50">
+                <th className="px-4 py-2 text-left font-display text-xs tracking-widest text-vault-text-dim uppercase">
+                  Operator
+                </th>
+                <th className="px-4 py-2 text-center font-display text-xs tracking-widest text-vault-text-dim uppercase">
+                  Locks
+                </th>
+                <th className="px-4 py-2 text-center font-display text-xs tracking-widest text-vault-text-dim uppercase">
+                  Tools
+                </th>
+                <th className="px-4 py-2 text-right font-display text-xs tracking-widest text-vault-text-dim uppercase">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {players.map((playerAddr) => (
+                <PlayerRow
+                  key={playerAddr}
+                  gameId={gameId}
+                  playerAddr={playerAddr}
+                  winner={winner}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Stakes prize breakdown */}

@@ -117,7 +117,7 @@ function Toast({ toast, onDismiss }) {
       onMouseLeave={startTimer}
       className={[
         'relative overflow-hidden rounded-lg border backdrop-blur-md',
-        'w-[360px] max-w-[calc(100vw-2rem)]',
+        'w-full sm:w-[360px] max-w-[calc(100vw-2rem)]',
         s.border, s.bg, s.glow,
         'bg-vault-surface/95',
         exiting
@@ -205,7 +205,8 @@ export function ToastProvider({ children }) {
         <div
           aria-live="polite"
           aria-label="Notifications"
-          className="fixed bottom-4 right-4 z-[100] flex flex-col-reverse gap-3 pointer-events-none"
+          className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-[100] flex flex-col-reverse gap-3 pointer-events-none"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
         >
           {toasts.map((t) => (
             <div key={t.id} className="pointer-events-auto">

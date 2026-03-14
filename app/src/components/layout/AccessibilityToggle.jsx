@@ -13,7 +13,7 @@ export default function AccessibilityToggle() {
       <button
         type="button"
         onClick={() => setReadabilityMode(!readabilityMode)}
-        className={`px-2 py-1 rounded border font-mono text-xs uppercase tracking-wider transition-colors ${
+        className={`px-3 py-2 min-h-[44px] rounded border font-mono text-xs uppercase tracking-wider transition-colors ${
           readabilityMode
             ? 'border-blueprint/50 text-blueprint bg-blueprint/10'
             : 'border-vault-border text-vault-text-dim hover:text-vault-text'
@@ -25,7 +25,7 @@ export default function AccessibilityToggle() {
       <button
         type="button"
         onClick={() => setReducedMotion(!reducedMotion)}
-        className={`px-2 py-1 rounded border font-mono text-xs uppercase tracking-wider transition-colors ${
+        className={`px-3 py-2 min-h-[44px] rounded border font-mono text-xs uppercase tracking-wider transition-colors ${
           reducedMotion
             ? 'border-blueprint/50 text-blueprint bg-blueprint/10'
             : 'border-vault-border text-vault-text-dim hover:text-vault-text'
