@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import NetworkSwitchBanner from './components/wallet/NetworkSwitchBanner';
 import Modal from './components/shared/Modal';
 import Spinner from './components/shared/Spinner';
 
@@ -20,6 +21,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,rgba(196,149,106,0.08),transparent_45%),linear-gradient(180deg,var(--color-vault-dark),#111214)]">
       <Header onHelpClick={() => setIsHelpOpen(true)} />
+      <NetworkSwitchBanner />
       <main className="flex-1">
         <Suspense
           fallback={
