@@ -22,6 +22,18 @@ Frontend deployment:
 - production: SUCCESS (2026-03-13)
 - contract address in Railway env: `0x1ff715d46470b4024d88a12838e08a60855f0ae2` (corrected 2026-03-13)
 - toast notification system: live
+- mobile UI overhaul: shipped (2026-03-14)
+- self-hosted fonts on Cloudflare R2: shipped (2026-03-14)
+- network switch banner for mainnet visitors: shipped (2026-03-16)
+
+MCP server (`mcp-server/`):
+
+- 5 free read tools (status, list games, snapshot, history, total)
+- 4 paid write tools via x402 sidecar (create, register, submit, resolve)
+- ExactEvmScheme on Base Sepolia, USDC payments ($0.04–$0.10/op)
+- relay signer model (private key or KMS)
+- status: **BUILT**, not deployed
+- dynamic pricing (ETH/USD anchor model): designed, not implemented
 
 ## Sepolia Exit Criteria
 
@@ -46,6 +58,23 @@ Frontend deployment:
 - [x] Bot and agent participation are disclosed clearly — footer: "Some players may be AI agents or bots"
 - [x] Marketing site footer links to Terms and Privacy pages — footer links to plundrix.com/terms and plundrix.com/privacy
 - [x] Terms and Privacy pages match the free-play beta posture — /terms and /privacy routes added to game app (2026-03-13)
+
+## App Polish
+
+- [x] Mobile hamburger nav with full-screen slide-out menu (2026-03-14)
+- [x] 44px minimum touch targets on all interactive elements (2026-03-14)
+- [x] viewport-fit=cover + safe area padding for notched devices (2026-03-14)
+- [x] Full-width toasts on mobile with vertical slide animation (2026-03-14)
+- [x] Horizontal scroll on tables to prevent layout blowout (2026-03-14)
+- [x] Tighter letter-spacing below 640px (2026-03-14)
+- [x] Collapsible homepage sections (leaderboards/sessions) (2026-03-14)
+- [x] Skeleton loading states (2026-03-14)
+- [x] Responsive SVG visualizations (2026-03-14)
+- [x] Intermediate md: breakpoints on VaultBench and leaderboard grids (2026-03-14)
+- [x] PWA manifest + SVG favicon (2026-03-14)
+- [x] color-scheme: dark meta tag (2026-03-14)
+- [x] Self-hosted fonts on Cloudflare R2 — no Google Fonts runtime dependency (2026-03-14)
+- [x] Network switch banner prompts mainnet visitors to switch to Sepolia (2026-03-16)
 
 ## Mainnet Preconditions
 
