@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { truncateAddress } from '../../lib/formatting';
+import AliveActionCard from './AliveActionCard';
 
 export default function SabotageControl({
   onSubmit,
@@ -8,6 +9,14 @@ export default function SabotageControl({
   players = [],
   currentAddress,
   selectId = 'sabotage-target-select',
+  active,
+  pressed,
+  invalidCount,
+  onIntentStart,
+  onIntentEnd,
+  onInvalidIntent,
+  onTargetIntentChange,
+  externalTarget = '',
 }) {
   const [target, setTarget] = useState('');
 
@@ -17,12 +26,23 @@ export default function SabotageControl({
 
   const canExecute = !disabled && target !== '';
 
+  useEffect(() => {
+    setTarget(externalTarget || '');
+  }, [externalTarget]);
+
   return (
-    <div className={`
-      flex flex-col items-center border rounded p-4
-      transition-all duration-300
-      ${disabled ? 'border-vault-border bg-vault-dark/30 opacity-60' : 'border-signal-red/20 bg-vault-panel'}
-    `}>
+    <AliveActionCard
+      action="sabotage"
+      active={active || target !== ''}
+      pressed={pressed}
+      disabled={disabled}
+      stunned={stunned}
+      danger
+      invalidCount={invalidCount}
+      onIntentStart={onIntentStart}
+      onIntentEnd={onIntentEnd}
+      onInvalidIntent={onInvalidIntent}
+    >
       {/* Label */}
       <h4 className="font-mono text-xs text-signal-red/80 uppercase tracking-[0.25em] mb-3">
         Cut Line
@@ -49,7 +69,10 @@ export default function SabotageControl({
         <select
           id={selectId}
           value={target}
-          onChange={(e) => setTarget(e.target.value)}
+          onChange={(e) => {
+            setTarget(e.target.value);
+            onTargetIntentChange?.(e.target.value);
+          }}
           disabled={disabled}
           className={`
             w-full bg-vault-dark border border-vault-border rounded
@@ -70,7 +93,7 @@ export default function SabotageControl({
 
       {/* Flavor text */}
       <p className="font-mono text-xs text-vault-text-dim text-center mb-1 italic leading-relaxed">
-        No RNG &mdash; certainty
+        No RNG - certainty
       </p>
 
       {stunned && (
@@ -83,7 +106,13 @@ export default function SabotageControl({
 
       {/* Execute button */}
       <button
-        onClick={() => onSubmit?.(target)}
+        onClick={() => {
+          if (!canExecute) {
+            onInvalidIntent?.('sabotage');
+            return;
+          }
+          onSubmit?.(target);
+        }}
         disabled={!canExecute}
         className={`
           w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
@@ -96,7 +125,7 @@ export default function SabotageControl({
       >
         Execute
       </button>
-    </div>
+    </AliveActionCard>
   );
 }
 

@@ -1,0 +1,36 @@
+name: Balance Autopilot Smoke
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npm run test:autopilot
+      - run: npm run test:replay
+      - run: npm run test:oracle
+      - run: npm run test:launch
+      - run: npm run test:ghosts
+      - run: npm run test:mutations
+      - run: npm run test:playtest
+      - run: npm run test:design
+      - run: npm run simulate:auto-balance -- --budget smoke --quiet
+      - run: npm run replay:direct -- --seed ci-replay --scenario new-player-table
+      - run: npm run ops:oracle -- --markdown
+      - run: npm run launch:copilot -- --target internal-playtest --markdown
+      - run: npm run ghosts:run -- --budget smoke --markdown
+      - run: npm run mutate:rules -- --budget smoke --markdown
+      - run: npm run playtest:coach -- --markdown
+      - run: npm run design:tower -- --snapshot --markdown

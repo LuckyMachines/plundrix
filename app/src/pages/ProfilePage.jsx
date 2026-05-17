@@ -1,14 +1,20 @@
 import { Link, useParams } from 'react-router-dom';
 import ProfileSummary from '../components/competition/ProfileSummary';
+import ProfileIntegrationStats from '../components/competition/ProfileIntegrationStats';
 import SessionCard from '../components/competition/SessionCard';
 import Spinner from '../components/shared/Spinner';
 import { useCompetitionProfile } from '../hooks/useCompetitionProfile';
 import { useCompetitionSessions } from '../hooks/useCompetitionSessions';
+import { useSessionHistory } from '../hooks/useSessionHistory';
 
 export default function ProfilePage() {
   const { address } = useParams();
   const profileQuery = useCompetitionProfile(address);
   const sessionsQuery = useCompetitionSessions({ limit: 30 });
+  const { summary } = useSessionHistory();
+  const localProfileStats = summary.profiles.find(
+    (profile) => profile.address?.toLowerCase?.() === address?.toLowerCase?.()
+  );
 
   const profileSessions =
     sessionsQuery.data?.sessions?.filter((session) =>
@@ -33,6 +39,7 @@ export default function ProfilePage() {
       ) : (
         <>
           <ProfileSummary data={profileQuery.data} />
+          <ProfileIntegrationStats stats={localProfileStats} />
           <section className="space-y-4">
             <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-vault-text-dim">
               Recent Sessions

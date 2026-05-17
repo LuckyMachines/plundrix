@@ -232,3 +232,786 @@ html.reduced-motion-ui *::after {
   background-size: 200% 100%;
   border-radius: 4px;
 }
+
+/* --- Turn input liveness --- */
+@keyframes alive-presence-scan {
+  0% {
+    transform: translateX(-110%);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.22;
+  }
+  58% {
+    opacity: 0.08;
+  }
+  100% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
+
+@keyframes alive-breathe {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-2px) scaleY(1.025);
+  }
+}
+
+@keyframes alive-gaze {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  30% {
+    transform: translate(2px, -1px);
+  }
+  62% {
+    transform: translate(-2px, 1px);
+  }
+}
+
+@keyframes alive-gear-sway {
+  0%, 100% {
+    transform: rotate(-7deg) translateY(0);
+  }
+  50% {
+    transform: rotate(7deg) translateY(1px);
+  }
+}
+
+@keyframes alive-status-pulse {
+  0%, 100% {
+    opacity: 0.45;
+    box-shadow: 0 0 0 rgba(196, 149, 106, 0);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(196, 149, 106, 0.32);
+  }
+}
+
+@keyframes alive-board-wake {
+  0% {
+    opacity: 0.25;
+    transform: scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes alive-path-pulse {
+  0%, 100% {
+    opacity: 0.42;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-1px) scale(1.08);
+  }
+}
+
+@keyframes alive-target-breathe {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(212, 64, 64, 0);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(212, 64, 64, 0.36);
+  }
+}
+
+@keyframes alive-invalid-recoil {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  38% {
+    transform: translateX(3px);
+  }
+  56% {
+    transform: translateX(-2px);
+  }
+  72% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes alive-card-commit {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  45% {
+    transform: translateY(2px) scale(0.985);
+  }
+  100% {
+    transform: translateY(-2px) scale(1.01);
+  }
+}
+
+.alive-presence-field {
+  isolation: isolate;
+}
+
+.alive-presence-field::before,
+.alive-presence-field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.alive-presence-field::before {
+  background:
+    radial-gradient(circle at 18% 24%, rgba(196, 149, 106, 0.13), transparent 26%),
+    radial-gradient(circle at 82% 68%, rgba(64, 160, 128, 0.11), transparent 30%),
+    linear-gradient(135deg, rgba(58, 124, 196, 0.06), transparent 42%);
+}
+
+.alive-presence-field::after {
+  background-image:
+    linear-gradient(rgba(200, 200, 212, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 200, 212, 0.035) 1px, transparent 1px);
+  background-size: 18px 18px;
+  opacity: 0.45;
+}
+
+.alive-presence-field[data-intent="pick"] {
+  box-shadow: inset 0 0 28px rgba(196, 149, 106, 0.08);
+}
+
+.alive-presence-field[data-intent="search"] {
+  box-shadow: inset 0 0 28px rgba(64, 160, 128, 0.08);
+}
+
+.alive-presence-field[data-intent="sabotage"] {
+  box-shadow: inset 0 0 28px rgba(212, 64, 64, 0.08);
+}
+
+.alive-presence-field[data-intent="invalid"],
+.alive-action-card:not([data-invalid="0"]) {
+  animation: alive-invalid-recoil 0.32s ease-out;
+}
+
+.alive-presence-muted {
+  filter: saturate(0.75);
+}
+
+.alive-presence-stunned .alive-agent {
+  filter: saturate(0.65);
+}
+
+.alive-presence-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(232, 176, 120, 0.18), transparent);
+  animation: alive-presence-scan 4.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.alive-agent-stage {
+  position: relative;
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+}
+
+.alive-agent-shadow {
+  position: absolute;
+  width: 92px;
+  height: 14px;
+  bottom: 26px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  filter: blur(2px);
+}
+
+.alive-agent {
+  position: relative;
+  width: 86px;
+  height: 132px;
+  color: var(--color-tungsten-bright);
+  transform-origin: 50% 86%;
+  animation: alive-breathe 2.85s ease-in-out infinite;
+  transition: transform 180ms ease, color 180ms ease, filter 180ms ease;
+}
+
+.alive-agent[data-intent="pick"] {
+  color: var(--color-tungsten-bright);
+  transform: translateX(-4px) rotate(-2deg);
+}
+
+.alive-agent[data-intent="search"] {
+  color: var(--color-oxide-green);
+  transform: translateY(-2px) rotate(1deg);
+}
+
+.alive-agent[data-intent="sabotage"] {
+  color: var(--color-signal-red);
+  transform: translateX(5px) rotate(3deg);
+}
+
+.alive-agent[data-intent="committed"] {
+  color: var(--color-blueprint);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.alive-agent[data-intent="invalid"] {
+  color: var(--color-signal-red);
+}
+
+.alive-agent-head {
+  position: absolute;
+  left: 29px;
+  top: 14px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid currentColor;
+  border-radius: 45% 45% 38% 38%;
+  background: color-mix(in srgb, currentColor 12%, var(--color-vault-dark));
+  box-shadow: 0 0 14px color-mix(in srgb, currentColor 26%, transparent);
+}
+
+.alive-agent-gaze {
+  position: absolute;
+  left: 37px;
+  top: 25px;
+  width: 13px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  z-index: 2;
+  animation: alive-gaze 5.4s ease-in-out infinite;
+}
+
+.alive-agent-body {
+  position: absolute;
+  left: 21px;
+  top: 47px;
+  width: 44px;
+  height: 58px;
+  border: 1px solid currentColor;
+  border-radius: 14px 14px 8px 8px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, currentColor 18%, transparent), transparent 70%),
+    var(--color-vault-panel);
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.24);
+}
+
+.alive-agent-core {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  animation: alive-status-pulse 2.4s ease-in-out infinite;
+}
+
+.alive-agent-gear {
+  position: absolute;
+  width: 9px;
+  height: 18px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0.72;
+  animation: alive-gear-sway 3.2s ease-in-out infinite;
+}
+
+.alive-agent-gear-a {
+  left: -8px;
+  top: 17px;
+}
+
+.alive-agent-gear-b {
+  right: -8px;
+  top: 28px;
+  animation-delay: -1.4s;
+}
+
+.alive-agent-arm,
+.alive-agent-leg {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.72;
+  transition: transform 180ms ease;
+}
+
+.alive-agent-arm {
+  top: 56px;
+  width: 9px;
+  height: 42px;
+}
+
+.alive-agent-arm-left {
+  left: 11px;
+  transform: rotate(12deg);
+}
+
+.alive-agent-arm-right {
+  right: 11px;
+  transform: rotate(-12deg);
+}
+
+.alive-agent-leg {
+  top: 101px;
+  width: 10px;
+  height: 30px;
+}
+
+.alive-agent-leg-left {
+  left: 28px;
+  transform: rotate(5deg);
+}
+
+.alive-agent-leg-right {
+  right: 28px;
+  transform: rotate(-5deg);
+}
+
+.alive-agent[data-intent="pick"] .alive-agent-arm-left,
+.alive-agent[data-intent="search"] .alive-agent-arm-right,
+.alive-agent[data-intent="sabotage"] .alive-agent-arm-right {
+  transform: rotate(-34deg) translateY(-4px);
+}
+
+.alive-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-tungsten);
+  animation: alive-status-pulse 2s ease-in-out infinite;
+}
+
+.alive-board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(26px, 1fr));
+  gap: 6px;
+  max-width: 360px;
+}
+
+.alive-board-tile {
+  aspect-ratio: 1;
+  min-width: 0;
+  border: 1px solid rgba(106, 106, 126, 0.28);
+  border-radius: 4px;
+  background: rgba(20, 20, 31, 0.8);
+  animation: alive-board-wake 260ms ease-out both;
+  animation-delay: var(--alive-tile-delay);
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.alive-board-path {
+  position: relative;
+  border-color: rgba(196, 149, 106, 0.24);
+}
+
+.alive-board-path::after {
+  content: "";
+  position: absolute;
+  inset: 35%;
+  border-radius: 999px;
+  background: var(--color-tungsten);
+  animation: alive-path-pulse 1.3s ease-in-out infinite;
+  animation-delay: var(--alive-tile-delay);
+}
+
+.alive-board-path-search::after {
+  background: var(--color-oxide-green);
+}
+
+.alive-board-path-sabotage::after,
+.alive-board-path-invalid::after {
+  background: var(--color-signal-red);
+}
+
+.alive-board-operative {
+  border-color: rgba(232, 176, 120, 0.62);
+  background: rgba(196, 149, 106, 0.12);
+  box-shadow: 0 0 14px rgba(196, 149, 106, 0.18);
+}
+
+.alive-board-operative::after {
+  content: "";
+  display: block;
+  width: 42%;
+  height: 42%;
+  margin: 29%;
+  border-radius: 50%;
+  background: var(--color-tungsten-bright);
+  box-shadow: 0 0 10px rgba(232, 176, 120, 0.4);
+}
+
+.alive-board-target,
+.alive-board-threat {
+  border-color: rgba(212, 64, 64, 0.48);
+  background: rgba(212, 64, 64, 0.08);
+  animation: alive-target-breathe 1.5s ease-in-out infinite;
+}
+
+.alive-board-supply {
+  border-color: rgba(64, 160, 128, 0.38);
+  background: rgba(64, 160, 128, 0.08);
+}
+
+.alive-board-watch {
+  border-color: rgba(58, 124, 196, 0.34);
+  background: rgba(58, 124, 196, 0.06);
+}
+
+.alive-action-card {
+  position: relative;
+  overflow: hidden;
+  transform-origin: 50% 85%;
+  min-height: 100%;
+}
+
+.alive-action-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(135deg, rgba(232, 176, 120, 0.12), transparent 45%);
+  transition: opacity 160ms ease;
+}
+
+.alive-action-card-active {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.alive-action-card-active::before {
+  opacity: 1;
+}
+
+.alive-action-card-pressed,
+.alive-action-card:active {
+  animation: alive-card-commit 220ms ease-out;
+}
+
+.alive-action-card-stunned {
+  filter: saturate(0.7);
+}
+
+.alive-action-card[data-action="pick"].alive-action-card-active {
+  border-color: rgba(196, 149, 106, 0.58);
+}
+
+.alive-action-card[data-action="search"].alive-action-card-active {
+  border-color: rgba(64, 160, 128, 0.52);
+}
+
+.alive-action-card[data-action="sabotage"].alive-action-card-active {
+  border-color: rgba(212, 64, 64, 0.52);
+}
+
+.alive-action-card button:not(:disabled):focus-visible,
+.alive-action-card select:not(:disabled):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+@keyframes alive-lock-listen {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes alive-lock-crack {
+  0% {
+    transform: rotate(0) scale(1);
+  }
+  38% {
+    transform: rotate(-3deg) scale(1.04);
+  }
+  74% {
+    transform: rotate(2deg) scale(1.02);
+  }
+  100% {
+    transform: rotate(0) scale(1);
+  }
+}
+
+.alive-lock-module {
+  animation: alive-lock-listen 3.8s ease-in-out infinite;
+  animation-delay: var(--alive-lock-delay);
+}
+
+.alive-lock-module[data-cracked="true"] {
+  animation: alive-lock-crack 520ms ease-out both;
+}
+
+.alive-lock-module[data-cracked="false"] svg {
+  transform-origin: 50% 50%;
+  transition: transform 180ms ease;
+}
+
+.alive-lock-module[data-cracked="false"]:hover svg {
+  transform: rotate(-2deg) translateY(-1px);
+}
+
+@keyframes alive-dossier-watch {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translateY(-1px) scale(1.06);
+    opacity: 1;
+  }
+}
+
+.alive-dossier::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(196, 149, 106, 0.1), transparent 55%);
+  transition: opacity 220ms ease;
+}
+
+.alive-dossier[data-current="true"]::before,
+.alive-dossier-committed::before {
+  opacity: 1;
+}
+
+.alive-dossier-stunned {
+  filter: saturate(0.72);
+}
+
+.alive-dossier-presence {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(196, 149, 106, 0.32);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: var(--color-tungsten);
+}
+
+.alive-dossier-presence span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: currentColor;
+  animation: alive-dossier-watch 2.5s ease-in-out infinite;
+}
+
+.alive-dossier[data-submitted="true"] .alive-dossier-presence {
+  color: var(--color-blueprint);
+  border-color: rgba(58, 124, 196, 0.4);
+}
+
+.alive-dossier[data-stunned="true"] .alive-dossier-presence {
+  color: var(--color-signal-red);
+  border-color: rgba(212, 64, 64, 0.38);
+}
+
+@keyframes alive-session-sweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes alive-cue-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.025);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.alive-session-rail {
+  position: relative;
+  overflow: hidden;
+}
+
+.alive-session-rail::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(58, 124, 196, 0.09), transparent);
+  background-size: 200% 100%;
+  animation: alive-session-sweep 6s linear infinite;
+}
+
+.alive-round-console[data-pressure="urgent"],
+.alive-round-console[data-pressure="critical"],
+.alive-round-console[data-pressure="timeout"] {
+  color: var(--color-tungsten-bright);
+}
+
+.alive-timeout-dial[data-pressure="critical"],
+.alive-timeout-dial[data-pressure="timeout"] {
+  filter: drop-shadow(0 0 10px rgba(212, 64, 64, 0.12));
+}
+
+.alive-mission-coach[data-mode="resolve-ready"] {
+  border-color: rgba(58, 124, 196, 0.55);
+  box-shadow: 0 0 18px rgba(58, 124, 196, 0.08);
+}
+
+.alive-mission-coach[data-mode="critical"],
+.alive-mission-coach[data-mode="timeout"] {
+  border-color: rgba(212, 64, 64, 0.42);
+  box-shadow: 0 0 18px rgba(212, 64, 64, 0.08);
+}
+
+.alive-dossier-targeted {
+  border-color: rgba(212, 64, 64, 0.48);
+  box-shadow: inset 0 0 18px rgba(212, 64, 64, 0.08);
+}
+
+.alive-dossier-cued {
+  animation: alive-cue-pop 360ms ease-out;
+}
+
+.alive-lock-module-cued {
+  box-shadow: 0 0 18px rgba(232, 176, 120, 0.34);
+}
+
+.alive-event-row {
+  border-radius: 4px;
+  padding-inline: 2px;
+  transition: background 160ms ease;
+}
+
+.alive-event-row[data-tone="tungsten"] {
+  background: rgba(196, 149, 106, 0.045);
+}
+
+.alive-event-row[data-tone="oxide"] {
+  background: rgba(64, 160, 128, 0.045);
+}
+
+.alive-event-row[data-tone="danger"] {
+  background: rgba(212, 64, 64, 0.045);
+}
+
+.alive-game-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.alive-game-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-vault-border);
+  transform-origin: left center;
+  transform: scaleX(0.24);
+  transition: transform 220ms ease, background 220ms ease;
+}
+
+.alive-game-card[data-state="active"]::after {
+  background: var(--color-tungsten);
+  transform: scaleX(0.62);
+}
+
+.alive-game-card[data-state="open"]::after {
+  background: var(--color-oxide-green);
+  transform: scaleX(0.38);
+}
+
+.alive-game-card[data-state="complete"]::after {
+  background: var(--color-blueprint);
+  transform: scaleX(1);
+}
+
+.alive-game-card[data-pressure="urgent"]::after,
+.alive-game-card[data-pressure="critical"]::after,
+.alive-game-card[data-pressure="timeout"]::after {
+  background: var(--color-signal-red);
+  transform: scaleX(0.86);
+}
+
+.snapshot-frame {
+  border: 1px solid rgba(42, 42, 62, 0.92);
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(196, 149, 106, 0.07), transparent 35%),
+    rgba(20, 20, 31, 0.72);
+  padding: 1rem;
+}
+
+.alive-command-strip {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0.35rem;
+  border: 1px solid rgba(42, 42, 62, 0.8);
+  border-radius: 6px;
+  background: rgba(10, 10, 15, 0.78);
+  backdrop-filter: blur(10px);
+}
+
+.alive-lobby-rail {
+  position: relative;
+  overflow: hidden;
+}
+
+.alive-lobby-rail::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(64, 160, 128, 0.08), transparent);
+  transform: translateX(-100%);
+  animation: alive-presence-scan 5s ease-in-out infinite;
+}
+
+.alive-event-row-focused {
+  outline: 1px solid rgba(58, 124, 196, 0.45);
+  background: rgba(58, 124, 196, 0.08);
+}
+
+.alive-game-card[data-state="active"][data-pressure="critical"] {
+  border-color: rgba(212, 64, 64, 0.42);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-vault-text-dim);
+}
+
+.control {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid var(--color-vault-border);
+  border-radius: 0.25rem;
+  background: var(--color-vault-dark);
+  padding: 0 0.75rem;
+  color: var(--color-vault-text);
+  font-size: 0.875rem;
+}

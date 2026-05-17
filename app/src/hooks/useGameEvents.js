@@ -146,7 +146,10 @@ export function useGameEvents(gameId) {
     address: PLUNDRIX_ADDRESS,
     abi: PLUNDRIX_ABI,
     eventName: 'RoundAutoResolved',
-    onLogs: (logs) => logs.forEach((l) => addEvent('RoundAutoResolved', l)),
+    onLogs: (logs) => {
+      logs.forEach((l) => addEvent('RoundAutoResolved', l));
+      logs.forEach((l) => collectRoundEvents(l));
+    },
     enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
   });
 

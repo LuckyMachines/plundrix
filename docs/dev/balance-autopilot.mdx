@@ -1,0 +1,85 @@
+---
+title: Balance Autopilot
+description: Search Plundrix rulesets with the simulator, score candidates, and promote validated balance changes.
+---
+
+# Balance Autopilot
+
+Balance Autopilot turns the simulator into a discovery engine. It searches candidate rulesets, runs deterministic batches across scenarios, rotates player seats, scores outcomes, reranks promising candidates, and produces reports that explain both benefits and risks.
+
+## Quick Start
+
+```bash
+npm run simulate:auto-balance -- --budget smoke
+npm run simulate:auto-balance -- --mode beam --budget normal --objective comeback
+npm run simulate:auto-balance -- --find-seeds exciting --iterations 100
+```
+
+The same engine powers the `/simulator` browser panel and the CLI script.
+
+## Search Modes
+
+| Mode | Use |
+| --- | --- |
+| `random` | Fast broad exploration across the rules space. |
+| `hill` | Mutates the current best candidate one or two knobs at a time. |
+| `beam` | Keeps a frontier of strong candidates and explores nearby variants. |
+| `grid` | Exhaustive limited search across selected knobs. |
+
+## Budgets
+
+| Budget | Purpose |
+| --- | --- |
+| `smoke` | Tool health check. Good for CI. |
+| `fast` | Interactive exploration. |
+| `normal` | Stronger local candidate search. |
+| `deep` | Long-running CLI validation. |
+
+## Metrics
+
+| Metric | Meaning |
+| --- | --- |
+| Objective score | Composite autopilot score after bonuses and penalties. |
+| Win spread | Difference between the highest and lowest player win rates. |
+| Comeback rate | Share of games won by a player who trailed meaningfully mid-game. |
+| Runaway rate | Share of games won after an early durable lead. |
+| Action EV | Estimated action value for Pick, Search, and Sabotage. |
+| Tension | Round-by-round closeness, stuns, and near-win pressure. |
+| Confidence | Low, medium, or high based on games times scenarios. |
+
+## Objectives
+
+| Objective | Bias |
+| --- | --- |
+| `default` | Balanced fairness, duration, comeback, and action quality. |
+| `faster` | Shorter games. |
+| `comeback` | More comeback potential and lower runaway pressure. |
+| `lowSabotageWaste` | Reduces empty-target sabotage waste. |
+| `minimalChange` | Favors fewer changed knobs. |
+| `highTension` | Favors tense, close games. |
+
+## Tuning Modes
+
+| Mode | Meaning |
+| --- | --- |
+| `contract-compatible-now` | Use reports and strategy guidance without changing deployed contract behavior. |
+| `soft-tuning` | Prefer UI and strategy guidance changes. |
+| `hard-tuning` | Candidate may require Solidity changes. |
+| `future-contract` | Explore all rules as future contract candidates. |
+
+## Promotion Workflow
+
+1. Run a fast search.
+2. Rerank top candidates.
+3. Validate the best candidates with a larger budget.
+4. Inspect replay seeds and failure cases.
+5. Compare against contract defaults.
+6. Decide implementation cost.
+7. Playtest subjectively.
+8. Approve candidate.
+9. Implement the needed contract, strategy, or UI change.
+10. Ship and monitor.
+
+## Known Limits
+
+The simulator mirrors Plundrix game rules and uses deterministic seeded rolls for tuning. Live on-chain randomness also depends on block context and entropy. A rules candidate does not change deployed contract behavior until the contract is upgraded or redeployed.

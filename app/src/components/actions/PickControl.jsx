@@ -1,4 +1,5 @@
 import { pickChance } from '../../lib/formatting';
+import AliveActionCard from './AliveActionCard';
 
 const ARC_RADIUS = 34;
 const ARC_CX = 44;
@@ -15,7 +16,18 @@ function describeArc(cx, cy, r, startAngle, endAngle) {
   return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
 }
 
-export default function PickControl({ onSubmit, disabled, stunned, tools }) {
+export default function PickControl({
+  onSubmit,
+  disabled,
+  stunned,
+  tools,
+  active,
+  pressed,
+  invalidCount,
+  onIntentStart,
+  onIntentEnd,
+  onInvalidIntent,
+}) {
   const chance = pickChance(tools, stunned);
   // Arc goes from -135 deg to +135 deg (270 degree sweep)
   const startAngle = 135;
@@ -26,12 +38,17 @@ export default function PickControl({ onSubmit, disabled, stunned, tools }) {
   const isJammed = stunned;
 
   return (
-    <div className={`
-      flex flex-col items-center border rounded p-4
-      transition-all duration-300
-      ${disabled ? 'border-vault-border bg-vault-dark/30 opacity-60' : 'border-vault-border bg-vault-panel'}
-      ${isJammed ? 'opacity-50' : ''}
-    `}>
+    <AliveActionCard
+      action="pick"
+      active={active}
+      pressed={pressed}
+      disabled={disabled}
+      stunned={isJammed}
+      invalidCount={invalidCount}
+      onIntentStart={onIntentStart}
+      onIntentEnd={onIntentEnd}
+      onInvalidIntent={onInvalidIntent}
+    >
       {/* Label */}
       <h4 className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
         Set Tension
@@ -100,7 +117,13 @@ export default function PickControl({ onSubmit, disabled, stunned, tools }) {
 
       {/* Execute button */}
       <button
-        onClick={() => onSubmit?.()}
+        onClick={() => {
+          if (disabled || isJammed) {
+            onInvalidIntent?.('pick');
+            return;
+          }
+          onSubmit?.();
+        }}
         disabled={disabled || isJammed}
         className={`
           w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
@@ -113,7 +136,7 @@ export default function PickControl({ onSubmit, disabled, stunned, tools }) {
       >
         Execute
       </button>
-    </div>
+    </AliveActionCard>
   );
 }
 

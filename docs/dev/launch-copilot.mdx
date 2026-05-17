@@ -1,0 +1,104 @@
+---
+title: Launch Copilot
+description: Gate-by-gate launch readiness, release packets, risk registers, route checks, decisions, and rollback plans.
+---
+
+# Launch Copilot
+
+Launch Copilot turns the simulator, Balance Autopilot, Replay Director, Live Ops Oracle, docs, routes, environment checks, and operator decisions into one repeatable launch gate system.
+
+It is lightweight by default. A normal run uses small deterministic simulator proof, one replay proof, static source checks, and existing Oracle smoke analysis. Route checks only run when a server URL is supplied, and command execution only happens with `--execute`.
+
+## Gates
+
+1. Prototype
+2. Internal playtest
+3. Public testnet
+4. Launch candidate
+5. Mainnet ready
+6. Shipped
+7. Post-launch monitoring
+
+Each gate inherits checks from earlier gates. A launch candidate must still satisfy prototype, internal playtest, and public testnet proof.
+
+## Commands
+
+```bash
+npm run launch:copilot
+npm run launch:copilot -- --target public-testnet --markdown
+npm run launch:copilot -- --target launch-candidate --json
+npm run launch:copilot -- --target mainnet-ready --server-url http://localhost:5173 --markdown
+npm run test:launch
+```
+
+Useful export flags:
+
+- `--markdown` prints the launch packet.
+- `--json` prints the full launch plan.
+- `--packet` prints only the packet JSON.
+- `--csv` prints the check table.
+- `--risks` prints the risk register.
+- `--out reports/launch/packet.md` writes an export.
+- `--report` writes a timestamped Markdown packet under `app/reports/launch/`.
+
+Execution flags:
+
+- `--server-url http://localhost:5173` checks public routes.
+- `--execute` runs only local-safe command suggestions.
+- `--allow-medium` also allows medium local commands such as `npm run build`.
+- `--heavy` expands simulator and Oracle sampling.
+
+## Inputs
+
+The CLI collects:
+
+- `package.json` scripts
+- `.gitignore`
+- CI workflow
+- go-live checklist
+- runbook and deployment docs
+- simulator, replay, balance, Oracle docs
+- terms and privacy pages
+- contract config
+- selected frontend environment keys
+- optional route health
+- optional command results
+
+Environment values are redacted to booleans in output. Launch Copilot records whether a key is present, not the secret or address value.
+
+## Decisions
+
+Launch decisions use the shared module:
+
+- `validateLaunchDecision(plan, decision)`
+- `createLaunchDecision(plan, decision)`
+- `saveLaunchDecision(decision)`
+- `listLaunchDecisions()`
+
+Approval and shipment are rejected when blockers remain unless the operator explicitly sets `override` and provides an override rationale.
+
+## Rollback
+
+Every packet includes:
+
+- rollback triggers
+- rollback steps
+- verification checks
+- communication notes
+
+This keeps rollback attached to the same evidence set as the launch decision.
+
+## Dashboard
+
+The `/launch` route uses the same shared module as the CLI. It supports gate selection, route health checks, decision logging, packet export, risk review, rollback review, and local packet storage.
+
+## CI
+
+The smoke workflow runs:
+
+```bash
+npm run test:launch
+npm run launch:copilot -- --target internal-playtest --markdown
+```
+
+The CI command intentionally avoids route checks, heavy simulations, capture work, and deploy actions.

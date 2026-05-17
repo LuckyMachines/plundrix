@@ -1,10 +1,11 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import NetworkSwitchBanner from './components/wallet/NetworkSwitchBanner';
 import Modal from './components/shared/Modal';
 import Spinner from './components/shared/Spinner';
+import SessionAudioBridge from './components/shared/SessionAudioBridge';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
@@ -13,10 +14,30 @@ const SessionsPage = lazy(() => import('./pages/SessionsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const SnapshotPage = lazy(() => import('./pages/SnapshotPage'));
+const SimulatorPage = lazy(() => import('./pages/SimulatorPage'));
+const ReplaysPage = lazy(() => import('./pages/ReplaysPage'));
+const ReplayPage = lazy(() => import('./pages/ReplayPage'));
+const OpsPage = lazy(() => import('./pages/OpsPage'));
+const LaunchPage = lazy(() => import('./pages/LaunchPage'));
+const GhostsPage = lazy(() => import('./pages/GhostsPage'));
+const MutationsPage = lazy(() => import('./pages/MutationsPage'));
+const PlaytestPage = lazy(() => import('./pages/PlaytestPage'));
+const DesignTowerPage = lazy(() => import('./pages/DesignTowerPage'));
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
 
 export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [helpInitialTab, setHelpInitialTab] = useState('overview');
+
+  useEffect(() => {
+    const onOpenHelp = (event) => {
+      setHelpInitialTab(event.detail?.tab || 'overview');
+      setIsHelpOpen(true);
+    };
+    window.addEventListener('plundrix:open-help', onOpenHelp);
+    return () => window.removeEventListener('plundrix:open-help', onOpenHelp);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,rgba(196,149,106,0.08),transparent_45%),linear-gradient(180deg,var(--color-vault-dark),#111214)]">
@@ -41,10 +62,21 @@ export default function App() {
             <Route path="/game/:gameId" element={<GamePage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/snapshot" element={<SnapshotPage />} />
+            <Route path="/simulator" element={<SimulatorPage />} />
+            <Route path="/replays" element={<ReplaysPage />} />
+            <Route path="/replay/:replayId" element={<ReplayPage />} />
+            <Route path="/ops" element={<OpsPage />} />
+            <Route path="/launch" element={<LaunchPage />} />
+            <Route path="/ghosts" element={<GhostsPage />} />
+            <Route path="/mutations" element={<MutationsPage />} />
+            <Route path="/playtest" element={<PlaytestPage />} />
+            <Route path="/design" element={<DesignTowerPage />} />
           </Routes>
         </Suspense>
       </main>
       <Footer />
+      <SessionAudioBridge />
       <Modal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)}>
         <Suspense
           fallback={
@@ -56,7 +88,7 @@ export default function App() {
             </div>
           }
         >
-          <FieldManual />
+          <FieldManual initialTab={helpInitialTab} />
         </Suspense>
       </Modal>
     </div>

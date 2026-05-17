@@ -88,7 +88,7 @@ function formatTimestamp(ts) {
   return `${h}:${m}:${s}`;
 }
 
-export default function EventLog({ events = [] }) {
+export default function EventLog({ events = [], cues = [], focusRound = null }) {
   const scrollRef = useRef(null);
 
   // Auto-scroll to bottom on new events
@@ -121,11 +121,16 @@ export default function EventLog({ events = [] }) {
         {events.map((event, i) => {
           const colorClass = EVENT_COLORS[event.name] || 'text-vault-text-dim';
           const icon = EVENT_ICONS[event.name] || '\u2022';
+          const cue = cues[i];
+          const eventRound = event.args?.round !== undefined ? Number(event.args.round) : null;
+          const focused = focusRound !== null && eventRound === Number(focusRound);
 
           return (
             <div
               key={`${event.transactionHash}-${event.name}-${i}`}
-              className="flex items-start gap-2 font-mono text-xs leading-relaxed"
+              className={`alive-event-row flex items-start gap-2 font-mono text-xs leading-relaxed ${focused ? 'alive-event-row-focused' : ''}`}
+              data-cue={cue?.type || event.name}
+              data-tone={cue?.tone || 'neutral'}
             >
               {/* Timestamp */}
               <span className="text-vault-text-dim shrink-0 tabular-nums">

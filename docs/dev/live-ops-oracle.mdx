@@ -1,0 +1,70 @@
+---
+title: Live Ops Oracle
+description: Daily operational command center for Plundrix simulator, balance, replay, release, and marketing proof.
+---
+
+# Live Ops Oracle
+
+Live Ops Oracle answers one question: what should we do next to improve Plundrix?
+
+It orchestrates simulator smoke batches, Balance Autopilot reports, Replay Director proof, docs, release checklists, operations scripts, and future live data. It does not duplicate simulator, balance, or replay rules.
+
+## Quick Start
+
+```bash
+npm run ops:oracle
+npm run ops:oracle -- --markdown
+npm run ops:oracle -- --json
+npm run ops:oracle -- --release-notes
+npm run ops:oracle -- --marketing-bundle
+```
+
+Browser route:
+
+```txt
+/ops
+```
+
+## Default Resource Policy
+
+Oracle generation is lightweight by default. It uses existing local files, tiny smoke batches, smoke Autopilot, and generated replay samples. Heavy analysis is opt-in:
+
+```bash
+npm run ops:oracle -- --heavy
+```
+
+## Health Categories
+
+| Category | Purpose |
+| --- | --- |
+| balance | Candidate quality and validation status. |
+| replay | Replay proof quality and lifecycle. |
+| readiness | Go-live checklist completion and gates. |
+| documentation | Key docs presence and freshness. |
+| marketing proof | Replay links, capture plans, and proof assets. |
+| operations | Scripts, CI, and artifact safety. |
+| live data | Future indexed gameplay and telemetry readiness. |
+
+## Outputs
+
+- Daily brief Markdown
+- JSON report
+- Recommendation CSV
+- Release notes draft
+- Marketing proof bundle
+- Operator decision log
+- Saved local snapshots
+
+## Future Live Data Inputs
+
+- games created
+- games completed
+- action distribution
+- round duration
+- player retention
+- wallet/session funnel
+- replay shares
+
+## Known Limits
+
+Live data, retention, and simulator-vs-live drift are adapter slots until indexed production data is connected. Browser refresh uses lightweight generation and should not be treated as deep validation.

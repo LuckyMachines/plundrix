@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
@@ -6,7 +6,10 @@ import { usePlayerState } from '../../hooks/usePlayerState';
 import { useAllActionsSubmitted } from '../../hooks/useAllActionsSubmitted';
 import { useGameActions } from '../../hooks/useGameActions';
 import { useTxToast } from '../../hooks/useTxToast';
+import { useTxCueBridge } from '../../hooks/useTxCueBridge';
 import { useGameEvents } from '../../hooks/useGameEvents';
+import { useIntegratedSession } from '../../hooks/useIntegratedSession';
+import { useSessionCommandLayer } from '../../hooks/useSessionCommandLayer';
 import { ROUND_TIMEOUT } from '../../lib/constants';
 import LockRack from './LockRack';
 import RoundConsole from './RoundConsole';
@@ -18,6 +21,11 @@ import EventLog from '../shared/EventLog';
 import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
 import MissionCoach from './MissionCoach';
+import SessionIntegrationRail from './SessionIntegrationRail';
+import CommandStrip from './CommandStrip';
+import RoundSummaryCard from './RoundSummaryCard';
+import IntegrationDebugTrace from './IntegrationDebugTrace';
+import { useSessionHistoryRecorder } from '../../hooks/useSessionHistory';
 
 export default function VaultBench({ gameId }) {
   const { address } = useAccount();
@@ -36,10 +44,21 @@ export default function VaultBench({ gameId }) {
     configError,
   } = useGameActions();
   useTxToast({ hash: resolveHash, isPending: resolvePending, isConfirming: resolveConfirming, isSuccess: resolveSuccess, error: resolveError }, 'Round resolution');
+  useTxCueBridge({
+    gameId,
+    label: 'Round resolution',
+    isPending: resolvePending,
+    isConfirming: resolveConfirming,
+    isSuccess: resolveSuccess,
+    error: resolveError,
+  });
   const { events, latestRoundEvents, roundHistory } = useGameEvents(gameId);
 
   // Resolution sequence visibility
   const [showResolve, setShowResolve] = useState(false);
+  const [actionIntent, setActionIntent] = useState('idle');
+  const [targetAddress, setTargetAddress] = useState('');
+  const [selectedReplayRound, setSelectedReplayRound] = useState(null);
   useEffect(() => {
     if (latestRoundEvents && latestRoundEvents.length > 0) {
       setShowResolve(true);
@@ -62,24 +81,46 @@ export default function VaultBench({ gameId }) {
 
   const canResolve = allSubmitted || timedOut;
   const isLoading = gameLoading || playersLoading;
+  const session = useIntegratedSession({
+    gameId,
+    gameState: state,
+    currentRound,
+    playerCount,
+    roundStartTime,
+    allSubmitted,
+    timedOut,
+    canResolve,
+    events,
+    latestRoundEvents,
+    roundHistory,
+    currentAddress: address,
+    connected: !!address,
+    registered,
+    actionSubmitted,
+    stunned,
+    locksCracked,
+    tools,
+    targetAddress,
+    actionIntent,
+    isConfigured,
+    pending: resolvePending,
+    confirming: resolveConfirming,
+  });
+  useSessionHistoryRecorder(session);
 
-  useEffect(() => {
-    if (!canResolve) return;
+  const handleResolve = useCallback(() => {
+    resolveRound(gameId);
+  }, [gameId, resolveRound]);
 
-    const onKeyDown = (e) => {
-      if (e.key.toLowerCase() !== 'r') return;
-      if (resolvePending || resolveConfirming || !isConfigured) return;
-      const tag = e.target?.tagName?.toLowerCase();
-      const isTypingContext =
-        tag === 'input' || tag === 'textarea' || tag === 'select' || e.target?.isContentEditable;
-      if (isTypingContext) return;
-      e.preventDefault();
-      resolveRound(gameId);
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [canResolve, resolvePending, resolveConfirming, isConfigured, resolveRound, gameId]);
+  useSessionCommandLayer({
+    session,
+    players,
+    currentAddress: address,
+    targetAddress,
+    onResolve: handleResolve,
+    onTargetChange: setTargetAddress,
+    resolveDisabled: resolvePending || resolveConfirming || !isConfigured,
+  });
 
   if (isLoading) {
     return (
@@ -94,11 +135,17 @@ export default function VaultBench({ gameId }) {
 
   return (
     <div className="space-y-6">
+      <SessionIntegrationRail session={session} />
+      <CommandStrip
+        session={session}
+        onHelp={() => window.dispatchEvent(new CustomEvent('plundrix:open-help', { detail: { tab: 'actions' } }))}
+      />
+
       {/* ---- Top instrument panel: 3 columns ---- */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Left: Lock Rack */}
         <div className="border border-vault-border rounded bg-vault-panel p-4 flex items-center justify-center overflow-hidden">
-          <LockRack locksCracked={locksCracked} />
+          <LockRack locksCracked={locksCracked} session={session} />
         </div>
 
         {/* Center: Round Console */}
@@ -109,6 +156,7 @@ export default function VaultBench({ gameId }) {
             allSubmitted={allSubmitted}
             gameState={state}
             canResolve={canResolve}
+            session={session}
           />
         </div>
 
@@ -124,6 +172,8 @@ export default function VaultBench({ gameId }) {
                 gameId={gameId}
                 address={addr}
                 isCurrentUser={addr?.toLowerCase() === address?.toLowerCase()}
+                targeted={addr?.toLowerCase() === targetAddress?.toLowerCase()}
+                latestCue={session.latestCue}
               />
             ))}
           </div>
@@ -139,6 +189,7 @@ export default function VaultBench({ gameId }) {
         tools={tools}
         canResolve={canResolve}
         allSubmitted={allSubmitted}
+        session={session}
       />
 
       <div className="border border-vault-border rounded bg-vault-panel p-4">
@@ -152,6 +203,9 @@ export default function VaultBench({ gameId }) {
           tools={tools}
           players={players}
           currentAddress={address}
+          session={session}
+          onIntentChange={setActionIntent}
+          onTargetChange={setTargetAddress}
         />
       </div>
 
@@ -210,10 +264,20 @@ export default function VaultBench({ gameId }) {
         />
       )}
 
-      <ReplayTimeline roundHistory={roundHistory} currentAddress={address} />
+      <RoundSummaryCard session={session} />
+
+      <ReplayTimeline
+        roundHistory={roundHistory}
+        currentAddress={address}
+        session={session}
+        selectedRound={selectedReplayRound}
+        onSelectedRoundChange={setSelectedReplayRound}
+      />
 
       {/* ---- Event Log ---- */}
-      <EventLog events={events} />
+      <EventLog events={events} cues={session.eventCues} focusRound={selectedReplayRound} />
+
+      <IntegrationDebugTrace session={session} />
     </div>
   );
 }

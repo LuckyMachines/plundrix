@@ -1,0 +1,94 @@
+---
+title: Rule Mutation Time Machine
+description: Compare baseline and candidate Plundrix rules across simulation, replay drama, ghost archetypes, contract impact, and launch risk.
+---
+
+# Rule Mutation Time Machine
+
+Rule Mutation Time Machine answers the design question: what changed and why?
+
+It runs baseline and candidate rules through the same seed, same simulator engine, same strategies, same replay pipeline, and same Player Telemetry Ghost cast. It then explains outcome, pacing, tension, replay drama, archetype health, contract impact, and rollback patch.
+
+## Commands
+
+```bash
+npm run mutate:rules
+npm run mutate:rules -- --preset more-comeback --budget smoke --markdown
+npm run mutate:matrix -- --budget smoke --csv
+npm run test:mutations
+```
+
+Deep mode is opt-in only:
+
+```bash
+npm run mutate:matrix -- --budget deep --deep --markdown
+```
+
+## Presets
+
+- Faster games
+- Slower games
+- More comeback
+- Less sabotage fatigue
+- More tool economy
+- Less tool hoarding
+- Clutch endings
+- Safer onboarding
+- High drama
+- Contract minimal
+
+## Outputs
+
+Mutation reports include:
+
+- baseline rules
+- candidate rules
+- rule diff
+- rollback patch
+- contract impact
+- simulation delta
+- tension delta
+- replay drama delta
+- ghost archetype delta
+- score
+- verdict
+- recommendation
+
+Verdicts are:
+
+- ship candidate
+- playtest candidate
+- investigate
+- risky
+- reject
+
+## Integrations
+
+Replay Director supplies drama and highlight comparisons.
+
+Player Telemetry Ghosts supply archetype health and frustration deltas.
+
+Balance Autopilot can attach mutation scores to top candidates.
+
+Live Ops Oracle ranks best, worst, safest, highest-drama, and lowest-frustration mutations.
+
+Launch Copilot includes mutation smoke proof, contract-impact notes, and rollback patches in launch packets.
+
+## Dashboard
+
+The `/mutations` route provides:
+
+- baseline rule editor
+- candidate rule editor
+- preset buttons
+- comparison verdict
+- score breakdown
+- rule diff table
+- tension chart
+- replay comparison
+- ghost deltas
+- contract impact card
+- mutation matrix
+- saved reports
+- pinned candidates
+- export buttons

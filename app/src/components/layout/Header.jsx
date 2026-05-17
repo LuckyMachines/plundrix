@@ -5,9 +5,39 @@ import NetworkBadge from '../wallet/NetworkBadge';
 import HelpButton from '../help/HelpButton';
 import AccessibilityToggle from './AccessibilityToggle';
 
+const NAV_SECTIONS = [
+  {
+    label: 'Play',
+    items: [
+      { to: '/leaderboard', label: 'Ladder', description: 'Rankings and competitive progress' },
+      { to: '/sessions', label: 'Sessions', description: 'Recent games and session history' },
+    ],
+  },
+  {
+    label: 'Lab',
+    items: [
+      { to: '/simulator', label: 'Simulator', description: 'Tune outcomes with the game engine' },
+      { to: '/replays', label: 'Replays', description: 'Review and share match stories' },
+      { to: '/ghosts', label: 'Ghosts', description: 'Test named player archetypes' },
+      { to: '/mutations', label: 'Mutations', description: 'Compare rule changes' },
+      { to: '/playtest', label: 'Playtest', description: 'Turn signals into human missions' },
+      { to: '/design', label: 'Design', description: 'Connect hypotheses to evidence' },
+    ],
+  },
+  {
+    label: 'Ship',
+    items: [
+      { to: '/ops', label: 'Ops', description: 'Live health and next actions' },
+      { to: '/launch', label: 'Launch', description: 'Gate packets and readiness' },
+    ],
+  },
+];
+
 export default function Header({ onHelpClick }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const isActive = (to) => (to === '/' ? location.pathname === '/' : location.pathname === to || location.pathname.startsWith(`${to}/`));
+  const sectionActive = (section) => section.items.some((item) => isActive(item.to));
 
   // Close menu on route change
   useEffect(() => {
@@ -26,9 +56,9 @@ export default function Header({ onHelpClick }) {
 
   return (
     <header className="border-b border-vault-border bg-vault-surface/80 backdrop-blur-sm safe-top">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 min-h-14 py-3 flex items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 min-h-14 py-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         {/* Left: Logo + staging badge */}
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="order-1 flex shrink-0 items-center gap-2 min-w-0">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <span className="text-xl font-bold tracking-[0.3em] text-tungsten font-display uppercase">
               Plundrix
@@ -40,22 +70,33 @@ export default function Header({ onHelpClick }) {
         </div>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-vault-text-dim">
-          <NavLink to="/">Console</NavLink>
-          <NavLink to="/leaderboard">Ladder</NavLink>
-          <NavLink to="/sessions">Sessions</NavLink>
+        <nav
+          className="order-3 hidden w-full flex-wrap items-stretch justify-center gap-2 pt-2 lg:flex 2xl:order-2 2xl:w-auto 2xl:flex-1 2xl:pt-0"
+          aria-label="Primary navigation"
+        >
+          <div className="flex items-end">
+            <NavLink to="/" active={isActive('/')}>Console</NavLink>
+          </div>
+          {NAV_SECTIONS.map((section) => (
+            <NavCluster
+              key={section.label}
+              section={section}
+              active={sectionActive(section)}
+              isActive={isActive}
+            />
+          ))}
           <a
             href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded border border-vault-border px-3 py-2 hover:bg-vault-panel/70 min-h-[44px] flex items-center"
+            className="flex min-h-[42px] items-center self-end rounded border border-vault-border px-3 py-2 font-mono text-xs uppercase tracking-[0.12em] text-vault-text-dim hover:bg-vault-panel/70 hover:text-vault-text"
           >
             Docs
           </a>
         </nav>
 
         {/* Desktop right controls */}
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="order-2 ml-auto hidden shrink-0 items-center gap-2 lg:flex 2xl:order-3 2xl:ml-0">
           <AccessibilityToggle />
           <HelpButton onClick={onHelpClick} />
           <NetworkBadge />
@@ -63,7 +104,7 @@ export default function Header({ onHelpClick }) {
         </div>
 
         {/* Mobile right: connect + hamburger */}
-        <div className="flex lg:hidden items-center gap-2">
+        <div className="order-2 ml-auto flex items-center gap-2 lg:hidden">
           <ConnectButton />
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -91,18 +132,29 @@ export default function Header({ onHelpClick }) {
       {menuOpen && (
         <div className="lg:hidden fixed inset-0 top-[57px] z-50 bg-vault-dark/95 backdrop-blur-md safe-bottom">
           <div className="flex flex-col h-full overflow-y-auto">
-            <nav className="flex flex-col px-4 py-4 gap-1 font-mono text-sm uppercase tracking-[0.18em]">
-              <MobileNavLink to="/">Console</MobileNavLink>
-              <MobileNavLink to="/leaderboard">Ladder</MobileNavLink>
-              <MobileNavLink to="/sessions">Sessions</MobileNavLink>
+            <nav className="flex flex-col px-4 py-4 gap-4 font-mono text-sm uppercase tracking-[0.12em]">
+              <MobileSection title="Home">
+                <MobileNavLink to="/" active={isActive('/')}>Console</MobileNavLink>
+              </MobileSection>
+              {NAV_SECTIONS.map((section) => (
+                <MobileSection key={section.label} title={section.label}>
+                  {section.items.map((item) => (
+                    <MobileNavLink key={item.to} to={item.to} active={isActive(item.to)}>
+                      {item.label}
+                    </MobileNavLink>
+                  ))}
+                </MobileSection>
+              ))}
+              <MobileSection title="Reference">
               <a
                 href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center min-h-[48px] px-4 py-3 rounded text-vault-text-dim hover:text-vault-text hover:bg-vault-panel/50 transition-colors"
+                className="flex items-center min-h-[48px] px-4 py-3 rounded border border-vault-border text-vault-text-dim hover:text-vault-text hover:bg-vault-panel/50 transition-colors"
               >
                 Docs
               </a>
+              </MobileSection>
             </nav>
 
             <div className="border-t border-vault-border mx-4" />
@@ -132,22 +184,79 @@ export default function Header({ onHelpClick }) {
   );
 }
 
-function NavLink({ to, children }) {
+function NavLink({ to, active, children }) {
   return (
     <Link
       to={to}
-      className="rounded border border-vault-border px-3 py-2 hover:bg-vault-panel/70 min-h-[44px] flex items-center"
+      aria-current={active ? 'page' : undefined}
+      className={`flex min-h-[42px] items-center rounded border px-3 py-2 transition-colors ${
+        active
+          ? 'border-tungsten/70 bg-tungsten/10 text-vault-text'
+          : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/70 hover:text-vault-text'
+      } font-mono text-xs uppercase tracking-[0.12em]`}
     >
       {children}
     </Link>
   );
 }
 
-function MobileNavLink({ to, children }) {
+function NavCluster({ section, active, isActive }) {
+  return (
+    <section
+      className={`flex min-h-[42px] items-stretch rounded border bg-vault-dark/35 ${
+        active ? 'border-tungsten/55' : 'border-vault-border'
+      }`}
+      aria-label={`${section.label} navigation`}
+    >
+      <div className={`flex items-center border-r px-2 font-mono text-[10px] uppercase tracking-[0.14em] ${
+        active ? 'border-tungsten/30 text-tungsten' : 'border-vault-border text-vault-text-dim'
+      }`}>
+        {section.label}
+      </div>
+      <div className="flex flex-wrap items-center gap-1 p-1">
+        {section.items.map((item) => (
+          <Link
+            key={item.to}
+            to={item.to}
+            aria-current={isActive(item.to) ? 'page' : undefined}
+            title={item.description}
+            className={`flex min-h-[34px] items-center rounded px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] transition-colors ${
+              isActive(item.to)
+                ? 'bg-tungsten/10 text-vault-text'
+                : 'text-vault-text-dim hover:bg-vault-panel/70 hover:text-vault-text'
+            }`}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function MobileSection({ title, children }) {
+  return (
+    <div>
+      <p className="px-2 pb-1 font-mono text-[10px] uppercase tracking-[0.16em] text-vault-text-dim">
+        {title}
+      </p>
+      <div className="grid gap-1">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function MobileNavLink({ to, active, children }) {
   return (
     <Link
       to={to}
-      className="flex items-center min-h-[48px] px-4 py-3 rounded text-vault-text hover:bg-vault-panel/50 transition-colors"
+      aria-current={active ? 'page' : undefined}
+      className={`flex items-center min-h-[48px] rounded border px-4 py-3 transition-colors ${
+        active
+          ? 'border-tungsten/70 bg-tungsten/10 text-vault-text'
+          : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/50 hover:text-vault-text'
+      }`}
     >
       {children}
     </Link>

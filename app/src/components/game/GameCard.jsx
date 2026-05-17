@@ -1,7 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 import { useGameInfo } from '../../hooks/useGameInfo';
+import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { GameState, STATE_LABELS } from '../../lib/constants';
 import { formatBigInt } from '../../lib/formatting';
+import { getPressureState } from '../../lib/gameIntegration';
 import Spinner from '../shared/Spinner';
 
 const STATE_COLORS = {
@@ -12,18 +15,24 @@ const STATE_COLORS = {
 
 export default function GameCard({ gameId }) {
   const navigate = useNavigate();
-  const { state, currentRound, playerCount, isLoading, error } = useGameInfo(gameId);
+  const { address } = useAccount();
+  const { state, currentRound, playerCount, roundStartTime, isLoading, error } = useGameInfo(gameId);
+  const { players } = useGamePlayers(gameId, playerCount);
 
   const stateNum = state !== undefined ? Number(state) : undefined;
   const stateLabel = stateNum !== undefined ? STATE_LABELS[stateNum] : '...';
   const stateColor = stateNum !== undefined ? STATE_COLORS[stateNum] : 'text-vault-text-dim border-vault-border bg-vault-dark/50';
+  const pressure = stateNum === GameState.ACTIVE ? getPressureState(roundStartTime, Date.now()) : null;
+  const isUserInGame = players.some((player) => player?.toLowerCase() === address?.toLowerCase());
 
   return (
     <button
       onClick={() => navigate(`/game/${gameId}`)}
-      className="w-full text-left border border-vault-border rounded bg-vault-panel
+      className="alive-game-card w-full text-left border border-vault-border rounded bg-vault-panel
                  hover:border-tungsten/40 hover:bg-vault-panel/80 transition-colors
                  focus:outline-none focus:ring-1 focus:ring-tungsten/50"
+      data-state={stateLabel.toLowerCase()}
+      data-pressure={pressure?.stage || 'none'}
     >
       <div className="px-5 py-4">
         {isLoading ? (
@@ -44,6 +53,11 @@ export default function GameCard({ gameId }) {
               >
                 {stateLabel}
               </span>
+              {isUserInGame && (
+                <span className="font-mono text-xs tracking-widest uppercase rounded px-2 py-0.5 border border-blueprint/30 bg-blueprint/5 text-blueprint">
+                  You
+                </span>
+              )}
             </div>
 
             {/* Details row */}
@@ -64,6 +78,17 @@ export default function GameCard({ gameId }) {
                   </p>
                   <p className="font-mono text-xs text-vault-text">
                     {formatBigInt(currentRound)}
+                  </p>
+                </div>
+              )}
+
+              {pressure && (
+                <div>
+                  <p className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
+                    Pressure
+                  </p>
+                  <p className="font-mono text-xs text-vault-text">
+                    {pressure.label}
                   </p>
                 </div>
               )}

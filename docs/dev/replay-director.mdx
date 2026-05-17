@@ -1,0 +1,83 @@
+---
+title: Replay Director
+description: Turn Plundrix simulator outcomes into replayable, shareable gameplay stories.
+---
+
+# Replay Director
+
+Replay Director converts simulator output into readable gameplay stories. It ranks dramatic games, extracts highlights, builds replay timelines, creates share URLs, and exports capture plans for screenshots or social clips.
+
+## Quick Start
+
+```bash
+npm run replay:direct -- --seed comeback-1 --scenario comeback-test
+npm run replay:direct -- --batch 20 --scenario comeback-test
+npm run replay:direct -- --paired --seed paired-1 --scenario new-player-table
+```
+
+Browser routes:
+
+- `/replays` shows the replay gallery.
+- `/replay/:replayId` opens a directed replay.
+- `/simulator` includes a Replay Director panel for directing current games, batches, and Autopilot candidates.
+
+## Dramatic Score
+
+Replay Director scores a replay from:
+
+- lead changes
+- near-win moments
+- comeback arcs
+- sabotage swings
+- clutch rolls
+- close finishes
+- tension curve
+- duration health
+
+The score is a heuristic for replay quality. It is not proof of player intent.
+
+## Highlights
+
+Detected highlights include first lock, first leader, lead change, tie for lead, near win, final round, comeback start, sabotage swing, wasted sabotage, clutch pick, failed clutch pick, max tools, stun chain, long stall, fast win, and close finish.
+
+## Capture Plans
+
+Every replay includes deterministic capture steps:
+
+```bash
+npm run replay:direct -- --seed clip-1 --scenario comeback-test --capture-plan
+```
+
+The capture script is available as:
+
+```bash
+npm run replay:capture -- --seed clip-1 --scenario comeback-test --preset desktop
+```
+
+It expects Playwright to be installed in the app environment before screenshots are captured.
+
+## Export Formats
+
+```bash
+npm run replay:direct -- --seed clip-1 --json
+npm run replay:direct -- --seed clip-1 --markdown
+npm run replay:direct -- --batch 20 --csv
+npm run replay:direct -- --batch 20 --gallery
+```
+
+## Promotion Workflow
+
+Replay states:
+
+1. generated
+2. reviewed
+3. pinned
+4. gallery
+5. marketing
+6. archived
+
+Use the gallery/library controls to save replays, pin promising clips, add subjective notes, and export replay libraries.
+
+## Known Limits
+
+Replay labels are deterministic heuristics. Live-game replay conversion is stubbed until indexed on-chain event data is connected. Public replay payloads use player labels rather than wallet-address storytelling by default.

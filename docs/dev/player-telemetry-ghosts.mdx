@@ -1,0 +1,79 @@
+---
+title: Player Telemetry Ghosts
+description: Deterministic player archetypes for simulator, replay, balance, Oracle, and launch readiness.
+---
+
+# Player Telemetry Ghosts
+
+Player Telemetry Ghosts are named, repeatable player archetypes that run through the same Plundrix simulator engine as the rest of the product.
+
+They make balance and replay work less abstract. Instead of only asking whether generic bots finish games, Ghosts ask whether recognizable player styles create fun, agency, tension, and fair outcomes.
+
+## Archetypes
+
+- Reckless Picker
+- Tool Hoarder
+- Revenge Saboteur
+- Leader Hunter
+- Comeback Hunter
+- Stall Breaker
+- Chaos Agent
+- Safe Builder
+- Opportunist
+- Closer
+
+Each profile includes motivation, action preferences, aggression, greed, sabotage tendency, risk tolerance, clutch behavior, target preference, fun risks, and balance risks.
+
+## Commands
+
+```bash
+npm run ghosts:run
+npm run ghosts:run -- --scenario comeback-lab --budget smoke --markdown
+npm run ghosts:run -- --scenario sabotage-den --games 8 --csv
+npm run ghosts:report
+npm run test:ghosts
+```
+
+The default command is intentionally lightweight. Deep or larger batches require explicit flags.
+
+## Reports
+
+Ghost reports include:
+
+- archetype health
+- win rate by archetype
+- fun contribution
+- frustration risk
+- stayed-in-character score
+- matchup rows
+- best story proof
+- balance risks
+- recommended next actions
+
+## Integrations
+
+Replay Director can attach ghost roster metadata and personality highlights to replays.
+
+Balance Autopilot can run ghost validation and expose archetype viability for candidate rules.
+
+Live Ops Oracle includes ghost health, risks, opportunities, and recommendations.
+
+Launch Copilot includes ghost smoke checks and packet proof that gameplay was tested across recognizable player styles.
+
+## Dashboard
+
+The `/ghosts` dashboard supports:
+
+- scenario selection
+- deterministic roster generation
+- roster editing
+- smoke batches
+- health tables
+- matchup matrix
+- best story proof
+- report export
+- pinned ghosts
+
+## Resource Profile
+
+Smoke runs are small and deterministic. Browser and CI paths avoid deep batches, capture work, or deploy actions.

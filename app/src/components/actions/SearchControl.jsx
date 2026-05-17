@@ -1,19 +1,37 @@
 import { searchChance } from '../../lib/formatting';
 import { MAX_TOOLS } from '../../lib/constants';
+import AliveActionCard from './AliveActionCard';
 
 const BAR_COUNT = 8;
 
-export default function SearchControl({ onSubmit, disabled, stunned, tools = 0 }) {
+export default function SearchControl({
+  onSubmit,
+  disabled,
+  stunned,
+  tools = 0,
+  active,
+  pressed,
+  invalidCount,
+  onIntentStart,
+  onIntentEnd,
+  onInvalidIntent,
+}) {
   const chance = searchChance(stunned);
   const filledBars = Math.round((chance / 100) * BAR_COUNT);
   const openSockets = MAX_TOOLS - Number(tools || 0);
 
   return (
-    <div className={`
-      flex flex-col items-center border rounded p-4
-      transition-all duration-300
-      ${disabled ? 'border-vault-border bg-vault-dark/30 opacity-60' : 'border-vault-border bg-vault-panel'}
-    `}>
+    <AliveActionCard
+      action="search"
+      active={active}
+      pressed={pressed}
+      disabled={disabled}
+      stunned={stunned}
+      invalidCount={invalidCount}
+      onIntentStart={onIntentStart}
+      onIntentEnd={onIntentEnd}
+      onInvalidIntent={onInvalidIntent}
+    >
       {/* Label */}
       <h4 className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
         Sweep Compartment
@@ -70,7 +88,13 @@ export default function SearchControl({ onSubmit, disabled, stunned, tools = 0 }
 
       {/* Execute button */}
       <button
-        onClick={() => onSubmit?.()}
+        onClick={() => {
+          if (disabled) {
+            onInvalidIntent?.('search');
+            return;
+          }
+          onSubmit?.();
+        }}
         disabled={disabled}
         className={`
           w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
@@ -83,7 +107,7 @@ export default function SearchControl({ onSubmit, disabled, stunned, tools = 0 }
       >
         Execute
       </button>
-    </div>
+    </AliveActionCard>
   );
 }
 

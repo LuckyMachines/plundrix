@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import Spinner from '../components/shared/Spinner';
 import LeaderboardTable from '../components/competition/LeaderboardTable';
+import PlaystyleStats from '../components/competition/PlaystyleStats';
 import { useLeaderboard } from '../hooks/useLeaderboard';
+import { useSessionHistory } from '../hooks/useSessionHistory';
 
 const FILTERS = [
   { value: 'all', label: 'All Profiles' },
@@ -13,6 +15,7 @@ const FILTERS = [
 export default function LeaderboardPage() {
   const [queue, setQueue] = useState('all');
   const { data, isLoading, error } = useLeaderboard(queue, 30);
+  const { summary } = useSessionHistory();
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12 space-y-6">
@@ -52,6 +55,8 @@ export default function LeaderboardPage() {
           entries={data.entries}
         />
       )}
+
+      <PlaystyleStats profiles={summary.profiles} />
     </div>
   );
 }

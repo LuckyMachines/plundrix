@@ -2,8 +2,23 @@ import { useEffect, useMemo, useState } from 'react';
 import { describeActionOutcome } from '../../lib/outcomes';
 import { truncateAddress } from '../../lib/formatting';
 
-export default function ReplayTimeline({ roundHistory = [], currentAddress }) {
-  const [selectedRound, setSelectedRound] = useState(null);
+export default function ReplayTimeline({
+  roundHistory = [],
+  currentAddress,
+  session,
+  selectedRound: controlledRound,
+  onSelectedRoundChange,
+}) {
+  const [internalSelectedRound, setInternalSelectedRound] = useState(null);
+  const selectedRound = controlledRound ?? internalSelectedRound;
+  const setSelectedRound = (valueOrUpdater) => {
+    const next =
+      typeof valueOrUpdater === 'function'
+        ? valueOrUpdater(selectedRound)
+        : valueOrUpdater;
+    setInternalSelectedRound(next);
+    onSelectedRoundChange?.(next);
+  };
 
   useEffect(() => {
     if (roundHistory.length === 0) return;
@@ -14,6 +29,34 @@ export default function ReplayTimeline({ roundHistory = [], currentAddress }) {
     () => roundHistory.find((entry) => entry.round === selectedRound),
     [roundHistory, selectedRound]
   );
+  const selectedSummary = useMemo(
+    () => session?.roundHistorySummary?.find((entry) => entry.round === selectedRound),
+    [session?.roundHistorySummary, selectedRound]
+  );
+
+  useEffect(() => {
+    if (roundHistory.length === 0) return;
+
+    const onKeyDown = (e) => {
+      const tag = e.target?.tagName?.toLowerCase();
+      const isTypingContext =
+        tag === 'input' || tag === 'textarea' || tag === 'select' || e.target?.isContentEditable;
+      if (isTypingContext) return;
+      if (e.key !== '[' && e.key !== ']') return;
+
+      e.preventDefault();
+      setSelectedRound((current) => {
+        const index = Math.max(0, roundHistory.findIndex((entry) => entry.round === current));
+        const nextIndex = e.key === '['
+          ? Math.max(0, index - 1)
+          : Math.min(roundHistory.length - 1, index + 1);
+        return roundHistory[nextIndex]?.round ?? current;
+      });
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [roundHistory]);
 
   if (roundHistory.length === 0) {
     return (
@@ -53,6 +96,24 @@ export default function ReplayTimeline({ roundHistory = [], currentAddress }) {
           </button>
         ))}
       </div>
+
+      {selectedSummary && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {[
+            ['Commits', selectedSummary.commits],
+            ['Locks', selectedSummary.locks],
+            ['Tools', selectedSummary.tools],
+            ['Hits', selectedSummary.sabotages],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded border border-vault-border bg-vault-dark/30 px-3 py-2">
+              <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+                {label}
+              </p>
+              <p className="font-mono text-sm text-vault-text tabular-nums">{value}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="space-y-2">
         {outcomeEvents.length === 0 && (

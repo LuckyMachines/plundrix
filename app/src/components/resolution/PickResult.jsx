@@ -1,4 +1,5 @@
 import { truncateAddress } from '../../lib/formatting';
+import OutcomeBadge from '../shared/OutcomeBadge';
 
 export default function PickResult({ player, totalCracked, success, detail }) {
   return (
@@ -36,15 +37,9 @@ export default function PickResult({ player, totalCracked, success, detail }) {
               {totalCracked?.toString()}/5
             </span>
           )}
-          <span
-            className={`font-display text-xs tracking-widest uppercase px-2 py-0.5 rounded border ${
-              success
-                ? 'text-tungsten border-tungsten/30 bg-tungsten/5'
-                : 'text-vault-text-dim border-vault-border bg-vault-panel'
-            }`}
-          >
+          <OutcomeBadge tone={success ? 'tungsten' : 'neutral'}>
             {success ? 'LOCK CRACKED' : 'NO JOY'}
-          </span>
+          </OutcomeBadge>
         </div>
       </div>
       {detail && (

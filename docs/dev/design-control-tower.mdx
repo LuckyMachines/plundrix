@@ -1,0 +1,58 @@
+---
+title: Design Control Tower
+description: Manage Plundrix gameplay hypotheses, evidence, decisions, and shipped design memory.
+---
+
+# Design Control Tower
+
+The Design Control Tower is the project memory for Plundrix design direction. It links hypotheses to evidence from the simulator, Balance Autopilot, Replay Director, Player Telemetry Ghosts, Rule Mutation Time Machine, Live Ops Oracle, Launch Copilot, Playtest Coach, and manual notes.
+
+## Core Objects
+
+- Hypotheses capture the claim, desired outcome, risk, owner, category, state, evidence stack, score, next action, and history.
+- Evidence records source type, summary, confidence, score, sentiment, artifact id, command, and path.
+- Decisions require status, operator, rationale, and accepted risks when accepting or shipping a change.
+- Packets summarize health, top backlog, accepted changes, rejected changes, evidence gaps, commands, and decision memos.
+
+## Lifecycle
+
+```text
+idea -> queued -> simulating -> machine-validated -> human-playtest -> accepted -> shipped -> archived
+```
+
+Any active hypothesis can be rejected, and final hypotheses can be archived.
+
+## CLI
+
+```bash
+npm run design:tower
+npm run design:tower -- --snapshot --markdown
+npm run design:tower -- --backlog --csv
+npm run design:tower -- --memo --json
+npm run test:design
+```
+
+The default path is lightweight. It uses smoke budgets and does not capture media.
+
+## Dashboard
+
+Open `/design` to:
+
+- Create hypotheses.
+- Attach evidence.
+- Rank the backlog.
+- Inspect evidence gaps.
+- Move hypotheses through valid lifecycle states.
+- Record decisions.
+- Export Markdown packets, JSON packets, CSV backlog, and hypothesis libraries.
+
+## Integration Rules
+
+- Oracle uses Design Control status as part of product health.
+- Launch Copilot requires a Design Control packet before internal playtest promotion.
+- Playtest reports can attach as human evidence.
+- Ghost risks, mutation reports, replay proof, and balance candidates can become hypotheses automatically.
+
+## Decision Standard
+
+A design change should not be accepted until it has at least two independent evidence sources and a human validation plan. A design change should not be shipped if rejected evidence is attached without an explicit decision rationale.

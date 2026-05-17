@@ -10,6 +10,7 @@ import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS, IS_CONTRACT_CONFIGURED } from '../../co
 import { truncateAddress } from '../../lib/formatting';
 import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
+import LobbyContinuityRail from './LobbyContinuityRail';
 
 export default function GameLobby({ gameId }) {
   const { address } = useAccount();
@@ -88,6 +89,8 @@ export default function GameLobby({ gameId }) {
 
       {/* Body */}
       <div className="px-6 py-5 space-y-5">
+        <LobbyContinuityRail steps={steps} count={count} isRegistered={isRegistered} />
+
         {/* Stakes info */}
         {isStakes && (
           <div className="border border-signal-red/30 bg-signal-red/5 rounded p-3 space-y-1">

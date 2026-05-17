@@ -4,7 +4,7 @@ import { ROUND_TIMEOUT } from '../../lib/constants';
 const RADIUS = 38;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-export default function TimeoutDial({ roundStartTime, timeout = ROUND_TIMEOUT }) {
+export default function TimeoutDial({ roundStartTime, timeout = ROUND_TIMEOUT, pressure }) {
   const [remaining, setRemaining] = useState(timeout);
 
   useEffect(() => {
@@ -21,14 +21,15 @@ export default function TimeoutDial({ roundStartTime, timeout = ROUND_TIMEOUT })
     return () => clearInterval(interval);
   }, [roundStartTime, timeout]);
 
-  const fraction = remaining / timeout;
+  const displayedRemaining = pressure?.remaining ?? remaining;
+  const fraction = displayedRemaining / timeout;
   const offset = CIRCUMFERENCE * (1 - fraction);
-  const mins = Math.floor(remaining / 60);
-  const secs = remaining % 60;
+  const mins = Math.floor(displayedRemaining / 60);
+  const secs = displayedRemaining % 60;
 
   // Color transitions based on time remaining
-  const isUrgent = remaining < 60;
-  const isCritical = remaining < 30;
+  const isUrgent = displayedRemaining < 60;
+  const isCritical = displayedRemaining < 30;
   const arcColor = isCritical
     ? 'text-signal-red'
     : isUrgent
@@ -41,7 +42,7 @@ export default function TimeoutDial({ roundStartTime, timeout = ROUND_TIMEOUT })
       : 'rgba(196,149,106,0.1)';
 
   return (
-    <div className="relative inline-flex items-center justify-center">
+    <div className="alive-timeout-dial relative inline-flex items-center justify-center" data-pressure={pressure?.stage || 'steady'}>
       <svg viewBox="0 0 96 96" className="w-20 h-20 sm:w-24 sm:h-24 transform -rotate-90">
         {/* Background track */}
         <circle
@@ -108,7 +109,7 @@ export default function TimeoutDial({ roundStartTime, timeout = ROUND_TIMEOUT })
         `}>
           {mins}:{String(secs).padStart(2, '0')}
         </span>
-        {remaining <= 0 && (
+        {displayedRemaining <= 0 && (
           <span className="font-mono text-[8px] text-signal-red uppercase tracking-wider">
             Timeout
           </span>

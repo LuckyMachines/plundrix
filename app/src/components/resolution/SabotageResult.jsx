@@ -1,4 +1,5 @@
 import { truncateAddress } from '../../lib/formatting';
+import OutcomeBadge from '../shared/OutcomeBadge';
 
 export default function SabotageResult({ attacker, victim, detail }) {
   return (
@@ -32,9 +33,9 @@ export default function SabotageResult({ attacker, victim, detail }) {
           <span className="font-display text-xs tracking-widest uppercase text-signal-red-dim border border-signal-red/20 bg-signal-red/5 rounded px-2 py-0.5">
             DISORIENTED
           </span>
-          <span className="font-display text-xs tracking-widest uppercase text-signal-red border border-signal-red/30 bg-signal-red/5 rounded px-2 py-0.5">
+          <OutcomeBadge tone="danger">
             CUT LINE
-          </span>
+          </OutcomeBadge>
         </div>
       </div>
       {detail && <p className="font-mono text-xs text-vault-text-dim mt-2">{detail}</p>}

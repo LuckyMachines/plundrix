@@ -36,13 +36,13 @@ const LOCK_VARIANTS = [
   },
 ];
 
-export default function LockModule({ index = 0, cracked = false }) {
+export default function LockModule({ index = 0, cracked = false, cued = false }) {
   const variant = LOCK_VARIANTS[index % LOCK_VARIANTS.length];
 
   return (
     <div
       className={`
-        relative flex flex-col items-center justify-center
+        alive-lock-module relative flex flex-col items-center justify-center
         w-12 h-16 sm:w-16 sm:h-20 lg:w-14 lg:h-18 xl:w-16 xl:h-20
         min-w-0 shrink
         ${variant.border}
@@ -51,7 +51,11 @@ export default function LockModule({ index = 0, cracked = false }) {
           ? 'border-tungsten bg-tungsten/10 shadow-[0_0_12px_rgba(196,149,106,0.25)]'
           : 'border-vault-border bg-vault-surface'
         }
+        ${cued ? 'alive-lock-module-cued' : ''}
       `}
+      data-cracked={cracked}
+      data-cued={cued}
+      style={{ '--alive-lock-delay': `${index * 90}ms` }}
     >
       {/* Lock SVG */}
       <svg

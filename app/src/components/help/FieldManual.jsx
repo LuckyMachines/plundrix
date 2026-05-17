@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SectionOverview from './SectionOverview';
 import SectionActions from './SectionActions';
 import SectionTools from './SectionTools';
@@ -11,9 +11,13 @@ const TABS = [
   { key: 'howto', label: 'How to Play', Component: SectionHowTo },
 ];
 
-export default function FieldManual() {
-  const [activeTab, setActiveTab] = useState('overview');
+export default function FieldManual({ initialTab = 'overview' }) {
+  const [activeTab, setActiveTab] = useState(initialTab);
   const Active = TABS.find((t) => t.key === activeTab)?.Component ?? SectionOverview;
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
 
   return (
     <div>

@@ -1,0 +1,59 @@
+---
+title: Self-Teaching Playtest Coach
+description: Turn simulator, replay, ghost, mutation, Oracle, and launch signals into repeatable human playtests.
+---
+
+# Self-Teaching Playtest Coach
+
+The Playtest Coach converts machine findings into facilitator-ready human validation. It uses the same game engine inputs as the simulator, Replay Director, Player Telemetry Ghosts, Rule Mutation Time Machine, Live Ops Oracle, and Launch Copilot, then produces a mission, tester briefs, observation sheet, scoring rubric, backlog, and report.
+
+## What It Generates
+
+- A mission with source, category, design question, seed, scenario, duration, and assigned roles.
+- A facilitator script with round prompts, intervention rules, and closing questions.
+- Tester briefs for roles such as new player, tool hoarder, leader hunter, comeback hunter, closer, observer, and facilitator.
+- An observation sheet with comprehension, agency, tension, fairness, frustration, replay memory, and setup friction.
+- A scored session report with pass, fail, needs follow-up, or inconclusive outcomes.
+- A prioritized backlog that can be fed by ghost risks, mutation risks, launch blockers, replay opportunities, and Oracle recommendations.
+
+## CLI
+
+```bash
+npm run playtest:coach -- --markdown
+npm run playtest:coach -- --source mutation-report --report --markdown
+npm run playtest:backlog
+npm run test:playtest
+```
+
+The CLI defaults to lightweight smoke work and does not capture media or run broad simulations unless you ask for a source that needs a small proof artifact.
+
+## Dashboard
+
+Open `/playtest` to:
+
+- Generate missions from manual questions, simulator smoke, replay proof, ghost reports, or mutation reports.
+- Tune category, source, seed, scenario, ghost scenario, mutation preset, duration, and tester count.
+- Score synthetic or manually transcribed feedback.
+- Save missions, sessions, reports, and pinned missions to local storage.
+- Export mission Markdown, mission JSON, report Markdown, and backlog CSV.
+
+## Integrations
+
+- Live Ops Oracle includes playtest readiness in health, risks, opportunities, and recommendations.
+- Launch Copilot requires Playtest Coach scripts, documentation, latest snapshot, and route evidence for internal playtest gates.
+- Launch candidate gates receive a launch rehearsal mission that turns gate blockers into human validation work.
+- Mutation and ghost findings can be turned directly into focused playtest missions.
+
+## Source Types
+
+- `manual-design-question`: open question supplied by the designer.
+- `simulator-smoke`: first-match onboarding and core action comprehension.
+- `replay-proof`: replay memory, retelling, and shareability.
+- `ghost-report`: archetype feel, role viability, and frustration.
+- `mutation-report`: A/B human validation for rule changes.
+- `oracle-recommendation`: next-best action validation.
+- `launch-gate-blocker`: rehearsal and release readiness validation.
+
+## Repeatability Contract
+
+Every mission carries a seed, scenario, source type, artifact summary, recommended machine runs, role briefs, and scoring rubric. That makes a human session reproducible enough to rerun after a rules change, route change, copy change, or launch gate change.

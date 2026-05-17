@@ -1,4 +1,5 @@
 import { truncateAddress } from '../../lib/formatting';
+import OutcomeBadge from '../shared/OutcomeBadge';
 
 export default function SearchResult({ player, totalTools, success, detail }) {
   return (
@@ -29,15 +30,9 @@ export default function SearchResult({ player, totalTools, success, detail }) {
               {totalTools?.toString()} tools
             </span>
           )}
-          <span
-            className={`font-display text-xs tracking-widest uppercase px-2 py-0.5 rounded border ${
-              success
-                ? 'text-oxide-green border-oxide-green/30 bg-oxide-green/5'
-                : 'text-vault-text-dim border-vault-border bg-vault-panel'
-            }`}
-          >
+          <OutcomeBadge tone={success ? 'oxide' : 'neutral'}>
             {success ? 'TOOL FOUND' : 'NOTHING'}
-          </span>
+          </OutcomeBadge>
         </div>
       </div>
       {detail && <p className="font-mono text-xs text-vault-text-dim">{detail}</p>}

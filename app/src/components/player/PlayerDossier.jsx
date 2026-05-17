@@ -6,7 +6,19 @@ import StunStamp from './StunStamp';
 import ActionSeal from './ActionSeal';
 import Spinner from '../shared/Spinner';
 
-export default function PlayerDossier({ gameId, address, isCurrentUser = false }) {
+function matchesCue(address, cue) {
+  if (!address || !cue) return false;
+  const lower = address.toLowerCase();
+  return cue.actor?.toLowerCase?.() === lower || cue.target?.toLowerCase?.() === lower;
+}
+
+export default function PlayerDossier({
+  gameId,
+  address,
+  isCurrentUser = false,
+  targeted = false,
+  latestCue,
+}) {
   const {
     locksCracked,
     tools,
@@ -17,6 +29,7 @@ export default function PlayerDossier({ gameId, address, isCurrentUser = false }
 
   const cracked = Number(locksCracked || 0);
   const toolCount = Number(tools || 0);
+  const cueActive = matchesCue(address, latestCue);
 
   if (isLoading) {
     return (
@@ -29,11 +42,24 @@ export default function PlayerDossier({ gameId, address, isCurrentUser = false }
   return (
     <div
       className={`
-        relative border rounded bg-vault-panel p-3 overflow-hidden
+        alive-dossier relative border rounded bg-vault-panel p-3 overflow-hidden
         transition-colors duration-300
         ${isCurrentUser ? 'border-tungsten/40' : 'border-vault-border'}
+        ${stunned ? 'alive-dossier-stunned' : ''}
+        ${actionSubmitted ? 'alive-dossier-committed' : ''}
+        ${targeted ? 'alive-dossier-targeted' : ''}
+        ${cueActive ? 'alive-dossier-cued' : ''}
       `}
+      data-current={isCurrentUser}
+      data-stunned={stunned}
+      data-submitted={actionSubmitted}
+      data-targeted={targeted}
+      data-cue={latestCue?.type || ''}
     >
+      <div className="alive-dossier-presence" aria-hidden="true">
+        <span />
+      </div>
+
       {/* Stun overlay */}
       <StunStamp visible={stunned} />
 
@@ -51,6 +77,11 @@ export default function PlayerDossier({ gameId, address, isCurrentUser = false }
           {isCurrentUser && (
             <span className="font-mono text-[8px] text-tungsten uppercase tracking-widest border border-tungsten/30 rounded px-1 py-px bg-tungsten/5">
               You
+            </span>
+          )}
+          {targeted && (
+            <span className="font-mono text-[8px] text-signal-red uppercase tracking-widest border border-signal-red/30 rounded px-1 py-px bg-signal-red/5">
+              Target
             </span>
           )}
         </div>
