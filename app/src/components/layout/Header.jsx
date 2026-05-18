@@ -11,6 +11,7 @@ const NAV_SECTIONS = [
     items: [
       { to: '/leaderboard', label: 'Ladder', description: 'Rankings and competitive progress' },
       { to: '/sessions', label: 'Sessions', description: 'Recent games and session history' },
+      { to: '/compare', label: 'Compare', description: 'Game comparisons and alternatives' },
     ],
   },
   {

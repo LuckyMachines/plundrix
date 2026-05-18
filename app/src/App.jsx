@@ -24,6 +24,8 @@ const GhostsPage = lazy(() => import('./pages/GhostsPage'));
 const MutationsPage = lazy(() => import('./pages/MutationsPage'));
 const PlaytestPage = lazy(() => import('./pages/PlaytestPage'));
 const DesignTowerPage = lazy(() => import('./pages/DesignTowerPage'));
+const CompareIndexPage = lazy(() => import('./pages/CompareIndexPage'));
+const CompareDetailPage = lazy(() => import('./pages/CompareDetailPage'));
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
 
 export default function App() {
@@ -72,6 +74,8 @@ export default function App() {
             <Route path="/mutations" element={<MutationsPage />} />
             <Route path="/playtest" element={<PlaytestPage />} />
             <Route path="/design" element={<DesignTowerPage />} />
+            <Route path="/compare" element={<CompareIndexPage />} />
+            <Route path="/compare/:slug" element={<CompareDetailPage />} />
           </Routes>
         </Suspense>
       </main>

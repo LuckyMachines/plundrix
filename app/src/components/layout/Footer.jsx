@@ -22,6 +22,12 @@ export default function Footer() {
               Developer Docs
             </a>
             <Link
+              to="/compare"
+              className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
+            >
+              Compare
+            </Link>
+            <Link
               to="/terms"
               className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
             >

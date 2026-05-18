@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/postbuild-seo-pages.mjs",
     "preview": "vite preview",
     "simulate": "node scripts/simulate-game.mjs",
     "simulate:auto-balance": "node scripts/auto-balance.mjs",
