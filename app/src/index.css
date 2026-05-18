@@ -1166,3 +1166,115 @@ html.reduced-motion-ui *::after {
     padding: 0.9rem;
   }
 }
+
+/* --- Product cohesion primitives --- */
+.cohesion-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid rgba(42, 42, 62, 0.78);
+  border-radius: 6px;
+  background: rgba(20, 20, 31, 0.74);
+  padding: 1rem;
+}
+
+.cohesion-loop {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cohesion-loop-compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cohesion-loop-step {
+  min-width: 0;
+  border: 1px solid rgba(42, 42, 62, 0.72);
+  border-radius: 6px;
+  background: rgba(10, 10, 15, 0.42);
+  padding: 0.75rem;
+  color: var(--color-vault-text-dim);
+  display: grid;
+  gap: 0.25rem;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.cohesion-loop-step:hover,
+.cohesion-loop-step-active {
+  border-color: rgba(196, 149, 106, 0.58);
+  background: rgba(196, 149, 106, 0.08);
+  color: var(--color-tungsten);
+}
+
+.cohesion-card {
+  border: 1px solid rgba(42, 42, 62, 0.78);
+  border-radius: 6px;
+  background: rgba(20, 20, 31, 0.72);
+  padding: 1rem;
+}
+
+.cohesion-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 0 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cohesion-empty {
+  border: 1px dashed rgba(106, 106, 126, 0.58);
+  border-radius: 6px;
+  background: rgba(10, 10, 15, 0.36);
+  padding: 1rem;
+}
+
+.cohesion-next {
+  border: 1px solid rgba(42, 42, 62, 0.64);
+  border-radius: 6px;
+  background: rgba(10, 10, 15, 0.34);
+  padding: 1rem;
+}
+
+.cohesion-next-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(42, 42, 62, 0.82);
+  border-radius: 4px;
+  padding: 0 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-vault-text);
+}
+
+.cohesion-next-link:hover {
+  border-color: rgba(196, 149, 106, 0.58);
+  color: var(--color-tungsten);
+}
+
+@media (min-width: 760px) {
+  .cohesion-intro {
+    flex-direction: row;
+    align-items: end;
+    justify-content: space-between;
+    padding: 1.1rem 1.2rem;
+  }
+
+  .cohesion-loop-compact {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .cohesion-loop-compact {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+  }
+}

@@ -147,6 +147,8 @@ export default function Header({ onHelpClick }) {
                 </MobileSection>
               ))}
               <MobileSection title="Reference">
+              <MobileNavLink to="/map" active={isActive('/map')}>Map</MobileNavLink>
+              <MobileNavLink to="/glossary" active={isActive('/glossary')}>Glossary</MobileNavLink>
               <a
                 href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
                 target="_blank"

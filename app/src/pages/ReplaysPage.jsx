@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { PageIntro, ProductLoopRail } from '../components/cohesion/CohesionLayout';
+import { EmptyState } from '../components/cohesion/CohesionCards';
 import { replayGallerySeeds } from '../data/replayGallery';
 import {
   buildReplayFromSeed,
@@ -40,13 +42,14 @@ export default function ReplaysPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <PageIntro route="/replays" />
+      <ProductLoopRail activeStep="replay" compact />
       <section className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="label">Replay Director</p>
-            <h1 className="mt-2 font-display text-3xl text-vault-text">Replay Gallery</h1>
+            <p className="label">Replay filters</p>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-vault-text-dim">
-              Curated simulator stories with dramatic scoring, replay links, capture plans, and marketing proof metadata.
+              Filter replay proof by the table story you want to inspect.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -68,6 +71,13 @@ export default function ReplaysPage() {
         </div>
       </section>
 
+      {gallery.length === 0 ? (
+        <EmptyState
+          missing="No replay proof in this filter."
+          why="Replays are the memory layer for Plundrix operations. Change the filter or generate new simulator proof."
+          action={<button type="button" onClick={() => setFilter('all')} className="min-h-[44px] rounded border border-tungsten/55 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Show all replays</button>}
+        />
+      ) : (
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {gallery.map((item) => {
           const replay = replays.find((entry) => entry.id === item.id);
@@ -111,6 +121,7 @@ export default function ReplaysPage() {
           );
         })}
       </section>
+      )}
 
       <section className="rounded border border-vault-border bg-vault-surface/75 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">

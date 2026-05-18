@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
+import { PageIntro, ProductLoopRail } from '../components/cohesion/CohesionLayout';
 import {
   COMPARISON_PAGES,
   SITE_ORIGIN,
@@ -31,19 +32,11 @@ export default function CompareIndexPage() {
       />
 
       <section className="grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(340px,0.55fr)] lg:items-end">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-oxide-green">
-            Game comparisons
-          </p>
-          <h1 className="mt-3 max-w-4xl font-display text-3xl font-semibold uppercase tracking-[0.18em] text-tungsten sm:text-5xl">
-            Find the right Plundrix comparison by player craving.
-          </h1>
-          <p className="mt-5 max-w-3xl text-sm leading-7 text-vault-text-dim sm:text-base">
-            Plundrix is a short-session onchain vault-heist strategy game. These pages compare it
-            against adjacent games by intent: raid pressure, board-game strategy, sabotage, and
-            onchain play.
-          </p>
-        </div>
+        <PageIntro
+          route="/compare"
+          title="Find the right Plundrix comparison by player craving."
+          description="Compare Plundrix against adjacent games by intent: raid pressure, board-game strategy, sabotage, and onchain play."
+        />
 
         <aside className="border border-vault-border bg-vault-surface p-5">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-vault-text-dim">
@@ -63,6 +56,9 @@ export default function CompareIndexPage() {
           </div>
         </aside>
       </section>
+      <div className="mt-6">
+        <ProductLoopRail activeStep="play" compact />
+      </div>
 
       <section className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {COMPARISON_PAGES.map((page) => (

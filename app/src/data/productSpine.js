@@ -1,0 +1,329 @@
+export const PRODUCT_STATEMENT =
+  'Plundrix is a short-session onchain vault-heist strategy game built around Pick, Search, Sabotage, and replayable table drama.';
+
+export const CANONICAL_TERMS = Object.freeze([
+  ['Operation', 'A game instance.'],
+  ['Round', 'One action cycle.'],
+  ['Vault', 'The shared objective.'],
+  ['Operator', 'A player at the table.'],
+  ['Proof', 'A saved evidence artifact used to support a design, launch, or product decision.'],
+  ['Gate', 'A launch or readiness checkpoint.'],
+  ['Evidence', 'Simulator, replay, ghost, mutation, playtest, telemetry, or launch output.'],
+]);
+
+export const CTA_VERBS = Object.freeze(['Play', 'Run', 'Compare', 'Import', 'Decide', 'Launch', 'Review']);
+
+export const EVIDENCE_TYPES = Object.freeze([
+  'simulator',
+  'replay',
+  'ghost',
+  'mutation',
+  'playtest',
+  'telemetry',
+  'launch',
+  'decision',
+]);
+
+export const PRODUCT_LOOP = Object.freeze([
+  {
+    id: 'play',
+    label: 'Play',
+    route: '/',
+    summary: 'Create and play operations.',
+  },
+  {
+    id: 'simulate',
+    label: 'Simulate',
+    route: '/simulator',
+    summary: 'Tune outcomes with the same engine vocabulary.',
+  },
+  {
+    id: 'replay',
+    label: 'Replay',
+    route: '/replays',
+    summary: 'Turn operations into readable stories and proof.',
+  },
+  {
+    id: 'ghosts',
+    label: 'Ghosts',
+    route: '/ghosts',
+    summary: 'Test operator archetypes and fairness.',
+  },
+  {
+    id: 'mutate',
+    label: 'Mutate',
+    route: '/mutations',
+    summary: 'Compare rule changes before they ship.',
+  },
+  {
+    id: 'playtest',
+    label: 'Playtest',
+    route: '/playtest',
+    summary: 'Convert system signals into human tests.',
+  },
+  {
+    id: 'decide',
+    label: 'Decide',
+    route: '/design',
+    summary: 'Record evidence-backed product decisions.',
+  },
+  {
+    id: 'launch',
+    label: 'Launch',
+    route: '/launch',
+    summary: 'Gate releases and rehearse rollback.',
+  },
+  {
+    id: 'observe',
+    label: 'Observe',
+    route: '/ops',
+    summary: 'Monitor health and choose the next action.',
+  },
+]);
+
+export const ROUTE_CLASSES = Object.freeze({
+  game: 'Game UI',
+  workbench: 'Workbench UI',
+  marketing: 'Marketing/SEO UI',
+  legal: 'Legal/support UI',
+  reference: 'Reference UI',
+});
+
+export const ROUTE_META = Object.freeze({
+  '/': {
+    label: 'Console',
+    navGroup: 'Play',
+    routeClass: 'game',
+    loopStep: 'play',
+    purpose: 'Operate and start Plundrix operations.',
+    title: 'Plundrix Operations Console',
+    description: PRODUCT_STATEMENT,
+    primaryCta: 'Play',
+    nextRoutes: ['/simulator', '/replays'],
+  },
+  '/leaderboard': {
+    label: 'Ladder',
+    navGroup: 'Play',
+    routeClass: 'workbench',
+    loopStep: 'play',
+    purpose: 'Compare operators and agent ladders.',
+    title: 'Plundrix Operator Ladder',
+    description: 'Review seasonal Plundrix operators, agent ladders, points, and competitive progress.',
+    primaryCta: 'Review',
+    nextRoutes: ['/sessions', '/replays'],
+  },
+  '/sessions': {
+    label: 'Sessions',
+    navGroup: 'Play',
+    routeClass: 'workbench',
+    loopStep: 'play',
+    purpose: 'Review operation history.',
+    title: 'Plundrix Operation History',
+    description: 'Review recent Plundrix operations, operator results, and session history.',
+    primaryCta: 'Review',
+    nextRoutes: ['/replays', '/leaderboard'],
+  },
+  '/game/:gameId': {
+    label: 'Operation',
+    navGroup: 'Play',
+    routeClass: 'game',
+    loopStep: 'play',
+    purpose: 'Play a single Plundrix operation.',
+    title: 'Plundrix Operation',
+    description: 'Play a Plundrix operation with a vault stage, compact status, action dock, and table details.',
+    primaryCta: 'Play',
+    nextRoutes: ['/replays', '/sessions'],
+  },
+  '/profile/:address': {
+    label: 'Profile',
+    navGroup: 'Play',
+    routeClass: 'workbench',
+    loopStep: 'play',
+    purpose: 'Review one operator profile.',
+    title: 'Plundrix Operator Profile',
+    description: 'Review one Plundrix operator profile, seasonal stats, playstyle, and operation history.',
+    primaryCta: 'Review',
+    nextRoutes: ['/leaderboard', '/sessions'],
+  },
+  '/snapshot': {
+    label: 'Snapshot',
+    navGroup: 'Reference',
+    routeClass: 'reference',
+    loopStep: 'replay',
+    purpose: 'Render a controlled visual snapshot of the product.',
+    title: 'Plundrix Snapshot',
+    description: 'A controlled Plundrix visual snapshot route for repeatable screenshots and product review.',
+    primaryCta: 'Review',
+    nextRoutes: ['/replays', '/map'],
+  },
+  '/simulator': {
+    label: 'Simulator',
+    navGroup: 'Lab',
+    routeClass: 'workbench',
+    loopStep: 'simulate',
+    purpose: 'Tune outcomes with the same game engine.',
+    title: 'Plundrix Simulator',
+    description: 'Run Plundrix simulations, compare rules, generate replay links, and create balance proof.',
+    primaryCta: 'Run',
+    nextRoutes: ['/replays', '/mutations'],
+  },
+  '/replays': {
+    label: 'Replays',
+    navGroup: 'Lab',
+    routeClass: 'workbench',
+    loopStep: 'replay',
+    purpose: 'Remember and inspect dramatic operations.',
+    title: 'Plundrix Replay Director',
+    description: 'Review replay proof, dramatic operations, capture plans, and shareable table stories.',
+    primaryCta: 'Review',
+    nextRoutes: ['/simulator', '/mutations'],
+  },
+  '/replay/:replayId': {
+    label: 'Replay',
+    navGroup: 'Lab',
+    routeClass: 'game',
+    loopStep: 'replay',
+    purpose: 'Inspect one replay proof.',
+    title: 'Plundrix Replay',
+    description: 'Inspect one Plundrix replay proof with timeline, highlights, dramatic scoring, and operation context.',
+    primaryCta: 'Review',
+    nextRoutes: ['/replays', '/simulator'],
+  },
+  '/ghosts': {
+    label: 'Ghosts',
+    navGroup: 'Lab',
+    routeClass: 'workbench',
+    loopStep: 'ghosts',
+    purpose: 'Test operator archetypes.',
+    title: 'Plundrix Player Telemetry Ghosts',
+    description: 'Run named operator archetypes through Plundrix to inspect fairness, agency, and replay proof.',
+    primaryCta: 'Run',
+    nextRoutes: ['/mutations', '/playtest'],
+  },
+  '/mutations': {
+    label: 'Mutations',
+    navGroup: 'Lab',
+    routeClass: 'workbench',
+    loopStep: 'mutate',
+    purpose: 'Test rule changes.',
+    title: 'Plundrix Rule Mutation Time Machine',
+    description: 'Compare baseline and candidate Plundrix rules across simulation, replay, ghost, and launch risk.',
+    primaryCta: 'Compare',
+    nextRoutes: ['/simulator', '/design'],
+  },
+  '/playtest': {
+    label: 'Playtest',
+    navGroup: 'Lab',
+    routeClass: 'workbench',
+    loopStep: 'playtest',
+    purpose: 'Convert signals into human playtests.',
+    title: 'Plundrix Playtest Coach',
+    description: 'Turn simulator, replay, ghost, mutation, and launch signals into focused human playtests.',
+    primaryCta: 'Import',
+    nextRoutes: ['/design', '/ghosts'],
+  },
+  '/design': {
+    label: 'Design',
+    navGroup: 'Lab',
+    routeClass: 'workbench',
+    loopStep: 'decide',
+    purpose: 'Make evidence-backed decisions.',
+    title: 'Plundrix Design Control Tower',
+    description: 'Connect Plundrix hypotheses, proof, evidence, risks, and shipped decisions.',
+    primaryCta: 'Decide',
+    nextRoutes: ['/launch', '/ops'],
+  },
+  '/ops': {
+    label: 'Ops',
+    navGroup: 'Ship',
+    routeClass: 'workbench',
+    loopStep: 'observe',
+    purpose: 'Observe live health and next actions.',
+    title: 'Plundrix Live Ops Oracle',
+    description: 'Review Plundrix health, live telemetry, launch readiness, risk, and next recommended actions.',
+    primaryCta: 'Review',
+    nextRoutes: ['/launch', '/design'],
+  },
+  '/launch': {
+    label: 'Launch',
+    navGroup: 'Ship',
+    routeClass: 'workbench',
+    loopStep: 'launch',
+    purpose: 'Ship safely.',
+    title: 'Plundrix Launch Copilot',
+    description: 'Gate Plundrix releases with readiness checks, proof packets, risks, commands, and rollback plans.',
+    primaryCta: 'Launch',
+    nextRoutes: ['/ops', '/design'],
+  },
+  '/compare': {
+    label: 'Compare',
+    navGroup: 'Play',
+    routeClass: 'marketing',
+    loopStep: 'play',
+    purpose: 'Explain adjacent game fit.',
+    title: 'Plundrix Game Comparisons',
+    description: 'Compare Plundrix with raid games, online board games, sabotage games, and onchain strategy games.',
+    primaryCta: 'Compare',
+    nextRoutes: ['/', '/map'],
+  },
+  '/map': {
+    label: 'Map',
+    navGroup: 'Reference',
+    routeClass: 'reference',
+    loopStep: 'observe',
+    purpose: 'Show how all product systems connect.',
+    title: 'Plundrix Product Map',
+    description: 'See how Plundrix play, simulation, replays, ghosts, mutations, playtests, decisions, launch, and ops connect.',
+    primaryCta: 'Review',
+    nextRoutes: ['/simulator', '/ops'],
+  },
+  '/glossary': {
+    label: 'Glossary',
+    navGroup: 'Reference',
+    routeClass: 'reference',
+    loopStep: 'play',
+    purpose: 'Define canonical product terms.',
+    title: 'Plundrix Glossary',
+    description: 'Definitions for Plundrix operations, rounds, vaults, operators, proof, evidence, and gates.',
+    primaryCta: 'Review',
+    nextRoutes: ['/map', '/compare'],
+  },
+  '/terms': {
+    label: 'Terms',
+    navGroup: 'Reference',
+    routeClass: 'legal',
+    purpose: 'State the service terms.',
+    title: 'Plundrix Terms of Service',
+    description: 'Terms of Service for Plundrix, including eligibility, game modes, blockchain interactions, and beta posture.',
+    primaryCta: 'Review',
+    nextRoutes: ['/privacy'],
+  },
+  '/privacy': {
+    label: 'Privacy',
+    navGroup: 'Reference',
+    routeClass: 'legal',
+    purpose: 'State the privacy policy.',
+    title: 'Plundrix Privacy Policy',
+    description: 'Privacy Policy for Plundrix, including data handling, wallet interactions, analytics, and service operations.',
+    primaryCta: 'Review',
+    nextRoutes: ['/terms'],
+  },
+});
+
+export function routeMeta(path) {
+  return ROUTE_META[path] || null;
+}
+
+export function loopStep(id) {
+  return PRODUCT_LOOP.find((item) => item.id === id) || null;
+}
+
+export function routesForLoopStep(id) {
+  return Object.entries(ROUTE_META)
+    .filter(([, meta]) => meta.loopStep === id)
+    .map(([path, meta]) => ({ path, ...meta }));
+}
+
+export function publicStaticRoutes() {
+  return Object.keys(ROUTE_META).filter((path) => !path.includes(':'));
+}

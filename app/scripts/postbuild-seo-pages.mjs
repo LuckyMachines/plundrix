@@ -6,6 +6,7 @@ import {
   absoluteComparisonUrl,
   comparisonUrl,
 } from '../src/data/comparisonPages.js';
+import { ROUTE_META, publicStaticRoutes } from '../src/data/productSpine.js';
 
 const distRoot = join(process.cwd(), 'dist');
 const indexPath = join(distRoot, 'index.html');
@@ -96,12 +97,29 @@ const indexJsonLd = {
   })),
 };
 
-await writeRouteHtml('/compare', injectSeo(html, {
-  title: 'Game Comparisons and Alternatives | Plundrix',
-  description: 'Compare Plundrix with raid games, online board games, sabotage games, and onchain strategy games to find the right short-session vault-heist game.',
-  canonical: `${SITE_ORIGIN}/compare`,
-  jsonLd: indexJsonLd,
-}));
+for (const route of publicStaticRoutes()) {
+  const meta = ROUTE_META[route];
+  const jsonLd = route === '/compare'
+    ? indexJsonLd
+    : {
+      '@context': 'https://schema.org',
+      '@type': route === '/map' || route === '/glossary' ? 'CollectionPage' : 'WebPage',
+      name: meta.title,
+      description: meta.description,
+      url: `${SITE_ORIGIN}${route === '/' ? '/' : route}`,
+      isPartOf: {
+        '@type': 'WebSite',
+        name: 'Plundrix',
+        url: SITE_ORIGIN,
+      },
+    };
+  await writeRouteHtml(route, injectSeo(html, {
+    title: meta.title,
+    description: meta.description,
+    canonical: `${SITE_ORIGIN}${route === '/' ? '/' : route}`,
+    jsonLd,
+  }));
+}
 
 for (const page of COMPARISON_PAGES) {
   await writeRouteHtml(comparisonUrl(page.slug), injectSeo(html, {
@@ -112,14 +130,10 @@ for (const page of COMPARISON_PAGES) {
   }));
 }
 
-const staticRoutes = [
-  '/',
-  '/compare',
+const staticRoutes = [...new Set([
+  ...publicStaticRoutes(),
   ...COMPARISON_PAGES.map((page) => comparisonUrl(page.slug)),
-  '/simulator',
-  '/replays',
-  '/leaderboard',
-];
+])];
 
 const sitemap = [
   '<?xml version="1.0" encoding="UTF-8"?>',

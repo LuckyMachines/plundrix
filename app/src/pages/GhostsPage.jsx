@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { PageIntro, ProductLoopRail } from '../components/cohesion/CohesionLayout';
 import {
   GHOST_ARCHETYPE_IDS,
   GHOST_ARCHETYPES,
@@ -75,6 +76,8 @@ export default function GhostsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <PageIntro route="/ghosts" />
+      <ProductLoopRail activeStep="ghosts" compact />
       <section className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div>

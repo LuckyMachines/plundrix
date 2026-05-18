@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { PageIntro, ProductLoopRail } from '../components/cohesion/CohesionLayout';
+import LatestEvidence from '../components/cohesion/LatestEvidence';
 import {
   DECISION_STATES,
   LAUNCH_GATES,
@@ -187,6 +189,9 @@ export default function LaunchPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <PageIntro route="/launch" />
+      <ProductLoopRail activeStep="launch" compact />
+      <LatestEvidence compact />
       <section className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div className="min-w-0">

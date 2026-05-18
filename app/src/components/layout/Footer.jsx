@@ -22,6 +22,18 @@ export default function Footer() {
               Developer Docs
             </a>
             <Link
+              to="/map"
+              className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
+            >
+              Map
+            </Link>
+            <Link
+              to="/glossary"
+              className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
+            >
+              Glossary
+            </Link>
+            <Link
               to="/compare"
               className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
             >
