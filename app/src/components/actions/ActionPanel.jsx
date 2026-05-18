@@ -29,6 +29,7 @@ export default function ActionPanel({
   session,
   onIntentChange,
   onTargetChange,
+  quiet = false,
 }) {
   const { submitAction, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
   useTxToast({ hash, isPending, isConfirming, isSuccess, error }, 'Action');
@@ -176,23 +177,26 @@ export default function ActionPanel({
 
   return (
     <div>
-      {/* Section header */}
-      <div className="flex items-center gap-3 mb-4">
-        <h3 className="text-xs tracking-[0.35em] text-vault-text-dim uppercase font-display">
-          Action Console
-        </h3>
-        {actionSubmitted && (
-          <span className="font-mono text-[11px] text-blueprint uppercase tracking-wider border border-blueprint/30 rounded px-2 py-0.5 bg-blueprint/5">
-            Submitted
-          </span>
-        )}
-      </div>
+      {!quiet && (
+        <>
+          <div className="flex items-center gap-3 mb-4">
+            <h3 className="text-xs tracking-[0.35em] text-vault-text-dim uppercase font-display">
+              Action Console
+            </h3>
+            {actionSubmitted && (
+              <span className="font-mono text-[11px] text-blueprint uppercase tracking-wider border border-blueprint/30 rounded px-2 py-0.5 bg-blueprint/5">
+                Submitted
+              </span>
+            )}
+          </div>
 
-      <p className="font-mono text-xs text-vault-text-dim mb-3">
-        Hotkeys: <span className="text-vault-text">1</span> pick,{' '}
-        <span className="text-vault-text">2</span> search,{' '}
-        <span className="text-vault-text">3</span> sabotage target.
-      </p>
+          <p className="font-mono text-xs text-vault-text-dim mb-3">
+            Hotkeys: <span className="text-vault-text">1</span> pick,{' '}
+            <span className="text-vault-text">2</span> search,{' '}
+            <span className="text-vault-text">3</span> sabotage target.
+          </p>
+        </>
+      )}
 
       {!isConfigured && (
         <p className="font-mono text-xs text-signal-red mb-3">{configError}</p>
@@ -230,13 +234,15 @@ export default function ActionPanel({
         />
       </div>
 
-      <TargetCycler
-        players={players}
-        currentAddress={currentAddress}
-        targetAddress={targetIntent}
-        onTargetChange={setTargetIntent}
-        disabled={sabotageDisabled}
-      />
+      {(!quiet || activeIntent === 'sabotage' || targetIntent) && (
+        <TargetCycler
+          players={players}
+          currentAddress={currentAddress}
+          targetAddress={targetIntent}
+          onTargetChange={setTargetIntent}
+          disabled={sabotageDisabled}
+        />
+      )}
 
       {/* 3-column action controls */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

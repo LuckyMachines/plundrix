@@ -26,6 +26,8 @@ import CommandStrip from './CommandStrip';
 import RoundSummaryCard from './RoundSummaryCard';
 import IntegrationDebugTrace from './IntegrationDebugTrace';
 import { useSessionHistoryRecorder } from '../../hooks/useSessionHistory';
+import { GameShell, QuietPanel } from '../gameplay/GameShell';
+import { LatestEventSurface, MatchStatusStrip, OpponentRail } from '../gameplay/ActiveMatchReadout';
 
 export default function VaultBench({ gameId }) {
   const { address } = useAccount();
@@ -134,151 +136,160 @@ export default function VaultBench({ gameId }) {
   }
 
   return (
-    <div className="space-y-6">
-      <SessionIntegrationRail session={session} />
-      <CommandStrip
-        session={session}
-        onHelp={() => window.dispatchEvent(new CustomEvent('plundrix:open-help', { detail: { tab: 'actions' } }))}
-      />
-
-      {/* ---- Top instrument panel: 3 columns ---- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Left: Lock Rack */}
-        <div className="border border-vault-border rounded bg-vault-panel p-4 flex items-center justify-center overflow-hidden">
-          <LockRack locksCracked={locksCracked} session={session} />
+    <GameShell
+      status={(
+        <MatchStatusStrip
+          gameId={gameId}
+          currentRound={currentRound}
+          playerCount={playerCount}
+          allSubmitted={allSubmitted}
+          canResolve={canResolve}
+          session={session}
+          resolveBusy={resolvePending || resolveConfirming}
+        />
+      )}
+      stage={(
+        <div className="grid w-full max-w-5xl gap-5">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
+            <div className="flex min-h-[220px] items-center justify-center">
+              <LockRack locksCracked={locksCracked} session={session} />
+            </div>
+            <QuietPanel className="flex justify-center">
+              <RoundConsole
+                currentRound={currentRound}
+                roundStartTime={roundStartTime}
+                allSubmitted={allSubmitted}
+                gameState={state}
+                canResolve={canResolve}
+                session={session}
+              />
+            </QuietPanel>
+          </div>
+          <OpponentRail
+            gameId={gameId}
+            players={players}
+            currentAddress={address}
+            targetAddress={targetAddress}
+            latestCue={session.latestCue}
+          />
+          <LatestEventSurface event={events[events.length - 1]} />
         </div>
-
-        {/* Center: Round Console */}
-        <div className="border border-vault-border rounded bg-vault-panel p-4 flex items-center justify-center">
-          <RoundConsole
-            currentRound={currentRound}
-            roundStartTime={roundStartTime}
-            allSubmitted={allSubmitted}
-            gameState={state}
+      )}
+      action={(
+        <div className="grid gap-4">
+          <MissionCoach
+            connected={!!address}
+            registered={registered}
+            actionSubmitted={actionSubmitted}
+            stunned={stunned}
+            tools={tools}
             canResolve={canResolve}
+            allSubmitted={allSubmitted}
             session={session}
           />
-        </div>
-
-        {/* Right: Player Dossiers */}
-        <div className="border border-vault-border rounded bg-vault-panel p-4">
-          <h3 className="text-xs tracking-[0.35em] text-vault-text-dim uppercase font-display mb-3">
-            Field Operatives
-          </h3>
-          <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
-            {players.map((addr) => (
-              <PlayerDossier
-                key={addr}
-                gameId={gameId}
-                address={addr}
-                isCurrentUser={addr?.toLowerCase() === address?.toLowerCase()}
-                targeted={addr?.toLowerCase() === targetAddress?.toLowerCase()}
-                latestCue={session.latestCue}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ---- Action Panel ---- */}
-      <MissionCoach
-        connected={!!address}
-        registered={registered}
-        actionSubmitted={actionSubmitted}
-        stunned={stunned}
-        tools={tools}
-        canResolve={canResolve}
-        allSubmitted={allSubmitted}
-        session={session}
-      />
-
-      <div className="border border-vault-border rounded bg-vault-panel p-4">
-        <ActionPanel
-          gameId={gameId}
-          isConfigured={isConfigured}
-          configError={configError}
-          stunned={stunned}
-          registered={registered}
-          actionSubmitted={actionSubmitted}
-          tools={tools}
-          players={players}
-          currentAddress={address}
-          session={session}
-          onIntentChange={setActionIntent}
-          onTargetChange={setTargetAddress}
-        />
-      </div>
-
-      {/* ---- Resolve Round ---- */}
-      {canResolve && (
-        <div className="border border-oxide-green/30 rounded bg-vault-panel p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-mono text-xs text-oxide-green uppercase tracking-wider">
-                {allSubmitted ? 'All actions submitted' : 'Round timeout reached'}
-              </h4>
-              <p className="font-mono text-xs text-vault-text-dim mt-1">
-                Resolve to advance to the next round.
-              </p>
-            </div>
-            <button
-              onClick={() => resolveRound(gameId)}
-              disabled={!isConfigured || resolvePending || resolveConfirming}
-              className={`
-                py-2 px-6 rounded font-mono text-xs uppercase tracking-[0.2em]
-                border transition-all duration-200
-                ${resolvePending || resolveConfirming
-                  ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'
-                  : 'border-oxide-green/50 bg-oxide-green/10 text-oxide-green hover:bg-oxide-green/20 hover:shadow-[0_0_12px_rgba(64,160,128,0.15)] active:bg-oxide-green/25'
-                }
-              `}
-            >
-              {resolvePending || resolveConfirming
-                ? 'Resolving...'
-                : timedOut && !allSubmitted
-                  ? 'Resolve (AFK players will auto-PICK)'
-                  : 'Resolve Round'}
-            </button>
-          </div>
-          <TxStatus
-            hash={resolveHash}
-            isPending={resolvePending}
-            isConfirming={resolveConfirming}
-            isSuccess={resolveSuccess}
-            error={resolveError}
+          <ActionPanel
+            gameId={gameId}
+            isConfigured={isConfigured}
+            configError={configError}
+            stunned={stunned}
+            registered={registered}
+            actionSubmitted={actionSubmitted}
+            tools={tools}
+            players={players}
+            currentAddress={address}
+            session={session}
+            onIntentChange={setActionIntent}
+            onTargetChange={setTargetAddress}
+            quiet
           />
-          {!isConfigured && (
-            <p className="font-mono text-xs text-signal-red mt-2">
-              {configError}
-            </p>
+          {canResolve && (
+            <QuietPanel className="border-oxide-green/35">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h4 className="font-mono text-xs text-oxide-green uppercase tracking-wider">
+                    {allSubmitted ? 'All actions submitted' : 'Round timeout reached'}
+                  </h4>
+                  <p className="font-mono text-xs text-vault-text-dim mt-1">
+                    Resolve to advance.
+                  </p>
+                </div>
+                <button
+                  onClick={handleResolve}
+                  disabled={!isConfigured || resolvePending || resolveConfirming}
+                  className={`
+                    min-h-[44px] rounded px-5 py-2 font-mono text-xs uppercase tracking-[0.16em]
+                    border transition-all duration-200
+                    ${resolvePending || resolveConfirming
+                      ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'
+                      : 'border-oxide-green/50 bg-oxide-green/10 text-oxide-green hover:bg-oxide-green/20'
+                    }
+                  `}
+                >
+                  {resolvePending || resolveConfirming ? 'Resolving' : 'Resolve'}
+                </button>
+              </div>
+              <TxStatus
+                hash={resolveHash}
+                isPending={resolvePending}
+                isConfirming={resolveConfirming}
+                isSuccess={resolveSuccess}
+                error={resolveError}
+              />
+              {!isConfigured && (
+                <p className="font-mono text-xs text-signal-red mt-2">
+                  {configError}
+                </p>
+              )}
+            </QuietPanel>
           )}
         </div>
       )}
-
-      {/* ---- Resolution Sequence ---- */}
-      {showResolve && latestRoundEvents && latestRoundEvents.length > 0 && (
+      details={(
+        <div className="grid gap-5">
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,0.7fr)_minmax(320px,0.3fr)]">
+            <div className="grid gap-5">
+              <SessionIntegrationRail session={session} />
+              <CommandStrip
+                session={session}
+                onHelp={() => window.dispatchEvent(new CustomEvent('plundrix:open-help', { detail: { tab: 'actions' } }))}
+              />
+              <RoundSummaryCard session={session} />
+              <ReplayTimeline
+                roundHistory={roundHistory}
+                currentAddress={address}
+                session={session}
+                selectedRound={selectedReplayRound}
+                onSelectedRoundChange={setSelectedReplayRound}
+              />
+              <EventLog events={events} cues={session.eventCues} focusRound={selectedReplayRound} />
+              <IntegrationDebugTrace session={session} />
+            </div>
+            <div className="grid gap-3 content-start">
+              <h3 className="text-xs tracking-[0.18em] text-vault-text-dim uppercase font-display">
+                Full player details
+              </h3>
+              {players.map((addr) => (
+                <PlayerDossier
+                  key={addr}
+                  gameId={gameId}
+                  address={addr}
+                  isCurrentUser={addr?.toLowerCase() === address?.toLowerCase()}
+                  targeted={addr?.toLowerCase() === targetAddress?.toLowerCase()}
+                  latestCue={session.latestCue}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      footer={showResolve && latestRoundEvents && latestRoundEvents.length > 0 ? (
         <ResolveSequence
           roundEvents={latestRoundEvents}
           currentAddress={address}
           onComplete={() => setShowResolve(false)}
         />
-      )}
-
-      <RoundSummaryCard session={session} />
-
-      <ReplayTimeline
-        roundHistory={roundHistory}
-        currentAddress={address}
-        session={session}
-        selectedRound={selectedReplayRound}
-        onSelectedRoundChange={setSelectedReplayRound}
-      />
-
-      {/* ---- Event Log ---- */}
-      <EventLog events={events} cues={session.eventCues} focusRound={selectedReplayRound} />
-
-      <IntegrationDebugTrace session={session} />
-    </div>
+      ) : null}
+    />
   );
 }
 
