@@ -22,6 +22,7 @@ const FILES = [
   'docs/dev/deployment.mdx',
   'docs/dev/local-dev.mdx',
   'docs/dev/mechanics.mdx',
+  'docs/dev/live-events.mdx',
 ];
 
 function readArgs(argv) {
@@ -78,12 +79,16 @@ function printSummary(report) {
 const args = readArgs(process.argv.slice(2));
 const files = await readFiles();
 const packageJson = JSON.parse(await readFile(join(process.cwd(), 'package.json'), 'utf8'));
+const liveEvents = args['live-events']
+  ? JSON.parse(await readFile(join(process.cwd(), args['live-events']), 'utf8'))
+  : [];
 const report = generateOracleReport({
   seed: args.seed || 'oracle-cli',
   heavy: Boolean(args.heavy),
   horizon: args.horizon || 'daily',
   files,
   packageJson,
+  liveEvents,
 });
 
 if (args.out) {

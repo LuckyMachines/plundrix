@@ -1,0 +1,768 @@
+{
+  "mission": {
+    "schemaVersion": 1,
+    "id": "playtest-mission-f5269885",
+    "createdAt": "2026-05-18T04:24:26.288Z",
+    "sourceType": "design-tower",
+    "category": "onboarding",
+    "difficulty": "15-minute playtest",
+    "title": "First Match Onboarding",
+    "designQuestion": "Can a first-time player understand the goal, choose actions, and remember one vault-race moment?",
+    "availableTesters": 2,
+    "seed": "sample-imported-playtest",
+    "scenario": "new-player-table",
+    "ghostScenario": "balanced-cast",
+    "mutationPreset": "faster-games",
+    "template": {
+      "id": "first-match-onboarding",
+      "title": "First Match Onboarding",
+      "category": "onboarding",
+      "difficulty": "15-minute playtest",
+      "targetRoles": [
+        "new player",
+        "observer",
+        "facilitator"
+      ],
+      "setup": [
+        "Open a fresh game or simulator scenario.",
+        "Do not explain optimal strategy before the first round.",
+        "Ask the observer to mark confusion moments."
+      ],
+      "script": [
+        "Watch whether the tester can state the goal in their own words.",
+        "Let the tester choose actions without coaching.",
+        "Ask what each action means after two rounds."
+      ],
+      "facilitatorNotes": [
+        "Avoid correcting strategy unless the tester is blocked.",
+        "Mark every moment where the interface needs explanation."
+      ],
+      "tasks": [
+        "Join or start a game.",
+        "Choose three actions.",
+        "Explain what happened after resolution.",
+        "Name one moment they remember."
+      ],
+      "expectedObservations": [
+        "Tester understands the vault race goal.",
+        "Actions feel distinct enough to choose intentionally.",
+        "Idle and no-action states are legible."
+      ],
+      "passCriteria": [
+        "Tester can explain goal and actions.",
+        "Tester reports agency 4 or higher.",
+        "No setup blocker."
+      ],
+      "failCriteria": [
+        "Tester cannot explain the goal.",
+        "Tester cannot distinguish two actions.",
+        "Setup friction blocks the session."
+      ],
+      "postMatchQuestions": [
+        "What were you trying to do?",
+        "Which action felt most useful?",
+        "What confused you?",
+        "Would you play another round?"
+      ],
+      "dataToCapture": [
+        "comprehension rating",
+        "confusion moments",
+        "setup friction",
+        "remembered moment"
+      ],
+      "recommendedFollowUp": "Rerun simulator onboarding scenario and update copy or action affordances."
+    },
+    "artifactSummary": {
+      "seed": "sample-imported-playtest",
+      "scenario": "new-player-table",
+      "ghostScenario": "balanced-cast",
+      "mutationPreset": "faster-games",
+      "ruleDiff": [],
+      "baselineRules": null,
+      "candidateRules": null,
+      "ghostArchetypes": [],
+      "replayLink": "",
+      "launchGate": "",
+      "risks": [],
+      "recommendations": [],
+      "expectedRegression": [],
+      "targetObservation": "Can a first-time player understand the goal, choose actions, and remember one vault-race moment?"
+    },
+    "roleAssignments": [
+      {
+        "testerId": "tester-1",
+        "label": "Tester 1",
+        "role": "new player",
+        "briefId": "playtest-mission-f5269885-brief-1"
+      },
+      {
+        "testerId": "tester-2",
+        "label": "Tester 2",
+        "role": "facilitator",
+        "briefId": "playtest-mission-f5269885-brief-2"
+      }
+    ],
+    "facilitatorScript": {
+      "preTestSetup": [
+        "Open a fresh game or simulator scenario.",
+        "Do not explain optimal strategy before the first round.",
+        "Ask the observer to mark confusion moments."
+      ],
+      "introText": "Today we are testing First Match Onboarding. Please narrate what you are trying to do, and do not worry about winning perfectly.",
+      "roleInstructions": [
+        "Tester 1: new player",
+        "Tester 2: facilitator"
+      ],
+      "roundPrompts": [
+        "Before the action, ask what each player thinks their best move is.",
+        "After resolution, ask what changed and who is threatening the vault.",
+        "Mark any confusion, frustration, or replay-worthy moment immediately."
+      ],
+      "interventionRules": [
+        "Intervene only when setup or rules comprehension blocks the session.",
+        "Do not reveal the hidden design hypothesis before final questions.",
+        "Do not coach optimal strategy during the first pass."
+      ],
+      "closingQuestions": [
+        "What were you trying to do?",
+        "Which action felt most useful?",
+        "What confused you?",
+        "Would you play another round?"
+      ]
+    },
+    "testerBriefs": [
+      {
+        "id": "playtest-mission-f5269885-brief-1",
+        "testerId": "tester-1",
+        "role": "new player",
+        "goal": "Play as a new player and report whether that style feels viable and fun. Mission: First Match Onboarding.",
+        "behaviorPrompt": "Play naturally and say what you think each action does.",
+        "payAttentionTo": [
+          "moments of agency",
+          "moments of confusion",
+          "fairness of outcomes",
+          "whether a replay story forms"
+        ],
+        "doNotOptimizeFor": [
+          "perfect strategy",
+          "pleasing the facilitator",
+          "guessing the hidden hypothesis"
+        ],
+        "postMatchQuestions": [
+          "What were you trying to do?",
+          "Which action felt most useful?",
+          "What confused you?",
+          "Would you play another round?"
+        ]
+      },
+      {
+        "id": "playtest-mission-f5269885-brief-2",
+        "testerId": "tester-2",
+        "role": "facilitator",
+        "goal": "Run the script and capture clean observations.",
+        "behaviorPrompt": "Follow the mission and narrate what you notice.",
+        "payAttentionTo": [
+          "moments of agency",
+          "moments of confusion",
+          "fairness of outcomes",
+          "whether a replay story forms"
+        ],
+        "doNotOptimizeFor": [
+          "perfect strategy",
+          "pleasing the facilitator",
+          "guessing the hidden hypothesis"
+        ],
+        "postMatchQuestions": [
+          "What were you trying to do?",
+          "Which action felt most useful?",
+          "What confused you?",
+          "Would you play another round?"
+        ]
+      }
+    ],
+    "observationSheet": {
+      "dimensions": [
+        {
+          "id": "understood-goal",
+          "label": "understood goal",
+          "scale": "1-5 Likert"
+        },
+        {
+          "id": "understood-actions",
+          "label": "understood actions",
+          "scale": "1-5 Likert"
+        },
+        {
+          "id": "felt-agency",
+          "label": "felt agency",
+          "scale": "1-5 Likert"
+        },
+        {
+          "id": "felt-tension",
+          "label": "felt tension",
+          "scale": "1-5 Likert"
+        },
+        {
+          "id": "felt-fairness",
+          "label": "felt fairness",
+          "scale": "1-5 Likert"
+        },
+        {
+          "id": "felt-frustration",
+          "label": "felt frustration",
+          "scale": "1-5 Likert"
+        },
+        {
+          "id": "remembered-key-moment",
+          "label": "remembered key moment",
+          "scale": "free text"
+        },
+        {
+          "id": "would-replay",
+          "label": "would replay",
+          "scale": "1-5 Likert"
+        },
+        {
+          "id": "would-share-replay",
+          "label": "would share replay",
+          "scale": "1-5 Likert"
+        },
+        {
+          "id": "setup-friction",
+          "label": "setup friction",
+          "scale": "1-5 Likert"
+        }
+      ],
+      "passFailChecks": [
+        {
+          "criterion": "Tester can explain goal and actions.",
+          "pass": null
+        },
+        {
+          "criterion": "Tester reports agency 4 or higher.",
+          "pass": null
+        },
+        {
+          "criterion": "No setup blocker.",
+          "pass": null
+        }
+      ],
+      "eventMarkers": [
+        "confusion moment",
+        "frustration moment",
+        "replay-worthy moment",
+        "setup blocker",
+        "agency recovery moment",
+        "fairness concern"
+      ],
+      "noteFields": [
+        "timestamp",
+        "round",
+        "tester",
+        "event",
+        "note"
+      ],
+      "checkboxes": [
+        "replay-worthy moment",
+        "confusion moment",
+        "frustration moment"
+      ]
+    },
+    "rubric": {
+      "pass": [
+        "Tester can explain goal and actions.",
+        "Tester reports agency 4 or higher.",
+        "No setup blocker."
+      ],
+      "fail": [
+        "Tester cannot explain the goal.",
+        "Tester cannot distinguish two actions.",
+        "Setup friction blocks the session."
+      ],
+      "needsFollowUp": [
+        "Mixed ratings, disagreement between tester roles, or one unresolved high-severity issue."
+      ],
+      "inconclusive": [
+        "Session ended early, wrong setup was used, or feedback is missing."
+      ]
+    },
+    "recommendedMachineRuns": [
+      "npm run simulate"
+    ],
+    "recommendedFollowUp": "Rerun simulator onboarding scenario and update copy or action affordances."
+  },
+  "sessions": [
+    {
+      "id": "playtest-session-78d595c1",
+      "missionId": "playtest-mission-f5269885",
+      "evidenceType": "facilitated",
+      "testerId": "tester-01",
+      "experienceLevel": "new player",
+      "scenario": "new-player-table",
+      "startedAt": "2026-05-18T04:24:26.289Z",
+      "completedAt": "2026-05-18T04:24:26.289Z",
+      "actionsTaken": [
+        "pick",
+        "search",
+        "sabotage"
+      ],
+      "confusionMoments": [
+        "Wanted clearer wording for when sabotage is unavailable."
+      ],
+      "funMoments": [
+        "Remembered a late vault swing after a sabotage."
+      ],
+      "feedbackScores": [
+        {
+          "schemaVersion": 1,
+          "missionId": "playtest-mission-f5269885",
+          "scoredAt": "2026-05-18T04:24:26.289Z",
+          "scores": {
+            "comprehension": 4,
+            "agency": 4,
+            "tension": 5,
+            "fairness": 4,
+            "frustration": 2,
+            "replayability": 4,
+            "launchFriction": 1
+          },
+          "overallScore": 84,
+          "outcome": "pass",
+          "rememberedMoment": "Remembered a late vault swing after a sabotage.",
+          "confusionMoment": "Wanted clearer wording for when sabotage is unavailable.",
+          "frustrationMoment": "",
+          "wouldReplay": true,
+          "wouldShare": true,
+          "notes": "Understood the goal after one round and chose actions without coaching.",
+          "eventMarkers": []
+        }
+      ],
+      "notes": "Understood the goal after one round and chose actions without coaching."
+    },
+    {
+      "id": "playtest-session-fb652883",
+      "missionId": "playtest-mission-f5269885",
+      "evidenceType": "facilitated",
+      "testerId": "tester-02",
+      "experienceLevel": "light board game player",
+      "scenario": "new-player-table",
+      "startedAt": "2026-05-18T04:24:26.290Z",
+      "completedAt": "2026-05-18T04:24:26.290Z",
+      "actionsTaken": [
+        "search",
+        "pick",
+        "pick"
+      ],
+      "confusionMoments": [
+        "Asked whether tools carry between turns."
+      ],
+      "funMoments": [
+        "Liked deciding when to stop searching and start picking."
+      ],
+      "feedbackScores": [
+        {
+          "schemaVersion": 1,
+          "missionId": "playtest-mission-f5269885",
+          "scoredAt": "2026-05-18T04:24:26.290Z",
+          "scores": {
+            "comprehension": 4,
+            "agency": 5,
+            "tension": 4,
+            "fairness": 4,
+            "frustration": 2,
+            "replayability": 5,
+            "launchFriction": 1
+          },
+          "overallScore": 88,
+          "outcome": "pass",
+          "rememberedMoment": "Liked deciding when to stop searching and start picking.",
+          "confusionMoment": "Asked whether tools carry between turns.",
+          "frustrationMoment": "",
+          "wouldReplay": true,
+          "wouldShare": false,
+          "notes": "Strong agency read; share intent was lower because replay context needed a shorter headline.",
+          "eventMarkers": []
+        }
+      ],
+      "notes": "Strong agency read; share intent was lower because replay context needed a shorter headline."
+    }
+  ],
+  "report": {
+    "schemaVersion": 1,
+    "id": "playtest-report-ed02eaae",
+    "generatedAt": "2026-05-18T04:24:26.290Z",
+    "mission": {
+      "schemaVersion": 1,
+      "id": "playtest-mission-f5269885",
+      "createdAt": "2026-05-18T04:24:26.288Z",
+      "sourceType": "design-tower",
+      "category": "onboarding",
+      "difficulty": "15-minute playtest",
+      "title": "First Match Onboarding",
+      "designQuestion": "Can a first-time player understand the goal, choose actions, and remember one vault-race moment?",
+      "availableTesters": 2,
+      "seed": "sample-imported-playtest",
+      "scenario": "new-player-table",
+      "ghostScenario": "balanced-cast",
+      "mutationPreset": "faster-games",
+      "template": {
+        "id": "first-match-onboarding",
+        "title": "First Match Onboarding",
+        "category": "onboarding",
+        "difficulty": "15-minute playtest",
+        "targetRoles": [
+          "new player",
+          "observer",
+          "facilitator"
+        ],
+        "setup": [
+          "Open a fresh game or simulator scenario.",
+          "Do not explain optimal strategy before the first round.",
+          "Ask the observer to mark confusion moments."
+        ],
+        "script": [
+          "Watch whether the tester can state the goal in their own words.",
+          "Let the tester choose actions without coaching.",
+          "Ask what each action means after two rounds."
+        ],
+        "facilitatorNotes": [
+          "Avoid correcting strategy unless the tester is blocked.",
+          "Mark every moment where the interface needs explanation."
+        ],
+        "tasks": [
+          "Join or start a game.",
+          "Choose three actions.",
+          "Explain what happened after resolution.",
+          "Name one moment they remember."
+        ],
+        "expectedObservations": [
+          "Tester understands the vault race goal.",
+          "Actions feel distinct enough to choose intentionally.",
+          "Idle and no-action states are legible."
+        ],
+        "passCriteria": [
+          "Tester can explain goal and actions.",
+          "Tester reports agency 4 or higher.",
+          "No setup blocker."
+        ],
+        "failCriteria": [
+          "Tester cannot explain the goal.",
+          "Tester cannot distinguish two actions.",
+          "Setup friction blocks the session."
+        ],
+        "postMatchQuestions": [
+          "What were you trying to do?",
+          "Which action felt most useful?",
+          "What confused you?",
+          "Would you play another round?"
+        ],
+        "dataToCapture": [
+          "comprehension rating",
+          "confusion moments",
+          "setup friction",
+          "remembered moment"
+        ],
+        "recommendedFollowUp": "Rerun simulator onboarding scenario and update copy or action affordances."
+      },
+      "artifactSummary": {
+        "seed": "sample-imported-playtest",
+        "scenario": "new-player-table",
+        "ghostScenario": "balanced-cast",
+        "mutationPreset": "faster-games",
+        "ruleDiff": [],
+        "baselineRules": null,
+        "candidateRules": null,
+        "ghostArchetypes": [],
+        "replayLink": "",
+        "launchGate": "",
+        "risks": [],
+        "recommendations": [],
+        "expectedRegression": [],
+        "targetObservation": "Can a first-time player understand the goal, choose actions, and remember one vault-race moment?"
+      },
+      "roleAssignments": [
+        {
+          "testerId": "tester-1",
+          "label": "Tester 1",
+          "role": "new player",
+          "briefId": "playtest-mission-f5269885-brief-1"
+        },
+        {
+          "testerId": "tester-2",
+          "label": "Tester 2",
+          "role": "facilitator",
+          "briefId": "playtest-mission-f5269885-brief-2"
+        }
+      ],
+      "facilitatorScript": {
+        "preTestSetup": [
+          "Open a fresh game or simulator scenario.",
+          "Do not explain optimal strategy before the first round.",
+          "Ask the observer to mark confusion moments."
+        ],
+        "introText": "Today we are testing First Match Onboarding. Please narrate what you are trying to do, and do not worry about winning perfectly.",
+        "roleInstructions": [
+          "Tester 1: new player",
+          "Tester 2: facilitator"
+        ],
+        "roundPrompts": [
+          "Before the action, ask what each player thinks their best move is.",
+          "After resolution, ask what changed and who is threatening the vault.",
+          "Mark any confusion, frustration, or replay-worthy moment immediately."
+        ],
+        "interventionRules": [
+          "Intervene only when setup or rules comprehension blocks the session.",
+          "Do not reveal the hidden design hypothesis before final questions.",
+          "Do not coach optimal strategy during the first pass."
+        ],
+        "closingQuestions": [
+          "What were you trying to do?",
+          "Which action felt most useful?",
+          "What confused you?",
+          "Would you play another round?"
+        ]
+      },
+      "testerBriefs": [
+        {
+          "id": "playtest-mission-f5269885-brief-1",
+          "testerId": "tester-1",
+          "role": "new player",
+          "goal": "Play as a new player and report whether that style feels viable and fun. Mission: First Match Onboarding.",
+          "behaviorPrompt": "Play naturally and say what you think each action does.",
+          "payAttentionTo": [
+            "moments of agency",
+            "moments of confusion",
+            "fairness of outcomes",
+            "whether a replay story forms"
+          ],
+          "doNotOptimizeFor": [
+            "perfect strategy",
+            "pleasing the facilitator",
+            "guessing the hidden hypothesis"
+          ],
+          "postMatchQuestions": [
+            "What were you trying to do?",
+            "Which action felt most useful?",
+            "What confused you?",
+            "Would you play another round?"
+          ]
+        },
+        {
+          "id": "playtest-mission-f5269885-brief-2",
+          "testerId": "tester-2",
+          "role": "facilitator",
+          "goal": "Run the script and capture clean observations.",
+          "behaviorPrompt": "Follow the mission and narrate what you notice.",
+          "payAttentionTo": [
+            "moments of agency",
+            "moments of confusion",
+            "fairness of outcomes",
+            "whether a replay story forms"
+          ],
+          "doNotOptimizeFor": [
+            "perfect strategy",
+            "pleasing the facilitator",
+            "guessing the hidden hypothesis"
+          ],
+          "postMatchQuestions": [
+            "What were you trying to do?",
+            "Which action felt most useful?",
+            "What confused you?",
+            "Would you play another round?"
+          ]
+        }
+      ],
+      "observationSheet": {
+        "dimensions": [
+          {
+            "id": "understood-goal",
+            "label": "understood goal",
+            "scale": "1-5 Likert"
+          },
+          {
+            "id": "understood-actions",
+            "label": "understood actions",
+            "scale": "1-5 Likert"
+          },
+          {
+            "id": "felt-agency",
+            "label": "felt agency",
+            "scale": "1-5 Likert"
+          },
+          {
+            "id": "felt-tension",
+            "label": "felt tension",
+            "scale": "1-5 Likert"
+          },
+          {
+            "id": "felt-fairness",
+            "label": "felt fairness",
+            "scale": "1-5 Likert"
+          },
+          {
+            "id": "felt-frustration",
+            "label": "felt frustration",
+            "scale": "1-5 Likert"
+          },
+          {
+            "id": "remembered-key-moment",
+            "label": "remembered key moment",
+            "scale": "free text"
+          },
+          {
+            "id": "would-replay",
+            "label": "would replay",
+            "scale": "1-5 Likert"
+          },
+          {
+            "id": "would-share-replay",
+            "label": "would share replay",
+            "scale": "1-5 Likert"
+          },
+          {
+            "id": "setup-friction",
+            "label": "setup friction",
+            "scale": "1-5 Likert"
+          }
+        ],
+        "passFailChecks": [
+          {
+            "criterion": "Tester can explain goal and actions.",
+            "pass": null
+          },
+          {
+            "criterion": "Tester reports agency 4 or higher.",
+            "pass": null
+          },
+          {
+            "criterion": "No setup blocker.",
+            "pass": null
+          }
+        ],
+        "eventMarkers": [
+          "confusion moment",
+          "frustration moment",
+          "replay-worthy moment",
+          "setup blocker",
+          "agency recovery moment",
+          "fairness concern"
+        ],
+        "noteFields": [
+          "timestamp",
+          "round",
+          "tester",
+          "event",
+          "note"
+        ],
+        "checkboxes": [
+          "replay-worthy moment",
+          "confusion moment",
+          "frustration moment"
+        ]
+      },
+      "rubric": {
+        "pass": [
+          "Tester can explain goal and actions.",
+          "Tester reports agency 4 or higher.",
+          "No setup blocker."
+        ],
+        "fail": [
+          "Tester cannot explain the goal.",
+          "Tester cannot distinguish two actions.",
+          "Setup friction blocks the session."
+        ],
+        "needsFollowUp": [
+          "Mixed ratings, disagreement between tester roles, or one unresolved high-severity issue."
+        ],
+        "inconclusive": [
+          "Session ended early, wrong setup was used, or feedback is missing."
+        ]
+      },
+      "recommendedMachineRuns": [
+        "npm run simulate"
+      ],
+      "recommendedFollowUp": "Rerun simulator onboarding scenario and update copy or action affordances."
+    },
+    "evidenceType": "facilitated",
+    "evidenceTypes": [
+      "facilitated"
+    ],
+    "humanEvidenceConfidence": 84,
+    "sessions": [
+      {
+        "sessionId": "playtest-session-78d595c1",
+        "missionId": "playtest-mission-f5269885",
+        "evidenceType": "facilitated",
+        "keyFinding": "pass: aggregate score 84/100.",
+        "strongestEvidence": [
+          "Remembered a late vault swing after a sabotage.",
+          "Wanted clearer wording for when sabotage is unavailable."
+        ],
+        "contradictedAssumptions": [],
+        "recommendedNextAction": "Promote the finding to Oracle and Launch notes.",
+        "machineSignalConfirmed": true,
+        "rerunMachine": false,
+        "aggregate": {
+          "comprehension": 4,
+          "agency": 4,
+          "tension": 5,
+          "fairness": 4,
+          "frustration": 2,
+          "replayability": 4,
+          "launchFriction": 1,
+          "overallScore": 84,
+          "count": 1
+        },
+        "outcome": "pass"
+      },
+      {
+        "sessionId": "playtest-session-fb652883",
+        "missionId": "playtest-mission-f5269885",
+        "evidenceType": "facilitated",
+        "keyFinding": "pass: aggregate score 88/100.",
+        "strongestEvidence": [
+          "Liked deciding when to stop searching and start picking.",
+          "Asked whether tools carry between turns."
+        ],
+        "contradictedAssumptions": [],
+        "recommendedNextAction": "Promote the finding to Oracle and Launch notes.",
+        "machineSignalConfirmed": true,
+        "rerunMachine": false,
+        "aggregate": {
+          "comprehension": 4,
+          "agency": 5,
+          "tension": 4,
+          "fairness": 4,
+          "frustration": 2,
+          "replayability": 5,
+          "launchFriction": 1,
+          "overallScore": 88,
+          "count": 1
+        },
+        "outcome": "pass"
+      }
+    ],
+    "aggregateScores": {
+      "comprehension": 4,
+      "agency": 4.5,
+      "tension": 4.5,
+      "fairness": 4,
+      "frustration": 2,
+      "replayability": 4.5,
+      "launchFriction": 1,
+      "overallScore": 86,
+      "count": 2
+    },
+    "quotes": [
+      "Remembered a late vault swing after a sabotage.",
+      "Wanted clearer wording for when sabotage is unavailable.",
+      "Liked deciding when to stop searching and start picking.",
+      "Asked whether tools carry between turns."
+    ],
+    "eventMarkers": [],
+    "result": "pass",
+    "decisionRecommendation": "Accept the onboarding finding and continue validation.",
+    "nextMachineRun": "npm run simulate",
+    "nextHumanTest": "Test a harder scenario or launch rehearsal."
+  }
+}

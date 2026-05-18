@@ -56,6 +56,17 @@ export const COMMAND_SAFETY = Object.freeze({
   DEPLOYMENT: 'deployment',
 });
 
+export const RELEASE_CONFIRMATION_FIELDS = Object.freeze([
+  { key: 'mainnetRoleAddressesConfirmed', label: 'Final mainnet role addresses confirmed' },
+  { key: 'workerHostConfirmed', label: 'Worker host and process supervision confirmed' },
+  { key: 'productionRpcConfirmed', label: 'Production RPC endpoint confirmed' },
+  { key: 'agentServiceTargetConfirmed', label: 'Agent-service deploy target and env values confirmed' },
+  { key: 'mainnetFeeDisabledConfirmed', label: 'Fee disabled for mainnet launch confirmed' },
+  { key: 'rollbackOwnerConfirmed', label: 'Rollback owner available during launch window' },
+  { key: 'deployEnvConfirmed', label: 'Clean deploy env values confirmed' },
+  { key: 'frontendMainnetConfigConfirmed', label: 'Frontend mainnet proxy and RPC config confirmed' },
+]);
+
 const CATEGORY_WEIGHTS = Object.freeze({
   product: 0.08,
   gameplay: 0.13,
@@ -95,6 +106,8 @@ const REQUIRED_SCRIPTS = [
 
 const LAUNCH_REQUIRED_FILES = [
   'docs/go-live-checklist.md',
+  'ops/launch-readiness.json',
+  '.env.mainnet.example',
   'docs/mainnet-runbook.md',
   'docs/dev/deployment.mdx',
   'docs/dev/local-dev.mdx',
@@ -254,18 +267,24 @@ export const LAUNCH_CHECKS = Object.freeze([
   makeCheck('contract-config', 'public-testnet', 'contracts', 'Frontend contract config exists', {
     required: true,
     files: ['app/src/config/contract.js'],
-    evidenceText: ['sepolia'],
+    evidenceText: ['VITE_CONTRACT_ADDRESS'],
     remediation: 'Confirm contract address, ABI, and chain config are present for the target network.',
   }),
   makeCheck('environment-keys', 'public-testnet', 'env', 'Required frontend env keys are present', {
     required: true,
-    envVars: ['VITE_PLUNDRIX_CONTRACT', 'VITE_CHAIN_ID'],
+    envVars: ['VITE_CONTRACT_ADDRESS', 'VITE_CHAIN_ID'],
     remediation: 'Set frontend environment keys for the launch target without exposing secrets.',
   }),
   makeCheck('go-live-checklist', 'public-testnet', 'release', 'Go-live checklist has no critical blockers for this gate', {
     required: true,
     checklist: 'docs/go-live-checklist.md',
     remediation: 'Close unchecked critical checklist items before promoting the gate.',
+  }),
+  makeCheck('release-confirmations', 'launch-candidate', 'release', 'Manual release confirmations are recorded', {
+    required: true,
+    proof: 'release-confirmations',
+    files: ['ops/launch-readiness.json', '.env.mainnet.example'],
+    remediation: 'Fill ops/launch-readiness.json with the named operator confirmations before launch-candidate promotion.',
   }),
   makeCheck('mainnet-runbook', 'launch-candidate', 'ops', 'Mainnet runbook exists', {
     required: true,
@@ -522,6 +541,34 @@ function evaluateRoutes(check, inputs) {
   };
 }
 
+function normalizeReleaseReadiness(input = {}) {
+  return {
+    confirmations: input.confirmations || {},
+    owner: input.owner || '',
+    launchWindow: input.launchWindow || '',
+    notes: input.notes || '',
+  };
+}
+
+function evaluateReleaseConfirmations(check, inputs) {
+  if (check.proof !== 'release-confirmations') return null;
+  const readiness = normalizeReleaseReadiness(inputs.releaseReadiness);
+  const missing = RELEASE_CONFIRMATION_FIELDS
+    .filter((field) => readiness.confirmations[field.key] !== true)
+    .map((field) => field.label);
+  const evidence = [
+    readiness.owner ? `Owner: ${readiness.owner}` : 'Missing release owner.',
+    readiness.launchWindow ? `Launch window: ${readiness.launchWindow}` : 'Missing launch window.',
+    ...missing.map((item) => `Missing confirmation: ${item}`),
+  ];
+  const pass = missing.length === 0 && Boolean(readiness.owner && readiness.launchWindow);
+  return {
+    status: statusFromBoolean(pass, check),
+    evidence: pass ? [`All ${RELEASE_CONFIRMATION_FIELDS.length} release confirmations recorded.`, `Owner: ${readiness.owner}`, `Launch window: ${readiness.launchWindow}`] : evidence,
+    score: Math.round(((RELEASE_CONFIRMATION_FIELDS.length - missing.length) / RELEASE_CONFIRMATION_FIELDS.length) * 100),
+  };
+}
+
 function evaluateChecklist(check, inputs) {
   if (!check.checklist) return null;
   const checklist = parseChecklist(inputs.files[check.checklist] || '');
@@ -743,6 +790,7 @@ export function evaluateLaunchCheck(check, inputs) {
     evaluateScripts(check, inputs),
     evaluateEnv(check, inputs),
     evaluateRoutes(check, inputs),
+    evaluateReleaseConfirmations(check, inputs),
     evaluateChecklist(check, inputs),
     evaluateProof(check, inputs),
   ]);
@@ -831,6 +879,8 @@ export function collectLaunchInputs(config = {}) {
     heavy: false,
     oracleReport,
     launchPlan: designLaunchPlan,
+    decisions: config.decisions || [],
+    playtestReports: config.playtestReports || [],
   });
 
   return {
@@ -839,6 +889,7 @@ export function collectLaunchInputs(config = {}) {
     files,
     packageJson,
     env: config.env || {},
+    releaseReadiness: normalizeReleaseReadiness(config.releaseReadiness || {}),
     routeResults: config.routeResults || {},
     commandResults: config.commandResults || {},
     simulatorBatch,
@@ -977,6 +1028,9 @@ function buildCommandPlan(checks, targetGate) {
     command('npm run launch:copilot -- --target internal-playtest --markdown', COMMAND_SAFETY.LOCAL_SAFE, 'Generate a launch readiness brief.'),
   ];
   if (compareGates(targetGate, 'launch-candidate') >= 0) {
+    commands.push(command('npm run launch:check-config', COMMAND_SAFETY.LOCAL_SAFE, 'Validate frontend contract and chain configuration.'));
+    commands.push(command('npm run launch:check-agent', COMMAND_SAFETY.LOCAL_SAFE, 'Validate agent-service configuration shape.'));
+    commands.push(command('npm run launch:rehearse-contracts', COMMAND_SAFETY.LOCAL_SAFE, 'Generate a contract deployment rehearsal readiness report.'));
     commands.push(command('npm run build', COMMAND_SAFETY.LOCAL_MEDIUM, 'Verify production bundle compiles.'));
     commands.push(command('npm run simulate:auto-balance -- --budget normal --mode beam', COMMAND_SAFETY.LOCAL_MEDIUM, 'Run broader balance validation deliberately.'));
   }
@@ -1090,6 +1144,13 @@ function buildProofBundle(inputs) {
       health: inputs.oracleReport.health,
       topRecommendations: inputs.oracleReport.recommendations.slice(0, 5),
       topRisks: inputs.oracleReport.risks.slice(0, 5),
+    },
+    releaseReadiness: {
+      owner: inputs.releaseReadiness.owner,
+      launchWindow: inputs.releaseReadiness.launchWindow,
+      confirmations: redactEnv(inputs.releaseReadiness.confirmations),
+      confirmedCount: RELEASE_CONFIRMATION_FIELDS.filter((field) => inputs.releaseReadiness.confirmations[field.key] === true).length,
+      requiredCount: RELEASE_CONFIRMATION_FIELDS.length,
     },
     routes: inputs.routeResults,
     commands: inputs.commandResults,

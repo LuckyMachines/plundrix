@@ -1,0 +1,15 @@
+{
+  "owner": "",
+  "launchWindow": "",
+  "notes": "Fill these confirmations only after the named production values have been verified by the release owner.",
+  "confirmations": {
+    "mainnetRoleAddressesConfirmed": false,
+    "workerHostConfirmed": false,
+    "productionRpcConfirmed": false,
+    "agentServiceTargetConfirmed": false,
+    "mainnetFeeDisabledConfirmed": false,
+    "rollbackOwnerConfirmed": false,
+    "deployEnvConfirmed": false,
+    "frontendMainnetConfigConfirmed": false
+  }
+}

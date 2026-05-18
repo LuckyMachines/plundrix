@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "design-decision-be7bbc4a",
+  "createdAt": "2026-05-18T04:19:25.721Z",
+  "hypothesisId": "design-hypothesis-330cf99b",
+  "title": "Playtest Faster games",
+  "status": "accept",
+  "operator": "Codex",
+  "rationale": "Accept faster-games playtest as a focused validation path, not as a shipping decision by itself.",
+  "acceptedRisks": [
+    "Mutation score can look promising while hurting role health."
+  ],
+  "rejectedAlternatives": [
+    "Let seed-specific backlog churn hide the decision",
+    "Ship without playtest confirmation"
+  ],
+  "followUpValidation": [
+    "Run imported human playtest",
+    "Re-run Tower with decisions loaded",
+    "Re-run launch packet"
+  ],
+  "evidenceUsed": [],
+  "memo": {
+    "id": "design-memo-3ba6b368",
+    "generatedAt": "2026-05-18T04:19:25.721Z",
+    "hypothesisId": "design-hypothesis-330cf99b",
+    "title": "Playtest Faster games",
+    "claim": "Rule Mutation Time Machine found a higher-scoring candidate under smoke comparison.",
+    "desiredOutcome": "Deliver impact 3.",
+    "evidence": [
+      "replay-director: Player 1's comeback run scored 100.0 drama.",
+      "live-ops-oracle: Rule Mutation Time Machine found a higher-scoring candidate under smoke comparison.",
+      "launch-copilot: Launch readiness 80/100 with 1 blockers.",
+      "playtest-coach: Human playtest result pass: Accept the onboarding finding and continue validation.",
+      "ghosts: Ghost score 69/100, healthiest Tool Hoarder, riskiest Reckless Picker."
+    ],
+    "counterevidence": [
+      "rule-mutation: Mutation verdict reject at 30/100.",
+      "simulator: Simulator completion 100%, average rounds 21.3."
+    ],
+    "risks": [
+      "Mutation score: 56"
+    ],
+    "recommendation": "Accept design change",
+    "nextCommand": "record decision",
+    "filesLikelyTouched": [
+      "app/src/lib/plundrixEngine.js",
+      "contracts/PlundrixGame.sol",
+      "docs/dev/mechanics.mdx"
+    ],
+    "acceptanceCriteria": [
+      "Evidence stack includes at least two independent sources.",
+      "No red launch blocker remains open.",
+      "Human playtest evidence exists before final acceptance.",
+      "Deliver impact 3."
+    ]
+  }
+}

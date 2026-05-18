@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "design-decision-73be2aa6",
+  "createdAt": "2026-05-18T04:19:20.871Z",
+  "hypothesisId": "design-hypothesis-36ea55c5",
+  "title": "Replay memory: Player 1's comeback run",
+  "status": "accept",
+  "operator": "Codex",
+  "rationale": "Accept the comeback-run replay as a proof candidate for gallery and marketing capture.",
+  "acceptedRisks": [
+    "Replay drama can hide fairness or onboarding problems."
+  ],
+  "rejectedAlternatives": [
+    "Let seed-specific backlog churn hide the decision",
+    "Ship without playtest confirmation"
+  ],
+  "followUpValidation": [
+    "Run imported human playtest",
+    "Re-run Tower with decisions loaded",
+    "Re-run launch packet"
+  ],
+  "evidenceUsed": [],
+  "memo": {
+    "id": "design-memo-b4c821ee",
+    "generatedAt": "2026-05-18T04:19:20.871Z",
+    "hypothesisId": "design-hypothesis-36ea55c5",
+    "title": "Replay memory: Player 1's comeback run",
+    "claim": "The match creates a story players can remember and share.",
+    "desiredOutcome": "Increase memorable tension, comeback readability, and shareability.",
+    "evidence": [
+      "replay-director: Player 1's comeback run scored 100.0 drama.",
+      "playtest-coach: Human playtest result pass: Accept the onboarding finding and continue validation.",
+      "simulator: Simulator completion 100%, average rounds 21.3."
+    ],
+    "counterevidence": [
+      "simulator: Simulator completion 100%, average rounds 21.3."
+    ],
+    "risks": [
+      "Replay drama can hide fairness or onboarding problems."
+    ],
+    "recommendation": "Accept design change",
+    "nextCommand": "record decision",
+    "filesLikelyTouched": [
+      "app/src/lib/replayDirector.js",
+      "app/src/pages/ReplaysPage.jsx"
+    ],
+    "acceptanceCriteria": [
+      "Evidence stack includes at least two independent sources.",
+      "No red launch blocker remains open.",
+      "Human playtest evidence exists before final acceptance.",
+      "Increase memorable tension, comeback readability, and shareability."
+    ]
+  }
+}

@@ -680,6 +680,7 @@ function buildGhostReport(options) {
   const archetypes = summarizeArchetypes(matches);
   const matchups = buildMatchupMatrix(matches);
   const score = scoreGhostMatch({ matches });
+  const fairness = summarizeGhostFairness(matches, archetypes);
   const risks = buildGhostRisks(archetypes, score);
   const recommendations = buildGhostRecommendations(archetypes, risks, score);
   const report = {
@@ -700,6 +701,7 @@ function buildGhostReport(options) {
       behavior: match.behavior,
     })),
     archetypes,
+    fairness,
     matchups,
     bestStory: chooseBestStory(matches),
     healthiestArchetype: [...archetypes].sort((a, b) => b.healthScore - a.healthScore)[0] || null,
@@ -716,6 +718,232 @@ function buildGhostReport(options) {
     rosterJson: exportGhostRosterJson(report.roster),
   };
   return report;
+}
+
+export function buildGhostFairnessReport(report) {
+  const fairness = report.fairness || summarizeGhostFairness(report.matches || [], report.archetypes || []);
+  return {
+    generatedAt: report.generatedAt || nowIso(),
+    scenario: report.scenario,
+    budget: report.budget,
+    games: report.games || report.matches?.length || 0,
+    overallScore: fairness.overallScore,
+    grade: fairness.grade,
+    verdict: fairness.verdict,
+    weakestArchetype: fairness.weakestArchetype,
+    strongestArchetype: fairness.strongestArchetype,
+    rows: fairness.rows,
+    risks: fairness.rows
+      .filter((row) => row.verdict !== 'pass')
+      .map((row) => ({
+        archetypeId: row.archetypeId,
+        label: row.label,
+        verdict: row.verdict,
+        blockers: row.blockers,
+        recommendation: row.recommendation,
+      })),
+  };
+}
+
+export function buildFocusedGhostValidation(reports, archetypeId = 'tool-hoarder') {
+  const normalizedReports = Array.isArray(reports) ? reports.filter(Boolean) : [reports].filter(Boolean);
+  const archetype = GHOST_ARCHETYPES[archetypeId] || GHOST_ARCHETYPES['tool-hoarder'];
+  const rows = normalizedReports.map((report) => {
+    const archetypeRow = (report.archetypes || []).find((item) => item.archetypeId === archetype.id);
+    const fairnessRow = (report.fairness?.rows || []).find((item) => item.archetypeId === archetype.id);
+    return {
+      reportId: report.id,
+      scenario: report.scenario,
+      budget: report.budget,
+      games: report.games,
+      healthScore: archetypeRow?.healthScore ?? 0,
+      winRate: archetypeRow?.winRate ?? 0,
+      funContribution: archetypeRow?.funContribution ?? 0,
+      frustrationRisk: archetypeRow?.frustrationRisk ?? 0,
+      stayedInCharacter: archetypeRow?.stayedInCharacter ?? 0,
+      fairnessScore: fairnessRow?.fairnessScore ?? 0,
+      fairnessVerdict: fairnessRow?.verdict || 'missing',
+      winViability: fairnessRow?.winViability ?? 0,
+      agency: fairnessRow?.agency ?? 0,
+      toolWasteRisk: fairnessRow?.toolWasteRisk ?? 0,
+      counterplay: fairnessRow?.counterplay ?? 0,
+      recommendation: fairnessRow?.recommendation || `${archetype.label} was not present in this report.`,
+    };
+  });
+  const score = Math.round(average(rows.map((row) => (
+    row.healthScore * 0.28 +
+    row.fairnessScore * 0.28 +
+    row.winViability * 0.16 +
+    row.agency * 0.14 +
+    (100 - row.frustrationRisk) * 0.08 +
+    (100 - row.toolWasteRisk) * 0.06
+  ))));
+  const blockers = [];
+  if (rows.some((row) => row.healthScore < 70)) blockers.push(`${archetype.label} health below 70 in at least one scenario.`);
+  if (rows.some((row) => row.fairnessScore < 70)) blockers.push(`${archetype.label} fairness below 70 in at least one scenario.`);
+  if (rows.some((row) => row.winViability < 52)) blockers.push(`${archetype.label} win viability is weak in at least one scenario.`);
+  if (rows.some((row) => row.toolWasteRisk > 58)) blockers.push(`${archetype.label} wastes tools too often in at least one scenario.`);
+  if (!rows.length) blockers.push(`${archetype.label} has no validation reports.`);
+  return {
+    generatedAt: nowIso(),
+    archetypeId: archetype.id,
+    label: archetype.label,
+    score,
+    grade: score >= 90 ? 'A' : score >= 80 ? 'B' : score >= 70 ? 'C' : score >= 60 ? 'D' : 'F',
+    verdict: blockers.length ? 'hold' : 'pass',
+    blockers,
+    rows,
+  };
+}
+
+export function exportFocusedGhostValidationMarkdown(validation) {
+  return [
+    `# ${validation.label} Focused Validation`,
+    '',
+    `Generated: ${validation.generatedAt}`,
+    `Score: ${validation.score}/100 (${validation.grade})`,
+    `Verdict: ${validation.verdict}`,
+    '',
+    '## Scenario Matrix',
+    '',
+    '| Scenario | Budget | Games | Health | Fairness | Win Rate | Win Viability | Agency | Tool Waste | Counterplay | Verdict |',
+    '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
+    ...validation.rows.map((row) => `| ${row.scenario} | ${row.budget} | ${row.games} | ${row.healthScore} | ${row.fairnessScore} | ${(row.winRate * 100).toFixed(1)}% | ${row.winViability} | ${row.agency} | ${row.toolWasteRisk} | ${row.counterplay} | ${row.fairnessVerdict} |`),
+    '',
+    '## Blockers',
+    '',
+    ...(validation.blockers.length ? validation.blockers.map((item) => `- ${item}`) : ['- No focused validation blockers.']),
+    '',
+    '## Recommendations',
+    '',
+    ...validation.rows.map((row) => `- ${row.scenario}: ${row.recommendation}`),
+    '',
+  ].join('\n');
+}
+
+function summarizeGhostFairness(matches, archetypes) {
+  const behaviors = matches.flatMap((match) => match.behavior || []);
+  const byArchetype = new Map();
+  for (const item of behaviors) {
+    if (!byArchetype.has(item.declaredArchetype)) byArchetype.set(item.declaredArchetype, []);
+    byArchetype.get(item.declaredArchetype).push(item);
+  }
+  const archetypeById = new Map((archetypes || []).map((item) => [item.archetypeId, item]));
+  const rows = [...byArchetype.entries()].map(([archetypeId, items]) => {
+    const archetype = archetypeById.get(archetypeId) || summarizeFallbackArchetype(archetypeId, items);
+    const winViability = scoreWinViability(archetype.winRate, items.length);
+    const agency = scoreAgency(items);
+    const stunExposure = average(items.map((item) => item.roundsStunned));
+    const sabotageUse = average(items.map((item) => item.sabotageRate));
+    const toolWaste = average(items.map((item) => item.finalTools));
+    const toolWasteRisk = scoreToolWasteRisk(archetypeId, items, toolWaste);
+    const stunRisk = clamp(stunExposure * 12, 0, 100);
+    const sabotageFatigueRisk = clamp(Math.max(0, sabotageUse - 0.36) * 190, 0, 100);
+    const frustration = archetype.frustrationRisk;
+    const counterplay = Math.round(clamp(100 - frustration * 0.46 - stunRisk * 0.28 - sabotageFatigueRisk * 0.18 - toolWasteRisk * 0.08, 0, 100));
+    const fairnessScore = Math.round(clamp(
+      winViability * 0.24 +
+      agency * 0.26 +
+      (100 - frustration) * 0.18 +
+      (100 - stunRisk) * 0.12 +
+      (100 - sabotageFatigueRisk) * 0.1 +
+      (100 - toolWasteRisk) * 0.1,
+      0,
+      100,
+    ));
+    const blockers = [];
+    if (winViability < 52) blockers.push('win viability');
+    if (agency < 55) blockers.push('agency');
+    if (frustration > 62) blockers.push('frustration');
+    if (stunRisk > 60) blockers.push('stun exposure');
+    if (sabotageFatigueRisk > 55) blockers.push('sabotage fatigue');
+    if (toolWasteRisk > 58) blockers.push('tool waste');
+    return {
+      archetypeId,
+      label: archetype.label,
+      appearances: items.length,
+      fairnessScore,
+      verdict: blockers.length ? (fairnessScore >= 68 ? 'watch' : 'hold') : 'pass',
+      blockers,
+      winViability,
+      winRate: archetype.winRate,
+      agency,
+      frustration,
+      stunExposure: Number(stunExposure.toFixed(2)),
+      stunRisk: Math.round(stunRisk),
+      sabotageUse: Number(sabotageUse.toFixed(3)),
+      sabotageFatigueRisk: Math.round(sabotageFatigueRisk),
+      toolWaste: Number(toolWaste.toFixed(2)),
+      toolWasteRisk: Math.round(toolWasteRisk),
+      counterplay,
+      recommendation: recommendFairnessAction(archetype, {
+        winViability,
+        agency,
+        frustration,
+        stunRisk,
+        sabotageFatigueRisk,
+        toolWasteRisk,
+      }),
+    };
+  }).sort((a, b) => a.fairnessScore - b.fairnessScore);
+  const overallScore = Math.round(average(rows.map((row) => row.fairnessScore)));
+  return {
+    overallScore,
+    grade: overallScore >= 90 ? 'A' : overallScore >= 80 ? 'B' : overallScore >= 70 ? 'C' : overallScore >= 60 ? 'D' : 'F',
+    verdict: rows.some((row) => row.verdict === 'hold') ? 'hold' : rows.some((row) => row.verdict === 'watch') ? 'watch' : 'pass',
+    weakestArchetype: rows[0] || null,
+    strongestArchetype: [...rows].sort((a, b) => b.fairnessScore - a.fairnessScore)[0] || null,
+    rows,
+  };
+}
+
+function summarizeFallbackArchetype(archetypeId, items) {
+  const archetype = GHOST_ARCHETYPES[archetypeId] || GHOST_ARCHETYPES.opportunist;
+  return {
+    archetypeId,
+    label: archetype.label,
+    winRate: ratio(items.filter((item) => item.won).length, items.length),
+    frustrationRisk: Math.round(average(items.map((item) => item.frustrationRisk))),
+  };
+}
+
+function scoreWinViability(winRate, appearances) {
+  const target = 0.25;
+  const sampleConfidence = clamp(appearances / 8, 0.35, 1);
+  const distancePenalty = Math.abs(winRate - target) * 180 * sampleConfidence;
+  const deadZonePenalty = appearances >= 4 && winRate === 0 ? 18 : 0;
+  const dominancePenalty = winRate > 0.58 ? 22 : 0;
+  return Math.round(clamp(100 - distancePenalty - deadZonePenalty - dominancePenalty, 0, 100));
+}
+
+function scoreAgency(items) {
+  const actionPresence = clamp(average(items.map((item) => Math.min(1, item.totalActions / 6))) * 100, 0, 100);
+  const progress = average(items.map((item) => Math.min(1, item.finalLocks / 3))) * 100;
+  const meaningfulTurns = average(items.map((item) => (
+    item.successfulPickRate * 35 +
+    Math.min(1, item.causedStuns / 2) * 25 +
+    Math.min(1, item.comebackAttempts) * 20 +
+    Math.min(1, item.endgameAggression / 2) * 20
+  )));
+  const stunDrag = average(items.map((item) => item.roundsStunned)) * 5;
+  return Math.round(clamp(actionPresence * 0.3 + progress * 0.32 + meaningfulTurns * 0.38 - stunDrag, 0, 100));
+}
+
+function scoreToolWasteRisk(archetypeId, items, toolWaste) {
+  const searchRate = average(items.map((item) => item.searchRate));
+  const pickRate = average(items.map((item) => item.pickRate));
+  const hoarderMultiplier = archetypeId === 'tool-hoarder' ? 0.8 : 1;
+  return clamp((toolWaste * 15 + Math.max(0, searchRate - pickRate - 0.18) * 80) * hoarderMultiplier, 0, 100);
+}
+
+function recommendFairnessAction(archetype, metrics) {
+  if (metrics.winViability < 52) return `${archetype.label} needs a clearer route to win without becoming dominant.`;
+  if (metrics.agency < 55) return `${archetype.label} needs more meaningful actions before promotion.`;
+  if (metrics.frustration > 62) return `${archetype.label} needs lower frustration or stronger counterplay.`;
+  if (metrics.stunRisk > 60) return `${archetype.label} spends too much time stunned and needs protection from low-agency loops.`;
+  if (metrics.sabotageFatigueRisk > 55) return `${archetype.label} leans too hard on sabotage and needs a more varied path.`;
+  if (metrics.toolWasteRisk > 58) return `${archetype.label} is carrying unused tools too often; rebalance search payoff or pick timing.`;
+  return `${archetype.label} is fair enough for this budget; keep monitoring with normal-budget ghosts.`;
 }
 
 function summarizeArchetypes(matches) {
@@ -961,6 +1189,14 @@ export function exportGhostReportMarkdown(report) {
     '| --- | ---: | ---: | ---: | ---: | ---: |',
     ...report.archetypes.map((item) => `| ${item.label} | ${item.healthScore} | ${(item.winRate * 100).toFixed(1)}% | ${item.funContribution} | ${item.frustrationRisk} | ${item.stayedInCharacter} |`),
     '',
+    '## Archetype Fairness',
+    '',
+    `Overall: ${report.fairness?.overallScore ?? 'n/a'}/100 (${report.fairness?.grade ?? 'n/a'}) - ${report.fairness?.verdict ?? 'unknown'}`,
+    '',
+    '| Archetype | Fairness | Verdict | Win Viability | Agency | Frustration | Stun Risk | Sabotage Risk | Tool Waste | Counterplay |',
+    '| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
+    ...(report.fairness?.rows || []).map((item) => `| ${item.label} | ${item.fairnessScore} | ${item.verdict} | ${item.winViability} | ${item.agency} | ${item.frustration} | ${item.stunRisk} | ${item.sabotageFatigueRisk} | ${item.toolWasteRisk} | ${item.counterplay} |`),
+    '',
     '## Best Story',
     '',
     report.bestStory ? `${report.bestStory.headline} Seed: ${report.bestStory.seed}` : 'No story selected.',
@@ -986,19 +1222,31 @@ export function exportGhostReportJson(report) {
 }
 
 export function exportGhostReportCsv(report) {
+  const fairnessById = new Map((report.fairness?.rows || []).map((item) => [item.archetypeId, item]));
   const rows = [
-    ['archetype', 'healthScore', 'winRate', 'funContribution', 'frustrationRisk', 'stayedInCharacter', 'pickRate', 'searchRate', 'sabotageRate'],
-    ...report.archetypes.map((item) => [
-      item.label,
-      item.healthScore,
-      item.winRate.toFixed(4),
-      item.funContribution,
-      item.frustrationRisk,
-      item.stayedInCharacter,
-      item.averagePickRate.toFixed(4),
-      item.averageSearchRate.toFixed(4),
-      item.averageSabotageRate.toFixed(4),
-    ]),
+    ['archetype', 'healthScore', 'fairnessScore', 'fairnessVerdict', 'winRate', 'winViability', 'agency', 'funContribution', 'frustrationRisk', 'stayedInCharacter', 'stunRisk', 'sabotageFatigueRisk', 'toolWasteRisk', 'counterplay', 'pickRate', 'searchRate', 'sabotageRate'],
+    ...report.archetypes.map((item) => {
+      const fairness = fairnessById.get(item.archetypeId) || {};
+      return [
+        item.label,
+        item.healthScore,
+        fairness.fairnessScore ?? '',
+        fairness.verdict ?? '',
+        item.winRate.toFixed(4),
+        fairness.winViability ?? '',
+        fairness.agency ?? '',
+        item.funContribution,
+        item.frustrationRisk,
+        item.stayedInCharacter,
+        fairness.stunRisk ?? '',
+        fairness.sabotageFatigueRisk ?? '',
+        fairness.toolWasteRisk ?? '',
+        fairness.counterplay ?? '',
+        item.averagePickRate.toFixed(4),
+        item.averageSearchRate.toFixed(4),
+        item.averageSabotageRate.toFixed(4),
+      ];
+    }),
   ];
   return rows.map((row) => row.map(csvCell).join(',')).join('\n');
 }

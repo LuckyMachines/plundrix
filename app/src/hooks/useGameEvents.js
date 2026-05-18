@@ -6,6 +6,7 @@ import {
   IS_CONTRACT_CONFIGURED,
 } from '../config/contract';
 import { toGameId } from '../lib/gameId';
+import { recordGameEvent } from '../lib/liveTelemetry';
 
 export function useGameEvents(gameId) {
   const parsedGameId = toGameId(gameId);
@@ -29,6 +30,15 @@ export function useGameEvents(gameId) {
       transactionHash: log.transactionHash,
       timestamp: Date.now(),
     };
+    recordGameEvent({
+      type: name,
+      args: log.args,
+      gameId: log.args?.gameID,
+      round: log.args?.round,
+      source: 'contract-watch',
+      timestamp: new Date(entry.timestamp).toISOString(),
+      payload: { transactionHash: log.transactionHash, blockNumber: String(log.blockNumber ?? '') },
+    });
 
     setEvents((prev) => {
       const next = [...prev, entry];

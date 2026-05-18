@@ -116,6 +116,28 @@ function unique(items) {
   return [...new Set(items.filter(Boolean))];
 }
 
+function slugify(text) {
+  return String(text || 'item')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80) || 'item';
+}
+
+function normalizeDecisionTitle(text) {
+  return String(text || '')
+    .trim()
+    .toLowerCase()
+    .replace(/mutation-report-[a-f0-9]+/g, 'mutation-report')
+    .replace(/replay-[a-f0-9]+/g, 'replay')
+    .replace(/the round \d+/g, 'the round')
+    .replace(/tool hoarder (wins too often|rarely wins)\.?/g, 'tool hoarder viability')
+    .replace(/leader hunter (wins too often|rarely wins)\.?/g, 'leader hunter viability')
+    .replace(/closer (wins too often|rarely wins)\.?/g, 'closer viability')
+    .replace(/^playtest .+$/g, 'playtest mutation')
+    .replace(/\s+/g, ' ');
+}
+
 function normalizeTags(tags = []) {
   if (typeof tags === 'string') return tags.split(',').map((item) => item.trim()).filter(Boolean);
   return Array.isArray(tags) ? tags.map((item) => String(item).trim()).filter(Boolean) : [];
@@ -416,6 +438,19 @@ export function recommendNextDesignAction(hypothesis) {
   return action('Gather next evidence source', 'evidence', gaps[0]?.command || 'npm run design:tower -- --snapshot --markdown');
 }
 
+function decisionCommandForHypothesis(hypothesis, actionItem = recommendNextDesignAction(hypothesis)) {
+  const status = actionItem.type === 'reject' ? 'reject' : actionItem.type === 'accept' ? 'accept' : 'needs-more-data';
+  const risks = [hypothesis.risk, ...buildEvidenceGaps(hypothesis).map((gap) => gap.label)].filter(Boolean).join('; ');
+  return [
+    'npm run design:decision',
+    `-- --hypothesis "${hypothesis.title}"`,
+    `--status ${status}`,
+    '--operator "<name>"',
+    `--rationale "${actionItem.label}: ${hypothesis.desiredOutcome}"`,
+    risks ? `--risks "${risks}"` : '',
+  ].filter(Boolean).join(' ');
+}
+
 function action(label, type, command) {
   return { label, type, command };
 }
@@ -482,10 +517,11 @@ export function buildMutationEvidence(report) {
 
 export function buildPlaytestEvidence(report) {
   const score = report?.aggregateScores?.overallScore || (report?.result === 'pass' ? 82 : report?.result === 'fail' ? 30 : 58);
+  const confidence = report?.humanEvidenceConfidence || ({ synthetic: 46, facilitated: 84, 'live-session': 92 }[report?.evidenceType] || (report?.result === 'pass' ? 88 : 66));
   return normalizeEvidence({
     sourceType: 'playtest-coach',
-    summary: `Human playtest result ${report?.result || 'inconclusive'}: ${report?.decisionRecommendation || 'Collect more evidence.'}`,
-    confidence: report?.result === 'pass' ? 88 : 66,
+    summary: `${report?.evidenceType || 'synthetic'} playtest result ${report?.result || 'inconclusive'}: ${report?.decisionRecommendation || 'Collect more evidence.'}`,
+    confidence,
     score,
     sentiment: report?.result === 'fail' ? 'counterevidence' : 'supporting',
     artifactId: report?.id || 'playtest-report',
@@ -773,6 +809,7 @@ function acceptanceCriteria(hypothesis) {
 
 export function createDesignDecision(hypothesis, decisionInput = {}) {
   validateDesignHypothesis(hypothesis);
+  const memo = generateDecisionMemo(hypothesis);
   const decision = {
     schemaVersion: DESIGN_TOWER_SCHEMA_VERSION,
     id: `design-decision-${hashString(JSON.stringify({ hypothesisId: hypothesis.id, decisionInput, at: nowIso() })).toString(16)}`,
@@ -782,8 +819,11 @@ export function createDesignDecision(hypothesis, decisionInput = {}) {
     status: decisionInput.status || 'needs-more-data',
     operator: decisionInput.operator || '',
     rationale: decisionInput.rationale || '',
-    acceptedRisks: decisionInput.acceptedRisks || [],
-    memo: generateDecisionMemo(hypothesis),
+    acceptedRisks: normalizeTags(decisionInput.acceptedRisks || []),
+    rejectedAlternatives: normalizeTags(decisionInput.rejectedAlternatives || []),
+    followUpValidation: normalizeTags(decisionInput.followUpValidation || memo.acceptanceCriteria || []),
+    evidenceUsed: normalizeTags(decisionInput.evidenceUsed || memo.evidence || []),
+    memo,
   };
   validateDesignDecision(decision);
   return decision;
@@ -802,6 +842,90 @@ export function validateDesignDecision(decision) {
     throw new Error('Accepting or shipping requires accepted risks.');
   }
   return true;
+}
+
+function normalizeDesignDecision(decision = {}) {
+  const normalized = {
+    ...decision,
+    schemaVersion: decision.schemaVersion || DESIGN_TOWER_SCHEMA_VERSION,
+    id: decision.id || `design-decision-${hashString(JSON.stringify(decision)).toString(16)}`,
+    createdAt: decision.createdAt || nowIso(),
+    hypothesisId: decision.hypothesisId || decision.memo?.hypothesisId || '',
+    title: decision.title || decision.memo?.title || 'Design decision',
+    status: decision.status || 'needs-more-data',
+    operator: decision.operator || '',
+    rationale: decision.rationale || '',
+    acceptedRisks: Array.isArray(decision.acceptedRisks)
+      ? decision.acceptedRisks
+      : normalizeTags(decision.acceptedRisks),
+    rejectedAlternatives: Array.isArray(decision.rejectedAlternatives)
+      ? decision.rejectedAlternatives
+      : normalizeTags(decision.rejectedAlternatives),
+    followUpValidation: Array.isArray(decision.followUpValidation)
+      ? decision.followUpValidation
+      : normalizeTags(decision.followUpValidation),
+    evidenceUsed: Array.isArray(decision.evidenceUsed)
+      ? decision.evidenceUsed
+      : normalizeTags(decision.evidenceUsed),
+    memo: decision.memo || null,
+  };
+  validateDesignDecision(normalized);
+  return normalized;
+}
+
+function findDecisionForHypothesis(hypothesis, decisions = []) {
+  const title = normalizeDecisionTitle(hypothesis.title);
+  return decisions.find((decision) => (
+    decision.hypothesisId === hypothesis.id ||
+    normalizeDecisionTitle(decision.title) === title ||
+    normalizeDecisionTitle(decision.memo?.title) === title
+  )) || null;
+}
+
+export function exportDesignDecisionMarkdown(decisionInput = {}) {
+  const decision = normalizeDesignDecision(decisionInput);
+  const memo = decision.memo || {};
+  return [
+    `# ${decision.title}`,
+    '',
+    `Decision ID: ${decision.id}`,
+    `Created: ${decision.createdAt}`,
+    `Status: ${decision.status}`,
+    `Operator: ${decision.operator}`,
+    `Hypothesis: ${decision.hypothesisId}`,
+    '',
+    '## Decision',
+    '',
+    decision.rationale,
+    '',
+    '## Evidence Used',
+    '',
+    ...(decision.evidenceUsed.length
+      ? decision.evidenceUsed.map((item) => `- ${item}`)
+      : (memo.evidence || []).map((item) => `- ${item}`)),
+    '',
+    '## Accepted Risks',
+    '',
+    ...(decision.acceptedRisks.length ? decision.acceptedRisks.map((item) => `- ${item}`) : ['- None recorded.']),
+    '',
+    '## Rejected Alternatives',
+    '',
+    ...(decision.rejectedAlternatives.length ? decision.rejectedAlternatives.map((item) => `- ${item}`) : ['- None recorded.']),
+    '',
+    '## Follow-Up Validation',
+    '',
+    ...(decision.followUpValidation.length ? decision.followUpValidation.map((item) => `- ${item}`) : (memo.acceptanceCriteria || []).map((item) => `- ${item}`)),
+    '',
+    '## Next Command',
+    '',
+    memo.nextCommand || 'npm run design:tower -- --snapshot --markdown',
+    '',
+  ].join('\n');
+}
+
+export function designDecisionFileSlug(decisionInput = {}) {
+  const decision = normalizeDesignDecision(decisionInput);
+  return `${decision.createdAt.slice(0, 10)}-${slugify(decision.title)}-${decision.id.replace(/^design-decision-/, '')}`;
 }
 
 export function generateDesignTowerSnapshot(config = {}) {
@@ -845,7 +969,8 @@ export function generateDesignTowerSnapshot(config = {}) {
     seed: `${seed}-playtest`,
     testers: 4,
   });
-  const playtestReport = config.playtestReport || generatePlaytestReport(playtestMission, [
+  const suppliedPlaytestReports = Array.isArray(config.playtestReports) ? config.playtestReports.filter(Boolean) : [];
+  const playtestReport = config.playtestReport || suppliedPlaytestReports[0] || generatePlaytestReport(playtestMission, [
     createSyntheticPlaytestSession(playtestMission, {
       comprehension: 4,
       agency: 4,
@@ -888,7 +1013,7 @@ export function generateDesignTowerSnapshot(config = {}) {
     launchPlan: config.launchPlan,
     mutationReports: [mutationReport],
     ghostRisks: ghostReport.risks || [],
-    playtestReports: [playtestReport],
+    playtestReports: unique([playtestReport, ...suppliedPlaytestReports]),
     replays: [replay],
     oracleRecommendations: config.oracleReport?.recommendations || [],
   });
@@ -898,10 +1023,42 @@ export function generateDesignTowerSnapshot(config = {}) {
   if (config.launchPlan) {
     hypotheses[0] = attachEvidence(hypotheses[0], buildLaunchEvidence(config.launchPlan));
   }
-  const ranked = rankDesignHypotheses(hypotheses);
+  const decisions = (config.decisions || []).map(normalizeDesignDecision);
+  const ranked = rankDesignHypotheses(hypotheses).map((hypothesis) => {
+    const recordedDecision = findDecisionForHypothesis(hypothesis, decisions);
+    const actionItem = recommendNextDesignAction(hypothesis);
+    const needsDecision = ['accept', 'reject'].includes(actionItem.type) && !recordedDecision;
+    return {
+      ...hypothesis,
+      recordedDecision,
+      decisionStatus: recordedDecision?.status || null,
+      missingDecisionCommand: needsDecision ? decisionCommandForHypothesis(hypothesis, actionItem) : null,
+      nextAction: recordedDecision
+        ? `Decision recorded: ${recordedDecision.status}`
+        : actionItem.label,
+    };
+  });
   const accepted = ranked.filter((item) => item.state === 'accepted');
   const rejected = ranked.filter((item) => item.state === 'rejected');
   const evidenceGaps = ranked.flatMap((item) => buildEvidenceGaps(item).map((gap) => ({ ...gap, hypothesisId: item.id, title: item.title })));
+  const missingDecisionRecords = ranked
+    .filter((item) => item.missingDecisionCommand)
+    .map((item) => ({
+      hypothesisId: item.id,
+      title: item.title,
+      command: item.missingDecisionCommand,
+    }));
+  const decisionCommands = missingDecisionRecords.map((item) => item.command);
+  const evidenceCommands = ranked
+    .slice(0, 6)
+    .map((item) => recommendNextDesignAction(item).command)
+    .filter((command) => command !== 'record decision');
+  const recommendedCommands = unique([...decisionCommands, ...evidenceCommands]);
+  const fallbackCommands = [
+    'npm run playtest:coach -- --markdown',
+    'npm run launch:copilot -- --target internal-playtest --markdown',
+    'npm run ops:oracle -- --markdown',
+  ];
   const snapshot = {
     schemaVersion: DESIGN_TOWER_SCHEMA_VERSION,
     id: `design-snapshot-${hashString(`${generatedAt}:${seed}:${ranked.length}`).toString(16)}`,
@@ -911,8 +1068,10 @@ export function generateDesignTowerSnapshot(config = {}) {
     acceptedChanges: accepted,
     rejectedChanges: rejected,
     evidenceGaps,
+    recordedDecisions: decisions,
+    missingDecisionRecords,
     launchSensitiveChanges: ranked.filter((item) => item.category === 'launch-readiness' || item.score.launchRelevance >= 30),
-    recommendedCommands: unique(ranked.slice(0, 6).map((item) => recommendNextDesignAction(item).command)),
+    recommendedCommands: recommendedCommands.length ? recommendedCommands : fallbackCommands,
     health: designHealth(ranked, evidenceGaps),
     packet: null,
   };
@@ -974,6 +1133,14 @@ export function generateDesignPacket(snapshot) {
     acceptedChanges: snapshot.acceptedChanges.map(designBacklogRow),
     rejectedChanges: snapshot.rejectedChanges.map(designBacklogRow),
     evidenceGaps: snapshot.evidenceGaps.slice(0, 12),
+    recordedDecisions: (snapshot.recordedDecisions || []).map((decision) => ({
+      id: decision.id,
+      title: decision.title,
+      status: decision.status,
+      operator: decision.operator,
+      createdAt: decision.createdAt,
+    })),
+    missingDecisionRecords: snapshot.missingDecisionRecords || [],
     nextCommands: snapshot.recommendedCommands,
     decisionMemos: snapshot.topHypotheses.slice(0, 5).map(generateDecisionMemo),
   };
@@ -995,7 +1162,8 @@ function designBacklogRow(hypothesis) {
     state: hypothesis.state,
     score: hypothesis.score.total,
     confidence: hypothesis.score.confidence,
-    nextAction: recommendNextDesignAction(hypothesis).label,
+    nextAction: hypothesis.nextAction || recommendNextDesignAction(hypothesis).label,
+    decisionStatus: hypothesis.decisionStatus || null,
     evidenceSources: summarizeEvidenceStack(hypothesis).sources,
   };
 }
@@ -1016,6 +1184,8 @@ export function exportDesignPacketMarkdown(snapshotOrPacket) {
     `Average confidence: ${packet.health.averageConfidence}/100`,
     `Evidence gaps: ${packet.health.evidenceGapCount ?? packet.evidenceGaps.length}`,
     `Human validation gaps: ${packet.health.humanValidationGapCount}`,
+    `Recorded decisions: ${(packet.recordedDecisions || []).length}`,
+    `Missing decision records: ${(packet.missingDecisionRecords || []).length}`,
     '',
     '## Top Backlog',
     '',
@@ -1024,6 +1194,18 @@ export function exportDesignPacketMarkdown(snapshotOrPacket) {
     '## Evidence Gaps',
     '',
     ...(packet.evidenceGaps.length ? packet.evidenceGaps.map((gap) => `- ${gap.title || gap.hypothesisId}: ${gap.label} - ${gap.command}`) : ['- No evidence gaps.']),
+    '',
+    '## Decision Records',
+    '',
+    ...((packet.recordedDecisions || []).length
+      ? packet.recordedDecisions.map((decision) => `- ${decision.title}: ${decision.status} by ${decision.operator}`)
+      : ['- No recorded decisions loaded.']),
+    '',
+    '## Missing Decision Records',
+    '',
+    ...((packet.missingDecisionRecords || []).length
+      ? packet.missingDecisionRecords.map((item) => `- ${item.title}: ${item.command}`)
+      : ['- No missing decision records.']),
     '',
     '## Next Commands',
     '',

@@ -41,6 +41,12 @@ export const PLAYTEST_DIFFICULTIES = Object.freeze([
   'launch rehearsal',
 ]);
 
+export const PLAYTEST_EVIDENCE_TYPES = Object.freeze([
+  'synthetic',
+  'facilitated',
+  'live-session',
+]);
+
 export const TESTER_ROLES = Object.freeze([
   'new player',
   'reckless picker',
@@ -541,6 +547,7 @@ function rubricOutcome(mission, scores, feedback, normalized) {
 export function summarizePlaytestSession(session) {
   const scored = session.feedbackScores || [];
   const aggregate = aggregateFeedback(scored);
+  const evidenceType = PLAYTEST_EVIDENCE_TYPES.includes(session.evidenceType) ? session.evidenceType : 'synthetic';
   const strongestEvidence = scored
     .flatMap((item) => [item.rememberedMoment, item.confusionMoment, item.frustrationMoment].filter(Boolean))
     .slice(0, 6);
@@ -548,6 +555,7 @@ export function summarizePlaytestSession(session) {
   return {
     sessionId: session.id,
     missionId: session.missionId,
+    evidenceType,
     keyFinding: `${outcome}: aggregate score ${aggregate.overallScore}/100.`,
     strongestEvidence,
     contradictedAssumptions: scored.filter((item) => item.outcome === 'fail').map((item) => item.notes).filter(Boolean),
@@ -573,11 +581,21 @@ export function generatePlaytestReport(mission, sessions = []) {
   const summaries = sessions.map(summarizePlaytestSession);
   const aggregateScore = Math.round(average(summaries.map((item) => item.aggregate.overallScore)));
   const result = aggregateScore >= 76 ? 'pass' : aggregateScore >= 56 ? 'needs follow-up' : sessions.length ? 'fail' : 'inconclusive';
+  const evidenceTypes = [...new Set(summaries.map((item) => item.evidenceType))];
+  const evidenceType = evidenceTypes.includes('live-session')
+    ? 'live-session'
+    : evidenceTypes.includes('facilitated')
+      ? 'facilitated'
+      : 'synthetic';
+  const humanEvidenceConfidence = { synthetic: 46, facilitated: 84, 'live-session': 92 }[evidenceType];
   const report = {
     schemaVersion: PLAYTEST_COACH_SCHEMA_VERSION,
     id: `playtest-report-${hashString(JSON.stringify({ missionId: mission.id, sessions: sessions.length })).toString(16)}`,
     generatedAt: nowIso(),
     mission,
+    evidenceType,
+    evidenceTypes,
+    humanEvidenceConfidence,
     sessions: summaries,
     aggregateScores: sessions.length ? aggregateFeedback(sessions.flatMap((session) => session.feedbackScores || [])) : null,
     quotes: summaries.flatMap((item) => item.strongestEvidence).slice(0, 10),
@@ -706,10 +724,12 @@ export function exportPlaytestReportMarkdown(report) {
     `Generated: ${report.generatedAt}`,
     `Mission: ${report.mission.title}`,
     `Result: ${report.result}`,
+    `Evidence type: ${report.evidenceType || 'synthetic'}`,
+    `Human evidence confidence: ${report.humanEvidenceConfidence || 46}/100`,
     `Decision: ${report.decisionRecommendation}`,
     '',
     '## Session Summaries',
-    ...report.sessions.map((item) => `- ${item.keyFinding} Next: ${item.recommendedNextAction}`),
+    ...report.sessions.map((item) => `- [${item.evidenceType || 'synthetic'}] ${item.keyFinding} Next: ${item.recommendedNextAction}`),
     '',
     '## Evidence',
     ...(report.quotes.length ? report.quotes.map((item) => `- ${item}`) : ['- No session evidence captured yet.']),
@@ -748,6 +768,9 @@ export function validatePlaytestSession(session) {
   const required = ['id', 'missionId', 'startedAt', 'feedbackScores'];
   for (const key of required) {
     if (!(key in session)) throw new Error(`Playtest session missing required field: ${key}`);
+  }
+  if (session.evidenceType && !PLAYTEST_EVIDENCE_TYPES.includes(session.evidenceType)) {
+    throw new Error(`Unsupported playtest evidence type: ${session.evidenceType}`);
   }
   return true;
 }
@@ -848,11 +871,51 @@ export function importPlaytestMissions(text) {
   return missions;
 }
 
+export function createImportedPlaytestSession(mission, input = {}) {
+  const evidenceType = PLAYTEST_EVIDENCE_TYPES.includes(input.evidenceType) ? input.evidenceType : 'facilitated';
+  const feedback = {
+    comprehension: input.comprehension ?? input.feedback?.comprehension ?? 3,
+    agency: input.agency ?? input.feedback?.agency ?? 3,
+    tension: input.tension ?? input.feedback?.tension ?? 3,
+    fairness: input.fairness ?? input.fairnessRating ?? input.feedback?.fairness ?? 3,
+    frustration: input.frustration ?? input.frustrationRating ?? input.feedback?.frustration ?? 3,
+    replayability: input.replayability ?? input.feedback?.replayability ?? 3,
+    setupFriction: input.setupFriction ?? input.feedback?.setupFriction ?? 2,
+    rememberedMoment: input.rememberedMoment || input.funMoments?.[0] || input.feedback?.rememberedMoment || '',
+    confusionMoment: input.confusionMoment || input.confusionMoments?.[0] || input.feedback?.confusionMoment || '',
+    frustrationMoment: input.frustrationMoment || input.feedback?.frustrationMoment || '',
+    wouldReplay: Boolean(input.wouldReplay ?? input.feedback?.wouldReplay),
+    wouldShare: Boolean(input.wouldShare ?? input.feedback?.wouldShare),
+    notes: input.notes || input.feedback?.notes || '',
+    eventMarkers: input.eventMarkers || [],
+  };
+  const scored = scorePlaytestFeedback(mission, feedback);
+  const stableId = input.id || `${mission.id}:${input.testerId || input.tester || 'tester'}:${input.scenario || mission.scenario}:${JSON.stringify(feedback)}`;
+  const session = {
+    id: `playtest-session-${hashString(stableId).toString(16)}`,
+    missionId: mission.id,
+    evidenceType,
+    testerId: input.testerId || input.tester || '',
+    experienceLevel: input.experienceLevel || '',
+    scenario: input.scenario || mission.scenario,
+    startedAt: input.startedAt || nowIso(),
+    completedAt: input.completedAt || input.endedAt || nowIso(),
+    actionsTaken: input.actionsTaken || [],
+    confusionMoments: input.confusionMoments || [],
+    funMoments: input.funMoments || [],
+    feedbackScores: [scored],
+    notes: input.notes || '',
+  };
+  validatePlaytestSession(session);
+  return session;
+}
+
 export function createSyntheticPlaytestSession(mission, feedback = {}) {
   const scored = scorePlaytestFeedback(mission, feedback);
   return {
     id: `playtest-session-${hashString(JSON.stringify({ missionId: mission.id, feedback })).toString(16)}`,
     missionId: mission.id,
+    evidenceType: 'synthetic',
     startedAt: nowIso(),
     completedAt: nowIso(),
     feedbackScores: [scored],

@@ -1,0 +1,54 @@
+# Live Events
+
+Plundrix live telemetry uses the same vocabulary as the game contract, simulator, replay, and Oracle systems. Events are anonymized and should not include private wallet metadata beyond public addresses already present in game state.
+
+## Core Event Shape
+
+```json
+{
+  "id": "live-event-example",
+  "type": "ActionSubmitted",
+  "gameId": "1",
+  "round": 3,
+  "player": "0x...",
+  "target": "0x...",
+  "action": "pick",
+  "timestamp": "2026-05-18T00:00:00.000Z",
+  "source": "frontend",
+  "payload": {}
+}
+```
+
+## Required Types
+
+- `GameCreated`
+- `PlayerJoined`
+- `GameStarted`
+- `RoundStarted`
+- `ActionSubmitted`
+- `ActionOutcome`
+- `PickResolved`
+- `SearchResolved`
+- `SabotageResolved`
+- `LockCracked`
+- `ToolFound`
+- `PlayerStunned`
+- `PlayerSabotaged`
+- `RoundResolved`
+- `GameWon`
+- `ReplayGenerated`
+
+## Health Metrics
+
+- Sessions observed.
+- Completion rate.
+- Average rounds.
+- Drop-off points.
+- Action distribution.
+- Stun rate.
+- Comeback rate.
+- Replay-worthy completions.
+
+## Local Collection
+
+Use `recordGameEvent(event)` from `app/src/lib/liveTelemetry.js` in browser surfaces, simulator bridges, or imported event feeds. Use `summarizeLiveEvents(events)` for local reports and `buildLiveHealthReport(events)` for Oracle input.

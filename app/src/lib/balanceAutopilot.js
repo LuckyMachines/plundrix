@@ -741,6 +741,61 @@ function solidityPatchSuggestion(rules, baseline = SIM_DEFAULT_RULES) {
   return changed.map((key) => `${names[key]}: ${baseline[key]} -> ${rules[key]}`).join('\n');
 }
 
+export function assessBalancePromotion(candidate, evidence = {}) {
+  const scenarios = candidate?.scenarios || [];
+  const findScenario = (id) => scenarios.find((scenario) => scenario.scenarioId === id || scenario.scenario?.id === id);
+  const firstMatch = evidence.firstMatch || findScenario('new-player-table')?.batch?.scorecard || null;
+  const comeback = evidence.comeback || findScenario('comeback-test')?.batch?.scorecard || null;
+  const ghostScore = evidence.ghostScore ?? evidence.ghostReport?.score?.score ?? evidence.ghostReport?.score ?? null;
+  const replayScore = evidence.replayScore ?? evidence.replay?.dramaticScore ?? null;
+  const mutationRisk = evidence.mutationRisk ?? evidence.mutationProof?.contractImpact?.level ?? 'unknown';
+  const checks = [
+    {
+      id: 'first-match-score',
+      label: 'First-match score is at least 90',
+      pass: Boolean(firstMatch && firstMatch.score >= 90),
+      value: firstMatch?.score ?? null,
+    },
+    {
+      id: 'comeback-score',
+      label: 'Comeback score is at least 90',
+      pass: Boolean(comeback && comeback.score >= 90),
+      value: comeback?.score ?? null,
+    },
+    {
+      id: 'critical-warnings',
+      label: 'No critical balance warning rates are open',
+      pass: Boolean(firstMatch && comeback && firstMatch.runawayRate <= 0.25 && firstMatch.tooLongRate <= 0.2 && comeback.runawayRate <= 0.25),
+      value: firstMatch && comeback ? `runaway ${firstMatch.runawayRate}/${comeback.runawayRate}` : null,
+    },
+    {
+      id: 'ghost-health',
+      label: 'Ghost score does not regress below 70',
+      pass: ghostScore === null ? false : ghostScore >= 70,
+      value: ghostScore,
+    },
+    {
+      id: 'replay-drama',
+      label: 'Replay drama remains at least 55',
+      pass: replayScore === null ? false : replayScore >= 55,
+      value: replayScore,
+    },
+    {
+      id: 'mutation-risk',
+      label: 'Mutation risk is acceptable for the target gate',
+      pass: !String(mutationRisk).toLowerCase().includes('deployment-blocker'),
+      value: mutationRisk,
+    },
+  ];
+  const failed = checks.filter((check) => !check.pass);
+  return {
+    status: failed.length ? (failed.length <= 2 ? 'hold' : 'reject') : 'promotable',
+    promotable: failed.length === 0,
+    checks,
+    failedCriteria: failed.map((check) => check.label),
+  };
+}
+
 export function normalizeAutopilotConfig(options = {}) {
   const budgetName = typeof options.budget === 'string'
     ? options.budget

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "design-decision-35fa66ea",
+  "createdAt": "2026-05-18T04:17:06.307Z",
+  "hypothesisId": "design-hypothesis-ca2182c1",
+  "title": "First match design direction",
+  "status": "accept",
+  "operator": "Codex",
+  "rationale": "Accept the current first-match direction for internal playtest because comprehension, agency, replay, and launch evidence are aligned.",
+  "acceptedRisks": [
+    "Machine proof can overstate clarity for humans."
+  ],
+  "rejectedAlternatives": [
+    "Ship without a recorded decision",
+    "Promote smoke-only evidence"
+  ],
+  "followUpValidation": [
+    "Run real internal playtest",
+    "Run normal-budget balance matrix",
+    "Re-run Design Tower after imported human evidence"
+  ],
+  "evidenceUsed": [],
+  "memo": {
+    "id": "design-memo-ef57d912",
+    "generatedAt": "2026-05-18T04:17:06.307Z",
+    "hypothesisId": "design-hypothesis-ca2182c1",
+    "title": "First match design direction",
+    "claim": "A new player should understand the goal, feel agency, and remember one story moment.",
+    "desiredOutcome": "Improve first-match comprehension and replay intent.",
+    "evidence": [
+      "replay-director: The round 6 sabotage swing scored 100.0 drama.",
+      "launch-copilot: Launch readiness 80/100 with 1 blockers.",
+      "playtest-coach: Human playtest result pass: Accept the onboarding finding and continue validation.",
+      "ghosts: Ghost score 71/100, healthiest Tool Hoarder, riskiest Reckless Picker.",
+      "rule-mutation: Mutation verdict reject at 28/100."
+    ],
+    "counterevidence": [
+      "rule-mutation: Mutation verdict reject at 28/100.",
+      "simulator: Simulator completion 100%, average rounds 17.0."
+    ],
+    "risks": [
+      "Machine proof can overstate clarity for humans."
+    ],
+    "recommendation": "Accept design change",
+    "nextCommand": "record decision",
+    "filesLikelyTouched": [
+      "app/src/pages/HomePage.jsx",
+      "app/src/components/help/FieldManual.jsx",
+      "docs/dev/mechanics.mdx"
+    ],
+    "acceptanceCriteria": [
+      "Evidence stack includes at least two independent sources.",
+      "No red launch blocker remains open.",
+      "Human playtest evidence exists before final acceptance.",
+      "Improve first-match comprehension and replay intent."
+    ]
+  }
+}

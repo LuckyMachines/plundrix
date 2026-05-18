@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "design-decision-844b8d7f",
+  "createdAt": "2026-05-18T04:18:03.334Z",
+  "hypothesisId": "design-hypothesis-fae51ac1",
+  "title": "Replay drama can sell the vault race",
+  "status": "accept",
+  "operator": "Codex",
+  "rationale": "Accept replay drama as a core product proof surface for design review and marketing proof.",
+  "acceptedRisks": [
+    "High drama can hide fairness or onboarding problems."
+  ],
+  "rejectedAlternatives": [
+    "Leave as an implicit backlog item",
+    "Ship without recorded evidence"
+  ],
+  "followUpValidation": [
+    "Re-run Design Tower",
+    "Attach real playtest evidence",
+    "Verify Launch Copilot packet"
+  ],
+  "evidenceUsed": [],
+  "memo": {
+    "id": "design-memo-d5f00468",
+    "generatedAt": "2026-05-18T04:18:03.334Z",
+    "hypothesisId": "design-hypothesis-fae51ac1",
+    "title": "Replay drama can sell the vault race",
+    "claim": "The current game can produce shareable comeback stories.",
+    "desiredOutcome": "Use replay proof to guide design and marketing.",
+    "evidence": [
+      "replay-director: The round 2 sabotage swing scored 100.0 drama.",
+      "playtest-coach: Human playtest result pass: Accept the onboarding finding and continue validation.",
+      "simulator: Simulator completion 100%, average rounds 17.0."
+    ],
+    "counterevidence": [
+      "simulator: Simulator completion 100%, average rounds 17.0."
+    ],
+    "risks": [
+      "High drama may come from unfair-feeling swings."
+    ],
+    "recommendation": "Accept design change",
+    "nextCommand": "record decision",
+    "filesLikelyTouched": [
+      "app/src/lib/replayDirector.js",
+      "app/src/pages/ReplaysPage.jsx"
+    ],
+    "acceptanceCriteria": [
+      "Evidence stack includes at least two independent sources.",
+      "No red launch blocker remains open.",
+      "Human playtest evidence exists before final acceptance.",
+      "Use replay proof to guide design and marketing."
+    ]
+  }
+}

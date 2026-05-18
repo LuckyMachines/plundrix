@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "design-decision-c72e045b",
+  "createdAt": "2026-05-18T04:17:16.422Z",
+  "hypothesisId": "design-hypothesis-b62fd222",
+  "title": "Tool Hoarder wins too often.",
+  "status": "accept",
+  "operator": "Codex",
+  "rationale": "Accept Tool Hoarder as the priority archetype question and require focused human validation before shipping rule changes.",
+  "acceptedRisks": [
+    "Stall loops and tool economy dominance can make wins feel oppressive."
+  ],
+  "rejectedAlternatives": [
+    "Ship without a recorded decision",
+    "Promote smoke-only evidence"
+  ],
+  "followUpValidation": [
+    "Run real internal playtest",
+    "Run normal-budget balance matrix",
+    "Re-run Design Tower after imported human evidence"
+  ],
+  "evidenceUsed": [],
+  "memo": {
+    "id": "design-memo-115b2b4f",
+    "generatedAt": "2026-05-18T04:17:16.422Z",
+    "hypothesisId": "design-hypothesis-b62fd222",
+    "title": "Tool Hoarder wins too often.",
+    "claim": "The project needs a durable design memory connecting machine evidence, human validation, and shipped decisions.",
+    "desiredOutcome": "Deliver impact 5.",
+    "evidence": [
+      "replay-director: The round 6 sabotage swing scored 100.0 drama.",
+      "live-ops-oracle: The project needs a durable design memory connecting machine evidence, human validation, and shipped decisions.",
+      "launch-copilot: Launch readiness 80/100 with 1 blockers.",
+      "playtest-coach: Human playtest result pass: Accept the onboarding finding and continue validation.",
+      "ghosts: Ghost score 71/100, healthiest Tool Hoarder, riskiest Reckless Picker."
+    ],
+    "counterevidence": [
+      "rule-mutation: Mutation verdict reject at 28/100.",
+      "simulator: Simulator completion 100%, average rounds 17.0."
+    ],
+    "risks": [
+      "stall loops, tool economy dominance"
+    ],
+    "recommendation": "Accept design change",
+    "nextCommand": "record decision",
+    "filesLikelyTouched": [
+      "app/src/pages/HomePage.jsx",
+      "app/src/components/help/FieldManual.jsx",
+      "docs/dev/mechanics.mdx"
+    ],
+    "acceptanceCriteria": [
+      "Evidence stack includes at least two independent sources.",
+      "No red launch blocker remains open.",
+      "Human playtest evidence exists before final acceptance.",
+      "Deliver impact 5."
+    ]
+  }
+}

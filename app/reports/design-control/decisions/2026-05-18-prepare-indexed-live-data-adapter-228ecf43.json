@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "id": "design-decision-228ecf43",
+  "createdAt": "2026-05-18T04:18:29.777Z",
+  "hypothesisId": "design-hypothesis-65c3ba8",
+  "title": "Prepare indexed live data adapter",
+  "status": "accept",
+  "operator": "Codex",
+  "rationale": "Accept indexed live data as the required next step for post-launch health and Oracle confidence.",
+  "acceptedRisks": [
+    "No production live traffic exists yet."
+  ],
+  "rejectedAlternatives": [
+    "Leave as an implicit backlog item",
+    "Ship without recorded evidence"
+  ],
+  "followUpValidation": [
+    "Re-run Design Tower",
+    "Attach real playtest evidence",
+    "Verify Launch Copilot packet"
+  ],
+  "evidenceUsed": [],
+  "memo": {
+    "id": "design-memo-e15f854b",
+    "generatedAt": "2026-05-18T04:18:29.777Z",
+    "hypothesisId": "design-hypothesis-65c3ba8",
+    "title": "Prepare indexed live data adapter",
+    "claim": "The Oracle is ready to compare simulator predictions against real games once event data exists.",
+    "desiredOutcome": "Deliver impact 3.",
+    "evidence": [
+      "replay-director: The round 2 sabotage swing scored 100.0 drama.",
+      "live-ops-oracle: The Oracle is ready to compare simulator predictions against real games once event data exists.",
+      "launch-copilot: Launch readiness 80/100 with 1 blockers.",
+      "playtest-coach: Human playtest result pass: Accept the onboarding finding and continue validation.",
+      "ghosts: Ghost score 72/100, healthiest Tool Hoarder, riskiest Leader Hunter."
+    ],
+    "counterevidence": [
+      "rule-mutation: Mutation verdict reject at 40/100.",
+      "simulator: Simulator completion 100%, average rounds 17.0."
+    ],
+    "risks": [
+      "games created"
+    ],
+    "recommendation": "Accept design change",
+    "nextCommand": "record decision",
+    "filesLikelyTouched": [
+      "app/src/lib/plundrixEngine.js",
+      "app/src/lib/balanceAutopilot.js"
+    ],
+    "acceptanceCriteria": [
+      "Evidence stack includes at least two independent sources.",
+      "No red launch blocker remains open.",
+      "Human playtest evidence exists before final acceptance.",
+      "Deliver impact 3."
+    ]
+  }
+}

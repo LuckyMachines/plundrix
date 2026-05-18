@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plundrix Playtest Import",
+  "type": "object",
+  "required": ["mission", "sessions"],
+  "properties": {
+    "mission": {
+      "type": "object",
+      "required": ["sourceType", "category", "question"],
+      "properties": {
+        "sourceType": { "type": "string" },
+        "category": { "type": "string" },
+        "question": { "type": "string" },
+        "title": { "type": "string" },
+        "seed": { "type": "string" },
+        "scenario": { "type": "string" },
+        "testers": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["testerId", "evidenceType"],
+        "properties": {
+          "testerId": { "type": "string" },
+          "experienceLevel": { "type": "string" },
+          "evidenceType": { "enum": ["facilitated", "live-session"] },
+          "scenario": { "type": "string" },
+          "comprehension": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "agency": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "tension": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "fairnessRating": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "frustrationRating": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "replayability": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "setupFriction": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "wouldReplay": { "type": "boolean" },
+          "wouldShare": { "type": "boolean" },
+          "actionsTaken": { "type": "array", "items": { "type": "string" } },
+          "confusionMoments": { "type": "array", "items": { "type": "string" } },
+          "funMoments": { "type": "array", "items": { "type": "string" } },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

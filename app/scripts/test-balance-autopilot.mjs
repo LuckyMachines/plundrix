@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {
   RULE_BOUNDS,
   RULE_STEPS,
+  assessBalancePromotion,
   exportAutopilotCsv,
   exportAutopilotMarkdown,
   generateNeighborRulesets,
@@ -48,6 +49,14 @@ function testObjectiveScoring() {
   const scored = scoreCandidate(report.topCandidates[0], config);
   assert.equal(typeof scored.objectiveScore, 'number');
   assert.ok(Number.isFinite(scored.objectiveScore), 'score is finite');
+  const promotion = assessBalancePromotion(report.topCandidates[0], {
+    firstMatch: { score: 92, runawayRate: 0.02, tooLongRate: 0.02 },
+    comeback: { score: 94, runawayRate: 0.01 },
+    ghostScore: 74,
+    replayScore: 80,
+    mutationRisk: 'contract constant change',
+  });
+  assert.equal(promotion.status, 'promotable');
 }
 
 function testReports() {

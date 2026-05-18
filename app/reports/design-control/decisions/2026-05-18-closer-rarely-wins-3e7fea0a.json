@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "design-decision-3e7fea0a",
+  "createdAt": "2026-05-18T04:24:25.463Z",
+  "hypothesisId": "design-hypothesis-b209bb29",
+  "title": "Closer rarely wins.",
+  "status": "accept",
+  "operator": "Codex",
+  "rationale": "Accept Closer viability as a watchlist archetype and require ghost plus human validation before any late-game rule changes ship.",
+  "acceptedRisks": [
+    "Late-game inevitability can reduce perceived counterplay."
+  ],
+  "rejectedAlternatives": [
+    "Treat Closer variance as noise",
+    "Ship without archetype evidence"
+  ],
+  "followUpValidation": [
+    "Run normal ghost validation",
+    "Import focused playtest evidence",
+    "Re-run Design Tower"
+  ],
+  "evidenceUsed": [],
+  "memo": {
+    "id": "design-memo-913d0aef",
+    "generatedAt": "2026-05-18T04:24:25.463Z",
+    "hypothesisId": "design-hypothesis-b209bb29",
+    "title": "Closer rarely wins.",
+    "claim": "The project needs a durable design memory connecting machine evidence, human validation, and shipped decisions.",
+    "desiredOutcome": "Deliver impact 5.",
+    "evidence": [
+      "replay-director: The round 2 sabotage swing scored 100.0 drama.",
+      "live-ops-oracle: The project needs a durable design memory connecting machine evidence, human validation, and shipped decisions.",
+      "launch-copilot: Launch readiness 80/100 with 1 blockers.",
+      "playtest-coach: synthetic playtest result pass: Accept the onboarding finding and continue validation.",
+      "ghosts: Ghost score 70/100, healthiest Tool Hoarder, riskiest Reckless Picker."
+    ],
+    "counterevidence": [
+      "rule-mutation: Mutation verdict reject at 30/100.",
+      "simulator: Simulator completion 100%, average rounds 15.7."
+    ],
+    "risks": [
+      "late-game inevitability"
+    ],
+    "recommendation": "Accept design change",
+    "nextCommand": "record decision",
+    "filesLikelyTouched": [
+      "app/src/pages/HomePage.jsx",
+      "app/src/components/help/FieldManual.jsx",
+      "docs/dev/mechanics.mdx"
+    ],
+    "acceptanceCriteria": [
+      "Evidence stack includes at least two independent sources.",
+      "No red launch blocker remains open.",
+      "Human playtest evidence exists before final acceptance.",
+      "Deliver impact 5."
+    ]
+  }
+}

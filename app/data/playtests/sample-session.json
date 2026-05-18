@@ -1,0 +1,51 @@
+{
+  "mission": {
+    "sourceType": "design-tower",
+    "category": "onboarding",
+    "question": "Can a first-time player understand the goal, choose actions, and remember one vault-race moment?",
+    "title": "First Match Onboarding",
+    "seed": "sample-imported-playtest",
+    "scenario": "new-player-table",
+    "testers": 2
+  },
+  "sessions": [
+    {
+      "testerId": "tester-01",
+      "experienceLevel": "new player",
+      "evidenceType": "facilitated",
+      "scenario": "new-player-table",
+      "comprehension": 4,
+      "agency": 4,
+      "tension": 5,
+      "fairnessRating": 4,
+      "frustrationRating": 2,
+      "replayability": 4,
+      "setupFriction": 1,
+      "wouldReplay": true,
+      "wouldShare": true,
+      "actionsTaken": ["pick", "search", "sabotage"],
+      "confusionMoments": ["Wanted clearer wording for when sabotage is unavailable."],
+      "funMoments": ["Remembered a late vault swing after a sabotage."],
+      "notes": "Understood the goal after one round and chose actions without coaching."
+    },
+    {
+      "testerId": "tester-02",
+      "experienceLevel": "light board game player",
+      "evidenceType": "facilitated",
+      "scenario": "new-player-table",
+      "comprehension": 4,
+      "agency": 5,
+      "tension": 4,
+      "fairnessRating": 4,
+      "frustrationRating": 2,
+      "replayability": 5,
+      "setupFriction": 1,
+      "wouldReplay": true,
+      "wouldShare": false,
+      "actionsTaken": ["search", "pick", "pick"],
+      "confusionMoments": ["Asked whether tools carry between turns."],
+      "funMoments": ["Liked deciding when to stop searching and start picking."],
+      "notes": "Strong agency read; share intent was lower because replay context needed a shorter headline."
+    }
+  ]
+}

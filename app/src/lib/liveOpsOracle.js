@@ -23,6 +23,9 @@ import {
   generatePlaytestBacklog,
 } from './playtestCoach.js';
 import {
+  buildLiveHealthReport,
+} from './liveTelemetry.js';
+import {
   generateDesignBacklog,
 } from './designControlTower.js';
 
@@ -264,6 +267,7 @@ export function collectOracleSources(config = {}) {
     designBacklog,
     galleryReplays,
     autopilotReplays,
+    liveEvents: config.liveEvents || [],
     docSummaries,
     freshness: [
       sourceFreshness('oracle report', reportDate, 24),
@@ -519,7 +523,32 @@ export function analyzeOperationsStatus(sources) {
   };
 }
 
-export function analyzeLiveDataStatus() {
+export function analyzeLiveDataStatus(sources = {}) {
+  const report = buildLiveHealthReport(sources.liveEvents || []);
+  if (report.connected) {
+    return {
+      score: Math.max(45, report.score),
+      status: report.status,
+      connected: true,
+      statusText: `${report.summary.sessionsObserved} local sessions observed from ${report.summary.eventCount} events.`,
+      expectedInputs: TELEMETRY_INPUTS,
+      summary: report.summary,
+      simulatorVsLive: {
+        available: true,
+        drift: null,
+        message: `Local completion ${(report.summary.completionRate * 100).toFixed(0)}% across ${report.summary.sessionsObserved} sessions.`,
+      },
+      archetypeDrift: {
+        available: report.summary.eventCount > 0,
+        message: `Action mix pick/search/sabotage: ${report.summary.actionCounts.pick}/${report.summary.actionCounts.search}/${report.summary.actionCounts.sabotage}.`,
+      },
+      retentionFunnel: {
+        available: true,
+        slots: ['game observed', 'round observed', 'game completed', 'replay generated'],
+        completionRate: report.summary.completionRate,
+      },
+    };
+  }
   return {
     score: 20,
     status: 'orange',

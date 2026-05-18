@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import {
   GHOST_ARCHETYPES,
+  buildFocusedGhostValidation,
   buildGhostBalanceScore,
+  buildGhostFairnessReport,
   buildGhostHighlights,
   buildGhostProfile,
   buildGhostReplayMetadata,
@@ -9,6 +11,7 @@ import {
   exportGhostReportJson,
   exportGhostReportMarkdown,
   exportGhostRosterJson,
+  exportFocusedGhostValidationMarkdown,
   generateGhostRoster,
   ghostToSimulatorStrategy,
   ghostToStrategyProfile,
@@ -69,12 +72,19 @@ const report = runGhostBatch({
 validateGhostReport(report);
 assert.equal(report.games, 3);
 assert.ok(report.archetypes.length > 0);
+assert.ok(report.fairness.rows.length > 0);
+assert.ok(report.fairness.overallScore >= 0);
 assert.ok(report.matchups.length === 3);
 assert.ok(report.recommendations.length > 0);
 assert.ok(buildGhostBalanceScore(report).score >= 0);
+assert.equal(buildGhostFairnessReport(report).rows.length, report.fairness.rows.length);
+const focusedValidation = buildFocusedGhostValidation([report], 'tool-hoarder');
+assert.equal(focusedValidation.archetypeId, 'tool-hoarder');
+assert.ok(exportFocusedGhostValidationMarkdown(focusedValidation).includes('Tool Hoarder Focused Validation'));
 assert.ok(exportGhostReportMarkdown(report).includes('# Plundrix Player Telemetry Ghosts'));
+assert.ok(exportGhostReportMarkdown(report).includes('## Archetype Fairness'));
 assert.ok(exportGhostReportJson(report).includes('"scenario"'));
-assert.ok(exportGhostReportCsv(report).includes('archetype,healthScore'));
+assert.ok(exportGhostReportCsv(report).includes('fairnessScore'));
 
 const tunedReport = runGhostBatch({
   scenario: 'balanced-cast',

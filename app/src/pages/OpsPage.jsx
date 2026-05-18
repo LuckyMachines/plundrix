@@ -110,6 +110,22 @@ export default function OpsPage() {
         ))}
       </section>
 
+      <section className="rounded border border-vault-border bg-vault-surface/75 p-4">
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="label">Live telemetry</p>
+            <h2 className="mt-2 font-display text-2xl text-vault-text">{report.liveDataStatus.connected ? 'Local signal connected' : 'Awaiting live feed'}</h2>
+            <p className="mt-2 text-sm text-vault-text-dim">{report.liveDataStatus.statusText}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 md:min-w-[520px]">
+            <Metric label="Events" value={report.liveDataStatus.summary?.eventCount ?? 0} />
+            <Metric label="Sessions" value={report.liveDataStatus.summary?.sessionsObserved ?? 0} />
+            <Metric label="Completion" value={`${Math.round((report.liveDataStatus.summary?.completionRate || 0) * 100)}%`} />
+            <Metric label="Replays" value={report.liveDataStatus.summary?.replayGenerated ?? 0} />
+          </div>
+        </div>
+      </section>
+
       <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
         <div className="rounded border border-vault-border bg-vault-surface/75 p-4">
           <div className="flex items-center justify-between gap-3">

@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import {
   COMMAND_SAFETY,
@@ -74,7 +74,7 @@ function parseEnvFile(text = '') {
 
 async function readEnv(args) {
   const selected = {};
-  for (const key of ['VITE_PLUNDRIX_CONTRACT', 'VITE_CHAIN_ID']) {
+  for (const key of ['VITE_CONTRACT_ADDRESS', 'VITE_CHAIN_ID']) {
     if (process.env[key]) selected[key] = process.env[key];
   }
   if (args['env-file']) {
@@ -84,6 +84,36 @@ async function readEnv(args) {
     }
   }
   return selected;
+}
+
+async function readReleaseReadiness(args) {
+  const file = args['release-readiness'] || '../ops/launch-readiness.json';
+  const full = resolve(process.cwd(), file);
+  if (!existsSync(full)) return {};
+  return JSON.parse(await readFile(full, 'utf8'));
+}
+
+async function readDecisionRecords() {
+  const directory = join(process.cwd(), 'reports', 'design-control', 'decisions');
+  if (!existsSync(directory)) return [];
+  const names = await readdir(directory);
+  const decisions = [];
+  for (const name of names.filter((item) => item.endsWith('.json')).sort()) {
+    decisions.push(JSON.parse(await readFile(join(directory, name), 'utf8')));
+  }
+  return decisions;
+}
+
+async function readImportedPlaytestReports() {
+  const directory = join(process.cwd(), 'reports', 'playtest', 'imported');
+  if (!existsSync(directory)) return [];
+  const names = await readdir(directory);
+  const reports = [];
+  for (const name of names.filter((item) => item.endsWith('.json')).sort()) {
+    const parsed = JSON.parse(await readFile(join(directory, name), 'utf8'));
+    reports.push(parsed.report || parsed);
+  }
+  return reports.sort((a, b) => (b.humanEvidenceConfidence || 0) - (a.humanEvidenceConfidence || 0));
 }
 
 async function checkRoutes(serverUrl) {
@@ -171,6 +201,9 @@ const args = readArgs(process.argv.slice(2));
 const packageJson = JSON.parse(await readFile(join(process.cwd(), 'package.json'), 'utf8'));
 const files = await readFiles(String(args.files || '').split(',').map((item) => item.trim()).filter(Boolean));
 const env = await readEnv(args);
+const releaseReadiness = await readReleaseReadiness(args);
+const decisions = await readDecisionRecords();
+const playtestReports = await readImportedPlaytestReports();
 const routeResults = await checkRoutes(args['server-url']);
 
 let plan = generateLaunchPlan({
@@ -180,6 +213,9 @@ let plan = generateLaunchPlan({
   files,
   packageJson,
   env,
+  releaseReadiness,
+  decisions,
+  playtestReports,
   routeResults,
   operator: args.operator || '',
 });

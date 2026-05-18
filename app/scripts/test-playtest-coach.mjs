@@ -10,6 +10,7 @@ import {
   buildPassFailRubric,
   buildPlaytestMission,
   buildTesterBriefs,
+  createImportedPlaytestSession,
   createSyntheticPlaytestSession,
   exportPlaytestBacklogCsv,
   exportPlaytestMissionJson,
@@ -94,10 +95,31 @@ const session = createSyntheticPlaytestSession(mission, {
   rememberedMoment: 'The final lock race.',
 });
 validatePlaytestSession(session);
+assert.equal(session.evidenceType, 'synthetic');
 assert.ok(summarizePlaytestSession(session).keyFinding.includes('score'));
+
+const importedSession = createImportedPlaytestSession(mission, {
+  testerId: 'tester-imported',
+  evidenceType: 'facilitated',
+  comprehension: 4,
+  agency: 4,
+  tension: 4,
+  fairnessRating: 4,
+  frustrationRating: 2,
+  replayability: 4,
+  setupFriction: 1,
+  wouldReplay: true,
+  funMoments: ['Remembered a late vault swing.'],
+});
+validatePlaytestSession(importedSession);
+assert.equal(summarizePlaytestSession(importedSession).evidenceType, 'facilitated');
 
 const report = generatePlaytestReport(mission, [session]);
 validatePlaytestReport(report);
+assert.equal(report.evidenceType, 'synthetic');
+const importedReport = generatePlaytestReport(mission, [importedSession]);
+assert.equal(importedReport.evidenceType, 'facilitated');
+assert.ok(importedReport.humanEvidenceConfidence > report.humanEvidenceConfidence);
 assert.ok(exportPlaytestMissionMarkdown(mission).includes('# Plundrix Playtest Mission'));
 assert.ok(exportPlaytestMissionJson(mission).includes('"title"'));
 assert.ok(exportPlaytestReportMarkdown(report).includes('# Plundrix Playtest Report'));

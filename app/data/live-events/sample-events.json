@@ -1,0 +1,13 @@
+[
+  { "type": "GameCreated", "gameId": "sample-1", "timestamp": "2026-05-18T00:00:00.000Z" },
+  { "type": "PlayerJoined", "gameId": "sample-1", "player": "0x1000000000000000000000000000000000000001", "timestamp": "2026-05-18T00:00:01.000Z" },
+  { "type": "RoundStarted", "gameId": "sample-1", "round": 1, "timestamp": "2026-05-18T00:00:02.000Z" },
+  { "type": "ActionSubmitted", "gameId": "sample-1", "round": 1, "player": "0x1000000000000000000000000000000000000001", "action": "search", "timestamp": "2026-05-18T00:00:03.000Z" },
+  { "type": "ToolFound", "gameId": "sample-1", "round": 1, "player": "0x1000000000000000000000000000000000000001", "timestamp": "2026-05-18T00:00:04.000Z" },
+  { "type": "RoundResolved", "gameId": "sample-1", "round": 1, "timestamp": "2026-05-18T00:00:05.000Z" },
+  { "type": "RoundStarted", "gameId": "sample-1", "round": 2, "timestamp": "2026-05-18T00:00:06.000Z" },
+  { "type": "ActionSubmitted", "gameId": "sample-1", "round": 2, "player": "0x1000000000000000000000000000000000000001", "action": "pick", "timestamp": "2026-05-18T00:00:07.000Z" },
+  { "type": "LockCracked", "gameId": "sample-1", "round": 2, "player": "0x1000000000000000000000000000000000000001", "timestamp": "2026-05-18T00:00:08.000Z" },
+  { "type": "GameWon", "gameId": "sample-1", "round": 2, "player": "0x1000000000000000000000000000000000000001", "timestamp": "2026-05-18T00:00:09.000Z" },
+  { "type": "ReplayGenerated", "gameId": "sample-1", "round": 2, "timestamp": "2026-05-18T00:00:10.000Z" }
+]

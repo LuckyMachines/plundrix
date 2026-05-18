@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { generateLaunchPlan, LAUNCH_REQUIRED_SOURCES } from '../src/lib/launchCopilot.js';
 import { generateOracleReport } from '../src/lib/liveOpsOracle.js';
@@ -61,10 +61,36 @@ async function readLaunchFiles(extraFiles = []) {
   return Object.fromEntries(entries);
 }
 
+async function readDecisionRecords() {
+  const directory = join(process.cwd(), 'reports', 'design-control', 'decisions');
+  if (!existsSync(directory)) return [];
+  const names = await readdir(directory);
+  const decisions = [];
+  for (const name of names.filter((item) => item.endsWith('.json')).sort()) {
+    const full = join(directory, name);
+    decisions.push(JSON.parse(await readFile(full, 'utf8')));
+  }
+  return decisions;
+}
+
+async function readImportedPlaytestReports() {
+  const directory = join(process.cwd(), 'reports', 'playtest', 'imported');
+  if (!existsSync(directory)) return [];
+  const names = await readdir(directory);
+  const reports = [];
+  for (const name of names.filter((item) => item.endsWith('.json')).sort()) {
+    const parsed = JSON.parse(await readFile(join(directory, name), 'utf8'));
+    reports.push(parsed.report || parsed);
+  }
+  return reports.sort((a, b) => (b.humanEvidenceConfidence || 0) - (a.humanEvidenceConfidence || 0));
+}
+
 async function buildSnapshot(args) {
   const seed = args.seed || 'design-control-cli';
   const packageJson = JSON.parse(await readFile(join(process.cwd(), 'package.json'), 'utf8'));
   const files = await readLaunchFiles(String(args.files || '').split(',').map((item) => item.trim()).filter(Boolean));
+  const decisions = await readDecisionRecords();
+  const playtestReports = await readImportedPlaytestReports();
   const oracleReport = args.oracle === false ? null : generateOracleReport({
     seed: `${seed}-oracle`,
     heavy: Boolean(args.heavy),
@@ -84,6 +110,8 @@ async function buildSnapshot(args) {
     heavy: Boolean(args.heavy),
     oracleReport,
     launchPlan,
+    decisions,
+    playtestReports,
   });
 }
 
