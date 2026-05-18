@@ -572,6 +572,7 @@ export default function SimulatorPage() {
             <Metric label="Searches" value={`${summary.searchSuccesses}/${summary.searches}`} />
             <Metric label="Sabotage" value={`${summary.sabotageSuccesses}/${summary.sabotages}`} />
             <Metric label="Tension" value={summary.averageTension.toFixed(0)} />
+            <Metric label="Fun" value={`${summary.funScore.grade} ${summary.funScore.score}`} />
           </div>
         </div>
       </section>
@@ -930,7 +931,7 @@ function BatchPanel({ result, players, onExportJson, onExportCsv }) {
       <div className="rounded border border-vault-border bg-vault-surface/75 p-4">
         <p className="label">Batch scorecard</p>
         <p className="mt-3 text-sm text-vault-text-dim">
-          Run a batch to get win spread, duration health, comeback rate, runaway rate, action value, and balance warnings.
+          Run a batch to get win spread, duration health, comeback rate, runaway rate, action value, fun proof, and balance warnings.
         </p>
       </div>
     );
@@ -947,6 +948,7 @@ function BatchPanel({ result, players, onExportJson, onExportCsv }) {
       <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3">
         <Metric label="Score" value={result.scorecard.score.toFixed(0)} />
         <Metric label="Avg rounds" value={result.scorecard.averageRounds.toFixed(2)} />
+        <Metric label="Avg fun" value={`${result.scorecard.funGrade} ${result.scorecard.averageFunScore.toFixed(0)}`} />
         <Metric label="Comeback" value={formatPercent(result.scorecard.comebackRate)} />
         <Metric label="Runaway" value={formatPercent(result.scorecard.runawayRate)} />
       </div>

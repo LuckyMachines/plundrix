@@ -1,12 +1,17 @@
 import { TOTAL_LOCKS } from '../../lib/constants';
 import LockModule from './LockModule';
 
-export default function LockRack({ locksCracked = 0, session }) {
+export default function LockRack({ locksCracked = 0, session, vaultReaction, actionIdentity }) {
   const cracked = Number(locksCracked);
   const cueTotal = session?.latestCue?.type === 'lock.crack' ? session.latestCue.total : null;
 
   return (
-    <div className="alive-lock-rack flex flex-col items-center" data-mode={session?.mode || 'steady'}>
+    <div
+      className="alive-lock-rack flex flex-col items-center"
+      data-mode={session?.mode || 'steady'}
+      data-vault-reaction={vaultReaction?.id || 'listening'}
+      data-action-identity={actionIdentity?.id || 'idle'}
+    >
       {/* Section label */}
       <h3 className="text-xs tracking-[0.35em] text-vault-text-dim uppercase font-display mb-3">
         Vault Face

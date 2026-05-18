@@ -15,6 +15,7 @@ import {
   buildGhostReplayMetadata,
   runGhostMatch,
 } from './playerTelemetryGhosts.js';
+import { buildFunProof, buildMomentTags } from './funSystems.js';
 
 export const REPLAY_SCHEMA_VERSION = 1;
 export const REPLAY_LIBRARY_KEY = 'plundrix-replay-library:v1';
@@ -499,6 +500,13 @@ export function buildReplayFromSimulation(state, options = {}) {
   const beats = extractReplayBeats(state, timeline, highlights);
   const id = getReplayId(config);
   const shareUrl = buildShareUrl(config);
+  const summary = summarizeSimulation(state);
+  const momentTags = buildMomentTags(state, { totalLocks: state.rules?.totalLocks });
+  const funProof = buildFunProof({
+    ...state,
+    funTelemetry: summary.funTelemetry,
+    funScore: summary.funScore,
+  });
   const replay = {
     schemaVersion: REPLAY_SCHEMA_VERSION,
     id,
@@ -507,13 +515,17 @@ export function buildReplayFromSimulation(state, options = {}) {
     scenarioId: state.scenarioId,
     rules: state.rules,
     strategies: config.strategies,
-    summary: summarizeSimulation(state),
+    summary,
     title: buildReplayTitle(state, highlights),
     subtitle: buildReplaySubtitle(state, highlights),
     description: buildReplaySummary(state, highlights, dramaticScore),
     timeline,
     highlights,
     beats,
+    momentTags,
+    funTelemetry: funProof.telemetry,
+    funScore: funProof.score,
+    funProof,
     tags: replayTags(state, highlights),
     dramaticScore,
     replayDirectorScore: dramaticScore,
@@ -524,6 +536,7 @@ export function buildReplayFromSimulation(state, options = {}) {
       usable: dramaticScore >= 65,
       suggestedPlacement: dramaticScore >= 80 ? 'homepage proof strip' : 'replay gallery',
       socialLabel: highlights[0]?.socialLabel || 'Vault replay',
+      funScore: funProof.score.score,
     },
     library: {
       pinned: false,
@@ -680,6 +693,8 @@ export function buildTopReplayTable(replays) {
       id: replay.id,
       title: replay.title,
       score: replay.dramaticScore,
+      funScore: replay.funScore?.score ?? replay.summary?.funScore?.score ?? null,
+      primaryMomentTag: replay.momentTags?.[0]?.label || null,
       rounds: replay.summary.rounds,
       winner: replay.summary.winnerName,
       comeback: replay.summary.comeback,

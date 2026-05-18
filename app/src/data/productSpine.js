@@ -20,6 +20,7 @@ export const EVIDENCE_TYPES = Object.freeze([
   'mutation',
   'playtest',
   'telemetry',
+  'fun',
   'launch',
   'decision',
 ]);

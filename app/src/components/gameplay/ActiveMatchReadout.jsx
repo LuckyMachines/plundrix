@@ -1,5 +1,6 @@
 import { TOTAL_LOCKS } from '../../lib/constants';
 import { formatBigInt, truncateAddress } from '../../lib/formatting';
+import { deriveOperatorReaction, getFlavorLine, getMomentTag } from '../../lib/funSystems';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { StatusPill } from './GameShell';
 
@@ -38,7 +39,7 @@ export function MatchStatusStrip({
   );
 }
 
-export function OpponentRail({ gameId, players, currentAddress, targetAddress, latestCue }) {
+export function OpponentRail({ gameId, players, currentAddress, targetAddress, latestCue, session }) {
   return (
     <div className="game-opponent-rail" aria-label="Player threat summary">
       {players.map((address) => (
@@ -49,6 +50,7 @@ export function OpponentRail({ gameId, players, currentAddress, targetAddress, l
           currentAddress={currentAddress}
           targeted={address?.toLowerCase() === targetAddress?.toLowerCase()}
           latestCue={latestCue}
+          session={session}
         />
       ))}
     </div>
@@ -61,7 +63,7 @@ function matchesCue(address, cue) {
   return cue.actor?.toLowerCase?.() === lower || cue.target?.toLowerCase?.() === lower;
 }
 
-function OpponentChip({ gameId, address, currentAddress, targeted, latestCue }) {
+function OpponentChip({ gameId, address, currentAddress, targeted, latestCue, session }) {
   const {
     locksCracked,
     tools,
@@ -73,17 +75,23 @@ function OpponentChip({ gameId, address, currentAddress, targeted, latestCue }) 
   const cracked = Number(locksCracked || 0);
   const nearWin = cracked >= TOTAL_LOCKS - 1;
   const cueActive = matchesCue(address, latestCue);
+  const reaction = deriveOperatorReaction({
+    operator: { locksCracked: cracked, tools: Number(tools || 0), stunned, actionSubmitted },
+    state: { rules: { totalLocks: TOTAL_LOCKS } },
+    targeted,
+    session,
+  });
 
   return (
     <div
       className={`game-opponent-chip ${isCurrent ? 'game-opponent-chip-current' : ''} ${targeted ? 'game-opponent-chip-targeted' : ''} ${nearWin ? 'game-opponent-chip-threat' : ''} ${cueActive ? 'game-opponent-chip-cued' : ''}`}
+      data-reaction={reaction.id}
     >
       <div className="flex min-w-0 items-center justify-between gap-2">
         <span className="truncate font-mono text-xs text-vault-text">
           {isCurrent ? 'You' : truncateAddress(address)}
         </span>
-        {stunned && <span className="font-mono text-[10px] uppercase text-signal-red">Stun</span>}
-        {targeted && <span className="font-mono text-[10px] uppercase text-tungsten">Target</span>}
+        <span className="game-opponent-reaction">{reaction.label}</span>
       </div>
       <div className="mt-2 flex items-center gap-1">
         {Array.from({ length: TOTAL_LOCKS }, (_, index) => (
@@ -113,14 +121,25 @@ export function LatestEventSurface({ event }) {
       </div>
     );
   }
+  const tag = getMomentTag(event);
+  const flavor = getFlavorLine(event, {
+    seed: `${event.name || event.type || 'event'}:${event.blockNumber || event.round || ''}`,
+    round: event.round || event.args?.round || '',
+  });
 
   return (
     <div className="game-latest-event">
-      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
-        Latest
-      </span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+          Latest
+        </span>
+        <span className="game-latest-event-tag">{tag.label}</span>
+      </div>
       <p className="mt-1 text-sm text-vault-text">
         {eventLabel(event)}
+      </p>
+      <p className="mt-1 text-xs text-vault-text-dim">
+        {flavor}
       </p>
     </div>
   );

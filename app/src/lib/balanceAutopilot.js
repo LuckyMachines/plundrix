@@ -748,6 +748,13 @@ export function assessBalancePromotion(candidate, evidence = {}) {
   const comeback = evidence.comeback || findScenario('comeback-test')?.batch?.scorecard || null;
   const ghostScore = evidence.ghostScore ?? evidence.ghostReport?.score?.score ?? evidence.ghostReport?.score ?? null;
   const replayScore = evidence.replayScore ?? evidence.replay?.dramaticScore ?? null;
+  const funScore =
+    evidence.funScore?.score ??
+    evidence.funProof?.score?.score ??
+    evidence.replay?.funScore?.score ??
+    firstMatch?.averageFunScore ??
+    evidence.funScore ??
+    null;
   const mutationRisk = evidence.mutationRisk ?? evidence.mutationProof?.contractImpact?.level ?? 'unknown';
   const checks = [
     {
@@ -779,6 +786,12 @@ export function assessBalancePromotion(candidate, evidence = {}) {
       label: 'Replay drama remains at least 55',
       pass: replayScore === null ? false : replayScore >= 55,
       value: replayScore,
+    },
+    {
+      id: 'fun-proof',
+      label: 'Fun proof remains at least 70 when measured',
+      pass: funScore === null ? true : funScore >= 70,
+      value: funScore,
     },
     {
       id: 'mutation-risk',

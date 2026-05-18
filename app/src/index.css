@@ -1073,6 +1073,19 @@ html.reduced-motion-ui *::after {
   overflow: hidden;
 }
 
+.fun-game-state[data-table-mood="urgent"] .game-stage,
+.fun-game-state[data-table-mood="final-lock"] .game-stage {
+  border-color: rgba(196, 149, 106, 0.58);
+}
+
+.fun-game-state[data-table-mood="chaos"] .game-stage {
+  border-color: rgba(212, 64, 64, 0.5);
+}
+
+.fun-game-state[data-table-mood="victory"] .game-stage {
+  border-color: rgba(74, 222, 128, 0.42);
+}
+
 .game-action-dock {
   border: 1px solid rgba(42, 42, 62, 0.78);
   border-radius: 8px;
@@ -1112,6 +1125,7 @@ html.reduced-motion-ui *::after {
   border-radius: 6px;
   background: rgba(10, 10, 15, 0.52);
   padding: 0.65rem;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
 }
 
 .game-opponent-chip-current {
@@ -1127,11 +1141,97 @@ html.reduced-motion-ui *::after {
   box-shadow: 0 0 0 1px rgba(58, 124, 196, 0.35);
 }
 
+.game-opponent-chip[data-reaction="armed"] {
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.game-opponent-chip[data-reaction="stunned"],
+.game-opponent-chip[data-reaction="marked"] {
+  background: rgba(212, 64, 64, 0.08);
+}
+
+.game-opponent-chip[data-reaction="threatening"],
+.game-opponent-chip[data-reaction="finished"] {
+  box-shadow: inset 0 0 0 1px rgba(196, 149, 106, 0.25);
+}
+
+.game-opponent-reaction {
+  flex: 0 0 auto;
+  color: var(--color-vault-text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.game-opponent-chip[data-reaction="stunned"] .game-opponent-reaction,
+.game-opponent-chip[data-reaction="marked"] .game-opponent-reaction {
+  color: var(--color-signal-red);
+}
+
+.game-opponent-chip[data-reaction="threatening"] .game-opponent-reaction {
+  color: var(--color-tungsten);
+}
+
 .game-latest-event {
   border: 1px solid rgba(42, 42, 62, 0.56);
   border-radius: 6px;
   background: rgba(10, 10, 15, 0.42);
   padding: 0.75rem;
+}
+
+.game-latest-event-tag {
+  border: 1px solid rgba(196, 149, 106, 0.24);
+  border-radius: 999px;
+  background: rgba(196, 149, 106, 0.08);
+  padding: 0.1rem 0.42rem;
+  color: var(--color-tungsten);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  line-height: 1rem;
+  text-transform: uppercase;
+}
+
+.alive-lock-rack {
+  min-height: 132px;
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.alive-lock-rack[data-vault-reaction="cracking"] {
+  filter: drop-shadow(0 0 12px rgba(196, 149, 106, 0.22));
+}
+
+.alive-lock-rack[data-vault-reaction="angry"] {
+  filter: drop-shadow(0 0 10px rgba(212, 64, 64, 0.16));
+}
+
+.alive-lock-rack[data-vault-reaction="resisting"] {
+  transform: translateY(-1px);
+}
+
+.alive-lock-rack[data-vault-reaction="almost-open"],
+.alive-lock-rack[data-vault-reaction="breached"] {
+  filter: drop-shadow(0 0 16px rgba(196, 149, 106, 0.28));
+}
+
+[data-action-identity="pick"] .alive-action-card,
+[data-action-identity="search"] .alive-action-card,
+[data-action-identity="sabotage"] .alive-action-card {
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+[data-action-identity="pick"] .alive-action-card:hover,
+[data-action-identity="search"] .alive-action-card:hover,
+[data-action-identity="sabotage"] .alive-action-card:hover {
+  transform: translateY(-1px);
+}
+
+html.reduced-motion-ui .alive-lock-rack,
+html.reduced-motion-ui .game-opponent-chip,
+html.reduced-motion-ui [data-action-identity] .alive-action-card {
+  transition: none;
+  transform: none;
 }
 
 @media (min-width: 760px) {

@@ -97,7 +97,7 @@ export default function ReplaysPage() {
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <Metric label="Rounds" value={item.rounds} />
                 <Metric label="Winner" value={item.winner || 'None'} />
-                <Metric label="Swings" value={item.sabotageSwings} />
+                <Metric label="Fun" value={item.funScore ?? 'n/a'} />
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {item.tags.map((tag) => (

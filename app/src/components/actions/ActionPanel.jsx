@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Action } from '../../lib/constants';
+import { getActionIdentity } from '../../lib/funSystems';
 import { useGameActions } from '../../hooks/useGameActions';
 import { useTxToast } from '../../hooks/useTxToast';
 import { useTxCueBridge } from '../../hooks/useTxCueBridge';
@@ -49,6 +50,7 @@ export default function ActionPanel({
     () => pressedAction || intent || session?.recommendedIntent || (actionSubmitted ? 'committed' : 'idle'),
     [pressedAction, intent, session?.recommendedIntent, actionSubmitted]
   );
+  const actionIdentity = useMemo(() => getActionIdentity(activeIntent), [activeIntent]);
   const commandAvailability = session?.commandAvailability;
   const pickDisabled = disabled || commandAvailability?.pick === false;
   const searchDisabled = disabled || commandAvailability?.search === false;
@@ -176,7 +178,7 @@ export default function ActionPanel({
   }, [pickDisabled, searchDisabled, sabotageDisabled, stunned, sabotageTargets, handlePick, handleSearch, handleSabotage, markInvalid]);
 
   return (
-    <div>
+    <div data-action-identity={actionIdentity.id} data-action-role={actionIdentity.role}>
       {!quiet && (
         <>
           <div className="flex items-center gap-3 mb-4">

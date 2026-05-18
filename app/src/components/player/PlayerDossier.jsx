@@ -1,6 +1,7 @@
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { TOTAL_LOCKS } from '../../lib/constants';
 import { truncateAddress, formatBigInt } from '../../lib/formatting';
+import { deriveOperatorReaction } from '../../lib/funSystems';
 import ToolTray from './ToolTray';
 import StunStamp from './StunStamp';
 import ActionSeal from './ActionSeal';
@@ -30,6 +31,11 @@ export default function PlayerDossier({
   const cracked = Number(locksCracked || 0);
   const toolCount = Number(tools || 0);
   const cueActive = matchesCue(address, latestCue);
+  const reaction = deriveOperatorReaction({
+    operator: { locksCracked: cracked, tools: toolCount, stunned, actionSubmitted },
+    state: { rules: { totalLocks: TOTAL_LOCKS } },
+    targeted,
+  });
 
   if (isLoading) {
     return (
@@ -55,6 +61,7 @@ export default function PlayerDossier({
       data-submitted={actionSubmitted}
       data-targeted={targeted}
       data-cue={latestCue?.type || ''}
+      data-reaction={reaction.id}
     >
       <div className="alive-dossier-presence" aria-hidden="true">
         <span />

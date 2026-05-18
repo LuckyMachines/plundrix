@@ -40,6 +40,8 @@ const DASHBOARD_SCRIPTS = {
   'design:tower': 'node scripts/design-control-tower.mjs',
   'design:backlog': 'node scripts/design-control-tower.mjs --backlog --csv',
   'test:design': 'node scripts/test-design-control-tower.mjs',
+  'fun:check': 'node scripts/fun-check.mjs',
+  'test:fun': 'node scripts/test-fun-systems.mjs',
 };
 
 const DASHBOARD_FILES = {
@@ -58,6 +60,7 @@ const DASHBOARD_FILES = {
   'docs/dev/rule-mutation-time-machine.mdx': '# Rule Mutation Time Machine',
   'docs/dev/playtest-coach.mdx': '# Self-Teaching Playtest Coach',
   'docs/dev/design-control-tower.mdx': '# Design Control Tower',
+  'docs/dev/fun-systems.md': '# Fun Systems',
   'docs/balance-autopilot-latest.md': '# Balance Autopilot',
   'docs/replay-director-latest.md': '# Replay Director',
   'docs/live-ops-oracle-latest.md': '# Live Ops Oracle',
@@ -65,6 +68,7 @@ const DASHBOARD_FILES = {
   'docs/rule-mutation-time-machine-latest.md': '# Rule Mutation Time Machine',
   'docs/playtest-coach-latest.md': '# Self-Teaching Playtest Coach',
   'docs/design-control-tower-latest.md': '# Design Control Tower',
+  'reports/fun-check-latest.md': '# Plundrix Fun Check',
   'app/src/pages/TermsPage.jsx': 'TermsPage',
   'app/src/pages/PrivacyPage.jsx': 'PrivacyPage',
   'app/src/pages/SimulatorPage.jsx': 'SimulatorPage',

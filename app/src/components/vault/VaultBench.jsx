@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
@@ -11,6 +11,7 @@ import { useGameEvents } from '../../hooks/useGameEvents';
 import { useIntegratedSession } from '../../hooks/useIntegratedSession';
 import { useSessionCommandLayer } from '../../hooks/useSessionCommandLayer';
 import { ROUND_TIMEOUT } from '../../lib/constants';
+import { deriveTableMood, deriveVaultReaction, getActionIdentity } from '../../lib/funSystems';
 import LockRack from './LockRack';
 import RoundConsole from './RoundConsole';
 import PlayerDossier from '../../components/player/PlayerDossier';
@@ -124,6 +125,36 @@ export default function VaultBench({ gameId }) {
     resolveDisabled: resolvePending || resolveConfirming || !isConfigured,
   });
 
+  const latestEvent = events[events.length - 1];
+  const tableMood = useMemo(
+    () => deriveTableMood({
+      session,
+      currentRound,
+      canResolve,
+      events,
+      latestRoundEvents,
+      state: {
+        state,
+        currentRound,
+        players: [{ locksCracked: Number(locksCracked || 0) }],
+      },
+    }),
+    [canResolve, currentRound, events, latestRoundEvents, locksCracked, session, state],
+  );
+  const vaultReaction = useMemo(
+    () => deriveVaultReaction({
+      state: { state },
+      locksCracked: Number(locksCracked || 0),
+      latestEvent,
+      actionIntent,
+    }),
+    [actionIntent, latestEvent, locksCracked, state],
+  );
+  const actionIdentity = useMemo(
+    () => getActionIdentity(actionSubmitted ? 'committed' : actionIntent),
+    [actionIntent, actionSubmitted],
+  );
+
   if (isLoading) {
     return (
       <div className="border border-vault-border rounded bg-vault-panel p-12 flex items-center justify-center gap-3">
@@ -136,6 +167,12 @@ export default function VaultBench({ gameId }) {
   }
 
   return (
+    <div
+      className="fun-game-state"
+      data-table-mood={tableMood.id}
+      data-vault-reaction={vaultReaction.id}
+      data-action-identity={actionIdentity.id}
+    >
     <GameShell
       status={(
         <MatchStatusStrip
@@ -152,7 +189,12 @@ export default function VaultBench({ gameId }) {
         <div className="grid w-full max-w-5xl gap-5">
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
             <div className="flex min-h-[220px] items-center justify-center">
-              <LockRack locksCracked={locksCracked} session={session} />
+              <LockRack
+                locksCracked={locksCracked}
+                session={session}
+                vaultReaction={vaultReaction}
+                actionIdentity={actionIdentity}
+              />
             </div>
             <QuietPanel className="flex justify-center">
               <RoundConsole
@@ -171,6 +213,7 @@ export default function VaultBench({ gameId }) {
             currentAddress={address}
             targetAddress={targetAddress}
             latestCue={session.latestCue}
+            session={session}
           />
           <LatestEventSurface event={events[events.length - 1]} />
         </div>
@@ -290,6 +333,7 @@ export default function VaultBench({ gameId }) {
         />
       ) : null}
     />
+    </div>
   );
 }
 

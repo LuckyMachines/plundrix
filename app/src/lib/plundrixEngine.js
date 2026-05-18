@@ -1,3 +1,5 @@
+import { buildFunTelemetry, scoreFunTelemetry } from './funSystems.js';
+
 export const SIM_MIN_PLAYERS = 2;
 export const SIM_MAX_PLAYERS = 4;
 export const SIM_ROUND_TIMEOUT_SECONDS = 5 * 60;
@@ -951,6 +953,12 @@ export function summarizeSimulation(state) {
   const actionOutcomes = state.events.filter((event) => event.type === 'ActionOutcome');
   const comebackRunaway = analyzeComebackAndRunaway(state);
   const maxToolsHeld = Math.max(0, ...state.players.map((player) => player.tools));
+  const funTelemetry = buildFunTelemetry({
+    ...state,
+    rounds: state.roundHistory.length,
+    ...comebackRunaway,
+  });
+  const funScore = scoreFunTelemetry(funTelemetry);
 
   return {
     seed: state.seed,
@@ -990,6 +998,8 @@ export function summarizeSimulation(state) {
     averageTension: comebackRunaway.averageTension,
     nearWinMoments: comebackRunaway.nearWinMoments,
     stunMoments: comebackRunaway.stunMoments,
+    funTelemetry,
+    funScore,
     actionValue: {
       pick: average(
         actionOutcomes
@@ -1054,6 +1064,20 @@ export function computeBalanceScorecard(batchResult) {
   const maxRate = rates.length ? Math.max(...rates) : 0;
   const minRate = rates.length ? Math.min(...rates) : 0;
   const roundValues = summaries.map((summary) => summary.rounds);
+  const funScores = summaries
+    .map((summary) => summary.funScore?.score ?? summary.funScore)
+    .filter((value) => Number.isFinite(Number(value)))
+    .map(Number);
+  const funDimensionKeys = ['agency', 'drama', 'readability', 'rhythm', 'variety'];
+  const funDimensions = Object.fromEntries(funDimensionKeys.map((key) => [
+    key,
+    average(
+      summaries
+        .map((summary) => summary.funScore?.dimensions?.[key])
+        .filter((value) => Number.isFinite(Number(value)))
+        .map(Number),
+    ),
+  ]));
   const averageRounds = average(roundValues);
   const scoreProfile = batchResult.scoreProfile || {};
   const minHealthyRounds = scoreProfile.minHealthyRounds || batchResult.rules?.minHealthyRounds || SIM_DEFAULT_RULES.minHealthyRounds;
@@ -1116,6 +1140,9 @@ export function computeBalanceScorecard(batchResult) {
     comebackWinRate,
     viableComebackCount,
     averageRounds,
+    averageFunScore: average(funScores),
+    funGrade: gradeFromScore(average(funScores)),
+    funDimensions,
     minHealthyRounds,
     maxHealthyRounds,
     medianRounds: percentile(roundValues, 50),

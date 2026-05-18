@@ -30,6 +30,13 @@ const DEFAULT_EVIDENCE = [
     command: 'npm run mutate:rules -- --budget smoke --markdown',
   },
   {
+    type: 'fun proof',
+    title: 'Fun Check',
+    status: 'ready',
+    summary: 'Scores agency, drama, readability, rhythm, and action variety from deterministic simulator runs.',
+    command: 'npm run fun:check',
+  },
+  {
     type: 'launch proof',
     title: 'Launch Copilot',
     status: 'ready',

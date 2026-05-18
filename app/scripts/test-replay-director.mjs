@@ -23,6 +23,8 @@ validateReplay(replay);
 assert.ok(replay.timeline.length > 0, 'timeline created');
 assert.ok(replay.highlights.length > 0, 'highlights created');
 assert.ok(replay.dramaticScore >= 0, 'dramatic score created');
+assert.ok(replay.funScore.score >= 0, 'fun score created');
+assert.ok(replay.momentTags.length > 0, 'moment tags created');
 assert.ok(replay.shareUrl.includes('replay='), 'share url encodes replay');
 
 const payload = parseReplayPayload(replay.shareUrl.slice(replay.shareUrl.indexOf('?')));
