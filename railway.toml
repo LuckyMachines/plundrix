@@ -1,17 +1,7 @@
 [build]
 builder = "nixpacks"
-buildCommand = "cd app && npm install && npm run build"
-
-[build.nixpacksPlan.phases.setup]
-nixPkgs = ["nodejs_20"]
-
-[build.nixpacksPlan.phases.install]
-cmds = ["cd app && npm install"]
-cacheDirectories = ["app/node_modules"]
-
-[build.nixpacksPlan.phases.build]
-cmds = ["cd app && npm run build"]
-cacheDirectories = ["app/node_modules", "app/.vite"]
+buildCommand = "npm --prefix app ci && npm --prefix app run build"
+nixpacksConfigPath = "nixpacks.toml"
 
 [deploy]
 startCommand = "cd app && node scripts/serve-dist.mjs"

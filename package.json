@@ -2,6 +2,9 @@
   "name": "plundrix",
   "version": "0.1.0",
   "description": "On-chain multiplayer heist game — crack the vault before your rivals.",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "build": "forge build",
     "anvil": "powershell -ExecutionPolicy Bypass -File scripts/run-anvil.ps1",
