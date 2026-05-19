@@ -289,6 +289,17 @@ export const ROUTE_META = Object.freeze({
     primaryCta: 'Review',
     nextRoutes: ['/map', '/compare'],
   },
+  '/design-system': {
+    label: 'UI Kit',
+    navGroup: 'Reference',
+    routeClass: 'reference',
+    loopStep: 'play',
+    purpose: 'Collect the production game UI into one reusable design system.',
+    title: 'Plundrix Game UI Design System',
+    description: 'Review the Plundrix game UI design system, including gameplay shell, action controls, vault states, operator states, event language, and fun-state vocabulary.',
+    primaryCta: 'Review',
+    nextRoutes: ['/', '/snapshot'],
+  },
   '/terms': {
     label: 'Terms',
     navGroup: 'Reference',

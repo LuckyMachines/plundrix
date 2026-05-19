@@ -32,6 +32,14 @@ const NAV_SECTIONS = [
       { to: '/launch', label: 'Launch', description: 'Gate packets and readiness' },
     ],
   },
+  {
+    label: 'Reference',
+    items: [
+      { to: '/design-system', label: 'UI Kit', description: 'Game UI design system' },
+      { to: '/map', label: 'Map', description: 'Connected product system' },
+      { to: '/glossary', label: 'Glossary', description: 'Canonical product terms' },
+    ],
+  },
 ];
 
 export default function Header({ onHelpClick }) {
@@ -146,9 +154,7 @@ export default function Header({ onHelpClick }) {
                   ))}
                 </MobileSection>
               ))}
-              <MobileSection title="Reference">
-              <MobileNavLink to="/map" active={isActive('/map')}>Map</MobileNavLink>
-              <MobileNavLink to="/glossary" active={isActive('/glossary')}>Glossary</MobileNavLink>
+              <MobileSection title="Docs">
               <a
                 href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
                 target="_blank"

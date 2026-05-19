@@ -76,6 +76,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://game.plundrix.com/design-system</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://game.plundrix.com/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>

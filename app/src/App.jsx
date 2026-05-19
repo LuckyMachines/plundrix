@@ -28,6 +28,7 @@ const CompareIndexPage = lazy(() => import('./pages/CompareIndexPage'));
 const CompareDetailPage = lazy(() => import('./pages/CompareDetailPage'));
 const GlossaryPage = lazy(() => import('./pages/GlossaryPage'));
 const ProductMapPage = lazy(() => import('./pages/ProductMapPage'));
+const DesignSystemPage = lazy(() => import('./pages/DesignSystemPage'));
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
 
 export default function App() {
@@ -80,6 +81,7 @@ export default function App() {
             <Route path="/compare/:slug" element={<CompareDetailPage />} />
             <Route path="/glossary" element={<GlossaryPage />} />
             <Route path="/map" element={<ProductMapPage />} />
+            <Route path="/design-system" element={<DesignSystemPage />} />
           </Routes>
         </Suspense>
       </main>
