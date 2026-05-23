@@ -483,8 +483,8 @@ export default function SimulatorPage() {
                 Tuning Lab
               </h1>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-vault-text-dim">
-                Run contract-parity defaults, tune rules safely, compare batches, replay seeds,
-                and inspect player outcomes without leaving the game engine.
+                Try match setups, compare rule sets, replay seeds, and inspect player outcomes
+                before you bring the table live.
               </p>
             </div>
             <div className="rounded border border-vault-border bg-vault-panel/70 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
@@ -931,7 +931,7 @@ function BatchPanel({ result, players, onExportJson, onExportCsv }) {
       <div className="rounded border border-vault-border bg-vault-surface/75 p-4">
         <p className="label">Batch scorecard</p>
         <p className="mt-3 text-sm text-vault-text-dim">
-          Run a batch to get win spread, duration health, comeback rate, runaway rate, action value, fun proof, and balance warnings.
+          Run a batch to get win spread, duration health, comeback rate, runaway rate, action value, and balance warnings.
         </p>
       </div>
     );
@@ -994,7 +994,7 @@ function ComparisonPanel({ result }) {
       <div className="rounded border border-vault-border bg-vault-surface/75 p-4">
         <p className="label">Rules comparison</p>
         <p className="mt-3 text-sm text-vault-text-dim">
-          Compare contract defaults against the tuned rules with the same seed, strategies, and batch size.
+          Compare the current rules against an alternate setup with the same seed, strategies, and batch size.
         </p>
       </div>
     );
@@ -1029,9 +1029,9 @@ function ReplayDirectorPanel({
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="label">Replay Director</p>
-          <h2 className="mt-2 font-display text-2xl text-vault-text">Turn outcomes into playable proof</h2>
+          <h2 className="mt-2 font-display text-2xl text-vault-text">Turn outcomes into replay stories</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-vault-text-dim">
-            Direct this simulation into a replay story, rank dramatic batch results, build before/after tuning comparisons, and send strong clips to the gallery.
+            Direct this practice match into a replay story, rank dramatic batch results, compare rule-set outcomes, and save strong clips to the gallery.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

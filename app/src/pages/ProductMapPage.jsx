@@ -1,18 +1,16 @@
 import { Link } from 'react-router-dom';
 import { CohesionLayout, ProductLoopRail } from '../components/cohesion/CohesionLayout';
-import LatestEvidence from '../components/cohesion/LatestEvidence';
 import { PRODUCT_LOOP, PRODUCT_STATEMENT, routesForLoopStep } from '../data/productSpine';
 
 export default function ProductMapPage() {
   return (
     <CohesionLayout route="/map" showLoop={false}>
       <section className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
-        <p className="label">One product loop</p>
+        <p className="label">One game loop</p>
         <h2 className="mt-2 font-display text-2xl text-vault-text">How Plundrix connects</h2>
         <p className="mt-2 max-w-4xl text-sm leading-6 text-vault-text-dim">
-          {PRODUCT_STATEMENT} Every lab and ship surface exists to strengthen that loop: play an
-          operation, inspect the result, test what could change, validate with humans, decide, ship,
-          and observe.
+          {PRODUCT_STATEMENT} Start a table, make each round count, review the finish, compare
+          results, and come back with a sharper plan for the next vault.
         </p>
         <div className="mt-4">
           <ProductLoopRail activeStep="observe" />
@@ -38,8 +36,6 @@ export default function ProductMapPage() {
           );
         })}
       </section>
-
-      <LatestEvidence />
     </CohesionLayout>
   );
 }

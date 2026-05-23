@@ -13,14 +13,6 @@ export default function Footer() {
             {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'No network'}
           </span>
           <div className="flex flex-wrap items-center gap-1">
-            <a
-              href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
-            >
-              Developer Docs
-            </a>
             <Link
               to="/map"
               className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"

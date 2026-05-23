@@ -14,7 +14,7 @@ export const COMPARISON_PAGES = Object.freeze([
     bestFor: [
       'Players who like raid-and-attack tension but want direct tactical choices.',
       'Groups that want fast table drama without a long campaign setup.',
-      'Searchers looking for a loot game with visible match outcomes and replay proof.',
+      'Searchers looking for a loot game with visible match outcomes and replays.',
     ],
     notFor: [
       'Players who mainly want slot-machine progression.',
@@ -23,7 +23,7 @@ export const COMPARISON_PAGES = Object.freeze([
     plundrixAdvantages: [
       'Every round centers on a visible decision: Pick, Search, or Sabotage.',
       'Sabotage is part of the match state, not only a background social action.',
-      'Replay and simulator tools make dramatic outcomes inspectable after the match.',
+      'Replays make dramatic outcomes easy to inspect after the match.',
       'Explicit bot and agent labeling helps clarify who is playing at the table.',
     ],
     compareRows: [
@@ -35,7 +35,7 @@ export const COMPARISON_PAGES = Object.freeze([
     faq: [
       ['Is Plundrix the same kind of game as Coin Master?', 'No. The overlap is player intent: raids, attacks, loot tension, and social pressure. Plundrix is a turn-based vault-race strategy game.'],
       ['Why would a Coin Master player try Plundrix?', 'Because Plundrix makes the heist moment tactical. You decide when to build tools, when to pick, and when to sabotage another player.'],
-      ['Does Plundrix have village progression?', 'No. Plundrix focuses on session-based vault races, ladders, replay proof, and competitive table outcomes.'],
+      ['Does Plundrix have village progression?', 'No. Plundrix focuses on session-based vault races, ladders, replays, and competitive table outcomes.'],
     ],
     sourceLinks: [
       { label: 'Coin Master attacks support page', href: 'https://support.coinmastergame.com/hc/en-us/articles/360001264874-What-are-attacks-' },
@@ -65,7 +65,7 @@ export const COMPARISON_PAGES = Object.freeze([
       'The board tension is compressed into one vault race.',
       'Every action has a readable tactical purpose.',
       'Sabotage, tools, and lock progress are visible to players.',
-      'Replays can turn a close finish into shareable proof.',
+      'Replays can turn a close finish into a shareable table story.',
     ],
     compareRows: [
       ['Core loop', 'Roll-driven progression, collections, and recurring events.', 'Turn-based vault actions with direct lock progress and sabotage.'],
@@ -105,7 +105,7 @@ export const COMPARISON_PAGES = Object.freeze([
       'Shorter sessions with a clearer tactical finish line.',
       'Tools create resource pressure without a full economic map.',
       'Sabotage gives players a direct answer to a runaway leader.',
-      'Simulator-backed tuning helps inspect whether sessions are healthy.',
+      'Practice-table previews help inspect whether sessions are healthy.',
     ],
     compareRows: [
       ['Core loop', 'Trade resources, build roads and settlements, and expand.', 'Collect tools, crack locks, and disrupt rivals.'],
@@ -225,7 +225,7 @@ export const COMPARISON_PAGES = Object.freeze([
       'Backstabbing is represented by concrete sabotage actions.',
       'The vault state makes leader pressure visible.',
       'Digital sessions reduce bookkeeping and cleanup.',
-      'Replay proof preserves the swing turn everyone argues about afterward.',
+      'Replays preserve the swing turn everyone argues about afterward.',
     ],
     compareRows: [
       ['Conflict style', 'Card-driven interference and table negotiation.', 'Action-driven sabotage and lock pressure.'],
@@ -249,37 +249,37 @@ export const COMPARISON_PAGES = Object.freeze([
     eyebrow: 'Onchain board game',
     title: 'Plundrix as an Onchain Board Game',
     metaTitle: 'Onchain Board Game: Plundrix Vault Strategy on Blockchain Rails',
-    metaDescription: 'Plundrix is an onchain board-game-like vault race with short sessions, visible sabotage, replay proof, leaderboards, and explicit bot/agent play.',
+    metaDescription: 'Plundrix is an onchain board-game-like vault race with short sessions, visible sabotage, replays, leaderboards, and explicit bot/agent play.',
     headline: 'An onchain board game built around short vault races, not a sprawling economy.',
-    summary: 'Plundrix is closest to a compact online board game: players join a table, make turn-based action choices, pressure the leader, and finish with a visible winner. The onchain layer gives the session a durable game record while the simulator and replay systems keep the design inspectable.',
+    summary: 'Plundrix is closest to a compact online board game: players join a table, make turn-based action choices, pressure the leader, and finish with a visible winner. The onchain layer gives the session a durable game record while replays make the match easy to review.',
     bestFor: [
       'Players looking for a blockchain game with readable match structure.',
       'Board-game fans who want short online sessions.',
-      'Builders interested in simulator-backed onchain game operations.',
+      'Players interested in readable onchain match records.',
     ],
     notFor: [
       'Players looking for passive yield or financialized progression.',
       'Players who want a massive open-world economy.',
     ],
     plundrixAdvantages: [
-      'Onchain sessions are paired with normal game UX and route-level launch checks.',
-      'The simulator, Ghosts, and Rule Mutation tools use the same engine vocabulary.',
-      'Bot and agent play is treated as a disclosed product surface.',
-      'Replay Director makes match outcomes shareable and reviewable.',
+      'Onchain sessions are paired with normal game UX.',
+      'Practice tables, agent matches, and rule previews use the same match language.',
+      'Bot and agent participation is labeled at the table.',
+      'Replays make match outcomes shareable and reviewable.',
     ],
     compareRows: [
       ['Primary promise', 'Usually classic board-game recreation or abstract web3 utility.', 'Original short-session vault-heist strategy.'],
       ['Player action', 'Depends on the game.', 'Pick, Search, Sabotage, and table targeting.'],
-      ['Operations layer', 'Often separate from player-facing game.', 'Launch Copilot, Oracle, simulator, playtest, and replay systems are integrated.'],
-      ['Bot posture', 'Often implicit or unmanaged.', 'Agent and bot participation is labeled as part of the product.'],
+      ['Match record', 'Often separate from the player-facing game.', 'Session history, replays, and leaderboards stay connected.'],
+      ['Bot posture', 'Often implicit or unmanaged.', 'Agent and bot participation is labeled for players.'],
     ],
     faq: [
-      ['Is Plundrix fully onchain?', 'Plundrix uses blockchain rails for game sessions and contract interaction, while the frontend, simulator, replay, and ops tools support the player experience.'],
-      ['Is Plundrix gambling?', 'The current public posture is free-play beta. The app includes terms, launch checks, and release gates around production readiness.'],
+      ['Is Plundrix fully onchain?', 'Plundrix uses blockchain rails for game sessions and contract interaction, while the frontend, practice table, replays, and leaderboards support the player experience.'],
+      ['Is Plundrix gambling?', 'No cash prizes or monetary rewards are currently live. The app is presented as a free-play beta with published terms.'],
       ['Why call it an onchain board game?', 'Because the session shape is table-based, turn-based, and stateful, with an onchain game record and board-game-like player decisions.'],
     ],
     sourceLinks: [
-      { label: 'Plundrix developer docs', href: 'https://github.com/LuckyMachines/plundrix/tree/main/docs/dev' },
+      { label: 'Plundrix Terms of Service', href: 'https://game.plundrix.com/terms' },
     ],
   },
   {
@@ -289,13 +289,13 @@ export const COMPARISON_PAGES = Object.freeze([
     eyebrow: 'Pirate Nation alternative',
     title: 'Plundrix vs Pirate Nation',
     metaTitle: 'Pirate Nation Alternative: Plundrix for Session-Based Onchain Strategy',
-    metaDescription: 'Compare Pirate Nation-style onchain game interest with Plundrix, a shorter session-based vault race with sabotage, replay proof, and simulator-backed tuning.',
+    metaDescription: 'Compare Pirate Nation-style onchain game interest with Plundrix, a shorter session-based vault race with sabotage, replays, and readable match records.',
     headline: 'A Pirate Nation alternative for players who want session-based onchain table competition.',
-    summary: 'Pirate Nation represents a broader onchain RPG and progression direction. Plundrix is narrower by design: short competitive vault sessions, readable sabotage, leaderboards, replay proof, and operational tools for tuning the game.',
+    summary: 'Pirate Nation represents a broader onchain RPG and progression direction. Plundrix is narrower by design: short competitive vault sessions, readable sabotage, leaderboards, and replays.',
     bestFor: [
       'Players curious about onchain games but wanting a shorter session loop.',
       'Competitive players who prefer a clear match winner.',
-      'Builders who want to see game design evidence tied to simulator and launch tools.',
+      'Players who want readable onchain matches and replayable finishes.',
     ],
     notFor: [
       'Players seeking a broad RPG progression economy.',
@@ -304,14 +304,14 @@ export const COMPARISON_PAGES = Object.freeze([
     plundrixAdvantages: [
       'Compact turn-based matches with explicit win conditions.',
       'A tactical sabotage layer for direct player interaction.',
-      'Replay and Ghost systems that help inspect match quality.',
-      'Launch and Oracle tooling that makes readiness visible.',
+      'Replay and agent tools that help inspect match quality.',
+      'Status screens that make network and session health visible.',
     ],
     compareRows: [
       ['Scope', 'Broader pirate RPG/progression world.', 'Focused vault-race table sessions.'],
       ['Session promise', 'Progression through a larger game economy.', 'Fast competitive matches with a visible winner.'],
       ['Interaction style', 'Adventure/progression oriented.', 'Pick, Search, Sabotage, and leader pressure.'],
-      ['Design operations', 'Onchain game infrastructure focus.', 'Simulator, ghosts, replay, mutation, playtest, and launch gates around one engine.'],
+      ['Match tools', 'Onchain game infrastructure focus.', 'Practice tables, agents, replays, and rule previews around one match format.'],
     ],
     faq: [
       ['Is Plundrix a Pirate Nation clone?', 'No. Plundrix is a vault-heist board-game-like strategy session. The comparison is for onchain-game searchers.'],

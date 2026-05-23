@@ -84,7 +84,8 @@ export default function GhostsPage() {
             <p className="label">Player Telemetry Ghosts</p>
             <h1 className="mt-2 font-display text-3xl text-vault-text">Living test cast</h1>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-vault-text-dim">
-              Named archetypes run through the same simulator engine and turn outcomes into player-style health, replay proof, and tuning signals.
+              Named archetypes run practice matches so you can compare playstyles, table pressure,
+              replay moments, and frustration risk.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:min-w-[560px]">

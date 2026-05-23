@@ -5,7 +5,7 @@ export const replayGallerySeeds = [
     scenarioId: 'comeback-test',
     strategies: ['balanced', 'picker', 'searcher', 'saboteur'],
     label: 'Comeback pressure',
-    marketingUse: 'homepage proof strip',
+    marketingUse: 'homepage replay strip',
   },
   {
     id: 'gallery-sabotage',

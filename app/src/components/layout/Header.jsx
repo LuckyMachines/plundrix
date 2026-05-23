@@ -11,33 +11,23 @@ const NAV_SECTIONS = [
     items: [
       { to: '/leaderboard', label: 'Ladder', description: 'Rankings and competitive progress' },
       { to: '/sessions', label: 'Sessions', description: 'Recent games and session history' },
+      { to: '/replays', label: 'Replays', description: 'Review and share match stories' },
       { to: '/compare', label: 'Compare', description: 'Game comparisons and alternatives' },
     ],
   },
   {
-    label: 'Lab',
+    label: 'Practice',
     items: [
-      { to: '/simulator', label: 'Simulator', description: 'Tune outcomes with the game engine' },
-      { to: '/replays', label: 'Replays', description: 'Review and share match stories' },
-      { to: '/ghosts', label: 'Ghosts', description: 'Test named player archetypes' },
-      { to: '/mutations', label: 'Mutations', description: 'Compare rule changes' },
-      { to: '/playtest', label: 'Playtest', description: 'Turn signals into human missions' },
-      { to: '/design', label: 'Design', description: 'Connect hypotheses to evidence' },
+      { to: '/simulator', label: 'Practice Table', description: 'Try match setups and replay outcomes' },
+      { to: '/ghosts', label: 'Agents', description: 'Compare labeled bot playstyles' },
+      { to: '/mutations', label: 'Rules', description: 'Preview alternate rule sets' },
     ],
   },
   {
-    label: 'Ship',
+    label: 'Guide',
     items: [
-      { to: '/ops', label: 'Ops', description: 'Live health and next actions' },
-      { to: '/launch', label: 'Launch', description: 'Gate packets and readiness' },
-    ],
-  },
-  {
-    label: 'Reference',
-    items: [
-      { to: '/design-system', label: 'UI Kit', description: 'Game UI design system' },
-      { to: '/map', label: 'Map', description: 'Connected product system' },
-      { to: '/glossary', label: 'Glossary', description: 'Canonical product terms' },
+      { to: '/map', label: 'Map', description: 'How the game areas connect' },
+      { to: '/glossary', label: 'Glossary', description: 'Game terms and actions' },
     ],
   },
 ];
@@ -94,14 +84,6 @@ export default function Header({ onHelpClick }) {
               isActive={isActive}
             />
           ))}
-          <a
-            href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex min-h-[42px] items-center self-end rounded border border-vault-border px-3 py-2 font-mono text-xs uppercase tracking-[0.12em] text-vault-text-dim hover:bg-vault-panel/70 hover:text-vault-text"
-          >
-            Docs
-          </a>
         </nav>
 
         {/* Desktop right controls */}
@@ -154,16 +136,6 @@ export default function Header({ onHelpClick }) {
                   ))}
                 </MobileSection>
               ))}
-              <MobileSection title="Docs">
-              <a
-                href="https://github.com/LuckyMachines/plundrix/tree/main/docs/dev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center min-h-[48px] px-4 py-3 rounded border border-vault-border text-vault-text-dim hover:text-vault-text hover:bg-vault-panel/50 transition-colors"
-              >
-                Docs
-              </a>
-              </MobileSection>
             </nav>
 
             <div className="border-t border-vault-border mx-4" />

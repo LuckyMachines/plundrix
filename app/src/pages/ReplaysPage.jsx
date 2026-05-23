@@ -49,7 +49,7 @@ export default function ReplaysPage() {
           <div>
             <p className="label">Replay filters</p>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-vault-text-dim">
-              Filter replay proof by the table story you want to inspect.
+              Filter replays by the table story you want to inspect.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -73,8 +73,8 @@ export default function ReplaysPage() {
 
       {gallery.length === 0 ? (
         <EmptyState
-          missing="No replay proof in this filter."
-          why="Replays are the memory layer for Plundrix operations. Change the filter or generate new simulator proof."
+          missing="No replays in this filter."
+          why="Replays are the memory layer for Plundrix operations. Change the filter or generate a new practice match."
           action={<button type="button" onClick={() => setFilter('all')} className="min-h-[44px] rounded border border-tungsten/55 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Show all replays</button>}
         />
       ) : (
@@ -90,7 +90,7 @@ export default function ReplaysPage() {
                 </div>
                 {item.marketingProof && (
                   <span className="rounded border border-oxide-green/40 bg-oxide-green/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-oxide-green">
-                    proof
+                    replay
                   </span>
                 )}
               </div>
