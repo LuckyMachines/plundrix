@@ -6,7 +6,7 @@
 - [x] Put player count, objective, three choices, simultaneous resolution, and beta posture in the first viewport.
 - [x] Add a no-wallet interactive turn decision before contract setup.
 - [x] Simplify public navigation around Play, Practice, Replays, Ladder, and Compare.
-- [ ] Verify fresh-wallet create, join, start, submit, resolve, and finish flows against a configured local chain. Join, start, and submit are automated; create, resolve, and finish remain.
+- [ ] Verify fresh-wallet create, join, start, submit, resolve, and finish flows against a configured local chain. Join, start, submit, and resolve are automated; create and finish remain.
 
 ## 2. Visual identity and proof
 

@@ -120,6 +120,19 @@ test('browser wallet can join, start, and commit a real local-chain turn', async
   await expect(page.getByText('Action committed', { exact: true })).toBeVisible({ timeout: 15_000 });
 });
 
+test('browser wallet can complete and resolve a real local-chain round', async ({ page }) => {
+  await installTestWallet(page);
+  await page.goto('/game/4');
+  await page.getByRole('button', { name: 'Connect', exact: true }).first().click();
+  await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible();
+
+  await page.keyboard.press('1');
+  await expect(page.getByText('Action committed', { exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole('button', { name: 'Resolve', exact: true })).toBeEnabled({ timeout: 15_000 });
+  await page.keyboard.press('r');
+  await expect(page.getByRole('region', { name: 'Vault stage' }).getByRole('heading', { name: '2', exact: true })).toBeVisible({ timeout: 15_000 });
+});
+
 test('capture configured visual evidence', async ({ page }) => {
   test.skip(!process.env.PLUNDRIX_CAPTURE_EVIDENCE, 'Run explicitly to refresh review evidence.');
   await page.goto('/game/1');

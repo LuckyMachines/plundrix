@@ -60,13 +60,13 @@ Overall grade: **A-**
 
 | Area | Grade | Evidence and remaining gap |
 |---|---:|---|
-| First user journey | A- | A no-wallet practice match completes in-browser, and an automated browser wallet joins a real local-chain lobby, starts the operation, and commits a turn. A requires the same gate through resolution and victory on desktop and mobile. |
+| First user journey | A- | A no-wallet practice match completes in-browser, and an automated browser wallet joins a real local-chain lobby, starts the operation, commits a turn, and resolves a round. A requires the same gate through victory on desktop and mobile. |
 | Core product clarity | A- | The game-first homepage, interactive decision demo, practice path, and configured lobby/active states now form a tested product loop. |
-| Gameplay systems | A- | 23 Solidity, 75 contract-integration, 8 agent-service, and 12 browser scenarios pass. Human first-match comprehension evidence remains the important non-automatable gap. |
+| Gameplay systems | A- | 23 Solidity, 75 contract-integration, 8 agent-service, and 13 browser scenarios pass. Human first-match comprehension evidence remains the important non-automatable gap. |
 | Visual hierarchy | A- | Desktop/mobile marketing captures and configured lobby/active-match captures establish the hierarchy in real states. The active-state review also exposed and removed disconnected `NaN` readouts. |
 | Art direction | B+ | The signature GPT Image 2 vault hero is strong and optimized. A still requires a curated replay-poster and match-result asset family; the image-generation capability was unavailable during this follow-up pass. |
 | Trust / proof | A- | The browser gate uses a deployed contract and real transactions rather than mocked UI state. Stakes remain opt-in and network guidance now treats configured Foundry correctly. |
-| Technical reliability | A- | Production build and all core suites pass. The local-chain browser harness is deterministic and hidden-window safe. Production advisories fell from 23 to 8 moderate-only findings; no high or critical findings remain. |
+| Technical reliability | A- | Production build and all core suites pass. The local-chain browser harness is deterministic and hidden-window safe, and fonts are bundled locally instead of failing CORS at runtime. Production advisories fell from 23 to 8 moderate-only findings; no high or critical findings remain. |
 | Accessibility / responsive | A | Axe serious/critical checks pass on the homepage, configured lobby, and active match; mobile navigation and active-match layouts are exercised; invalid ARIA, form labeling, and danger-color contrast defects were fixed. |
 | Discovery / SEO | A- | The prior metadata, schema, comparison, sitemap, and social-image improvements remain verified by the production build. |
 | Documentation / tracking | A- | The implementation checklist and dependency risk register now distinguish automated evidence from work that still needs players, production configuration, or a major Wagmi migration. |

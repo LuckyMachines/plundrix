@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createPublicClient, createWalletClient, http } from 'viem';
+import { createPublicClient, createWalletClient, http, zeroAddress } from 'viem';
 import { mnemonicToAccount } from 'viem/accounts';
 import { foundry } from 'viem/chains';
 
@@ -102,6 +102,13 @@ async function seedGames(address) {
   // Leave a one-player lobby for the browser wallet journey.
   await write(wallets[0], 'createGame');
   await write(wallets[1], 'registerPlayer', [3n]);
+
+  // Pre-submit one side of a round so the browser can prove resolution.
+  await write(wallets[0], 'createGame');
+  await write(wallets[1], 'registerPlayer', [4n]);
+  await write(wallets[2], 'registerPlayer', [4n]);
+  await write(wallets[0], 'startGame', [4n]);
+  await write(wallets[1], 'submitAction', [4n, 1, zeroAddress]);
 }
 
 function shutdown(code = 0) {
