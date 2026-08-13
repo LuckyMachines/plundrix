@@ -8,7 +8,11 @@ const dryRun = process.argv.includes('--dry-run');
 
 function run(command, args) {
   return new Promise((resolvePromise, reject) => {
-    const child = spawn(command, args, { cwd: root, shell: true });
+    const child = spawn(command, args, {
+      cwd: root,
+      shell: true,
+      windowsHide: true,
+    });
     let combined = '';
 
     child.stdout.on('data', (data) => {

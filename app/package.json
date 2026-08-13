@@ -43,6 +43,8 @@
     "test:playtest": "node scripts/test-playtest-coach.mjs",
     "test:design": "node scripts/test-design-control-tower.mjs",
     "test:telemetry": "node scripts/test-live-telemetry.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "start": "node scripts/serve-dist.mjs",
     "start:railway": "node scripts/serve-dist.mjs"
   },
@@ -57,9 +59,15 @@
     "wagmi": "^2.19.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "^4.1.8",
     "@vitejs/plugin-react": "^4.5.2",
     "tailwindcss": "^4.1.8",
     "vite": "^6.3.5"
+  },
+  "overrides": {
+    "axios": "^1.18.0",
+    "ws": "^8.21.0"
   }
 }

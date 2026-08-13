@@ -51,3 +51,30 @@ To earn an A from this snapshot:
 - Automated accessibility checks pass for the homepage, navigation, practice flow, and active match at mobile and desktop viewports.
 - The remaining production dependency advisories are removed through a tested Wagmi 3 migration or documented as accepted, unreachable transitive risk.
 - A live-config screenshot pass proves loading, empty, connected, lobby, active match, resolution, and error states.
+
+## v0.3.0 - Automated product-quality gate
+
+Date: 2026-08-13
+
+Overall grade: **A-**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| First user journey | A- | A no-wallet practice match completes in-browser, and an automated browser wallet joins a real local-chain lobby, starts the operation, and commits a turn. A requires the same gate through resolution and victory on desktop and mobile. |
+| Core product clarity | A- | The game-first homepage, interactive decision demo, practice path, and configured lobby/active states now form a tested product loop. |
+| Gameplay systems | A- | 23 Solidity, 75 contract-integration, 8 agent-service, and 12 browser scenarios pass. Human first-match comprehension evidence remains the important non-automatable gap. |
+| Visual hierarchy | A- | Desktop/mobile marketing captures and configured lobby/active-match captures establish the hierarchy in real states. The active-state review also exposed and removed disconnected `NaN` readouts. |
+| Art direction | B+ | The signature GPT Image 2 vault hero is strong and optimized. A still requires a curated replay-poster and match-result asset family; the image-generation capability was unavailable during this follow-up pass. |
+| Trust / proof | A- | The browser gate uses a deployed contract and real transactions rather than mocked UI state. Stakes remain opt-in and network guidance now treats configured Foundry correctly. |
+| Technical reliability | A- | Production build and all core suites pass. The local-chain browser harness is deterministic and hidden-window safe. Production advisories fell from 23 to 8 moderate-only findings; no high or critical findings remain. |
+| Accessibility / responsive | A | Axe serious/critical checks pass on the homepage, configured lobby, and active match; mobile navigation and active-match layouts are exercised; invalid ARIA, form labeling, and danger-color contrast defects were fixed. |
+| Discovery / SEO | A- | The prior metadata, schema, comparison, sitemap, and social-image improvements remain verified by the production build. |
+| Documentation / tracking | A- | The implementation checklist and dependency risk register now distinguish automated evidence from work that still needs players, production configuration, or a major Wagmi migration. |
+
+## A+ bar from v0.3.0
+
+- Complete create, join, submit, resolve, and victory flows through desktop and mobile browser-wallet automation.
+- Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.
+- Add curated replay posters and configured resolution/game-over captures that extend the vault art family.
+- Migrate to Wagmi 3 and retest, removing the remaining UUID advisory chain without compatibility overrides.
+- Validate the same journey against the deployed Sepolia configuration with a fresh funded test wallet.

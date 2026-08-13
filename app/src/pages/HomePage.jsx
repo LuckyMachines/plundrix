@@ -311,7 +311,7 @@ function TurnDemo() {
                 </div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">{selected.tools} tool{selected.tools === 1 ? '' : 's'} ready</p>
               </div>
-              <div className="mt-5 grid grid-cols-5 gap-2" aria-label={`${selected.locks} of 5 locks cracked`}>
+              <div className="mt-5 grid grid-cols-5 gap-2" role="img" aria-label={`${selected.locks} of 5 locks cracked`}>
                 {[0, 1, 2, 3, 4].map((lock) => (
                   <span
                     key={lock}
@@ -378,7 +378,7 @@ function ActionGlyph({ action }) {
 
 function LoadingSkeleton() {
   return (
-    <div className="border border-vault-border bg-vault-surface p-5" aria-label="Loading live season">
+    <div className="border border-vault-border bg-vault-surface p-5" role="status" aria-label="Loading live season">
       <div className="skeleton h-3 w-36" />
       <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[1, 2, 3, 4].map((item) => <div key={item} className="skeleton h-20" />)}

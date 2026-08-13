@@ -6,7 +6,7 @@
 - [x] Put player count, objective, three choices, simultaneous resolution, and beta posture in the first viewport.
 - [x] Add a no-wallet interactive turn decision before contract setup.
 - [x] Simplify public navigation around Play, Practice, Replays, Ladder, and Compare.
-- [ ] Verify fresh-wallet create, join, start, submit, resolve, and finish flows against a configured local chain.
+- [ ] Verify fresh-wallet create, join, start, submit, resolve, and finish flows against a configured local chain. Join, start, and submit are automated; create, resolve, and finish remain.
 
 ## 2. Visual identity and proof
 
@@ -31,13 +31,14 @@
 - [x] Verify agent-service, Solidity, fun-system, replay, and telemetry suites.
 - [x] Apply safe same-major dependency updates and nonbreaking audit fixes.
 - [x] Increase secondary text contrast and preserve reduced-motion/readability controls.
-- [ ] Migrate and test Wagmi 3 to clear remaining transitive advisories, or record a formal risk exception.
-- [ ] Add Playwright interaction, visual, and automated accessibility gates.
-- [ ] Make the full JS contract suite start its required local chain instead of silently skipping every case.
+- [x] Record the remaining Wagmi 2 transitive advisory chain and the tested temporary mitigation.
+- [ ] Migrate and test Wagmi 3 to remove the remaining moderate transitive advisories.
+- [x] Add Playwright interaction, visual, and automated accessibility gates.
+- [x] Make the full JS contract suite start its required local chain instead of silently skipping every case.
 
 ## 5. Evidence still requiring people or live configuration
 
 - [ ] Import at least four facilitated first-match playtests.
-- [ ] Capture configured lobby, active match, resolution, and game-over states at desktop and mobile sizes.
+- [ ] Capture configured lobby, active match, resolution, and game-over states at desktop and mobile sizes. Lobby and active desktop/mobile evidence are captured; resolution and game-over remain.
 - [ ] Validate homepage claims and CTA comprehension with first-time players.
 - [ ] Re-grade after human evidence and live-state e2e are attached.
