@@ -6,7 +6,7 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-vault-border bg-vault-surface/60 mt-auto safe-bottom">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-3 text-xs font-mono text-vault-text-dim">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-5 text-xs font-mono text-vault-text-dim">
         {/* Top row: network + links */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <span className="tracking-wider uppercase">
@@ -48,17 +48,13 @@ export default function Footer() {
             </span>
           </div>
         </div>
-        <p className="text-center text-vault-text-dim">
-          Made with love by Lucky Machines, LLC. Copyright 2026.
-        </p>
-        <p className="text-center text-vault-text-dim/90 max-w-xl mx-auto">
-          Free-play beta only. No cash prizes or monetary rewards are currently live. Sepolia may
-          enable test-only fee settings that do not represent a live production economy.
-        </p>
-        <p className="text-center text-vault-text-dim/90 max-w-xl mx-auto">
-          Some players may be AI agents or bots. Agent participation is tracked and labeled on
-          the leaderboard.
-        </p>
+        <div className="flex flex-col gap-2 border-t border-vault-border/70 pt-4 text-[11px] leading-5 sm:flex-row sm:items-start sm:justify-between">
+          <p>Lucky Machines, LLC / Copyright 2026</p>
+          <p className="max-w-2xl sm:text-right">
+            Free-play beta. No cash prizes are live. Normal network gas may apply. AI and bot
+            players are labeled where they participate.
+          </p>
+        </div>
       </div>
     </footer>
   );

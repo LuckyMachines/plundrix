@@ -38,6 +38,7 @@ export default function Seo({
   description = 'Plundrix is an onchain vault-heist strategy game with short turn-based sessions, sabotage, replays, and explicit bot play.',
   path,
   type = 'website',
+  image,
   jsonLd,
 }) {
   const location = useLocation();
@@ -56,9 +57,14 @@ export default function Seo({
     upsertMeta('meta[name="twitter:card"]', { name: 'twitter:card' }, { content: 'summary_large_image' });
     upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title' }, { content: fullTitle });
     upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description' }, { content: description });
+    if (image) {
+      const imageUrl = image.startsWith('http') ? image : `${SITE_ORIGIN}${image}`;
+      upsertMeta('meta[property="og:image"]', { property: 'og:image' }, { content: imageUrl });
+      upsertMeta('meta[name="twitter:image"]', { name: 'twitter:image' }, { content: imageUrl });
+    }
     upsertLink('canonical', canonical);
     if (jsonLd) upsertJsonLd('plundrix-jsonld', jsonLd);
-  }, [canonical, description, fullTitle, jsonLd, type]);
+  }, [canonical, description, fullTitle, image, jsonLd, type]);
 
   return null;
 }

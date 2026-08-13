@@ -1,245 +1,113 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ConnectButton from '../wallet/ConnectButton';
 import NetworkBadge from '../wallet/NetworkBadge';
 import HelpButton from '../help/HelpButton';
 import AccessibilityToggle from './AccessibilityToggle';
 
-const NAV_SECTIONS = [
-  {
-    label: 'Play',
-    items: [
-      { to: '/leaderboard', label: 'Ladder', description: 'Rankings and competitive progress' },
-      { to: '/sessions', label: 'Sessions', description: 'Recent games and session history' },
-      { to: '/replays', label: 'Replays', description: 'Review and share match stories' },
-      { to: '/compare', label: 'Compare', description: 'Game comparisons and alternatives' },
-    ],
-  },
-  {
-    label: 'Practice',
-    items: [
-      { to: '/simulator', label: 'Practice Table', description: 'Try match setups and replay outcomes' },
-      { to: '/ghosts', label: 'Agents', description: 'Compare labeled bot playstyles' },
-      { to: '/mutations', label: 'Rules', description: 'Preview alternate rule sets' },
-    ],
-  },
-  {
-    label: 'Guide',
-    items: [
-      { to: '/map', label: 'Map', description: 'How the game areas connect' },
-      { to: '/glossary', label: 'Glossary', description: 'Game terms and actions' },
-    ],
-  },
+const NAV_ITEMS = [
+  { to: '/', label: 'Play' },
+  { to: '/simulator', label: 'Practice' },
+  { to: '/replays', label: 'Replays' },
+  { to: '/leaderboard', label: 'Ladder' },
+  { to: '/compare', label: 'Compare' },
 ];
 
 export default function Header({ onHelpClick }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const isActive = (to) => (to === '/' ? location.pathname === '/' : location.pathname === to || location.pathname.startsWith(`${to}/`));
-  const sectionActive = (section) => section.items.some((item) => isActive(item.to));
 
-  // Close menu on route change
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [location.pathname]);
+  useEffect(() => setMenuOpen(false), [location.pathname]);
 
-  // Prevent scroll when menu is open
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
   return (
-    <header className="border-b border-vault-border bg-vault-surface/80 backdrop-blur-sm safe-top">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 min-h-14 py-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        {/* Left: Logo + staging badge */}
-        <div className="order-1 flex shrink-0 items-center gap-2 min-w-0">
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-xl font-bold tracking-[0.3em] text-tungsten font-display uppercase">
-              Plundrix
-            </span>
-          </Link>
-          <span className="hidden sm:inline-block w-fit rounded border border-oxide-green/35 bg-oxide-green/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-oxide-green whitespace-nowrap">
-            Sepolia live
+    <header className="safe-top sticky top-0 z-40 border-b border-vault-border/80 bg-vault-dark/90 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-[68px] max-w-7xl items-center gap-5 px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="group flex shrink-0 items-center gap-3" aria-label="Plundrix home">
+          <span className="grid h-8 w-8 place-items-center border border-tungsten/45 bg-tungsten/5 transition group-hover:border-tungsten">
+            <svg viewBox="0 0 32 32" className="h-5 w-5 text-tungsten" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
+              <circle cx="16" cy="16" r="11" />
+              <circle cx="16" cy="16" r="3" />
+              <path d="M16 5v8M16 19v8M5 16h8M19 16h8M8.2 8.2l5.6 5.6M18.2 18.2l5.6 5.6" />
+            </svg>
           </span>
-        </div>
+          <span className="font-display text-xl font-bold uppercase tracking-[0.24em] text-vault-text">Plundrix</span>
+        </Link>
 
-        {/* Desktop nav */}
-        <nav
-          className="order-3 hidden w-full flex-wrap items-stretch justify-center gap-2 pt-2 lg:flex 2xl:order-2 2xl:w-auto 2xl:flex-1 2xl:pt-0"
-          aria-label="Primary navigation"
-        >
-          <div className="flex items-end">
-            <NavLink to="/" active={isActive('/')}>Console</NavLink>
-          </div>
-          {NAV_SECTIONS.map((section) => (
-            <NavCluster
-              key={section.label}
-              section={section}
-              active={sectionActive(section)}
-              isActive={isActive}
-            />
+        <nav className="ml-auto hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              aria-current={isActive(item.to) ? 'page' : undefined}
+              className={`relative flex min-h-[44px] items-center px-3 font-mono text-[10px] uppercase tracking-[0.14em] transition ${
+                isActive(item.to) ? 'text-tungsten' : 'text-vault-text-dim hover:text-vault-text'
+              }`}
+            >
+              {item.label}
+              {isActive(item.to) && <span className="absolute inset-x-3 bottom-0 h-px bg-tungsten" />}
+            </Link>
           ))}
         </nav>
 
-        {/* Desktop right controls */}
-        <div className="order-2 ml-auto hidden shrink-0 items-center gap-2 lg:flex 2xl:order-3 2xl:ml-0">
+        <div className="hidden shrink-0 items-center gap-2 lg:flex">
           <AccessibilityToggle />
           <HelpButton onClick={onHelpClick} />
           <NetworkBadge />
           <ConnectButton />
         </div>
 
-        {/* Mobile right: connect + hamburger */}
-        <div className="order-2 ml-auto flex items-center gap-2 lg:hidden">
+        <div className="ml-auto flex items-center gap-2 lg:hidden">
           <ConnectButton />
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded border border-vault-border text-vault-text-dim hover:text-vault-text transition-colors"
+            type="button"
+            onClick={() => setMenuOpen((value) => !value)}
+            className="grid min-h-[44px] min-w-[44px] place-items-center border border-vault-border text-vault-text-dim"
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? (
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="5" y1="5" x2="15" y2="15" />
-                <line x1="15" y1="5" x2="5" y2="15" />
-              </svg>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="3" y1="6" x2="17" y2="6" />
-                <line x1="3" y1="10" x2="17" y2="10" />
-                <line x1="3" y1="14" x2="17" y2="14" />
-              </svg>
-            )}
+            <span className="sr-only">{menuOpen ? 'Close menu' : 'Open menu'}</span>
+            <span className="grid gap-1.5" aria-hidden="true">
+              <span className={`block h-px w-5 bg-current transition ${menuOpen ? 'translate-y-[7px] rotate-45' : ''}`} />
+              <span className={`block h-px w-5 bg-current transition ${menuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block h-px w-5 bg-current transition ${menuOpen ? '-translate-y-[7px] -rotate-45' : ''}`} />
+            </span>
           </button>
         </div>
       </div>
 
-      {/* Mobile slide-out menu */}
       {menuOpen && (
-        <div className="lg:hidden fixed inset-0 top-[57px] z-50 bg-vault-dark/95 backdrop-blur-md safe-bottom">
-          <div className="flex flex-col h-full overflow-y-auto">
-            <nav className="flex flex-col px-4 py-4 gap-4 font-mono text-sm uppercase tracking-[0.12em]">
-              <MobileSection title="Home">
-                <MobileNavLink to="/" active={isActive('/')}>Console</MobileNavLink>
-              </MobileSection>
-              {NAV_SECTIONS.map((section) => (
-                <MobileSection key={section.label} title={section.label}>
-                  {section.items.map((item) => (
-                    <MobileNavLink key={item.to} to={item.to} active={isActive(item.to)}>
-                      {item.label}
-                    </MobileNavLink>
-                  ))}
-                </MobileSection>
-              ))}
-            </nav>
-
-            <div className="border-t border-vault-border mx-4" />
-
-            <div className="px-4 py-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">Network</span>
-                <NetworkBadge />
-              </div>
-              <div className="flex items-center gap-2">
-                <AccessibilityToggle />
-                <HelpButton onClick={onHelpClick} />
-              </div>
+        <div className="fixed inset-x-0 top-[69px] h-[calc(100dvh-69px)] border-t border-vault-border bg-vault-dark/98 px-5 py-6 backdrop-blur-xl lg:hidden">
+          <nav className="grid gap-2" aria-label="Mobile navigation">
+            {NAV_ITEMS.map((item, index) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                aria-current={isActive(item.to) ? 'page' : undefined}
+                className={`flex min-h-[58px] items-center justify-between border px-4 font-display text-2xl uppercase tracking-[0.08em] ${
+                  isActive(item.to) ? 'border-tungsten/60 bg-tungsten/10 text-tungsten' : 'border-vault-border text-vault-text'
+                }`}
+              >
+                {item.label}
+                <span className="font-mono text-[9px] text-vault-text-dim">0{index + 1}</span>
+              </Link>
+            ))}
+          </nav>
+          <div className="mt-5 flex items-center justify-between border-t border-vault-border pt-5">
+            <div className="flex items-center gap-2">
+              <AccessibilityToggle />
+              <HelpButton onClick={onHelpClick} />
             </div>
-
-            <div className="border-t border-vault-border mx-4" />
-
-            <div className="px-4 py-4">
-              <span className="inline-block rounded border border-oxide-green/35 bg-oxide-green/10 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-oxide-green">
-                Sepolia staging live - mainnet production soon
-              </span>
-            </div>
+            <NetworkBadge />
           </div>
+          <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.16em] text-oxide-green">Sepolia beta live / free play</p>
         </div>
       )}
     </header>
-  );
-}
-
-function NavLink({ to, active, children }) {
-  return (
-    <Link
-      to={to}
-      aria-current={active ? 'page' : undefined}
-      className={`flex min-h-[42px] items-center rounded border px-3 py-2 transition-colors ${
-        active
-          ? 'border-tungsten/70 bg-tungsten/10 text-vault-text'
-          : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/70 hover:text-vault-text'
-      } font-mono text-xs uppercase tracking-[0.12em]`}
-    >
-      {children}
-    </Link>
-  );
-}
-
-function NavCluster({ section, active, isActive }) {
-  return (
-    <section
-      className={`flex min-h-[42px] items-stretch rounded border bg-vault-dark/35 ${
-        active ? 'border-tungsten/55' : 'border-vault-border'
-      }`}
-      aria-label={`${section.label} navigation`}
-    >
-      <div className={`flex items-center border-r px-2 font-mono text-[10px] uppercase tracking-[0.14em] ${
-        active ? 'border-tungsten/30 text-tungsten' : 'border-vault-border text-vault-text-dim'
-      }`}>
-        {section.label}
-      </div>
-      <div className="flex flex-wrap items-center gap-1 p-1">
-        {section.items.map((item) => (
-          <Link
-            key={item.to}
-            to={item.to}
-            aria-current={isActive(item.to) ? 'page' : undefined}
-            title={item.description}
-            className={`flex min-h-[34px] items-center rounded px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] transition-colors ${
-              isActive(item.to)
-                ? 'bg-tungsten/10 text-vault-text'
-                : 'text-vault-text-dim hover:bg-vault-panel/70 hover:text-vault-text'
-            }`}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function MobileSection({ title, children }) {
-  return (
-    <div>
-      <p className="px-2 pb-1 font-mono text-[10px] uppercase tracking-[0.16em] text-vault-text-dim">
-        {title}
-      </p>
-      <div className="grid gap-1">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function MobileNavLink({ to, active, children }) {
-  return (
-    <Link
-      to={to}
-      aria-current={active ? 'page' : undefined}
-      className={`flex items-center min-h-[48px] rounded border px-4 py-3 transition-colors ${
-        active
-          ? 'border-tungsten/70 bg-tungsten/10 text-vault-text'
-          : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/50 hover:text-vault-text'
-      }`}
-    >
-      {children}
-    </Link>
   );
 }

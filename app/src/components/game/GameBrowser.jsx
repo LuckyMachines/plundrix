@@ -9,6 +9,8 @@ import GameCard from './GameCard';
 import Spinner from '../shared/Spinner';
 import TxStatus from '../shared/TxStatus';
 
+const ENABLE_STAKES = import.meta.env.VITE_ENABLE_STAKES === 'true';
+
 export default function GameBrowser() {
   const { address } = useAccount();
   const { totalGames, isLoading, error } = useTotalGames();
@@ -75,10 +77,16 @@ export default function GameBrowser() {
       )}
 
       {!isConfigured && (
-        <div className="px-6 pt-4">
-          <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
-            {configError}
+        <div className="mx-5 mt-5 border border-vault-border bg-vault-dark/55 p-4">
+          <p className="font-mono text-xs uppercase tracking-wider text-tungsten">
+            Live table unavailable in this build
           </p>
+          <p className="mt-2 text-sm leading-6 text-vault-text-dim">
+            You can still learn the game and run a complete match in the practice table.
+          </p>
+          {import.meta.env.DEV && (
+            <p className="mt-2 font-mono text-[10px] text-vault-text-dim">{configError}</p>
+          )}
         </div>
       )}
 
@@ -92,7 +100,7 @@ export default function GameBrowser() {
 
             {/* Mode toggle */}
             <div className="flex gap-2">
-              {[GameMode.FREE, GameMode.STAKES].map((mode) => (
+              {(ENABLE_STAKES ? [GameMode.FREE, GameMode.STAKES] : [GameMode.FREE]).map((mode) => (
                 <button
                   key={mode}
                   onClick={() => setCreateMode(mode)}
@@ -106,6 +114,12 @@ export default function GameBrowser() {
                 </button>
               ))}
             </div>
+
+            {!ENABLE_STAKES && (
+              <p className="font-mono text-xs leading-5 text-vault-text-dim">
+                The public beta is free to play. Paid competition modes are not enabled.
+              </p>
+            )}
 
             {/* Entry fee input (STAKES only) */}
             {createMode === GameMode.STAKES && (
@@ -151,6 +165,7 @@ export default function GameBrowser() {
       )}
 
       {/* Game list */}
+      {isConfigured ? (
       <div className="px-6 py-5">
         {isLoading ? (
           <div className="flex items-center justify-center py-12 gap-3">
@@ -182,6 +197,13 @@ export default function GameBrowser() {
           </div>
         )}
       </div>
+      ) : (
+        <div className="px-5 py-5">
+          <a href="/simulator" className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten hover:bg-tungsten/10">
+            Open practice table
+          </a>
+        </div>
+      )}
     </div>
   );
 }

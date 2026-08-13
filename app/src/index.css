@@ -40,7 +40,7 @@
   --color-vault-panel: #1a1a2e;
   --color-vault-border: #2a2a3e;
   --color-vault-text: #c8c8d4;
-  --color-vault-text-dim: #6a6a7e;
+  --color-vault-text-dim: #8b8a9e;
 
   --color-tungsten: #c4956a;
   --color-tungsten-bright: #e8b078;
@@ -90,6 +90,35 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(232, 176, 120, 0.28);
+  color: #fff7ef;
+}
+
+.home-hero {
+  background:
+    radial-gradient(circle at 12% 35%, rgba(196, 149, 106, 0.09), transparent 32%),
+    #0a0a0f;
+}
+
+.hero-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 75%, #0a0a0f 100%);
+}
+
+@media (max-width: 1023px) {
+  .hero-art {
+    margin-top: -2rem;
+  }
 }
 
 /* --- Safe area padding for notched devices --- */
