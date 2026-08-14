@@ -115,12 +115,12 @@ Overall grade: **A** (automated product bar: **A+**)
 |---|---:|---|
 | First user journey | A+ | One continuous browser scenario now creates an operation from the homepage, adds a real second chain account, joins, starts, submits both players, resolves, breaches lock five, and reaches the final briefing. |
 | Gameplay feedback | A+ | Resolution results are decoded from the confirmed transaction receipt, survive event-watcher timing gaps, remain visible until explicitly dismissed, and render cleanly at desktop and mobile widths. |
-| Live configuration | A- | A repeatable read-only gate builds against the live Sepolia proxy, reads the real zero-game state, captures it, and reports no browser/runtime errors. Live writes are not current-release evidence because implementation provenance is unresolved. |
+| Live configuration | A | The read-only gate proves the live proxy state, and a second repeatable gate matches the implementation runtime to the deployment-day source after normalizing compiler-declared UUPS immutables. Explorer publication and an approved funded write remain. |
 | Technical reliability | A+ | The continuous create-to-victory and resolution gates sit inside a 16-scenario fresh-chain portfolio; the static server now returns correct WebP and font MIME types. |
-| Documentation / tracking | A | README and launch records now use the actual implementation slot and explicitly record the source-verification blocker instead of repeating stale deployment data. |
+| Documentation / tracking | A+ | README and launch records use the actual implementation slot, exact source revision, compiler settings, and repeatable runtime proof instead of stale deployment data. |
 
 ## Remaining strict A+ evidence
 
-- Reconcile the March 12 implementation source with `0x26ad...dd7f` and verify it on the explorer; its executable bytecode does not match this checkout.
+- Publish the reconciled source for `0x26ad...dd7f` on a public explorer.
 - Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.
-- Perform a funded Sepolia write journey only after the deployed implementation is verified and explicitly approved for new transactions.
+- Perform a funded Sepolia write journey only after the recovered deployment is explicitly approved for new transactions.

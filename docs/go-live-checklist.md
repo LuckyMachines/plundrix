@@ -14,7 +14,7 @@ Current Sepolia deployment:
 - status: **LIVE** (unpaused 2026-03-13, tx `0xb31a24063ac8c74a9f8de802b149f477c21a33434d486eab8e7da96ef6b3030f`)
 - automation: enabled (delay=300s, external entropy required)
 - fee setting: enabled for testing only (bps=200, recipient=`0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79`)
-- provenance warning: the implementation is not explorer-verified and its executable bytecode does not match the current checkout; reconcile source before new live-write validation or upgrade decisions
+- provenance: runtime matches commit `28e3194` after normalizing the five compiler-declared UUPS immutable ranges; the implementation is not yet explorer-verified
 
 Frontend deployment:
 

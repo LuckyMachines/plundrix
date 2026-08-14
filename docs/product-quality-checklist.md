@@ -41,6 +41,7 @@
 - [ ] Import at least four facilitated first-match playtests.
 - [x] Capture configured lobby, active match, resolution, and game-over states at desktop and mobile sizes.
 - [x] Build and verify the marketing site against read-only live Sepolia state with no browser/runtime errors.
-- [ ] Reconcile and explorer-verify the live implementation source before treating Sepolia write validation as current-release evidence.
+- [x] Reconcile the live implementation runtime to exact source and compiler settings with a repeatable provenance gate.
+- [ ] Publish the reconciled implementation source on an explorer before treating Sepolia write validation as release evidence.
 - [ ] Validate homepage claims and CTA comprehension with first-time players.
 - [ ] Re-grade after human evidence and live-state e2e are attached.

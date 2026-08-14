@@ -33,11 +33,12 @@ Run `npm run verify:sepolia:read` from `app/` to:
 
 The gate passed on 2026-08-13.
 
-## Provenance blocker
+## Provenance proof
 
-Blockscout does not currently verify the implementation source. Its runtime is the same length as the locally compiled implementation, but both the full runtime hash and executable-bytecode hash differ from this checkout. The repository previously documented `0x6748...224f`, which is not the proxy's current implementation slot.
+The implementation runtime exactly matches commit `28e3194e4196bfc780aaace1b4dec9820bf51551`, compiled with Solidity `0.8.17+commit.8df45f5f`, optimizer enabled, and 200 runs. The initial raw comparison differed only in five compiler-declared 32-byte immutable ranges from OpenZeppelin UUPS. Every range contains the deployed implementation's own address, `0x26ad...dd7f`. After normalizing those ranges, the complete runtime matches, including its Solidity metadata suffix.
 
-Do not treat a new funded Sepolia write test as current-release validation until one of these is complete:
+Run `npm run verify:sepolia:provenance` from the repository root after `npm run build` to repeat the RPC and artifact comparison. The gate fails on a runtime-length difference, unexpected immutable value, or any remaining byte difference.
 
-- recover the exact March 12 source/compiler settings and verify `0x26ad...dd7f` on the explorer; or
-- review, deploy, and verify an explicitly approved implementation upgrade from the current source.
+Blockscout does not currently publish verified source for the implementation. Explorer publication remains a release-hardening task, but source provenance is no longer unresolved. The repository previously documented `0x6748...224f`, which is not the proxy's current implementation slot.
+
+Do not run a funded Sepolia write journey until the recovered revision and current live configuration are explicitly approved for test transactions.

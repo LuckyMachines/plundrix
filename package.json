@@ -18,6 +18,7 @@
     "kms:fund": "node ops/kms-fund.mjs",
     "play:local": "npm run dev:local:start",
     "sync:abi": "node scripts/sync-abi.mjs",
+    "verify:sepolia:provenance": "node scripts/verify-sepolia-provenance.mjs",
     "test:agent": "node --test agent-service/test/*.test.mjs",
     "test:sol": "forge test",
     "test:js": "vitest run test/plundrix.test.js",
