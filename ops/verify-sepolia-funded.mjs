@@ -41,6 +41,9 @@ const allowWrites = process.env.PLUNDRIX_ALLOW_SEPOLIA_WRITES === 'true';
 const opponentTargetBalance = parseEther(process.env.SEPOLIA_PLAYER_TARGET_ETH || '0.006');
 const minimumOperatorReserve = parseEther(process.env.SEPOLIA_OPERATOR_RESERVE_ETH || '0.02');
 const maxRounds = Number(process.env.SEPOLIA_MAX_ROUNDS || '18');
+const resumeGameId = process.env.SEPOLIA_RESUME_GAME_ID
+  ? BigInt(process.env.SEPOLIA_RESUME_GAME_ID)
+  : null;
 const client = createChainClient({ chainName: 'sepolia', rpcUrl });
 
 function assert(condition, message) {
@@ -123,6 +126,7 @@ console.log(JSON.stringify({
   operatorAddress,
   opponentAddress,
   totalGamesBefore: totalGamesBefore.toString(),
+  resumeGameId: resumeGameId?.toString() || null,
   operatorBalanceEth: formatEther(operatorBalanceBefore),
   opponentBalanceEth: formatEther(opponentBalanceBefore),
   budget: {
@@ -165,15 +169,29 @@ if (fundingNeeded > 0n) {
   console.log(`[tx] fundOpponent=${hash} amountEth=${formatEther(fundingNeeded)}`);
 }
 
-transactions.push({ label: 'createGame', ...await write(operator, 'createGame') });
-const gameId = await read('totalGames');
-assert(gameId === totalGamesBefore + 1n, `Expected game ${totalGamesBefore + 1n}, got ${gameId}`);
-const [mode, entryFee] = await read('getGameMode', [gameId]);
-assert(Number(mode) === 0 && entryFee === 0n, 'Refusing to continue: created game is not FREE');
+let gameId;
+if (resumeGameId !== null) {
+  assert(resumeGameId > 0n && resumeGameId <= totalGamesBefore, 'Resume game does not exist');
+  gameId = resumeGameId;
+  const [game, operatorState, opponentState] = await Promise.all([
+    read('getGameInfo', [gameId]),
+    read('getPlayerState', [gameId, operatorAddress]),
+    read('getPlayerState', [gameId, opponentAddress]),
+  ]);
+  assert(Number(game[0]) === 1, `Resume game ${gameId} is not active`);
+  assert(operatorState[3] && opponentState[3], 'Both configured HSM players must be registered');
+  console.log(`[resume] game=${gameId} round=${game[1]}`);
+} else {
+  transactions.push({ label: 'createGame', ...await write(operator, 'createGame') });
+  gameId = await read('totalGames');
+  assert(gameId === totalGamesBefore + 1n, `Expected game ${totalGamesBefore + 1n}, got ${gameId}`);
+  const [mode, entryFee] = await read('getGameMode', [gameId]);
+  assert(Number(mode) === 0 && entryFee === 0n, 'Refusing to continue: created game is not FREE');
 
-transactions.push({ label: 'registerOperator', ...await write(operator, 'registerPlayer', [gameId]) });
-transactions.push({ label: 'registerOpponent', ...await write(opponent, 'registerPlayer', [gameId]) });
-transactions.push({ label: 'startGame', ...await write(operator, 'startGame', [gameId]) });
+  transactions.push({ label: 'registerOperator', ...await write(operator, 'registerPlayer', [gameId]) });
+  transactions.push({ label: 'registerOpponent', ...await write(opponent, 'registerPlayer', [gameId]) });
+  transactions.push({ label: 'startGame', ...await write(operator, 'startGame', [gameId]) });
+}
 
 const rounds = [];
 for (let attempt = 1; attempt <= maxRounds; attempt += 1) {
@@ -185,17 +203,21 @@ for (let attempt = 1; attempt <= maxRounds; attempt += 1) {
   const operatorAction = operatorState[1] < 3n ? 2 : 1;
   const opponentAction = opponentState[1] < 3n ? 2 : 1;
 
-  const operatorSubmit = await write(operator, 'submitAction', [gameId, operatorAction, zeroAddress]);
-  const opponentSubmit = await write(opponent, 'submitAction', [gameId, opponentAction, zeroAddress]);
-  const entropy = await fetchEntropy(gameId, round);
-  const entropyTx = await write(operator, 'provideRoundEntropy', [gameId, round, entropy]);
+  const operatorSubmit = operatorState[4]
+    ? null
+    : await write(operator, 'submitAction', [gameId, operatorAction, zeroAddress]);
+  const opponentSubmit = opponentState[4]
+    ? null
+    : await write(opponent, 'submitAction', [gameId, opponentAction, zeroAddress]);
+  const existingEntropy = await read('getRoundEntropy', [gameId, round]);
+  const entropyTx = existingEntropy > 0n
+    ? null
+    : await write(operator, 'provideRoundEntropy', [gameId, round, await fetchEntropy(gameId, round)]);
   const resolveTx = await write(operator, 'resolveRound', [gameId]);
-  transactions.push(
-    { label: `round${round}.operatorAction`, ...operatorSubmit },
-    { label: `round${round}.opponentAction`, ...opponentSubmit },
-    { label: `round${round}.entropy`, ...entropyTx },
-    { label: `round${round}.resolve`, ...resolveTx },
-  );
+  if (operatorSubmit) transactions.push({ label: `round${round}.operatorAction`, ...operatorSubmit });
+  if (opponentSubmit) transactions.push({ label: `round${round}.opponentAction`, ...opponentSubmit });
+  if (entropyTx) transactions.push({ label: `round${round}.entropy`, ...entropyTx });
+  transactions.push({ label: `round${round}.resolve`, ...resolveTx });
 
   const operatorAfter = await read('getPlayerState', [gameId, operatorAddress]);
   const opponentAfter = await read('getPlayerState', [gameId, opponentAddress]);
@@ -220,6 +242,7 @@ const report = {
   contractAddress,
   gameId: gameId.toString(),
   mode: 'FREE',
+  resumed: resumeGameId !== null,
   winner: finalGame[4],
   rounds,
   transactions,

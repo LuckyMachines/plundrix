@@ -15,7 +15,7 @@ Current Sepolia deployment:
 - automation: enabled (delay=300s, external entropy required)
 - fee setting: enabled for testing only (bps=200, recipient=`0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79`)
 - provenance: runtime matches commit `28e3194` after normalizing the five compiler-declared UUPS immutable ranges; source is verified on Blockscout and Routescan
-- funded journey: guarded two-HSM-player gate and read-only preflight pass; live write awaits refreshed non-interactive GCP authentication
+- funded journey: FREE operation `1` completed in nine rounds with two HSM-backed players; final resolve `0x7ee3c28b28e39af787da866edebe01b1f8a86faaef19074f68b96c3442296a38`; desktop/mobile production UI proof passed
 
 Frontend deployment:
 
@@ -50,6 +50,8 @@ MCP server (`mcp-server/`):
 - [x] Verify one upgrade rehearsal succeeds on Sepolia — KMS upgrade completed 2026-03-12
 - [x] Verify fee config reads correctly on Sepolia — `getFeeSettings()` returns enabled, bps=200, recipient set
 - [x] Verify fee stays test-only and is not presented as live monetization — footer disclaimer in place
+- [x] Complete a guarded FREE create-to-victory journey on Sepolia with two HSM-backed players - operation `1`, nine rounds (2026-08-13)
+- [x] Render the live final state through the production frontend at desktop and mobile widths with accessibility and overflow checks (2026-08-13)
 
 ## Product Messaging
 

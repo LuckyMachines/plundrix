@@ -66,7 +66,9 @@ try {
 
   await page.goto(baseUrl, { waitUntil: 'networkidle' });
   await page.getByRole('heading', { level: 1, name: /crack the vault/i }).waitFor();
-  await page.getByText('No operations found. Create one to begin.').waitFor({ timeout: 30_000 });
+  await page.getByText('No operations found. Create one to begin.')
+    .or(page.locator('.alive-game-card').first())
+    .waitFor({ timeout: 30_000 });
   await page.screenshot({
     path: 'reports/visual-audit/a-plus/sepolia-readonly-desktop.png',
     fullPage: true,

@@ -160,3 +160,23 @@ Overall grade: **A** (automated local, read-only live, and provenance bar: **A+*
 
 - Refresh non-interactive GCP CLI authentication and complete the guarded funded Sepolia journey.
 - Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.
+
+## v0.8.0 - Funded live-chain and production UI proof
+
+Date: 2026-08-13
+
+Overall grade: **A+** for the automated product, provenance, and live-network bar
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Live configuration | A+ | Guarded FREE operation `1` completed through victory in nine rounds using two HSM-backed players and external drand entropy. The final state and transaction receipts are retained without exposing keys. |
+| Operational safety | A+ | Explicit write opt-in, FREE-only enforcement, opponent funding target, operator reserve, bounded rounds, receipt checks, configurable gas buffer, and resumable execution constrain both spend and recovery behavior. |
+| Technical reliability | A+ | The live run exposed outcome-dependent gas estimation and repeated credential-refresh latency; buffered gas estimation, token caching, and idempotent resume handling closed both harness failures before the operation completed. |
+| UI and accessibility | A+ | The production build rendered the real Sepolia winner state at desktop and mobile widths, with serious/critical Axe, overflow, console, page, and resource-error gates passing. |
+| Trust and evidence | A+ | Public source verification, reproducible runtime provenance, onchain operation `1`, a receipt-backed JSON report, and final-state captures connect the marketing promise to an inspectable live result. |
+| Human validation | A- | The automated release surface is complete. Four facilitated first-match sessions and CTA-comprehension observations are still required before claiming equivalent human-evidence coverage. |
+
+## Remaining human evidence
+
+- Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.
+- Validate homepage claims and primary CTA comprehension with first-time players.

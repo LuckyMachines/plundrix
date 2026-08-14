@@ -46,6 +46,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "verify:sepolia:read": "node scripts/verify-sepolia-readonly.mjs",
+    "verify:sepolia:funded-ui": "node scripts/capture-sepolia-funded.mjs",
     "start": "node scripts/serve-dist.mjs",
     "start:railway": "node scripts/serve-dist.mjs"
   },

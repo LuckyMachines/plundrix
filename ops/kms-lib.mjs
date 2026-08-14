@@ -23,6 +23,8 @@ const SECP256K1_N = BigInt(
   '0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'
 );
 const SECP256K1_HALF_N = SECP256K1_N / 2n;
+let cachedAccessToken;
+let cachedAccessTokenExpiresAt = 0;
 
 export function getEnv(name, fallback = undefined) {
   const value = process.env[name];
@@ -146,7 +148,12 @@ export function getKmsAddress(overrides = {}) {
 }
 
 async function getAccessToken() {
-  return gcloud(['auth', 'print-access-token']);
+  if (cachedAccessToken && Date.now() < cachedAccessTokenExpiresAt) {
+    return cachedAccessToken;
+  }
+  cachedAccessToken = gcloud(['auth', 'print-access-token']);
+  cachedAccessTokenExpiresAt = Date.now() + (45 * 60 * 1000);
+  return cachedAccessToken;
 }
 
 function parseDerSignature(signatureBytes) {
@@ -281,11 +288,15 @@ export async function prepareTransaction({
       maxPriorityFeePerGas ?? feeEstimate.maxPriorityFeePerGas,
   };
 
-  const resolvedGas =
-    gas ??
-    (await client.estimateGas({
-      ...request,
-    }));
+  let resolvedGas = gas;
+  if (resolvedGas === undefined) {
+    const estimatedGas = await client.estimateGas({ ...request });
+    const gasBufferBps = BigInt(process.env.KMS_GAS_BUFFER_BPS || '15000');
+    if (gasBufferBps < 10000n || gasBufferBps > 30000n) {
+      throw new Error('KMS_GAS_BUFFER_BPS must be between 10000 and 30000');
+    }
+    resolvedGas = (estimatedGas * gasBufferBps + 9999n) / 10000n;
+  }
 
   return {
     ...request,

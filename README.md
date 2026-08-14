@@ -19,6 +19,7 @@ The repo currently ships:
 - autoloop is enabled on Sepolia
 - external entropy is required on Sepolia
 - the 2% fee config exists onchain and is enabled on Sepolia for testing only
+- guarded FREE operation `1` completed on Sepolia in nine rounds with two HSM-backed players
 - mainnet is not live yet
 - planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
 
@@ -225,9 +226,12 @@ npm run kms:fund
 npm run deploy:kms
 npm run autoloop:start
 npm run verify:sepolia:funded # read-only preflight by default
+cd app && npm run verify:sepolia:funded-ui
 ```
 
 The funded Sepolia proof requires an explicit `PLUNDRIX_ALLOW_SEPOLIA_WRITES=true` opt-in. It creates only a FREE game, preserves a configurable operator reserve after a conservative gas ceiling, caps the number of rounds, and writes transaction evidence to `reports/sepolia-funded/latest.json`.
+
+The completed operation `1` proof is rendered from the production frontend at desktop and mobile widths by `verify:sepolia:funded-ui`. The gate also fails on serious or critical accessibility findings, mobile overflow, browser errors, or missing live winner state.
 
 ## Game Rules
 
