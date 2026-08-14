@@ -45,6 +45,7 @@
     "test:telemetry": "node scripts/test-live-telemetry.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "verify:sepolia:read": "node scripts/verify-sepolia-readonly.mjs",
     "start": "node scripts/serve-dist.mjs",
     "start:railway": "node scripts/serve-dist.mjs"
   },

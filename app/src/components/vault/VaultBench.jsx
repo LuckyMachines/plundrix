@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
+import { decodeEventLog } from 'viem';
 import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
@@ -29,6 +30,7 @@ import IntegrationDebugTrace from './IntegrationDebugTrace';
 import { useSessionHistoryRecorder } from '../../hooks/useSessionHistory';
 import { GameShell, QuietPanel } from '../gameplay/GameShell';
 import { LatestEventSurface, MatchStatusStrip, OpponentRail } from '../gameplay/ActiveMatchReadout';
+import { PLUNDRIX_ABI } from '../../config/contract';
 
 export default function VaultBench({ gameId }) {
   const { address } = useAccount();
@@ -39,6 +41,7 @@ export default function VaultBench({ gameId }) {
   const {
     resolveRound,
     hash: resolveHash,
+    receipt: resolveReceipt,
     isPending: resolvePending,
     isConfirming: resolveConfirming,
     isSuccess: resolveSuccess,
@@ -56,6 +59,25 @@ export default function VaultBench({ gameId }) {
     error: resolveError,
   });
   const { events, latestRoundEvents, roundHistory } = useGameEvents(gameId);
+  const receiptRoundEvents = useMemo(() => {
+    if (!resolveReceipt?.logs) return [];
+    return resolveReceipt.logs.flatMap((log) => {
+      try {
+        const decoded = decodeEventLog({ abi: PLUNDRIX_ABI, data: log.data, topics: log.topics });
+        if (decoded.args?.gameID !== BigInt(gameId)) return [];
+        return [{
+          name: decoded.eventName,
+          args: decoded.args,
+          blockNumber: resolveReceipt.blockNumber,
+          transactionHash: resolveReceipt.transactionHash,
+          timestamp: Date.now(),
+        }];
+      } catch {
+        return [];
+      }
+    });
+  }, [gameId, resolveReceipt]);
+  const resolutionEvents = receiptRoundEvents.length > 0 ? receiptRoundEvents : latestRoundEvents;
 
   // Resolution sequence visibility
   const [showResolve, setShowResolve] = useState(false);
@@ -63,10 +85,10 @@ export default function VaultBench({ gameId }) {
   const [targetAddress, setTargetAddress] = useState('');
   const [selectedReplayRound, setSelectedReplayRound] = useState(null);
   useEffect(() => {
-    if (latestRoundEvents && latestRoundEvents.length > 0) {
+    if (resolutionEvents && resolutionEvents.length > 0) {
       setShowResolve(true);
     }
-  }, [latestRoundEvents]);
+  }, [resolutionEvents]);
 
   // Timeout tracking
   const [timedOut, setTimedOut] = useState(false);
@@ -325,9 +347,9 @@ export default function VaultBench({ gameId }) {
           </div>
         </div>
       )}
-      footer={showResolve && latestRoundEvents && latestRoundEvents.length > 0 ? (
+      footer={showResolve && resolutionEvents && resolutionEvents.length > 0 ? (
         <ResolveSequence
-          roundEvents={latestRoundEvents}
+          roundEvents={resolutionEvents}
           currentAddress={address}
           onComplete={() => setShowResolve(false)}
         />

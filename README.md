@@ -13,8 +13,8 @@ The repo currently ships:
 
 - Sepolia staging is live
 - current Sepolia proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
-- current Sepolia implementation: `0x6748415bce63c0fbf1e50ceb2128bfeac977224f`
-- staging is paused by default
+- current Sepolia implementation: `0x26adc1216bda368a74d786148dcab9baca74dd7f`
+- staging proxy is currently unpaused
 - autoloop is enabled on Sepolia
 - external entropy is required on Sepolia
 - the 2% fee config exists onchain and is enabled on Sepolia for testing only
@@ -22,6 +22,7 @@ The repo currently ships:
 - planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
 
 Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
+The latest read-only chain and provenance audit is in [docs/sepolia-readiness-audit.md](docs/sepolia-readiness-audit.md).
 
 ## Game Summary
 

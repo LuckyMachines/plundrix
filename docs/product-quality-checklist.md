@@ -6,7 +6,7 @@
 - [x] Put player count, objective, three choices, simultaneous resolution, and beta posture in the first viewport.
 - [x] Add a no-wallet interactive turn decision before contract setup.
 - [x] Simplify public navigation around Play, Practice, Replays, Ladder, and Compare.
-- [ ] Verify fresh-wallet create, join, start, submit, resolve, and finish flows against a configured local chain. Join, start, submit, resolve, and finish are automated; browser-created operations remain.
+- [x] Verify browser-wallet create, join, start, submit, resolve, and finish capabilities against a configured local chain.
 
 ## 2. Visual identity and proof
 
@@ -39,6 +39,8 @@
 ## 5. Evidence still requiring people or live configuration
 
 - [ ] Import at least four facilitated first-match playtests.
-- [ ] Capture configured lobby, active match, resolution, and game-over states at desktop and mobile sizes. Lobby, active, and game-over evidence are captured; a dedicated resolution-sequence capture remains.
+- [x] Capture configured lobby, active match, resolution, and game-over states at desktop and mobile sizes.
+- [x] Build and verify the marketing site against read-only live Sepolia state with no browser/runtime errors.
+- [ ] Reconcile and explorer-verify the live implementation source before treating Sepolia write validation as current-release evidence.
 - [ ] Validate homepage claims and CTA comprehension with first-time players.
 - [ ] Re-grade after human evidence and live-state e2e are attached.

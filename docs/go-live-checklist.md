@@ -10,10 +10,11 @@ Current launch plan:
 Current Sepolia deployment:
 
 - proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
-- implementation: upgraded 2026-03-12 via KMS (`autoloop-deployer`)
+- implementation: `0x26adc1216bda368a74d786148dcab9baca74dd7f`, deployed 2026-03-12 via KMS (`autoloop-deployer`)
 - status: **LIVE** (unpaused 2026-03-13, tx `0xb31a24063ac8c74a9f8de802b149f477c21a33434d486eab8e7da96ef6b3030f`)
 - automation: enabled (delay=300s, external entropy required)
 - fee setting: enabled for testing only (bps=200, recipient=`0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79`)
+- provenance warning: the implementation is not explorer-verified and its executable bytecode does not match the current checkout; reconcile source before new live-write validation or upgrade decisions
 
 Frontend deployment:
 

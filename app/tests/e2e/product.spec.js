@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {
   decodeFunctionResult,
+  encodeAbiParameters,
   encodeFunctionData,
   encodePacked,
   hexToBigInt,
@@ -12,6 +13,7 @@ import { readFileSync } from 'node:fs';
 import PlundrixGameABI from '../../src/config/PlundrixGame.json' with { type: 'json' };
 
 const TEST_WALLET = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC';
+const TEST_OPPONENT = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
 const runtimeIssues = new WeakMap();
 
 test.beforeEach(async ({ page }) => {
@@ -73,6 +75,47 @@ async function guaranteeNextPickSuccess(gameId, playerIndex) {
     timestamp += 1n;
   }
   await rpc('evm_setNextBlockTimestamp', [toHex(timestamp)]);
+}
+
+async function totalGames() {
+  const result = await rpc('eth_call', [{
+    to: configuredContractAddress(),
+    data: encodeFunctionData({ abi: PlundrixGameABI, functionName: 'totalGames' }),
+  }, 'latest']);
+  return decodeFunctionResult({ abi: PlundrixGameABI, functionName: 'totalGames', data: result });
+}
+
+function playerStructSlot(gameId, playerIndex) {
+  const gamePlayersSlot = keccak256(encodeAbiParameters(
+    [{ type: 'uint256' }, { type: 'uint256' }],
+    [gameId, 353n],
+  ));
+  return BigInt(keccak256(encodeAbiParameters(
+    [{ type: 'uint256' }, { type: 'uint256' }],
+    [playerIndex, BigInt(gamePlayersSlot)],
+  )));
+}
+
+async function setStorage(slot, value) {
+  await rpc('anvil_setStorageAt', [
+    configuredContractAddress(),
+    toHex(slot, { size: 32 }),
+    toHex(value, { size: 32 }),
+  ]);
+}
+
+async function sendContractTransaction(from, functionName, args) {
+  const hash = await rpc('eth_sendTransaction', [{
+    from,
+    to: configuredContractAddress(),
+    data: encodeFunctionData({ abi: PlundrixGameABI, functionName, args }),
+  }]);
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    const receipt = await rpc('eth_getTransactionReceipt', [hash]);
+    if (receipt) return receipt;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  throw new Error(`Timed out waiting for ${functionName} transaction`);
 }
 
 async function installTestWallet(page) {
@@ -178,6 +221,45 @@ test('configured active match renders the real game shell', async ({ page }) => 
   await expectNoSeriousA11yIssues(page);
 });
 
+test('browser wallet can create a new operation from the homepage', async ({ page }) => {
+  test.setTimeout(60_000);
+  const createdGameId = Number(await totalGames()) + 1;
+  await installTestWallet(page);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Connect', exact: true }).first().click();
+  await page.getByRole('button', { name: 'Create Game' }).click();
+  const dialog = page.getByText('New Operation').locator('..');
+  await expect(dialog.getByText(/public beta is free to play/i)).toBeVisible();
+  await dialog.getByRole('button', { name: 'Create', exact: true }).click();
+  await expect(page.getByText('Confirmed', { exact: true }).first()).toBeVisible({ timeout: 15_000 });
+  const createdOperation = page.getByRole('button', { name: new RegExp(`OP-${String(createdGameId).padStart(3, '0')}`, 'i') });
+  await expect(createdOperation).toBeVisible({ timeout: 15_000 });
+  await expect(createdOperation).toContainText(/open/i);
+
+  await sendContractTransaction(TEST_OPPONENT, 'registerPlayer', [BigInt(createdGameId)]);
+  await createdOperation.click();
+  await expect(page.getByRole('heading', { name: 'Operation Briefing' })).toBeVisible();
+  await expect(page.getByText('Crew Manifest (1 enrolled)')).toBeVisible();
+  await page.getByRole('button', { name: 'Join Operation' }).click();
+  await expect(page.getByText('Crew Manifest (2 enrolled)')).toBeVisible({ timeout: 15_000 });
+  await page.getByRole('button', { name: 'Start Operation' }).click();
+  await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible({ timeout: 15_000 });
+
+  const finalistSlot = playerStructSlot(BigInt(createdGameId), 2n);
+  await setStorage(finalistSlot + 1n, 4n);
+  await setStorage(finalistSlot + 2n, 5n);
+  await sendContractTransaction(TEST_OPPONENT, 'submitAction', [BigInt(createdGameId), 2, '0x0000000000000000000000000000000000000000']);
+
+  await page.getByRole('button', { name: 'Execute' }).first().click();
+  await expect(page.getByText('Action committed', { exact: true })).toBeVisible({ timeout: 15_000 });
+  const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
+  await expect(resolve).toBeEnabled({ timeout: 20_000 });
+  await guaranteeNextPickSuccess(BigInt(createdGameId), 2n);
+  await resolve.click();
+  await expect(page.getByRole('heading', { name: 'Vault Breached' })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText('You Win')).toBeVisible();
+});
+
 test('browser wallet can join, start, and commit a real local-chain turn', async ({ page }) => {
   test.setTimeout(60_000);
   await installTestWallet(page);
@@ -207,10 +289,23 @@ test('browser wallet can complete and resolve a real local-chain round', async (
   await page.getByRole('button', { name: 'Connect', exact: true }).first().click();
   await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible();
 
-  await page.keyboard.press('1');
+  await page.getByRole('button', { name: 'Execute' }).first().click();
   await expect(page.getByText('Action committed', { exact: true })).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByRole('button', { name: 'Resolve', exact: true })).toBeEnabled({ timeout: 15_000 });
-  await page.keyboard.press('r');
+  const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
+  await expect(resolve).toBeEnabled({ timeout: 15_000 });
+  await resolve.click();
+  await expect(page.getByText('Round resolution confirmed', { exact: true })).toBeVisible({ timeout: 15_000 });
+  const resolution = page.getByRole('region', { name: 'Round resolution' });
+  await expect(resolution).toBeVisible({ timeout: 15_000 });
+  await expect(resolution.getByText(/LOCK CRACKED|NO JOY|TOOL FOUND|NOTHING/)).toHaveCount(2);
+  await expect(resolution.getByRole('button', { name: 'Continue to next round' })).toBeVisible({ timeout: 5_000 });
+  if (process.env.PLUNDRIX_CAPTURE_EVIDENCE) {
+    await expect(page.getByText('Round resolution confirmed', { exact: true })).toBeHidden({ timeout: 6_000 });
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await resolution.screenshot({ path: 'reports/visual-audit/a-plus/resolution-desktop.png' });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await resolution.screenshot({ path: 'reports/visual-audit/a-plus/resolution-mobile.png' });
+  }
   await expect(page.getByRole('region', { name: 'Vault stage' }).getByRole('heading', { name: '2', exact: true })).toBeVisible({ timeout: 15_000 });
 });
 

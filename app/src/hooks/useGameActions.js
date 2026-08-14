@@ -16,7 +16,7 @@ function ensureConfigured() {
 export function useGameActions() {
   const { writeContractAsync, data: hash, isPending, error } = useWriteContract();
 
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const { data: receipt, isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   const createGame = () => {
     ensureConfigured();
@@ -112,6 +112,7 @@ const registerPlayer = (gameId, value) => {
     submitAction,
     resolveRound,
     hash,
+    receipt,
     isPending,
     isConfirming,
     isSuccess,

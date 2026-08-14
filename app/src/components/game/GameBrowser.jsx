@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { parseEther } from 'viem';
 import { useTotalGames } from '../../hooks/useTotalGames';
@@ -13,7 +13,7 @@ const ENABLE_STAKES = import.meta.env.VITE_ENABLE_STAKES === 'true';
 
 export default function GameBrowser() {
   const { address } = useAccount();
-  const { totalGames, isLoading, error } = useTotalGames();
+  const { totalGames, isLoading, error, refetch } = useTotalGames();
   const {
     createGame,
     createStakesGame,
@@ -30,6 +30,10 @@ export default function GameBrowser() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createMode, setCreateMode] = useState(GameMode.FREE);
   const [entryFeeInput, setEntryFeeInput] = useState('0.01');
+
+  useEffect(() => {
+    if (isSuccess) refetch();
+  }, [isSuccess, refetch]);
 
   const count = totalGames !== undefined ? Number(totalGames) : 0;
 
