@@ -78,3 +78,29 @@ Overall grade: **A-**
 - Add curated replay posters and configured resolution/game-over captures that extend the vault art family.
 - Migrate to Wagmi 3 and retest, removing the remaining UUID advisory chain without compatibility overrides.
 - Validate the same journey against the deployed Sepolia configuration with a fresh funded test wallet.
+
+## v0.4.0 - Victory, art family, and security closure
+
+Date: 2026-08-13
+
+Overall grade: **A**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| First user journey | A | A browser wallet joins, starts, submits, resolves, breaches the fifth lock, and reaches the final briefing on a fresh local contract fixture. Practice remains wallet-free. Browser-created operation coverage and Sepolia validation remain. |
+| Core product clarity | A | The five-lock objective, simultaneous three-choice round, playable practice path, and replay proof now connect the marketing promise to the tested product loop. |
+| Gameplay systems | A- | Contract-backed completion is automated and the full core test portfolio remains the release gate. Four facilitated first-match sessions are still required to validate comprehension and delight with humans. |
+| Visual hierarchy | A | The game-first homepage, replay art cards, configured lobby/active states, and desktop/mobile final briefing have reviewed evidence captures. |
+| Art direction | A | Three original GPT Image 2 replay scenes extend the brass, tungsten, blueprint-blue, and sabotage-red vault identity. Optimized 144-184 KB WebP derivatives serve the UI while archival PNGs remain available. |
+| Trust / proof | A | Replay proof links to inspectable deterministic matches, the browser gate uses real contract writes, and console, page, resource, accessibility, and mobile-overflow defects fail the suite. |
+| Technical reliability | A+ | Wagmi 3.7.6 removes 426 net packages and all production audit findings. The build drops from about 22 seconds/5,386 modules to 6.6 seconds/1,856 modules, and all 14 active browser scenarios pass post-migration. |
+| Accessibility / responsive | A | Serious/critical Axe checks cover marketing, lobby, active play, and the final briefing. The operator report is keyboard-scrollable, the network control is named, and the connected mobile header no longer clips. |
+| Discovery / SEO | A- | Metadata, VideoGame schema, sitemap, comparison pages, and social imagery remain production-build verified. External search-performance evidence is not yet available. |
+| Documentation / tracking | A | The implementation checklist, visual evidence, report card, and dependency register now match the shipped system and distinguish automated proof from human/live-network work. |
+
+## Remaining A+ evidence
+
+- Automate browser-created operations instead of beginning the join journey from a seeded lobby.
+- Import at least four facilitated first-match playtests and act on comprehension or drop-off findings.
+- Validate the full journey against deployed Sepolia with a fresh funded test wallet.
+- Capture the dedicated animated resolution sequence at desktop and mobile widths.

@@ -2,7 +2,15 @@ import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createPublicClient, createWalletClient, http, zeroAddress } from 'viem';
+import {
+  createPublicClient,
+  createWalletClient,
+  encodeAbiParameters,
+  http,
+  keccak256,
+  toHex,
+  zeroAddress,
+} from 'viem';
 import { mnemonicToAccount } from 'viem/accounts';
 import { foundry } from 'viem/chains';
 
@@ -76,6 +84,32 @@ function contractAddressFromEnv() {
   return match[1];
 }
 
+async function setStorage(address, slot, value) {
+  const response = await fetch(rpcUrl, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'anvil_setStorageAt',
+      params: [address, toHex(slot, { size: 32 }), toHex(value, { size: 32 })],
+    }),
+  });
+  const payload = await response.json();
+  if (payload.error) throw new Error(payload.error.message);
+}
+
+function playerStructSlot(gameId, playerIndex) {
+  const gamePlayersSlot = keccak256(encodeAbiParameters(
+    [{ type: 'uint256' }, { type: 'uint256' }],
+    [gameId, 353n],
+  ));
+  return BigInt(keccak256(encodeAbiParameters(
+    [{ type: 'uint256' }, { type: 'uint256' }],
+    [playerIndex, BigInt(gamePlayersSlot)],
+  )));
+}
+
 async function seedGames(address) {
   const abi = JSON.parse(readFileSync(resolve(appDir, 'src/config/PlundrixGame.json'), 'utf8'));
   const publicClient = createPublicClient({ chain: foundry, transport: http(rpcUrl) });
@@ -90,6 +124,7 @@ async function seedGames(address) {
     await publicClient.waitForTransactionReceipt({ hash });
   }
 
+  console.log('Seeding E2E game states...');
   await write(wallets[0], 'createGame');
   await write(wallets[1], 'registerPlayer', [1n]);
   await write(wallets[2], 'registerPlayer', [1n]);
@@ -109,6 +144,27 @@ async function seedGames(address) {
   await write(wallets[2], 'registerPlayer', [4n]);
   await write(wallets[0], 'startGame', [4n]);
   await write(wallets[1], 'submitAction', [4n, 1, zeroAddress]);
+
+  // Build a real near-victory state with maximum tools for the browser finale.
+  await write(wallets[0], 'createGame');
+  await write(wallets[1], 'registerPlayer', [5n]);
+  await write(wallets[2], 'registerPlayer', [5n]);
+  await write(wallets[0], 'startGame', [5n]);
+
+  const finalistSlot = playerStructSlot(5n, 2n);
+  await setStorage(address, finalistSlot + 1n, 4n);
+  await setStorage(address, finalistSlot + 2n, 5n);
+  const finalist = await publicClient.readContract({
+    address,
+    abi,
+    functionName: 'getPlayerState',
+    args: [5n, wallets[2].account.address],
+  });
+  if (finalist[0] !== 4n || finalist[1] !== 5n) {
+    throw new Error('Failed to prepare deterministic near-victory fixture');
+  }
+  await write(wallets[1], 'submitAction', [5n, 2, zeroAddress]);
+  console.log('Seeded five E2E game states.');
 }
 
 function shutdown(code = 0) {
@@ -120,12 +176,15 @@ process.once('SIGINT', () => shutdown());
 process.once('SIGTERM', () => shutdown());
 
 try {
+  console.log('Starting deterministic Plundrix E2E environment...');
   launch('anvil', ['--silent', '--port', '19655']);
   await waitForRpc();
+  console.log('Anvil ready; deploying contracts...');
   await runToCompletion(process.execPath, ['scripts/deploy-local.mjs'], {
     cwd: root,
     env: { ANVIL_RPC_URL: rpcUrl },
   });
+  console.log('Contracts deployed; preparing fixtures...');
   await seedGames(contractAddressFromEnv());
   launch(process.execPath, [resolve(appDir, 'node_modules/vite/bin/vite.js'), '--host', '127.0.0.1', '--port', '5502'], { cwd: appDir });
   await waitForUrl(appUrl);

@@ -81,8 +81,21 @@ export default function ReplaysPage() {
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {gallery.map((item) => {
           const replay = replays.find((entry) => entry.id === item.id);
+          const gallerySeed = replayGallerySeeds.find((entry) => entry.id === item.id);
           return (
-            <article key={item.id} className="rounded border border-vault-border bg-vault-surface/75 p-4">
+            <article key={item.id} className="overflow-hidden rounded border border-vault-border bg-vault-surface/75">
+              {gallerySeed?.image && (
+                <div className="relative aspect-[16/9] overflow-hidden border-b border-vault-border bg-vault-dark">
+                  <img
+                    src={gallerySeed.image}
+                    alt={gallerySeed.imageAlt}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition duration-700 hover:scale-[1.035]"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-vault-dark/60 to-transparent" />
+                </div>
+              )}
+              <div className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="label">Score {item.score.toFixed(1)}</p>
@@ -116,6 +129,7 @@ export default function ReplaysPage() {
                 <button type="button" onClick={() => replay && setLibrary(saveReplayToLibrary(replay))} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
                   Save
                 </button>
+              </div>
               </div>
             </article>
           );

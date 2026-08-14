@@ -28,6 +28,7 @@ export default function NetworkBadge() {
 
       {isSupported ? (
         <select
+          aria-label="Active network"
           value={chain?.id ?? defaultSwitchChainId}
           onChange={(e) => switchChain({ chainId: Number(e.target.value) })}
           disabled={isPending}

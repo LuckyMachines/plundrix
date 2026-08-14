@@ -6,6 +6,8 @@ export const replayGallerySeeds = [
     strategies: ['balanced', 'picker', 'searcher', 'saboteur'],
     label: 'Comeback pressure',
     marketingUse: 'homepage replay strip',
+    image: '/images/replay-comeback.webp',
+    imageAlt: 'A lockpicker makes a final attempt while a sabotaged cable sparks below the vault',
   },
   {
     id: 'gallery-sabotage',
@@ -14,6 +16,8 @@ export const replayGallerySeeds = [
     strategies: ['saboteur', 'saboteur', 'balanced', 'searcher'],
     label: 'Sabotage swing',
     marketingUse: 'press page embed',
+    image: '/images/replay-sabotage.webp',
+    imageAlt: 'A stolen wrench rests across a severed live cable in front of the vault',
   },
   {
     id: 'gallery-close',
@@ -22,5 +26,7 @@ export const replayGallerySeeds = [
     strategies: ['balanced', 'picker', 'searcher', 'saboteur'],
     label: 'Close finish',
     marketingUse: 'social card',
+    image: '/images/replay-close-finish.webp',
+    imageAlt: 'Four lockpicking stations converge on the same final vault lock',
   },
 ];

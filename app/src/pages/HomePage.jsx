@@ -51,6 +51,8 @@ const REPLAY_PROOF = [
     title: 'One lock from defeat',
     detail: 'A late sabotage reopens a table that looked finished.',
     stat: 'Final-round swing',
+    image: '/images/replay-comeback.webp',
+    imageAlt: 'A lockpicker makes a final attempt while a sabotaged cable sparks below the vault',
   },
   {
     id: 'gallery-sabotage',
@@ -58,6 +60,8 @@ const REPLAY_PROOF = [
     title: 'The stolen wrench',
     detail: 'Two saboteurs collide while the quiet player slips ahead.',
     stat: '4 operators',
+    image: '/images/replay-sabotage.webp',
+    imageAlt: 'A stolen wrench rests across a severed live cable in front of the vault',
   },
   {
     id: 'gallery-close',
@@ -65,6 +69,8 @@ const REPLAY_PROOF = [
     title: 'Everyone at match point',
     detail: 'The entire table reaches the fifth lock in the same round.',
     stat: '1 vault, 4 threats',
+    image: '/images/replay-close-finish.webp',
+    imageAlt: 'Four lockpicking stations converge on the same final vault lock',
   },
 ];
 
@@ -206,17 +212,25 @@ export default function HomePage() {
                 <Link
                   key={replay.id}
                   to={`/replay/${replay.id}`}
-                  className="group relative min-h-[260px] overflow-hidden border border-vault-border bg-vault-dark p-6 transition hover:-translate-y-1 hover:border-tungsten/45"
+                  className="group relative min-h-[360px] overflow-hidden border border-vault-border bg-vault-dark p-6 transition hover:-translate-y-1 hover:border-tungsten/55 focus-visible:-translate-y-1 focus-visible:border-tungsten/55"
                 >
-                  <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_80%_10%,rgba(196,149,106,0.2),transparent_30%),linear-gradient(135deg,transparent_55%,rgba(58,124,196,0.08))]" />
+                  <img
+                    src={replay.image}
+                    alt={replay.imageAlt}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.035] group-focus-visible:scale-[1.035]"
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,15,0.32)_0%,rgba(10,10,15,0.46)_36%,rgba(10,10,15,0.98)_100%)]" />
                   <div className="relative flex h-full flex-col">
                     <div className="flex items-center justify-between gap-4">
                       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-tungsten">{replay.eyebrow}</span>
                       <span className="font-mono text-[10px] tracking-[0.16em] text-vault-text-dim">0{index + 1}</span>
                     </div>
-                    <h3 className="mt-8 max-w-xs font-display text-3xl font-semibold uppercase leading-none text-vault-text">{replay.title}</h3>
-                    <p className="mt-4 max-w-sm text-base leading-6 text-vault-text-dim">{replay.detail}</p>
-                    <div className="mt-auto flex items-end justify-between gap-4 pt-8">
+                    <div className="mt-auto pt-24">
+                      <h3 className="max-w-xs font-display text-3xl font-semibold uppercase leading-none text-white">{replay.title}</h3>
+                      <p className="mt-4 max-w-sm text-base leading-6 text-white/75">{replay.detail}</p>
+                    </div>
+                    <div className="flex items-end justify-between gap-4 pt-6">
                       <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">{replay.stat}</span>
                       <span className="font-mono text-xs text-vault-text transition-transform group-hover:translate-x-1">Play -&gt;</span>
                     </div>

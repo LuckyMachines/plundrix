@@ -194,7 +194,7 @@ export default function GameOver({ gameId }) {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" role="region" aria-label="Operator report table" tabIndex={0}>
           <table className="w-full min-w-[400px]">
             <thead>
               <tr className="border-b border-vault-border bg-vault-dark/50">

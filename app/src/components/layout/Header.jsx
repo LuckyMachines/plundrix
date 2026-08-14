@@ -36,7 +36,7 @@ export default function Header({ onHelpClick }) {
               <path d="M16 5v8M16 19v8M5 16h8M19 16h8M8.2 8.2l5.6 5.6M18.2 18.2l5.6 5.6" />
             </svg>
           </span>
-          <span className="font-display text-xl font-bold uppercase tracking-[0.24em] text-vault-text">Plundrix</span>
+          <span className="hidden font-display text-xl font-bold uppercase tracking-[0.24em] text-vault-text sm:inline">Plundrix</span>
         </Link>
 
         <nav className="ml-auto hidden items-center gap-1 lg:flex" aria-label="Primary navigation">

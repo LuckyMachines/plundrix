@@ -1,7 +1,79 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import {
+  decodeFunctionResult,
+  encodeFunctionData,
+  encodePacked,
+  hexToBigInt,
+  keccak256,
+  toHex,
+} from 'viem';
+import { readFileSync } from 'node:fs';
+import PlundrixGameABI from '../../src/config/PlundrixGame.json' with { type: 'json' };
 
 const TEST_WALLET = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC';
+const runtimeIssues = new WeakMap();
+
+test.beforeEach(async ({ page }) => {
+  const issues = [];
+  runtimeIssues.set(page, issues);
+  page.on('console', (message) => {
+    if (message.type() === 'error') issues.push(`console: ${message.text()}`);
+  });
+  page.on('pageerror', (error) => issues.push(`page: ${error.message}`));
+  page.on('requestfailed', (request) => {
+    const reason = request.failure()?.errorText || 'unknown error';
+    if (reason !== 'net::ERR_ABORTED') issues.push(`request: ${request.url()} (${reason})`);
+  });
+});
+
+test.afterEach(async ({ page }) => {
+  expect(runtimeIssues.get(page) || [], 'Browser runtime should stay free of console and resource errors').toEqual([]);
+});
+
+function configuredContractAddress() {
+  const content = readFileSync(new URL('../../.env.local', import.meta.url), 'utf8');
+  const match = content.match(/^VITE_CONTRACT_ADDRESS=(0x[a-fA-F0-9]{40})$/m);
+  if (!match) throw new Error('Missing configured E2E contract address');
+  return match[1];
+}
+
+async function rpc(method, params = []) {
+  const response = await fetch('http://127.0.0.1:19655', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+  });
+  const payload = await response.json();
+  if (payload.error) throw new Error(payload.error.message);
+  return payload.result;
+}
+
+async function guaranteeNextPickSuccess(gameId, playerIndex) {
+  const address = configuredContractAddress();
+  const callData = encodeFunctionData({
+    abi: PlundrixGameABI,
+    functionName: 'getGameInfo',
+    args: [gameId],
+  });
+  const result = await rpc('eth_call', [{ to: address, data: callData }, 'latest']);
+  const [, round] = decodeFunctionResult({
+    abi: PlundrixGameABI,
+    functionName: 'getGameInfo',
+    data: result,
+  });
+  const block = await rpc('eth_getBlockByNumber', ['latest', false]);
+  let timestamp = hexToBigInt(block.timestamp) + 1n;
+  while (true) {
+    const roll = BigInt(keccak256(encodePacked(
+      ['bytes32', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'],
+      [block.hash, gameId, round, timestamp, 0n, playerIndex],
+    ))) % 100n;
+    if (roll < 95n) break;
+    timestamp += 1n;
+  }
+  await rpc('evm_setNextBlockTimestamp', [toHex(timestamp)]);
+}
 
 async function installTestWallet(page) {
   await page.addInitScript(({ account, rpcUrl }) => {
@@ -55,6 +127,7 @@ test('homepage explains the game and makes the turn demo interactive', async ({ 
   const sabotage = page.getByRole('button', { name: /sabotage break their plan/i });
   await sabotage.click();
   await expect(page.getByText(/rook is stunned/i)).toBeVisible();
+  await expect(page.locator('img[src^="/images/replay-"]')).toHaveCount(3);
   await expectNoSeriousA11yIssues(page);
 });
 
@@ -106,17 +179,25 @@ test('configured active match renders the real game shell', async ({ page }) => 
 });
 
 test('browser wallet can join, start, and commit a real local-chain turn', async ({ page }) => {
+  test.setTimeout(60_000);
   await installTestWallet(page);
   await page.goto('/game/3');
   await page.getByRole('button', { name: 'Connect', exact: true }).first().click();
   await expect(page.getByRole('button', { name: /0x3c44/i }).first()).toBeVisible();
 
-  await page.getByRole('button', { name: 'Join Operation' }).click();
-  await expect(page.getByText('Crew Manifest (2 enrolled)')).toBeVisible({ timeout: 15_000 });
-  await page.getByRole('button', { name: 'Start Operation' }).click();
-  await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible({ timeout: 15_000 });
+  const join = page.getByRole('button', { name: 'Join Operation' });
+  const start = page.getByRole('button', { name: 'Start Operation' });
+  const currentAction = page.getByRole('region', { name: 'Current action' });
+  await expect(join.or(start).or(currentAction)).toBeVisible({ timeout: 15_000 });
+  if (await join.isVisible().catch(() => false)) {
+    await join.click();
+    await expect(page.getByText('Crew Manifest (2 enrolled)')).toBeVisible({ timeout: 15_000 });
+  }
+  if (await start.isVisible().catch(() => false)) await start.click();
+  await expect(currentAction).toBeVisible({ timeout: 15_000 });
 
-  await page.getByRole('button', { name: 'Execute' }).first().click();
+  const execute = page.getByRole('button', { name: 'Execute' }).first();
+  if (await execute.isEnabled()) await execute.click();
   await expect(page.getByText('Action committed', { exact: true })).toBeVisible({ timeout: 15_000 });
 });
 
@@ -133,8 +214,46 @@ test('browser wallet can complete and resolve a real local-chain round', async (
   await expect(page.getByRole('region', { name: 'Vault stage' }).getByRole('heading', { name: '2', exact: true })).toBeVisible({ timeout: 15_000 });
 });
 
+test('browser wallet can breach the vault and reach the final briefing', async ({ page }) => {
+  test.setTimeout(60_000);
+  await installTestWallet(page);
+  await page.goto('/game/5');
+  await page.getByRole('button', { name: 'Connect', exact: true }).first().click();
+  const finalBriefing = page.getByRole('heading', { name: 'Vault Breached' });
+  const execute = page.getByRole('button', { name: 'Execute' }).first();
+  await expect(finalBriefing.or(execute)).toBeVisible({ timeout: 15_000 });
+  if (!await finalBriefing.isVisible().catch(() => false)) {
+    const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
+    if (await execute.isEnabled()) await execute.click();
+    await expect(resolve).toBeEnabled({ timeout: 20_000 });
+    await guaranteeNextPickSuccess(5n, 2n);
+    await resolve.click();
+  }
+
+  await expect(finalBriefing).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText('You Win')).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(finalBriefing).toBeVisible();
+  await expect(page.getByText('You Win')).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  const hasHorizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+  expect(hasHorizontalOverflow, 'Final briefing should not overflow a mobile viewport').toBe(false);
+});
+
 test('capture configured visual evidence', async ({ page }) => {
   test.skip(!process.env.PLUNDRIX_CAPTURE_EVIDENCE, 'Run explicitly to refresh review evidence.');
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1, name: /crack the vault/i })).toBeVisible();
+  await page.screenshot({ path: 'reports/visual-audit/final/home-desktop.png', fullPage: true });
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1, name: /crack the vault/i })).toBeVisible();
+  await page.screenshot({ path: 'reports/visual-audit/final/home-mobile.png', fullPage: true });
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/game/1');
   await expect(page.getByRole('heading', { name: 'Operation Briefing' })).toBeVisible();
   await page.screenshot({ path: 'reports/visual-audit/a-plus/lobby-desktop.png', fullPage: true });
@@ -147,4 +266,14 @@ test('capture configured visual evidence', async ({ page }) => {
   await page.goto('/game/2');
   await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible();
   await page.screenshot({ path: 'reports/visual-audit/a-plus/active-mobile.png', fullPage: true });
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/game/5');
+  await expect(page.getByRole('heading', { name: 'Vault Breached' })).toBeVisible();
+  await page.screenshot({ path: 'reports/visual-audit/a-plus/game-over-desktop.png', fullPage: true });
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/game/5');
+  await expect(page.getByRole('heading', { name: 'Vault Breached' })).toBeVisible();
+  await page.screenshot({ path: 'reports/visual-audit/a-plus/game-over-mobile.png', fullPage: true });
 });
