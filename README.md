@@ -224,7 +224,10 @@ npm run kms:address
 npm run kms:fund
 npm run deploy:kms
 npm run autoloop:start
+npm run verify:sepolia:funded # read-only preflight by default
 ```
+
+The funded Sepolia proof requires an explicit `PLUNDRIX_ALLOW_SEPOLIA_WRITES=true` opt-in. It creates only a FREE game, preserves a configurable operator reserve after a conservative gas ceiling, caps the number of rounds, and writes transaction evidence to `reports/sepolia-funded/latest.json`.
 
 ## Game Rules
 

@@ -43,3 +43,11 @@ Run `npm run verify:sepolia:provenance` from the repository root after `npm run 
 Sourcify verification job `fc4431fc-57d4-4bdf-a3c5-c66198b5ff99` completed at 2026-08-14 02:01:49 UTC with exact creation and runtime matches. [Blockscout](https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract) and [Routescan](https://routescan.io/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?chainid=11155111) both report `PlundrixGame`, Solidity `0.8.17`, optimizer enabled, and 200 runs as verified. The repository previously documented `0x6748...224f`, which is not the proxy's current implementation slot.
 
 Do not run a funded Sepolia write journey until the recovered revision and current live configuration are explicitly approved for test transactions.
+
+## Funded journey gate
+
+Run `npm run verify:sepolia:funded` for a read-only preflight. It verifies the live proxy, pause state, automation settings, both HSM player addresses, operator roles, balances, and the available reserve without signing or broadcasting a transaction.
+
+The write path requires `PLUNDRIX_ALLOW_SEPOLIA_WRITES=true`. It funds only the dedicated `plundrix-deployer` opponent to a 0.006 Sepolia ETH target when needed, refuses non-FREE games, preserves at least 0.02 Sepolia ETH in the operator after a conservative gas ceiling, caps play at 18 rounds by default, requires external drand entropy, checks every receipt, and records transaction hashes and final state in `reports/sepolia-funded/latest.json`.
+
+The 2026-08-13 preflight passed with 0.049700153630424371 Sepolia ETH in the operator, zero games, and all required roles. The first guarded write attempt stopped before signing because non-interactive `gcloud auth print-access-token` timed out. Balances and `totalGames` remained unchanged. Refresh GCP CLI authentication before rerunning the explicit write command.

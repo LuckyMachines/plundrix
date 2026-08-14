@@ -43,5 +43,7 @@
 - [x] Build and verify the marketing site against read-only live Sepolia state with no browser/runtime errors.
 - [x] Reconcile the live implementation runtime to exact source and compiler settings with a repeatable provenance gate.
 - [x] Publish the reconciled implementation source through Sourcify and confirm public records on Blockscout and Routescan.
+- [x] Add a guarded, FREE-only, reserve-protected, bounded Sepolia create-to-victory gate using two HSM-backed players.
+- [ ] Refresh non-interactive GCP authentication and complete the funded gate; retain its transaction report.
 - [ ] Validate homepage claims and CTA comprehension with first-time players.
 - [ ] Re-grade after human evidence and live-state e2e are attached.

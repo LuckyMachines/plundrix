@@ -142,3 +142,21 @@ Overall grade: **A** (automated product and provenance bar: **A+**)
 
 - Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.
 - Run a funded Sepolia create-to-victory journey after the recovered deployment is explicitly approved for new transactions.
+
+## v0.7.0 - Guarded funded-journey gate
+
+Date: 2026-08-13
+
+Overall grade: **A** (automated local, read-only live, and provenance bar: **A+**)
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Live configuration | A | A read-only preflight now verifies both HSM players, balances, operator roles, pause state, external entropy, and the zero-game baseline. The write path is explicitly guarded, FREE-only, reserve-protected, receipt-checked, and round-bounded. It has not completed because GCP token refresh timed out before signing. |
+| Operational safety | A+ | The gate cannot silently spend: writes require an exact environment opt-in, the operator retains at least 0.02 ETH, opponent funding is capped to a target, games must have zero entry fee, and evidence contains no private keys. Gcloud children are hidden, directly supervised, and time-bounded on Windows. |
+| Technical reliability | A+ | A failed credential refresh exits before broadcast and leaves balances and `totalGames` unchanged. The default command is a repeatable read-only health check. |
+| Documentation / tracking | A+ | The run command, safeguards, successful preflight, precise authentication blocker, and expected report location are recorded without treating an attempted write as completed evidence. |
+
+## Remaining strict A+ release evidence
+
+- Refresh non-interactive GCP CLI authentication and complete the guarded funded Sepolia journey.
+- Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.

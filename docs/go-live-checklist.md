@@ -15,6 +15,7 @@ Current Sepolia deployment:
 - automation: enabled (delay=300s, external entropy required)
 - fee setting: enabled for testing only (bps=200, recipient=`0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79`)
 - provenance: runtime matches commit `28e3194` after normalizing the five compiler-declared UUPS immutable ranges; source is verified on Blockscout and Routescan
+- funded journey: guarded two-HSM-player gate and read-only preflight pass; live write awaits refreshed non-interactive GCP authentication
 
 Frontend deployment:
 

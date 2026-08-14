@@ -1,5 +1,6 @@
 import { spawnSync } from 'child_process';
 import { createPublicKey } from 'crypto';
+import { join } from 'path';
 import {
   concatHex,
   encodeAbiParameters,
@@ -72,14 +73,22 @@ export function publicKeyPemToAddress(pem) {
 }
 
 function gcloud(commandArgs) {
-  const result =
-    process.platform === 'win32'
-      ? spawnSync('cmd.exe', ['/d', '/s', '/c', 'gcloud', ...commandArgs], {
-          encoding: 'utf8',
-        })
-      : spawnSync('gcloud', commandArgs, {
-          encoding: 'utf8',
-        });
+  const isWindows = process.platform === 'win32';
+  const sdkRoot = process.env.CLOUDSDK_ROOT_DIR
+    || (isWindows && process.env.LOCALAPPDATA
+      ? join(process.env.LOCALAPPDATA, 'Google', 'Cloud SDK', 'google-cloud-sdk')
+      : undefined);
+  const command = isWindows && sdkRoot
+    ? (process.env.CLOUDSDK_PYTHON || join(sdkRoot, 'platform', 'bundledpython', 'python.exe'))
+    : 'gcloud';
+  const args = isWindows && sdkRoot
+    ? [join(sdkRoot, 'lib', 'gcloud.py'), ...commandArgs]
+    : commandArgs;
+  const result = spawnSync(command, args, {
+    encoding: 'utf8',
+    windowsHide: true,
+    timeout: Number(process.env.GCLOUD_TIMEOUT_MS || 30000),
+  });
   if (result.status !== 0) {
     const reason =
       result.stderr ||

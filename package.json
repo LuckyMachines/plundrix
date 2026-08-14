@@ -19,6 +19,7 @@
     "play:local": "npm run dev:local:start",
     "sync:abi": "node scripts/sync-abi.mjs",
     "verify:sepolia:provenance": "node scripts/verify-sepolia-provenance.mjs",
+    "verify:sepolia:funded": "node ops/verify-sepolia-funded.mjs",
     "test:agent": "node --test agent-service/test/*.test.mjs",
     "test:sol": "forge test",
     "test:js": "vitest run test/plundrix.test.js",
