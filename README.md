@@ -14,6 +14,7 @@ The repo currently ships:
 - Sepolia staging is live
 - current Sepolia proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
 - current Sepolia implementation: `0x26adc1216bda368a74d786148dcab9baca74dd7f`
+- implementation source is publicly verified on Blockscout and Routescan
 - staging proxy is currently unpaused
 - autoloop is enabled on Sepolia
 - external entropy is required on Sepolia

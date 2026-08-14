@@ -124,3 +124,21 @@ Overall grade: **A** (automated product bar: **A+**)
 - Publish the reconciled source for `0x26ad...dd7f` on a public explorer.
 - Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.
 - Perform a funded Sepolia write journey only after the recovered deployment is explicitly approved for new transactions.
+
+## v0.6.0 - Public implementation verification
+
+Date: 2026-08-13
+
+Overall grade: **A** (automated product and provenance bar: **A+**)
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Live configuration | A+ | Sourcify reports exact creation and runtime matches, while Blockscout and Routescan independently publish the complete source, contract name, compiler, EVM target, and optimizer settings. The repeatable provenance gate now fails if either bytecode or public explorer proof drifts. |
+| Technical reliability | A+ | Live-read, runtime-provenance, source-publication, local-chain victory, accessibility, build, audit, and unit/integration gates cover the automated release surface without a funded chain write. |
+| Trust / proof | A+ | Players and reviewers can inspect the implementation source publicly and reproduce the match from the checked-in artifact rather than relying on a repository claim. |
+| Documentation / tracking | A+ | README, launch checklist, readiness audit, implementation checklist, and PR evidence now link the deployed address to exact public verification records. |
+
+## Remaining strict A+ release evidence
+
+- Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.
+- Run a funded Sepolia create-to-victory journey after the recovered deployment is explicitly approved for new transactions.
