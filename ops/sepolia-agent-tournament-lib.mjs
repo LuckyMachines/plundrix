@@ -12,7 +12,7 @@ export const TOURNAMENT_AGENTS = Object.freeze([
   {
     id: 'tool-hoarder',
     name: 'Tool Hoarder',
-    description: 'Builds a three-tool stack before converting it into high-probability picks.',
+    description: 'Builds a two-tool stack before converting it into high-probability picks.',
   },
   {
     id: 'leader-hunter',
@@ -22,7 +22,7 @@ export const TOURNAMENT_AGENTS = Object.freeze([
   {
     id: 'saboteur',
     name: 'Saboteur',
-    description: 'Steals useful tools and applies stuns, but pivots to picks to close games.',
+    description: 'Disrupts material threats, then builds and converts its own finishing position.',
   },
 ]);
 
@@ -37,6 +37,15 @@ export function chooseAgentAction(agentId, { self, opponent, round, totalLocks =
   const matchPoint = self.locks >= totalLocks - 1;
   const rivalMatchPoint = opponent.locks >= totalLocks - 1;
 
+  if (
+    round >= 9
+    && ['adaptive', 'tool-hoarder', 'leader-hunter', 'saboteur'].includes(agentId)
+  ) {
+    return self.tools > 0
+      ? decision(ACTION.PICK, 'Late-game conversion forbids another disruption cycle.')
+      : decision(ACTION.SEARCH, 'Late-game recovery forbids another disruption cycle.');
+  }
+
   switch (agentId) {
     case 'lock-rusher':
       return decision(ACTION.PICK, 'Push lock progress every round, regardless of inventory.');
@@ -48,20 +57,20 @@ export function chooseAgentAction(agentId, { self, opponent, round, totalLocks =
       if (self.stunned && opponent.locks > self.locks) {
         return decision(ACTION.SABOTAGE, 'Use a guaranteed disruption while stunned.', true);
       }
-      if (self.tools < 3) {
-        return decision(ACTION.SEARCH, 'Build the three-tool conversion stack.');
+      if (self.tools < 2) {
+        return decision(ACTION.SEARCH, 'Build the two-tool conversion stack.');
       }
       return decision(ACTION.PICK, 'Convert the completed tool stack into lock progress.');
 
     case 'leader-hunter':
-      if (rivalMatchPoint || opponent.locks >= self.locks + 2) {
+      if (rivalMatchPoint || (opponent.locks >= self.locks + 2 && opponent.tools > 0)) {
         return decision(ACTION.SABOTAGE, 'Disrupt a rival with a decisive lock lead.', true);
       }
-      if (self.stunned) {
+      if (self.stunned && opponent.locks >= self.locks + 2) {
         return decision(ACTION.SABOTAGE, 'Trade the stunned round for guaranteed disruption.', true);
       }
-      if (self.tools === 0) {
-        return decision(ACTION.SEARCH, 'Build enough leverage before advancing.');
+      if (self.tools < 2) {
+        return decision(ACTION.SEARCH, 'Build a credible conversion position before advancing.');
       }
       return decision(ACTION.PICK, 'Advance while the race remains compressed.');
 
@@ -69,13 +78,16 @@ export function chooseAgentAction(agentId, { self, opponent, round, totalLocks =
       if (matchPoint && !self.stunned) {
         return decision(ACTION.PICK, 'Close the operation instead of over-disrupting.');
       }
-      if (round >= 12 && self.tools > 0 && !self.stunned) {
-        return decision(ACTION.PICK, 'Pivot to a late-game finish to avoid a sabotage loop.');
+      if (opponent.tools >= 2 || opponent.locks >= self.locks + 2) {
+        return decision(ACTION.SABOTAGE, 'Disrupt only a material inventory or lock threat.', true);
       }
-      if (opponent.tools > 0 || opponent.locks >= self.locks + 1 || self.stunned) {
-        return decision(ACTION.SABOTAGE, 'Steal leverage and stun the strongest immediate threat.', true);
+      if (self.stunned && (opponent.tools > 0 || opponent.locks > self.locks)) {
+        return decision(ACTION.SABOTAGE, 'Trade the stunned round for targeted counter-pressure.', true);
       }
-      return decision(ACTION.SEARCH, 'Create stealable leverage before applying pressure.');
+      if (self.tools < 2) {
+        return decision(ACTION.SEARCH, 'Build an independent finishing position before applying pressure.');
+      }
+      return decision(ACTION.PICK, 'Convert stored leverage instead of extending the disruption cycle.');
 
     case 'adaptive':
     default:
@@ -158,6 +170,8 @@ export function renderTournamentMarkdown(report) {
     '',
     `Generated: ${report.updatedAt}`,
     '',
+    `- Run: \`${report.runId}\``,
+    `- Strategy version: \`${report.strategyVersion}\``,
     `- Network: Sepolia (${report.chainId})`,
     `- Contract: \`${report.contractAddress}\``,
     `- Completed games: ${completeGames.length}/${report.targetGames}`,

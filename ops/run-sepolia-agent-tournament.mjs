@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import {
   formatEther,
   createPublicClient,
+  encodeFunctionData,
   fallback,
   getAddress,
   http,
@@ -15,7 +16,9 @@ import {
 import { sepolia } from 'viem/chains';
 import {
   getKmsKeyConfig,
+  prepareTransaction,
   sendTransactionWithKms,
+  signTransactionWithKms,
   writeContractWithKms,
 } from './kms-lib.mjs';
 import {
@@ -27,13 +30,17 @@ import {
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const artifact = JSON.parse(readFileSync(resolve(root, 'out/PlundrixGame.sol/PlundrixGame.json'), 'utf8'));
-const reportDir = resolve(root, 'reports/sepolia-agent-tournament');
+const runId = process.env.TOURNAMENT_RUN_ID || 'phase-1';
+const strategyVersion = process.env.TOURNAMENT_STRATEGY_VERSION || 'baseline-v1';
+assertSafeIdentifier(runId, 'TOURNAMENT_RUN_ID');
+assertSafeIdentifier(strategyVersion, 'TOURNAMENT_STRATEGY_VERSION');
+const reportDir = resolve(root, 'reports/sepolia-agent-tournament', runId);
 const statePath = resolve(reportDir, 'state.json');
 const markdownPath = resolve(reportDir, 'report.md');
 const configuredRpcUrl = process.env.SEPOLIA_RPC_URL || process.env.RPC_URL;
 const rpcUrls = configuredRpcUrl
-  ? [configuredRpcUrl, 'https://sepolia.gateway.tenderly.co', 'https://1rpc.io/sepolia']
-  : ['https://sepolia.gateway.tenderly.co', 'https://1rpc.io/sepolia', 'https://ethereum-sepolia-rpc.publicnode.com'];
+  ? [configuredRpcUrl, 'https://sepolia.gateway.tenderly.co']
+  : ['https://sepolia.gateway.tenderly.co'];
 const contractAddress = getAddress(process.env.SEPOLIA_CONTRACT_ADDRESS || '0x1FF715D46470B4024D88A12838e08A60855f0AE2');
 const operatorAddress = getAddress(process.env.SEPOLIA_OPERATOR_ADDRESS || '0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79');
 const opponentAddress = getAddress(process.env.SEPOLIA_OPPONENT_ADDRESS || '0xC7c627eC982988679D5D15E8ff9579fc0f0AB42f');
@@ -42,20 +49,42 @@ const opponentConfig = getKmsKeyConfig({ key: process.env.SEPOLIA_OPPONENT_KMS_K
 const allowWrites = process.env.PLUNDRIX_ALLOW_SEPOLIA_TOURNAMENT_WRITES === 'true';
 const targetGames = Number(process.env.TOURNAMENT_TARGET_GAMES || '50');
 const maxRounds = Number(process.env.TOURNAMENT_MAX_ROUNDS || '30');
+const roundPaceMs = Number(process.env.TOURNAMENT_ROUND_PACE_MS || '5000');
+const stopAfterCompleted = Number(process.env.TOURNAMENT_STOP_AFTER_COMPLETED || '0');
 const operatorReserve = parseEther(process.env.SEPOLIA_OPERATOR_RESERVE_ETH || '0.02');
 const operatorGasPerGame = BigInt(process.env.TOURNAMENT_OPERATOR_GAS_PER_GAME || '3000000');
 const opponentGasPerGame = BigInt(process.env.TOURNAMENT_OPPONENT_GAS_PER_GAME || '900000');
 const feeSafetyBps = BigInt(process.env.TOURNAMENT_FEE_SAFETY_BPS || '12500');
 const client = createPublicClient({
   chain: sepolia,
-  transport: fallback(rpcUrls.map((url) => http(url, { timeout: 12_000, retryCount: 1 }))),
+  transport: fallback(rpcUrls.map((url) => http(url, {
+    timeout: 12_000,
+    retryCount: 5,
+    retryDelay: 2_000,
+  }))),
 });
 const schedule = buildTournamentSchedule(5).slice(0, targetGames);
 const operator = { address: operatorAddress, config: operatorConfig };
 const opponent = { address: opponentAddress, config: opponentConfig };
+const gasCeilings = Object.freeze({
+  createGame: 250_000n,
+  registerPlayer: 200_000n,
+  startGame: 200_000n,
+  submitAction: 180_000n,
+  provideRoundEntropy: 180_000n,
+  resolveRound: 400_000n,
+});
+let feeQuotePromise;
+let feeQuoteExpiresAt = 0;
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+function assertSafeIdentifier(value, label) {
+  if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(value)) {
+    throw new Error(`${label} must use lowercase letters, numbers, and hyphens only`);
+  }
 }
 
 function atomicWrite(path, content) {
@@ -84,22 +113,114 @@ async function read(functionName, args = []) {
   return client.readContract({ address: contractAddress, abi: artifact.abi, functionName, args });
 }
 
+async function waitForRead(predicate, label, attempts = 10) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    if (await predicate()) return;
+    if (attempt < attempts) {
+      await new Promise((resolvePromise) => setTimeout(resolvePromise, 1500));
+    }
+  }
+  throw new Error(`Timed out waiting for consistent onchain state: ${label}`);
+}
+
+async function waitForPendingTransactions() {
+  let stableChecks = 0;
+  for (let attempt = 1; attempt <= 40; attempt += 1) {
+    const [operatorLatest, operatorPending, opponentLatest, opponentPending] = await Promise.all([
+      client.getTransactionCount({ address: operatorAddress, blockTag: 'latest' }),
+      client.getTransactionCount({ address: operatorAddress, blockTag: 'pending' }),
+      client.getTransactionCount({ address: opponentAddress, blockTag: 'latest' }),
+      client.getTransactionCount({ address: opponentAddress, blockTag: 'pending' }),
+    ]);
+    if (operatorLatest === operatorPending && opponentLatest === opponentPending) {
+      stableChecks += 1;
+      if (stableChecks >= 3) return;
+    } else {
+      stableChecks = 0;
+      console.log(`[resume] waiting for pending transactions: operator=${operatorLatest}/${operatorPending} opponent=${opponentLatest}/${opponentPending}`);
+    }
+    await new Promise((resolvePromise) => setTimeout(resolvePromise, 3_000));
+  }
+  throw new Error('Timed out waiting for previously broadcast transactions to settle');
+}
+
 async function waitForSuccess(hash, label) {
   const receipt = await client.waitForTransactionReceipt({ hash, confirmations: 1 });
   assert(receipt.status === 'success', `${label} reverted: ${hash}`);
   return receipt;
 }
 
-async function write(signer, functionName, args = []) {
-  const hash = await writeContractWithKms({
+async function currentFeeQuote() {
+  if (!feeQuotePromise || Date.now() >= feeQuoteExpiresAt) {
+    feeQuotePromise = client.estimateFeesPerGas().then((quote) => ({
+      maxFeePerGas: (quote.maxFeePerGas * 12500n + 9999n) / 10000n,
+      maxPriorityFeePerGas: quote.maxPriorityFeePerGas,
+    }));
+    feeQuoteExpiresAt = Date.now() + 45_000;
+  }
+  return feeQuotePromise;
+}
+
+async function prepareSignedWrite(signer, functionName, args, nonce, feeQuote) {
+  const transaction = await prepareTransaction({
     client,
     address: signer.address,
-    contractAddress,
-    abi: artifact.abi,
-    functionName,
-    args,
+    to: contractAddress,
+    data: encodeFunctionData({ abi: artifact.abi, functionName, args }),
+    gas: gasCeilings[functionName],
+    nonce,
+    ...feeQuote,
+  });
+  return signTransactionWithKms({
+    transaction,
+    address: signer.address,
     ...signer.config,
   });
+}
+
+async function sendRawWithBackoff(serializedTransaction, label, signer) {
+  for (let attempt = 1; attempt <= 6; attempt += 1) {
+    try {
+      return await client.sendRawTransaction({ serializedTransaction });
+    } catch (error) {
+      const rateLimited = error.status === 429
+        || String(error.details || error.message).toLowerCase().includes('rate limit');
+      if (!rateLimited || attempt === 6) throw error;
+      const backoffMs = (12_000 * attempt) + (signer.address === opponentAddress ? 3_000 : 0);
+      console.log(`[rpc] rate limited during ${label}; retrying in ${backoffMs}ms`);
+      await new Promise((resolvePromise) => setTimeout(resolvePromise, backoffMs));
+    }
+  }
+  throw new Error(`${label} did not produce a transaction hash`);
+}
+
+async function write(signer, functionName, args = []) {
+  let hash;
+  for (let attempt = 1; attempt <= 6; attempt += 1) {
+    try {
+      const feeQuote = await currentFeeQuote();
+      hash = await writeContractWithKms({
+        client,
+        address: signer.address,
+        contractAddress,
+        abi: artifact.abi,
+        functionName,
+        args,
+        gas: gasCeilings[functionName],
+        ...feeQuote,
+        ...signer.config,
+      });
+      break;
+    } catch (error) {
+      const rateLimited = error.status === 429
+        || String(error.details || error.message).toLowerCase().includes('rate limit');
+      if (!rateLimited || attempt === 6) throw error;
+      const backoffMs = (12_000 * attempt) + (signer.address === opponentAddress ? 3_000 : 0);
+      console.log(`[rpc] rate limited during ${functionName}; retrying in ${backoffMs}ms`);
+      await new Promise((resolvePromise) => setTimeout(resolvePromise, backoffMs));
+    }
+  }
+  assert(hash, `${functionName} did not produce a transaction hash`);
   const receipt = await waitForSuccess(hash, functionName);
   console.log(`[tx] ${functionName}=${hash}`);
   return {
@@ -130,11 +251,33 @@ async function fundOpponent(value) {
 }
 
 async function fetchEntropy(gameId, round) {
-  const response = await fetch('https://api.drand.sh/public/latest', { cache: 'no-store' });
-  assert(response.ok, `drand returned HTTP ${response.status}`);
-  const payload = await response.json();
-  assert(payload.randomness, 'drand returned no randomness');
-  return BigInt(keccak256(toHex(`${payload.randomness}:${payload.round}:${gameId}:${round}`)));
+  const endpoints = [
+    'https://api.drand.sh/public/latest',
+    'https://api2.drand.sh/public/latest',
+    'https://api3.drand.sh/public/latest',
+  ];
+  let lastError;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    for (const endpoint of endpoints) {
+      try {
+        const response = await fetch(endpoint, {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(10_000),
+        });
+        assert(response.ok, `drand returned HTTP ${response.status} from ${endpoint}`);
+        const payload = await response.json();
+        assert(payload.randomness, `drand returned no randomness from ${endpoint}`);
+        return BigInt(keccak256(toHex(`${payload.randomness}:${payload.round}:${gameId}:${round}`)));
+      } catch (error) {
+        lastError = error;
+        console.warn(`[drand] ${endpoint} attempt ${attempt} failed: ${error.message}`);
+      }
+    }
+    await new Promise((resolvePromise) => setTimeout(resolvePromise, attempt * 1_000));
+  }
+  throw new Error(`Unable to fetch drand entropy after ${endpoints.length * 2} attempts`, {
+    cause: lastError,
+  });
 }
 
 function playerState(raw) {
@@ -153,6 +296,8 @@ function createReport(totalGamesBefore, balances) {
     startedAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     status: 'running',
+    runId,
+    strategyVersion,
     chainId: 11155111,
     contractAddress,
     targetGames,
@@ -192,6 +337,7 @@ const existing = loadReport();
 if (existing) {
   assert(existing.chainId === 11155111 && getAddress(existing.contractAddress) === contractAddress, 'Existing report targets another deployment');
   assert(existing.targetGames === targetGames, 'Existing report has a different target game count');
+  assert(existing.runId === runId && existing.strategyVersion === strategyVersion, 'Existing report belongs to another run or strategy version');
 }
 const completedGames = existing?.games.filter(({ status }) => status === 'complete').length || 0;
 const remainingGames = targetGames - completedGames;
@@ -207,6 +353,8 @@ const operatorFundingGap = operatorBalance < totalOperatorRequired ? totalOperat
 
 console.log(JSON.stringify({
   mode: allowWrites ? 'tournament-write' : 'read-only-preflight',
+  runId,
+  strategyVersion,
   targetGames,
   completedGames,
   remainingGames,
@@ -235,17 +383,29 @@ if (!allowWrites) {
 }
 
 assert(operatorFundingGap === 0n, `Operator needs ${formatEther(operatorFundingGap)} more Sepolia ETH for the guarded 50-game budget`);
+await waitForPendingTransactions();
 let report = existing || createReport(totalGamesBefore, {
   operator: formatEther(operatorBalance),
   opponent: formatEther(opponentBalance),
 });
 saveReport(report);
 
-if (opponentFundingNeeded > 0n) {
-  const fundingTx = await fundOpponent(opponentFundingNeeded);
+const refillFloorGames = BigInt(Math.min(5, remainingGames));
+const refillTargetGames = BigInt(Math.min(10, remainingGames));
+const refillFloor = refillFloorGames * opponentGasPerGame * budgetFeePerGas;
+const refillTarget = refillTargetGames * opponentGasPerGame * budgetFeePerGas;
+const initialFundingNeeded = report.fundingTransactions.length === 0 && opponentFundingNeeded > 0n;
+const emergencyFundingNeeded = report.fundingTransactions.length > 0 && opponentBalance < refillFloor;
+const refillAmount = initialFundingNeeded
+  ? opponentFundingNeeded
+  : emergencyFundingNeeded
+    ? refillTarget - opponentBalance
+    : 0n;
+if (refillAmount > 0n) {
+  const fundingTx = await fundOpponent(refillAmount);
   report.fundingTransactions.push(fundingTx);
   saveReport(report);
-  console.log(`[fund] opponent=${formatEther(opponentFundingNeeded)} tx=${fundingTx.hash}`);
+  console.log(`[fund] opponent=${formatEther(refillAmount)} tx=${fundingTx.hash}`);
 }
 
 for (const scheduled of schedule) {
@@ -316,20 +476,104 @@ for (const scheduled of schedule) {
       gameRecord.rounds.push(roundRecord);
       saveReport(report);
     }
+    const existingEntropy = await read('getRoundEntropy', [gameId, BigInt(round)]);
+    const needsOperatorAction = !stateA.actionSubmitted;
+    const needsOpponentAction = !stateB.actionSubmitted;
+    const needsEntropy = existingEntropy === 0n;
+    const [operatorNonce, opponentNonce, feeQuote, entropy] = await Promise.all([
+      needsOperatorAction || needsEntropy
+        ? client.getTransactionCount({ address: operatorAddress, blockTag: 'pending' })
+        : Promise.resolve(0),
+      needsOpponentAction
+        ? client.getTransactionCount({ address: opponentAddress, blockTag: 'pending' })
+        : Promise.resolve(0),
+      currentFeeQuote(),
+      needsEntropy ? fetchEntropy(gameId, round) : Promise.resolve(0n),
+    ]);
+    const inputWrites = [];
+    let nextOperatorNonce = operatorNonce;
     if (!stateA.actionSubmitted) {
       const target = roundRecord.seatA.targetOpponent ? opponentAddress : zeroAddress;
-      gameRecord.transactions.push({ label: `round${round}.seatA.${roundRecord.seatA.actionName}`, ...await write(operator, 'submitAction', [gameId, roundRecord.seatA.action, target]) });
-      saveReport(report);
+      inputWrites.push({
+        label: `round${round}.seatA.${roundRecord.seatA.actionName}`,
+        signer: operator,
+        operatorFirst: true,
+        serializedTransaction: await prepareSignedWrite(
+          operator,
+          'submitAction',
+          [gameId, roundRecord.seatA.action, target],
+          nextOperatorNonce,
+          feeQuote,
+        ),
+      });
+      nextOperatorNonce += 1;
     }
     if (!stateB.actionSubmitted) {
       const target = roundRecord.seatB.targetOpponent ? operatorAddress : zeroAddress;
-      gameRecord.transactions.push({ label: `round${round}.seatB.${roundRecord.seatB.actionName}`, ...await write(opponent, 'submitAction', [gameId, roundRecord.seatB.action, target]) });
-      saveReport(report);
+      inputWrites.push({
+        label: `round${round}.seatB.${roundRecord.seatB.actionName}`,
+        signer: opponent,
+        operatorFirst: false,
+        serializedTransaction: await prepareSignedWrite(
+          opponent,
+          'submitAction',
+          [gameId, roundRecord.seatB.action, target],
+          opponentNonce,
+          feeQuote,
+        ),
+      });
     }
-    if ((await read('getRoundEntropy', [gameId, BigInt(round)])) === 0n) {
-      gameRecord.transactions.push({ label: `round${round}.entropy`, ...await write(operator, 'provideRoundEntropy', [gameId, BigInt(round), await fetchEntropy(gameId, round)]) });
-      saveReport(report);
+    if (needsEntropy) {
+      inputWrites.push({
+        label: `round${round}.entropy`,
+        signer: operator,
+        operatorFirst: false,
+        serializedTransaction: await prepareSignedWrite(
+          operator,
+          'provideRoundEntropy',
+          [gameId, BigInt(round), entropy],
+          nextOperatorNonce,
+          feeQuote,
+        ),
+      });
     }
+    const firstOperatorWrite = inputWrites.find(({ operatorFirst }) => operatorFirst);
+    const submittedInputs = [];
+    if (firstOperatorWrite) {
+      submittedInputs.push({
+        ...firstOperatorWrite,
+        hash: await sendRawWithBackoff(
+          firstOperatorWrite.serializedTransaction,
+          firstOperatorWrite.label,
+          firstOperatorWrite.signer,
+        ),
+      });
+    }
+    const remainingInputs = inputWrites.filter((entry) => entry !== firstOperatorWrite);
+    submittedInputs.push(...await Promise.all(remainingInputs.map(async (entry) => ({
+      ...entry,
+      hash: await sendRawWithBackoff(entry.serializedTransaction, entry.label, entry.signer),
+    }))));
+    const confirmedInputs = await Promise.all(submittedInputs.map(async ({ label, hash }) => {
+      const receipt = await waitForSuccess(hash, label);
+      return {
+        label,
+        hash,
+        gasUsed: receipt.gasUsed.toString(),
+        effectiveGasPrice: receipt.effectiveGasPrice.toString(),
+        costWei: (receipt.gasUsed * receipt.effectiveGasPrice).toString(),
+      };
+    }));
+    gameRecord.transactions.push(...confirmedInputs);
+    saveReport(report);
+    await waitForRead(
+      () => read('allActionsSubmitted', [gameId]),
+      `game ${gameId} round ${round} actions`,
+    );
+    await waitForRead(
+      async () => (await read('getRoundEntropy', [gameId, BigInt(round)])) > 0n,
+      `game ${gameId} round ${round} entropy`,
+    );
     gameRecord.transactions.push({ label: `round${round}.resolve`, ...await write(operator, 'resolveRound', [gameId]) });
     const [afterA, afterB] = await Promise.all([
       read('getPlayerState', [gameId, operatorAddress]),
@@ -338,6 +582,9 @@ for (const scheduled of schedule) {
     roundRecord.after = { seatA: playerState(afterA), seatB: playerState(afterB) };
     saveReport(report);
     console.log(`[game ${scheduled.index}/50] id=${gameId} round=${round} ${gameRecord.seatA.agentId}=${roundRecord.after.seatA.locks}/5 ${gameRecord.seatB.agentId}=${roundRecord.after.seatB.locks}/5`);
+    if (roundPaceMs > 0) {
+      await new Promise((resolvePromise) => setTimeout(resolvePromise, roundPaceMs));
+    }
   }
 
   game = await read('getGameInfo', [gameId]);
@@ -350,6 +597,13 @@ for (const scheduled of schedule) {
   gameRecord.completedAt = new Date().toISOString();
   saveReport(report);
   console.log(`[complete ${scheduled.index}/50] game=${gameId} winner=${gameRecord.winnerAgentId} rounds=${gameRecord.roundCount}`);
+  const completedCount = report.games.filter(({ status }) => status === 'complete').length;
+  if (stopAfterCompleted > 0 && completedCount >= stopAfterCompleted) {
+    report.status = 'paused';
+    saveReport(report);
+    console.log(`Tournament paused after ${completedCount} completed games by TOURNAMENT_STOP_AFTER_COMPLETED`);
+    process.exit(0);
+  }
 }
 
 const [operatorBalanceAfter, opponentBalanceAfter] = await Promise.all([

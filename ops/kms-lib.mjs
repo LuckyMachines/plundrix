@@ -217,24 +217,30 @@ async function recoverSignature({ digestHex, address, r, s }) {
 
 export async function signDigestWithKms({ digestHex, address, ...overrides }) {
   const config = getKmsKeyConfig(overrides);
-  const token = await getAccessToken();
-  const response = await fetch(
-    `https://cloudkms.googleapis.com/v1/${getKmsKeyVersionName(config)}:asymmetricSign`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        digest: {
-          // Cloud KMS expects a 32-byte digest payload in this field. For
-          // Ethereum transactions we pass the keccak256 digest bytes here.
-          sha256: Buffer.from(toBytes(digestHex)).toString('base64'),
+  let response;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const token = await getAccessToken();
+    response = await fetch(
+      `https://cloudkms.googleapis.com/v1/${getKmsKeyVersionName(config)}:asymmetricSign`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-      }),
-    }
-  );
+        body: JSON.stringify({
+          digest: {
+            // Cloud KMS expects a 32-byte digest payload in this field. For
+            // Ethereum transactions we pass the keccak256 digest bytes here.
+            sha256: Buffer.from(toBytes(digestHex)).toString('base64'),
+          },
+        }),
+      }
+    );
+    if (response.status !== 401 || attempt === 2) break;
+    cachedAccessToken = undefined;
+    cachedAccessTokenExpiresAt = 0;
+  }
 
   if (!response.ok) {
     throw new Error(`KMS sign failed: ${response.status} ${await response.text()}`);
@@ -270,7 +276,7 @@ export async function prepareTransaction({
   const [resolvedNonce, feeEstimate] = await Promise.all([
     nonce !== undefined
       ? Promise.resolve(nonce)
-      : client.getTransactionCount({ address }),
+      : client.getTransactionCount({ address, blockTag: 'pending' }),
     client.estimateFeesPerGas(),
   ]);
 
