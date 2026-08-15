@@ -1,0 +1,2807 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-14T08:18:07.020Z",
+  "updatedAt": "2026-08-14T08:53:20.844Z",
+  "status": "paused",
+  "chainId": 11155111,
+  "contractAddress": "0x1FF715D46470B4024D88A12838e08A60855f0AE2",
+  "targetGames": 50,
+  "maxRounds": 30,
+  "totalGamesBefore": "1",
+  "wallets": {
+    "seatA": "0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79",
+    "seatB": "0xC7c627eC982988679D5D15E8ff9579fc0f0AB42f"
+  },
+  "agents": [
+    {
+      "id": "adaptive",
+      "name": "The Operator",
+      "description": "Builds tools, converts strong odds, and disrupts a rival at match point."
+    },
+    {
+      "id": "lock-rusher",
+      "name": "Lock Rusher",
+      "description": "Picks relentlessly and accepts weak odds for maximum race pressure."
+    },
+    {
+      "id": "tool-hoarder",
+      "name": "Tool Hoarder",
+      "description": "Builds a three-tool stack before converting it into high-probability picks."
+    },
+    {
+      "id": "leader-hunter",
+      "name": "Leader Hunter",
+      "description": "Targets breakaways, then searches or picks when the race is compressed."
+    },
+    {
+      "id": "saboteur",
+      "name": "Saboteur",
+      "description": "Steals useful tools and applies stuns, but pivots to picks to close games."
+    }
+  ],
+  "schedule": [
+    {
+      "index": 1,
+      "pairing": "adaptive-vs-lock-rusher",
+      "repetition": 1,
+      "seatA": "adaptive",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 2,
+      "pairing": "adaptive-vs-lock-rusher",
+      "repetition": 2,
+      "seatA": "adaptive",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 3,
+      "pairing": "adaptive-vs-lock-rusher",
+      "repetition": 3,
+      "seatA": "adaptive",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 4,
+      "pairing": "adaptive-vs-lock-rusher",
+      "repetition": 4,
+      "seatA": "lock-rusher",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 5,
+      "pairing": "adaptive-vs-lock-rusher",
+      "repetition": 5,
+      "seatA": "lock-rusher",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 6,
+      "pairing": "adaptive-vs-tool-hoarder",
+      "repetition": 1,
+      "seatA": "adaptive",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 7,
+      "pairing": "adaptive-vs-tool-hoarder",
+      "repetition": 2,
+      "seatA": "adaptive",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 8,
+      "pairing": "adaptive-vs-tool-hoarder",
+      "repetition": 3,
+      "seatA": "adaptive",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 9,
+      "pairing": "adaptive-vs-tool-hoarder",
+      "repetition": 4,
+      "seatA": "tool-hoarder",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 10,
+      "pairing": "adaptive-vs-tool-hoarder",
+      "repetition": 5,
+      "seatA": "tool-hoarder",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 11,
+      "pairing": "adaptive-vs-leader-hunter",
+      "repetition": 1,
+      "seatA": "leader-hunter",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 12,
+      "pairing": "adaptive-vs-leader-hunter",
+      "repetition": 2,
+      "seatA": "leader-hunter",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 13,
+      "pairing": "adaptive-vs-leader-hunter",
+      "repetition": 3,
+      "seatA": "leader-hunter",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 14,
+      "pairing": "adaptive-vs-leader-hunter",
+      "repetition": 4,
+      "seatA": "adaptive",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 15,
+      "pairing": "adaptive-vs-leader-hunter",
+      "repetition": 5,
+      "seatA": "adaptive",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 16,
+      "pairing": "adaptive-vs-saboteur",
+      "repetition": 1,
+      "seatA": "saboteur",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 17,
+      "pairing": "adaptive-vs-saboteur",
+      "repetition": 2,
+      "seatA": "saboteur",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 18,
+      "pairing": "adaptive-vs-saboteur",
+      "repetition": 3,
+      "seatA": "saboteur",
+      "seatB": "adaptive"
+    },
+    {
+      "index": 19,
+      "pairing": "adaptive-vs-saboteur",
+      "repetition": 4,
+      "seatA": "adaptive",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 20,
+      "pairing": "adaptive-vs-saboteur",
+      "repetition": 5,
+      "seatA": "adaptive",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 21,
+      "pairing": "lock-rusher-vs-tool-hoarder",
+      "repetition": 1,
+      "seatA": "lock-rusher",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 22,
+      "pairing": "lock-rusher-vs-tool-hoarder",
+      "repetition": 2,
+      "seatA": "lock-rusher",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 23,
+      "pairing": "lock-rusher-vs-tool-hoarder",
+      "repetition": 3,
+      "seatA": "lock-rusher",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 24,
+      "pairing": "lock-rusher-vs-tool-hoarder",
+      "repetition": 4,
+      "seatA": "tool-hoarder",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 25,
+      "pairing": "lock-rusher-vs-tool-hoarder",
+      "repetition": 5,
+      "seatA": "tool-hoarder",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 26,
+      "pairing": "lock-rusher-vs-leader-hunter",
+      "repetition": 1,
+      "seatA": "lock-rusher",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 27,
+      "pairing": "lock-rusher-vs-leader-hunter",
+      "repetition": 2,
+      "seatA": "lock-rusher",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 28,
+      "pairing": "lock-rusher-vs-leader-hunter",
+      "repetition": 3,
+      "seatA": "lock-rusher",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 29,
+      "pairing": "lock-rusher-vs-leader-hunter",
+      "repetition": 4,
+      "seatA": "leader-hunter",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 30,
+      "pairing": "lock-rusher-vs-leader-hunter",
+      "repetition": 5,
+      "seatA": "leader-hunter",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 31,
+      "pairing": "lock-rusher-vs-saboteur",
+      "repetition": 1,
+      "seatA": "saboteur",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 32,
+      "pairing": "lock-rusher-vs-saboteur",
+      "repetition": 2,
+      "seatA": "saboteur",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 33,
+      "pairing": "lock-rusher-vs-saboteur",
+      "repetition": 3,
+      "seatA": "saboteur",
+      "seatB": "lock-rusher"
+    },
+    {
+      "index": 34,
+      "pairing": "lock-rusher-vs-saboteur",
+      "repetition": 4,
+      "seatA": "lock-rusher",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 35,
+      "pairing": "lock-rusher-vs-saboteur",
+      "repetition": 5,
+      "seatA": "lock-rusher",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 36,
+      "pairing": "tool-hoarder-vs-leader-hunter",
+      "repetition": 1,
+      "seatA": "tool-hoarder",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 37,
+      "pairing": "tool-hoarder-vs-leader-hunter",
+      "repetition": 2,
+      "seatA": "tool-hoarder",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 38,
+      "pairing": "tool-hoarder-vs-leader-hunter",
+      "repetition": 3,
+      "seatA": "tool-hoarder",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 39,
+      "pairing": "tool-hoarder-vs-leader-hunter",
+      "repetition": 4,
+      "seatA": "leader-hunter",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 40,
+      "pairing": "tool-hoarder-vs-leader-hunter",
+      "repetition": 5,
+      "seatA": "leader-hunter",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 41,
+      "pairing": "tool-hoarder-vs-saboteur",
+      "repetition": 1,
+      "seatA": "tool-hoarder",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 42,
+      "pairing": "tool-hoarder-vs-saboteur",
+      "repetition": 2,
+      "seatA": "tool-hoarder",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 43,
+      "pairing": "tool-hoarder-vs-saboteur",
+      "repetition": 3,
+      "seatA": "tool-hoarder",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 44,
+      "pairing": "tool-hoarder-vs-saboteur",
+      "repetition": 4,
+      "seatA": "saboteur",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 45,
+      "pairing": "tool-hoarder-vs-saboteur",
+      "repetition": 5,
+      "seatA": "saboteur",
+      "seatB": "tool-hoarder"
+    },
+    {
+      "index": 46,
+      "pairing": "leader-hunter-vs-saboteur",
+      "repetition": 1,
+      "seatA": "leader-hunter",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 47,
+      "pairing": "leader-hunter-vs-saboteur",
+      "repetition": 2,
+      "seatA": "leader-hunter",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 48,
+      "pairing": "leader-hunter-vs-saboteur",
+      "repetition": 3,
+      "seatA": "leader-hunter",
+      "seatB": "saboteur"
+    },
+    {
+      "index": 49,
+      "pairing": "leader-hunter-vs-saboteur",
+      "repetition": 4,
+      "seatA": "saboteur",
+      "seatB": "leader-hunter"
+    },
+    {
+      "index": 50,
+      "pairing": "leader-hunter-vs-saboteur",
+      "repetition": 5,
+      "seatA": "saboteur",
+      "seatB": "leader-hunter"
+    }
+  ],
+  "startingBalances": {
+    "operator": "2.939525380451171337",
+    "opponent": "0.00573935591779858"
+  },
+  "fundingTransactions": [
+    {
+      "label": "fundOpponent",
+      "hash": "0x2de86ec2edaa1b19bd2fd87921e2039cd2a69bfebde2031509de63dc127737b1",
+      "valueWei": "59632527122201420",
+      "gasUsed": "21000",
+      "effectiveGasPrice": "1032733768",
+      "costWei": "21687409128000"
+    }
+  ],
+  "games": [
+    {
+      "scheduleIndex": 1,
+      "pairing": "adaptive-vs-lock-rusher",
+      "repetition": 1,
+      "status": "complete",
+      "gameId": "2",
+      "seatA": {
+        "agentId": "adaptive",
+        "address": "0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79"
+      },
+      "seatB": {
+        "agentId": "lock-rusher",
+        "address": "0xC7c627eC982988679D5D15E8ff9579fc0f0AB42f"
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 2,
+            "actionName": "SEARCH",
+            "rationale": "Improve weak pick odds before committing.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 1,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 2,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 1,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 2,
+            "actionName": "SEARCH",
+            "rationale": "Improve weak pick odds before committing.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 3,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 4,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 5,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 6,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 7,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 1,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 1,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 8,
+          "before": {
+            "seatA": {
+              "locks": 1,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 1,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 2,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 2,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 9,
+          "before": {
+            "seatA": {
+              "locks": 2,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 2,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 3,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 10,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 3,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 4,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 3,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 11,
+          "before": {
+            "seatA": {
+              "locks": 4,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 3,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "One successful pick wins the operation.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 4,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 12,
+          "before": {
+            "seatA": {
+              "locks": 4,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "One successful pick wins the operation.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 5,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        }
+      ],
+      "transactions": [
+        {
+          "label": "createGame",
+          "hash": "0x910c3121e029bc7c20571f94fd14dd8f68fa3c8970986161445b4b39da1e8a35",
+          "gasUsed": "37544",
+          "effectiveGasPrice": "1071972510",
+          "costWei": "40246135915440"
+        },
+        {
+          "label": "registerSeatA",
+          "hash": "0xfe878c4b69dac7ac669af1310874672d5126511f11db0995cb590fb2d8bae986",
+          "gasUsed": "131224",
+          "effectiveGasPrice": "1032459265",
+          "costWei": "135483434590360"
+        },
+        {
+          "label": "registerSeatB",
+          "hash": "0x95dcb4ae8900329f55bdc4408156218199a71afb2494ca560db05d9b717bf889",
+          "gasUsed": "114124",
+          "effectiveGasPrice": "1074065648",
+          "costWei": "122576668012352"
+        },
+        {
+          "label": "startGame",
+          "hash": "0x07542791843a3c9c9afd69786b2870ff519781602ab0fdcb59f433f5b4da6e88",
+          "gasUsed": "103295",
+          "effectiveGasPrice": "1049691056",
+          "costWei": "108427837629520"
+        },
+        {
+          "label": "round1.seatA.SEARCH",
+          "hash": "0xe5125a1a557eb7d6aca00e695d1eb88e2e6bf2747f2c8f8626f41b8e13490f75",
+          "gasUsed": "63713",
+          "effectiveGasPrice": "1019271216",
+          "costWei": "64940826985008"
+        },
+        {
+          "label": "round1.seatB.PICK",
+          "hash": "0x24276ff67132dcbd4668af863870d373ff861ae74c25b4a1c7286549865cfdb3",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1063003162",
+          "costWei": "67687789343512"
+        },
+        {
+          "label": "round1.entropy",
+          "hash": "0x23d12a20918980b5c3fefdcf78f10b3142b1ede2ebebb2cae0980f55c6f7b40a",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1051041954",
+          "costWei": "61638355392330"
+        },
+        {
+          "label": "round1.resolve",
+          "hash": "0x8aeb2ece01873cbf30fe3b00fd4dd94739e770c262864e34ad6e5c748fa20919",
+          "gasUsed": "115033",
+          "effectiveGasPrice": "1004736513",
+          "costWei": "115577855299929"
+        },
+        {
+          "label": "round2.seatA.SEARCH",
+          "hash": "0x82ef9579d0ed93cd099d7f7c5468c8cbdc65d8b67c6f504a4380564b60c64f07",
+          "gasUsed": "63713",
+          "effectiveGasPrice": "1112011385",
+          "costWei": "70849581372505"
+        },
+        {
+          "label": "round2.seatB.PICK",
+          "hash": "0x83a17cff645cc436bd9a0576fded46929d7a912e6a1e043ee9cf2a5da428217c",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1128582270",
+          "costWei": "71863604624520"
+        },
+        {
+          "label": "round2.entropy",
+          "hash": "0x40b821ab5c17c7fdfaf78aef4bb18ba771c458856c04544a9bbc405ea96b0d3b",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1083381489",
+          "costWei": "63534907422405"
+        },
+        {
+          "label": "round2.resolve",
+          "hash": "0x44833acfdf6a24a6686e038fa29f05d5be4f97850f30241dab7071e4bf577757",
+          "gasUsed": "97933",
+          "effectiveGasPrice": "1102570087",
+          "costWei": "107977996330171"
+        },
+        {
+          "label": "round3.seatA.PICK",
+          "hash": "0xb7054d3d8239bbc9bb2dc98e72cdf0575954a8023634d29eae6c2e6cd6bd5e5f",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1140735662",
+          "costWei": "72637484013512"
+        },
+        {
+          "label": "round3.seatB.PICK",
+          "hash": "0x636785da6f31e598a888b0bc94eeacc71ce86bd78f8e8c8dc1b1a04325071d43",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1141278413",
+          "costWei": "72672044226188"
+        },
+        {
+          "label": "round3.entropy",
+          "hash": "0x767e5bdfbe386bf436bf99d3a14a3d18d99d34df6381f9ff9843dc75b8db324e",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1146313203",
+          "costWei": "67225537789935"
+        },
+        {
+          "label": "round3.resolve",
+          "hash": "0xf45562b7a41a511aeed5d3241289f9d2f3555fb1dbf8d2c65702ed7e6e47ea27",
+          "gasUsed": "92587",
+          "effectiveGasPrice": "1162786118",
+          "costWei": "107658878307266"
+        },
+        {
+          "label": "round4.seatA.PICK",
+          "hash": "0x167be74d90af87439b6c40052a5a7e3560d7b060210a4fbe58f6aaf2b9a188cc",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1170455823",
+          "costWei": "74529944985348"
+        },
+        {
+          "label": "round4.seatB.PICK",
+          "hash": "0x50368410c54aa699763689a403b5170fdad147a454f34d8f571c8cecfffab675",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1190897974",
+          "costWei": "75831619392424"
+        },
+        {
+          "label": "round4.entropy",
+          "hash": "0x5f3beb2691cbe9931acaa0b8d456c5751542c7f04df0e31ed3a23283df079a26",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1176950521",
+          "costWei": "69022263304045"
+        },
+        {
+          "label": "round4.resolve",
+          "hash": "0x4ec843324d2df711cdb384c6ee5501eb8d13e99e328d580ecff622640df14cbf",
+          "gasUsed": "92587",
+          "effectiveGasPrice": "1133971838",
+          "costWei": "104991050564906"
+        },
+        {
+          "label": "round5.seatA.PICK",
+          "hash": "0xedd16b21db51f8e3bfccf0684c6c1f766f6ff1392f41844d2592044dfb66ac16",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1079011658",
+          "costWei": "68707146334808"
+        },
+        {
+          "label": "round5.seatB.PICK",
+          "hash": "0x684f027ea928d2bbb3bd39997a8349c208cdad44677dd032bceec09e284f00c3",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1013240680",
+          "costWei": "64519113539680"
+        },
+        {
+          "label": "round5.entropy",
+          "hash": "0x195b6cff9718cdeb6cad93742850e9495516c16bc2431bfa01ca4bdfda08a892",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1070952850",
+          "costWei": "62806029888250"
+        },
+        {
+          "label": "round5.resolve",
+          "hash": "0x114af9982335a768f4a01cdab57c842afeb6e1481754e948255b0a64d865d208",
+          "gasUsed": "92587",
+          "effectiveGasPrice": "1037373165",
+          "costWei": "96047269227855"
+        },
+        {
+          "label": "round6.seatA.PICK",
+          "hash": "0x4b7d0a92e59bf6ceebc3829565a50db0509b98909c1210d0246bca49f55561a0",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1088641021",
+          "costWei": "69320305653196"
+        },
+        {
+          "label": "round6.seatB.PICK",
+          "hash": "0x17e95ed882c2f78f81505cb64165d9089ae83c912ee5b445a007cb21cbce2df4",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1025677034",
+          "costWei": "65311010816984"
+        },
+        {
+          "label": "round6.entropy",
+          "hash": "0x482404883a1571629b05f01dcb176fbe5d81af11f48a8e57cec9b2ae7049fc68",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1115236208",
+          "costWei": "65403027418160"
+        },
+        {
+          "label": "round6.resolve",
+          "hash": "0xb2b103f662cb58bab525d7886945aac3e86bc9518a5c7dc24b226251069e0b5c",
+          "gasUsed": "92587",
+          "effectiveGasPrice": "1072534647",
+          "costWei": "99302765361789"
+        },
+        {
+          "label": "round7.seatA.PICK",
+          "hash": "0x646a36ff80e2347dfa61d61860f187b2eed5a3591c3cab7cce92ee822da37aa3",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1007946472",
+          "costWei": "64181999551072"
+        },
+        {
+          "label": "round7.seatB.PICK",
+          "hash": "0x9e0d298bc39c5b8ce1510785a54a303f6edea07cd11cf131d118d04535ed81ca",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1058941001",
+          "costWei": "67429127179676"
+        },
+        {
+          "label": "round7.entropy",
+          "hash": "0x438f17d734f93364f498904464111e2ba4eabc10bfd1f6e74af6fea9a80d6aac",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1006345046",
+          "costWei": "59017105222670"
+        },
+        {
+          "label": "round7.resolve",
+          "hash": "0x06ed5fdb9b257256ee5ebe44693309bd05d10694483bf914da377c5773a453a1",
+          "gasUsed": "137541",
+          "effectiveGasPrice": "1043994718",
+          "costWei": "143592077508438"
+        },
+        {
+          "label": "round8.seatA.PICK",
+          "hash": "0x8b3f4ed3d395fcf1be442f3c265ac825ea2c6fda4b5bd2ad4921fe56f574ebfe",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1116104631",
+          "costWei": "71069078483556"
+        },
+        {
+          "label": "round8.seatB.PICK",
+          "hash": "0x30a23e2796e0760dd6c7c18e5b921196113f58f3134816dea757d0ac469922a9",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1053715684",
+          "costWei": "67096399894384"
+        },
+        {
+          "label": "round8.entropy",
+          "hash": "0x63233b6a22ffea7ddfcd507848bc61abd2bc17fd1143760df585ddd775a4abd4",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1041817058",
+          "costWei": "61097361366410"
+        },
+        {
+          "label": "round8.resolve",
+          "hash": "0x74c54680b07908d34ba3677e70bffa980b46fa2a94b2ed1ea52d5b4ab0348f5d",
+          "gasUsed": "103341",
+          "effectiveGasPrice": "1067426448",
+          "costWei": "110308916562768"
+        },
+        {
+          "label": "round9.seatA.PICK",
+          "hash": "0x7802570c3b510094774bd5a3a15b6293b2a07d7445028955aeb8348af28a62ef",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1006099169",
+          "costWei": "64064370685244"
+        },
+        {
+          "label": "round9.seatB.PICK",
+          "hash": "0xc4e60347b9712ce4f9d644805381a49024e2bbad284f99f63a8eb3f589b8d0fd",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1002225434",
+          "costWei": "63817706735384"
+        },
+        {
+          "label": "round9.entropy",
+          "hash": "0xdec24dc9848e85415e3f4e92264965fcec8f6b9a5e9b7348cd3b62564f5fcdfd",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1088351095",
+          "costWei": "63826349966275"
+        },
+        {
+          "label": "round9.resolve",
+          "hash": "0xe8f933f8a3941b11632410a92eef05a9cc32426c77ba157230622dd9656845ea",
+          "gasUsed": "103341",
+          "effectiveGasPrice": "1075044945",
+          "costWei": "111096219661245"
+        },
+        {
+          "label": "round10.seatA.PICK",
+          "hash": "0x227e32916ac6179f40d2eedecacf632dfbf0aa8050ba08e2db92f3ab148ecf16",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1032092763",
+          "costWei": "65719538776788"
+        },
+        {
+          "label": "round10.seatB.PICK",
+          "hash": "0xc18faf909dec8bbef78ebf8b2a72acb20cea3bfdabed52da20e259cf754515ac",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1032092763",
+          "costWei": "65719538776788"
+        },
+        {
+          "label": "round10.entropy",
+          "hash": "0xf6ebbbe62a7e3e98422810cfdbfaeb51233809119f38bfbf72877a246c42bf5a",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "984196958",
+          "costWei": "57706420238414"
+        },
+        {
+          "label": "round10.resolve",
+          "hash": "0xb7d289f7361725475351c9d330a41579873b7607a79447603ad0d489377b1ec8",
+          "gasUsed": "97964",
+          "effectiveGasPrice": "1106902687",
+          "costWei": "108436614829268"
+        },
+        {
+          "label": "round11.seatB.PICK",
+          "hash": "0xf57a32ee9d3e10c41c97c49db904fcdc778beacc0ddccd60e0fa1651ce0bd9ae",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1010781944",
+          "costWei": "64362551066144"
+        },
+        {
+          "label": "round11.entropy",
+          "hash": "0x624ddb21b9545770a1293f13af0bba2f646a1e7db1031648bc9e2e1953c31631",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "958232736",
+          "costWei": "56195558802720"
+        },
+        {
+          "label": "round11.resolve",
+          "hash": "0x831e9d5f65fc364718da6aec17e9e99795842d3a9d8c6b1b2b2b3ddffb1f37e0",
+          "gasUsed": "97964",
+          "effectiveGasPrice": "1077861138",
+          "costWei": "105591588523032"
+        },
+        {
+          "label": "round12.seatA.PICK",
+          "hash": "0xef821b1f1526d89a6866b0b25b7ff8653841cb49307f216d1af060f95a23cd3e",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1028411208",
+          "costWei": "65485112080608"
+        },
+        {
+          "label": "round12.seatB.PICK",
+          "hash": "0x6a57f638e97bce0ffa7a12132a68903b8a3e06062cfbe485f2411ef7ff2298ce",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1028411208",
+          "costWei": "65485112080608"
+        },
+        {
+          "label": "round12.entropy",
+          "hash": "0x95c933e46aa89fa2e188c7bb50956de1cb247061ea8f9bd817ea00d5ba82d4f3",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "983618614",
+          "costWei": "57684313618030"
+        },
+        {
+          "label": "round12.resolve",
+          "hash": "0xce86758c4f7077196634126e9609145ad7a12a7adcbd3ea893492cfa3e2db57b",
+          "gasUsed": "120985",
+          "effectiveGasPrice": "1106395200",
+          "costWei": "133857223272000"
+        }
+      ],
+      "roundCount": 12,
+      "winnerAddress": "0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79",
+      "winnerAgentId": "adaptive",
+      "completedAt": "2026-08-14T08:34:18.484Z"
+    },
+    {
+      "scheduleIndex": 2,
+      "pairing": "adaptive-vs-lock-rusher",
+      "repetition": 2,
+      "status": "complete",
+      "gameId": "3",
+      "seatA": {
+        "agentId": "adaptive",
+        "address": "0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79"
+      },
+      "seatB": {
+        "agentId": "lock-rusher",
+        "address": "0xC7c627eC982988679D5D15E8ff9579fc0f0AB42f"
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 2,
+            "actionName": "SEARCH",
+            "rationale": "Improve weak pick odds before committing.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 2,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 2,
+            "actionName": "SEARCH",
+            "rationale": "Improve weak pick odds before committing.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 3,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 0,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 2,
+            "actionName": "SEARCH",
+            "rationale": "Improve weak pick odds before committing.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 1,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 1,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 4,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 1,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 1,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 2,
+            "actionName": "SEARCH",
+            "rationale": "Improve weak pick odds before committing.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 2,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 5,
+          "before": {
+            "seatA": {
+              "locks": 0,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 2,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 1,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 2,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 6,
+          "before": {
+            "seatA": {
+              "locks": 1,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 2,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 2,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 3,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 7,
+          "before": {
+            "seatA": {
+              "locks": 2,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 3,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert a useful tool position into lock progress.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 8,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 9,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 10,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 11,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 12,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 13,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 14,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 15,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 16,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 17,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 3,
+            "actionName": "SABOTAGE",
+            "rationale": "Stop the leading rival while direct progress is weak.",
+            "targetOpponent": true
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          }
+        },
+        {
+          "round": 18,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": true,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert late-game leverage instead of sustaining a disruption lock.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        },
+        {
+          "round": 19,
+          "before": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 4,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          },
+          "seatA": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Convert late-game leverage instead of sustaining a disruption lock.",
+            "targetOpponent": false
+          },
+          "seatB": {
+            "action": 1,
+            "actionName": "PICK",
+            "rationale": "Push lock progress every round, regardless of inventory.",
+            "targetOpponent": false
+          },
+          "after": {
+            "seatA": {
+              "locks": 3,
+              "tools": 2,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            },
+            "seatB": {
+              "locks": 5,
+              "tools": 0,
+              "stunned": false,
+              "registered": true,
+              "actionSubmitted": false
+            }
+          }
+        }
+      ],
+      "transactions": [
+        {
+          "label": "createGame",
+          "hash": "0x9178aa0df1c29a6c432677e625ed4a277ebfe7a50977edb78098adab087df03e",
+          "gasUsed": "37544",
+          "effectiveGasPrice": "963162301",
+          "costWei": "36160965428744"
+        },
+        {
+          "label": "registerSeatA",
+          "hash": "0xb775c454f281e5d727d072caf33028215e983235fa2f53a4ee41395e4a3956da",
+          "gasUsed": "131224",
+          "effectiveGasPrice": "1083427324",
+          "costWei": "142171667164576"
+        },
+        {
+          "label": "registerSeatB",
+          "hash": "0xb5f4d40e99d8ffc16a2f696152a202ef4d37fcf23a06cb1c715eaac3e133770a",
+          "gasUsed": "114124",
+          "effectiveGasPrice": "1024823221",
+          "costWei": "116956925273404"
+        },
+        {
+          "label": "startGame",
+          "hash": "0x7f2f793ed03e215000fcbea8905f957e8adf07a655cad4e582d4c34e9206a5ab",
+          "gasUsed": "103295",
+          "effectiveGasPrice": "1069460765",
+          "costWei": "110469949720675"
+        },
+        {
+          "label": "round1.seatA.SEARCH",
+          "hash": "0xa2c000da131c7ec3152ea7f7ea8daf2ce744e2e5dc5bea422b1fb20532a40e4a",
+          "gasUsed": "63713",
+          "effectiveGasPrice": "1036494593",
+          "costWei": "66038180003809"
+        },
+        {
+          "label": "round1.seatB.PICK",
+          "hash": "0x4f3133cc7106f74870fbd56cc97602a7f5d3f881e96891704c6d325937398894",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1036494593",
+          "costWei": "65999829703868"
+        },
+        {
+          "label": "round1.entropy",
+          "hash": "0xaaeb154f97ff02ef0eb30dcf5c0716ffc30f51cd723d20e366018c4d49254ad9",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1080028985",
+          "costWei": "63338299825325"
+        },
+        {
+          "label": "round1.resolve",
+          "hash": "0x758690bf9a8397cadc1229b166f70ab5c296dec3e2d5490a22a1a19e81fe7b04",
+          "gasUsed": "92454",
+          "effectiveGasPrice": "1017117612",
+          "costWei": "94036591699848"
+        },
+        {
+          "label": "round2.seatA.SEARCH",
+          "hash": "0x8c213482f9d4492341421d659d9673eb88bddfab7b071ecfcc902fff1c8b0f95",
+          "gasUsed": "63713",
+          "effectiveGasPrice": "1075509331",
+          "costWei": "68523926006003"
+        },
+        {
+          "label": "round2.seatB.PICK",
+          "hash": "0xeb0989da16b18bdf015adaf08ff32942193e6bfe3e13954621b892ffb2045a41",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1075509331",
+          "costWei": "68484132160756"
+        },
+        {
+          "label": "round2.entropy",
+          "hash": "0xd89ff51afa17cc96fb023c791dda0bd6e8dc3360a34f4aab36a4729f47e70bd1",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "1123842998",
+          "costWei": "65894286501734"
+        },
+        {
+          "label": "round2.resolve",
+          "hash": "0xdc19fb31dedffbe5475499e5a32748416d9181b5632ddef0bd6001fda9d94187",
+          "gasUsed": "92454",
+          "effectiveGasPrice": "1105364703",
+          "costWei": "102195388251162"
+        },
+        {
+          "label": "round3.seatA.SEARCH",
+          "hash": "0x215cb7f2bee0c6fcaecc2cd203f93582989e5dd67a4e635eb01cb89aa74b4476",
+          "gasUsed": "63713",
+          "effectiveGasPrice": "1025782937",
+          "costWei": "65355708265081"
+        },
+        {
+          "label": "round3.seatB.PICK",
+          "hash": "0x26ecc57a64c4f6bf9eb6e05dcc7df0869a5115f27e9885ede1f568dafcc8a647",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "978915721",
+          "costWei": "62333437450396"
+        },
+        {
+          "label": "round3.entropy",
+          "hash": "0xc617a475242dff7fee5d0ed870e50e0de74efa142ba93c880c6b65a6bcd22cbb",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1101129572",
+          "costWei": "64575743749940"
+        },
+        {
+          "label": "round3.resolve",
+          "hash": "0x49adb6424b309a2cc2619a4408c3537f38abcf2386ab9fff6407bd6822a1452a",
+          "gasUsed": "137510",
+          "effectiveGasPrice": "1079568307",
+          "costWei": "148451437895570"
+        },
+        {
+          "label": "round4.seatA.SEARCH",
+          "hash": "0xe9cc3603ccc4af709ab6658c061192f1134c4d2ca3d60f93568eb77f0a24f0ba",
+          "gasUsed": "63713",
+          "effectiveGasPrice": "1119289047",
+          "costWei": "71313263051511"
+        },
+        {
+          "label": "round4.seatB.PICK",
+          "hash": "0x1852df2a28e9d4ac31a6248d544137138b9862e0dbab9f1d8c552de3016512d4",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1119289047",
+          "costWei": "71271849356772"
+        },
+        {
+          "label": "round4.entropy",
+          "hash": "0x8affc834737ecef51c99eeeb2666c81d479cff7929ca0c6666ce9d25c9897ffb",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "1063508776",
+          "costWei": "62356710063208"
+        },
+        {
+          "label": "round4.resolve",
+          "hash": "0x9e5543c64519a76718e3fa3bbf049e0c75335e9612e267f9dd3be48528ba0510",
+          "gasUsed": "103310",
+          "effectiveGasPrice": "1105350858",
+          "costWei": "114193797139980"
+        },
+        {
+          "label": "round5.seatA.PICK",
+          "hash": "0x63f875c828ec37986cbf07e9de80600ca5207e90a9a9a59e226efe2f85e3f030",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "975105068",
+          "costWei": "62090790309968"
+        },
+        {
+          "label": "round5.seatB.PICK",
+          "hash": "0x8b18b8aeb219e2e6a815cc384845c14dc1b23927959004c9805e2c968e52b688",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "975105068",
+          "costWei": "62090790309968"
+        },
+        {
+          "label": "round5.entropy",
+          "hash": "0x86df019bad4d29f00cea9d7b606f782c801ae3e1527009b89348a4b226d542b1",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1096830763",
+          "costWei": "64323640096135"
+        },
+        {
+          "label": "round5.resolve",
+          "hash": "0x3f65ebe95b1eaee7a9669f3024e481a3035dbe877c2a95efb65a18a47b5424db",
+          "gasUsed": "115064",
+          "effectiveGasPrice": "1059465336",
+          "costWei": "121906319421504"
+        },
+        {
+          "label": "round6.seatA.PICK",
+          "hash": "0xa5cfdefe8c9814fdb5ad88145b48db37e4bc2c7b0c9c5b507eecbaeed128e68f",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1094386467",
+          "costWei": "69686152672692"
+        },
+        {
+          "label": "round6.seatB.PICK",
+          "hash": "0x36ba4abe32caf44742a73db2361bd914be707dfe32cf7f50333a2e3c97f89fca",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1094386467",
+          "costWei": "69686152672692"
+        },
+        {
+          "label": "round6.entropy",
+          "hash": "0xc9d6d796a782132698b6f5ad48348b8187bd7ea33739c031ba8bc60138762d53",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "1040382684",
+          "costWei": "61000757910972"
+        },
+        {
+          "label": "round6.resolve",
+          "hash": "0x875b2c6fa20246644f92c3d706297cefc4122f4d793260dc147b7119a7e669de",
+          "gasUsed": "103341",
+          "effectiveGasPrice": "976567957",
+          "costWei": "100919509244337"
+        },
+        {
+          "label": "round7.seatA.PICK",
+          "hash": "0xc3de33f5e04f3bf14a33feb8ab81fe66cdfd5646645baa7423f24304d037d27a",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1033499721",
+          "costWei": "65809128234396"
+        },
+        {
+          "label": "round7.seatB.PICK",
+          "hash": "0x127116ed9c7b228d949903026cab01406d53eb5ceab21fa844cccb9755ee0f6b",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1033499721",
+          "costWei": "65809128234396"
+        },
+        {
+          "label": "round7.entropy",
+          "hash": "0x9ed1fe134a6617eefaf5362046ea0c58820c14c497fa6e82b47919696e14b87c",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1122675740",
+          "costWei": "65839318772300"
+        },
+        {
+          "label": "round7.resolve",
+          "hash": "0x88d18e38c90968e6ca461edfd6c3e0212ae4057c849adc364fed80d2f1d27606",
+          "gasUsed": "103341",
+          "effectiveGasPrice": "1080822378",
+          "costWei": "111693265364898"
+        },
+        {
+          "label": "round8.seatA.SABOTAGE",
+          "hash": "0xa5eef9557ef5205cd8d16e6e653736bbcc228f6d464eb4ee51a9b876c3d28d48",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1001431561",
+          "costWei": "66396915357422"
+        },
+        {
+          "label": "round8.seatB.PICK",
+          "hash": "0x2d8a23fd56085844b4bc373f7b2c6e919b3d90ac209109da7dd3597360856283",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1001431561",
+          "costWei": "63767156078236"
+        },
+        {
+          "label": "round8.entropy",
+          "hash": "0x1e51d74765163f542af62506e481d79fd5197a5d03e8e823b8cf7b8e190c7328",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1056581143",
+          "costWei": "61963201131235"
+        },
+        {
+          "label": "round8.resolve",
+          "hash": "0xda575692f18fbd3c6cdedf684731eb62949c99c6f0d957a94f31f9e57c294995",
+          "gasUsed": "102076",
+          "effectiveGasPrice": "1012050323",
+          "costWei": "103306048770548"
+        },
+        {
+          "label": "round9.seatA.SABOTAGE",
+          "hash": "0x4577aefb1634b049844afa9d59e0fb5f02b126b8e8589f6b7641bca83820d5b9",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1057969798",
+          "costWei": "70145513546996"
+        },
+        {
+          "label": "round9.seatB.PICK",
+          "hash": "0x00e5bc071befcd1aa3e4d840bd4e84f6afffad33d3ab875cc14f016f0f683c43",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1057969798",
+          "costWei": "67367284857448"
+        },
+        {
+          "label": "round9.entropy",
+          "hash": "0x23dd6aaa2ed1c521ce5aa61bd677c74dc02e5a257b9ceadf9fff10d0f893db77",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "1005906698",
+          "costWei": "58979327423834"
+        },
+        {
+          "label": "round9.resolve",
+          "hash": "0xbf802217f62a64ca04d9cf5b56e006b8bf11386abf6ac525a2e82515416c5087",
+          "gasUsed": "98943",
+          "effectiveGasPrice": "1033608584",
+          "costWei": "102268334126712"
+        },
+        {
+          "label": "round10.seatA.SABOTAGE",
+          "hash": "0x2c39bee1e4de1a1ca0b0539e26212425acb8c07e5cb6d48082901756534c5874",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1061735897",
+          "costWei": "70395213442894"
+        },
+        {
+          "label": "round10.seatB.PICK",
+          "hash": "0xd6993ce4d399eeab443f06892c0e924e9c8aeba7adf2f7f73eca8636659e6125",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1061735897",
+          "costWei": "67607094977372"
+        },
+        {
+          "label": "round10.entropy",
+          "hash": "0x5da98238b56faf79e1f35348d1f9aa4607adb66425bc4ead2cfe99e85e5082b4",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "1027346968",
+          "costWei": "60236434774744"
+        },
+        {
+          "label": "round10.resolve",
+          "hash": "0xd9e02750816fa63d0af12b23dada56f0cdb9666f07ebbc5da068cbd8082a6b95",
+          "gasUsed": "98943",
+          "effectiveGasPrice": "973166210",
+          "costWei": "96287984316030"
+        },
+        {
+          "label": "round11.seatA.SABOTAGE",
+          "hash": "0x1c0d25904d04ae67aa6109cdebda85be3afa48e2f0dd0a8bee1fb97cc8a8d760",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1106769179",
+          "costWei": "73381010106058"
+        },
+        {
+          "label": "round11.seatB.PICK",
+          "hash": "0x8df9222ea8596629470d01ce733c3247be742665e7542e14159372352d47fcda",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1106769179",
+          "costWei": "70474634242004"
+        },
+        {
+          "label": "round11.entropy",
+          "hash": "0xc7ef9f738bad0a9c5b02b7bc16cd861267a7d33d4b3131f4e40b82935e7a3310",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1092597480",
+          "costWei": "64075379214600"
+        },
+        {
+          "label": "round11.resolve",
+          "hash": "0x2506be9ce4167a86b45ebfbd5cda3ccb62201b45620db375a95034ce7a3fff93",
+          "gasUsed": "98943",
+          "effectiveGasPrice": "1051975677",
+          "costWei": "104085629409411"
+        },
+        {
+          "label": "round12.seatA.SABOTAGE",
+          "hash": "0x0e04eb3b08469abd5eaf8bb1bf97354a1454703be4dc51f250722322a2bccb3d",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1091652953",
+          "costWei": "72378774089806"
+        },
+        {
+          "label": "round12.seatB.PICK",
+          "hash": "0x44673a882da0d6cba4687c87494fa03e254b92ceeaadbaf3cafeaf2224b5381f",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1091652953",
+          "costWei": "69512093435228"
+        },
+        {
+          "label": "round12.entropy",
+          "hash": "0x18272ece8d46939894bb2f88c200d2d84f42c94eaca7a5204aea6b606ef4ef79",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1094500734",
+          "costWei": "64186995545430"
+        },
+        {
+          "label": "round12.resolve",
+          "hash": "0xf676df4b597ee0487d6572a8413f453a75083df8de95e58e45f9641993309bb2",
+          "gasUsed": "98943",
+          "effectiveGasPrice": "1083711441",
+          "costWei": "107225661106863"
+        },
+        {
+          "label": "round13.seatA.SABOTAGE",
+          "hash": "0xe0bfd48c059dd551a61ba5f700d5ab0822ac34fe8f33eb03e5be4b2f916e96a5",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1121158587",
+          "costWei": "74335056635274"
+        },
+        {
+          "label": "round13.seatB.PICK",
+          "hash": "0x2da4888d12f8f1475f851fd0767a410c46ad8aa7289c9fbb02f9643ecf5103a9",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1121158587",
+          "costWei": "71390894185812"
+        },
+        {
+          "label": "round13.entropy",
+          "hash": "0x28252909a5ea708506a27a40c661d7df3e897248f86961bedd721c8bf4e26d13",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1069500850",
+          "costWei": "62720877348250"
+        },
+        {
+          "label": "round13.resolve",
+          "hash": "0x79b59abfbce3569909b03b3ee72bf554ee5501621df6f16fa65dbcf879bd078f",
+          "gasUsed": "98943",
+          "effectiveGasPrice": "1107779419",
+          "costWei": "109607019054117"
+        },
+        {
+          "label": "round14.seatA.SABOTAGE",
+          "hash": "0xaf4b2ff2749f3aaea5baa0f3c9314e004d526a5de21f6de1a6740d446733f0f3",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1086250165",
+          "costWei": "72020558439830"
+        },
+        {
+          "label": "round14.seatB.PICK",
+          "hash": "0x5a70bdf06b37d3840579106dcab75707001610fb9145ed2ace76aa41fd6031e2",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "965671083",
+          "costWei": "61490071881108"
+        },
+        {
+          "label": "round14.entropy",
+          "hash": "0xeefd1718130a9f29f10a7fa63a0faaf3dbb6abf146541226a456908d4ee06418",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "1108596713",
+          "costWei": "65000351073329"
+        },
+        {
+          "label": "round14.resolve",
+          "hash": "0x3a47d7c826b846041b3a8951849a4dea666f1eed29d0544af20eacd6a4c73711",
+          "gasUsed": "98943",
+          "effectiveGasPrice": "1049295815",
+          "costWei": "103820475823545"
+        },
+        {
+          "label": "round15.seatA.SABOTAGE",
+          "hash": "0x84a5b8eadc62b650b0b5553cb005fa69c9bf0ddc62f65cc7fb87a3234c2531af",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1128111520",
+          "costWei": "74796049999040"
+        },
+        {
+          "label": "round15.seatB.PICK",
+          "hash": "0x85e05d08adecba80ad4a19bf72175ae83d073fa7585bcff17de05d39c3865cf5",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1056103916",
+          "costWei": "67248472955216"
+        },
+        {
+          "label": "round15.entropy",
+          "hash": "0x99ee37ea7d4248fa8ff98aaa8a5babea3b058652ba6230a29dd0ad56d6a1a8fa",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "1104558328",
+          "costWei": "64763568445624"
+        },
+        {
+          "label": "round15.resolve",
+          "hash": "0x996bfca47d2bb89f8204cd9f64eeba42250c1fd4d46d5aac69e39baae54b5127",
+          "gasUsed": "98943",
+          "effectiveGasPrice": "1053156448",
+          "costWei": "104202458434464"
+        },
+        {
+          "label": "round16.seatA.SABOTAGE",
+          "hash": "0x4dd45b28287d6f0c2005e86f0b77dcf0c2fca18ed4cba2ede68a989e3cff170a",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "1112893309",
+          "costWei": "73787052173318"
+        },
+        {
+          "label": "round16.seatB.PICK",
+          "hash": "0xb547eae8d3b252ebc0f2966bddb6480c36a8d029e8f17ddc85c62cca232eb3c1",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1112893309",
+          "costWei": "70864594343884"
+        },
+        {
+          "label": "round16.entropy",
+          "hash": "0x7cd6e7e234bf475543910775ab9535b62e584d0b1511a7e3fe560e06369a6ebc",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1080886515",
+          "costWei": "63388589672175"
+        },
+        {
+          "label": "round16.resolve",
+          "hash": "0x0af59d6961fc3d03c8edae0375d0ee8ce79c2c4e5ade1dadcfb812ecbdac4585",
+          "gasUsed": "98943",
+          "effectiveGasPrice": "1114421281",
+          "costWei": "110264184805983"
+        },
+        {
+          "label": "round17.seatA.SABOTAGE",
+          "hash": "0x93109be5d895f3ce2321872a5d8c5f0635cbcc13cfa0f4af143c38d45b9ae37d",
+          "gasUsed": "66302",
+          "effectiveGasPrice": "979982872",
+          "costWei": "64974824379344"
+        },
+        {
+          "label": "round17.seatB.PICK",
+          "hash": "0xb7bac200a01ce3ad1c0ed10b8cf25dd0a07d00e0281b7a1f6c0945bf64f54793",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1065992814",
+          "costWei": "67878158424264"
+        },
+        {
+          "label": "round17.entropy",
+          "hash": "0x1fe6720d168bdb68a7926409a445202c45bdfd22eeeb9631ce056e12a167b6d7",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1102332255",
+          "costWei": "64646275094475"
+        },
+        {
+          "label": "round18.seatA.PICK",
+          "hash": "0xf9b14692444890595b4ddb77f74767f4ad5edb6fbd01bb4d3f46244a752c92be",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1120914407",
+          "costWei": "71375345780132"
+        },
+        {
+          "label": "round18.seatB.PICK",
+          "hash": "0xf170a6e318d57f1b076dad5e1203b0f2f065dbbeb8a072024e6ee42c823cf18d",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1120914407",
+          "costWei": "71375345780132"
+        },
+        {
+          "label": "round18.entropy",
+          "hash": "0xacd1a20d92074af1964f92611703c8204684bdffa0fda24a93b625e93784665f",
+          "gasUsed": "58645",
+          "effectiveGasPrice": "1077091909",
+          "costWei": "63166055003305"
+        },
+        {
+          "label": "round18.resolve",
+          "hash": "0x55d06450d73f47e32fa4dafc2095639a520736891e9f74d610383f4050d90d37",
+          "gasUsed": "95054",
+          "effectiveGasPrice": "1002963592",
+          "costWei": "95335701273968"
+        },
+        {
+          "label": "round19.seatA.PICK",
+          "hash": "0xf5d0d19be83a0579840241bd7295c33a7fbb05c6da757545bcbd7403cb1a00cf",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1041924629",
+          "costWei": "66345592676204"
+        },
+        {
+          "label": "round19.seatB.PICK",
+          "hash": "0x6109ed9bf5d1d4b220eadc317ae63874365db887c7d7aabee9d8b698f6353e2e",
+          "gasUsed": "63676",
+          "effectiveGasPrice": "1041924629",
+          "costWei": "66345592676204"
+        },
+        {
+          "label": "round19.entropy",
+          "hash": "0x3c7f2c1a2ad79d07d47afe6108cadf9ab4f6791aafba3c3b06ca1b2a1044d848",
+          "gasUsed": "58633",
+          "effectiveGasPrice": "1123428393",
+          "costWei": "65869976966769"
+        },
+        {
+          "label": "round19.resolve",
+          "hash": "0x9b3dd1d8e00a6482761db67fc6a1835bf8e9ab52c5c364c9d8661c93d133b177",
+          "gasUsed": "121466",
+          "effectiveGasPrice": "1089017007",
+          "costWei": "132278539772262"
+        }
+      ],
+      "roundCount": 19,
+      "winnerAddress": "0xC7c627eC982988679D5D15E8ff9579fc0f0AB42f",
+      "winnerAgentId": "lock-rusher",
+      "completedAt": "2026-08-14T08:53:20.841Z"
+    }
+  ]
+}
