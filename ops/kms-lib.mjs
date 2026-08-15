@@ -1,5 +1,6 @@
 import { spawnSync } from 'child_process';
 import { createPublicKey } from 'crypto';
+import { join } from 'path';
 import {
   concatHex,
   encodeAbiParameters,
@@ -22,6 +23,8 @@ const SECP256K1_N = BigInt(
   '0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'
 );
 const SECP256K1_HALF_N = SECP256K1_N / 2n;
+let cachedAccessToken;
+let cachedAccessTokenExpiresAt = 0;
 
 export function getEnv(name, fallback = undefined) {
   const value = process.env[name];
@@ -72,14 +75,22 @@ export function publicKeyPemToAddress(pem) {
 }
 
 function gcloud(commandArgs) {
-  const result =
-    process.platform === 'win32'
-      ? spawnSync('cmd.exe', ['/d', '/s', '/c', 'gcloud', ...commandArgs], {
-          encoding: 'utf8',
-        })
-      : spawnSync('gcloud', commandArgs, {
-          encoding: 'utf8',
-        });
+  const isWindows = process.platform === 'win32';
+  const sdkRoot = process.env.CLOUDSDK_ROOT_DIR
+    || (isWindows && process.env.LOCALAPPDATA
+      ? join(process.env.LOCALAPPDATA, 'Google', 'Cloud SDK', 'google-cloud-sdk')
+      : undefined);
+  const command = isWindows && sdkRoot
+    ? (process.env.CLOUDSDK_PYTHON || join(sdkRoot, 'platform', 'bundledpython', 'python.exe'))
+    : 'gcloud';
+  const args = isWindows && sdkRoot
+    ? [join(sdkRoot, 'lib', 'gcloud.py'), ...commandArgs]
+    : commandArgs;
+  const result = spawnSync(command, args, {
+    encoding: 'utf8',
+    windowsHide: true,
+    timeout: Number(process.env.GCLOUD_TIMEOUT_MS || 30000),
+  });
   if (result.status !== 0) {
     const reason =
       result.stderr ||
@@ -137,7 +148,12 @@ export function getKmsAddress(overrides = {}) {
 }
 
 async function getAccessToken() {
-  return gcloud(['auth', 'print-access-token']);
+  if (cachedAccessToken && Date.now() < cachedAccessTokenExpiresAt) {
+    return cachedAccessToken;
+  }
+  cachedAccessToken = gcloud(['auth', 'print-access-token']);
+  cachedAccessTokenExpiresAt = Date.now() + (45 * 60 * 1000);
+  return cachedAccessToken;
 }
 
 function parseDerSignature(signatureBytes) {
@@ -201,24 +217,30 @@ async function recoverSignature({ digestHex, address, r, s }) {
 
 export async function signDigestWithKms({ digestHex, address, ...overrides }) {
   const config = getKmsKeyConfig(overrides);
-  const token = await getAccessToken();
-  const response = await fetch(
-    `https://cloudkms.googleapis.com/v1/${getKmsKeyVersionName(config)}:asymmetricSign`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        digest: {
-          // Cloud KMS expects a 32-byte digest payload in this field. For
-          // Ethereum transactions we pass the keccak256 digest bytes here.
-          sha256: Buffer.from(toBytes(digestHex)).toString('base64'),
+  let response;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const token = await getAccessToken();
+    response = await fetch(
+      `https://cloudkms.googleapis.com/v1/${getKmsKeyVersionName(config)}:asymmetricSign`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-      }),
-    }
-  );
+        body: JSON.stringify({
+          digest: {
+            // Cloud KMS expects a 32-byte digest payload in this field. For
+            // Ethereum transactions we pass the keccak256 digest bytes here.
+            sha256: Buffer.from(toBytes(digestHex)).toString('base64'),
+          },
+        }),
+      }
+    );
+    if (response.status !== 401 || attempt === 2) break;
+    cachedAccessToken = undefined;
+    cachedAccessTokenExpiresAt = 0;
+  }
 
   if (!response.ok) {
     throw new Error(`KMS sign failed: ${response.status} ${await response.text()}`);
@@ -254,7 +276,7 @@ export async function prepareTransaction({
   const [resolvedNonce, feeEstimate] = await Promise.all([
     nonce !== undefined
       ? Promise.resolve(nonce)
-      : client.getTransactionCount({ address }),
+      : client.getTransactionCount({ address, blockTag: 'pending' }),
     client.estimateFeesPerGas(),
   ]);
 
@@ -272,11 +294,15 @@ export async function prepareTransaction({
       maxPriorityFeePerGas ?? feeEstimate.maxPriorityFeePerGas,
   };
 
-  const resolvedGas =
-    gas ??
-    (await client.estimateGas({
-      ...request,
-    }));
+  let resolvedGas = gas;
+  if (resolvedGas === undefined) {
+    const estimatedGas = await client.estimateGas({ ...request });
+    const gasBufferBps = BigInt(process.env.KMS_GAS_BUFFER_BPS || '15000');
+    if (gasBufferBps < 10000n || gasBufferBps > 30000n) {
+      throw new Error('KMS_GAS_BUFFER_BPS must be between 10000 and 30000');
+    }
+    resolvedGas = (estimatedGas * gasBufferBps + 9999n) / 10000n;
+  }
 
   return {
     ...request,

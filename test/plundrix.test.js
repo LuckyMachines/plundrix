@@ -74,6 +74,7 @@ function startAnvil() {
   return new Promise((resolvePromise, reject) => {
     anvilProcess = spawn('anvil', ['--port', String(ANVIL_PORT)], {
       stdio: ['pipe', 'pipe', 'pipe'],
+      windowsHide: true,
     });
 
     let output = '';

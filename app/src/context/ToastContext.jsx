@@ -204,6 +204,7 @@ export function ToastProvider({ children }) {
       {createPortal(
         <div
           aria-live="polite"
+          role="region"
           aria-label="Notifications"
           className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-[100] flex flex-col-reverse gap-3 pointer-events-none"
           style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}

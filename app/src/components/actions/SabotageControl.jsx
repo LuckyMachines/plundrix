@@ -63,7 +63,7 @@ export default function SabotageControl({
 
       {/* Target selector */}
       <div className="w-full mb-3">
-        <label className="font-mono text-[11px] text-vault-text-dim uppercase tracking-wider block mb-1">
+        <label htmlFor={selectId} className="font-mono text-[11px] text-vault-text-dim uppercase tracking-wider block mb-1">
           Target
         </label>
         <select

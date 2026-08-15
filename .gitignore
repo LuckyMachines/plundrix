@@ -12,6 +12,8 @@ app/vite.log
 app/vite.err.log
 app/*.log
 app/dist/
+app/playwright-report/
+app/test-results/
 app/reports/balance-autopilot/*.json
 app/reports/balance-autopilot/*.csv
 app/reports/live-ops/*.json

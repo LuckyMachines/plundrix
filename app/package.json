@@ -43,23 +43,35 @@
     "test:playtest": "node scripts/test-playtest-coach.mjs",
     "test:design": "node scripts/test-design-control-tower.mjs",
     "test:telemetry": "node scripts/test-live-telemetry.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "verify:sepolia:read": "node scripts/verify-sepolia-readonly.mjs",
+    "verify:sepolia:funded-ui": "node scripts/capture-sepolia-funded.mjs",
     "start": "node scripts/serve-dist.mjs",
     "start:railway": "node scripts/serve-dist.mjs"
   },
   "dependencies": {
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@tanstack/react-query": "^5.80.6",
+    "clsx": "^2.1.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.1",
-    "@tanstack/react-query": "^5.80.6",
-    "wagmi": "^2.15.4",
-    "viem": "^2.31.3",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.3.0"
+    "react-router-dom": "^7.18.2",
+    "tailwind-merge": "^3.3.0",
+    "viem": "^2.55.15",
+    "wagmi": "^3.7.6"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.5.2",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/vite": "^4.1.8",
+    "@vitejs/plugin-react": "^4.5.2",
     "tailwindcss": "^4.1.8",
     "vite": "^6.3.5"
+  },
+  "overrides": {
+    "axios": "^1.18.0",
+    "ws": "^8.21.0"
   }
 }

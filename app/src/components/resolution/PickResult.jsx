@@ -4,7 +4,7 @@ import OutcomeBadge from '../shared/OutcomeBadge';
 export default function PickResult({ player, totalCracked, success, detail }) {
   return (
     <div className="bg-vault-dark border border-vault-border rounded px-4 py-3 space-y-1">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <div
             className={`w-8 h-8 rounded border flex items-center justify-center transition-all duration-500 ${
@@ -31,7 +31,7 @@ export default function PickResult({ player, totalCracked, success, detail }) {
             {truncateAddress(player)}
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 self-end sm:self-auto">
           {success && (
             <span className="font-mono text-xs text-vault-text-dim tabular-nums">
               {totalCracked?.toString()}/5

@@ -18,35 +18,24 @@ const PHASE_DURATIONS = [1500, 500, 1500, 0]; // ms per phase; phase 4 waits for
 
 export default function ResolveSequence({ roundEvents, currentAddress, onComplete }) {
   const [phase, setPhase] = useState(0);
+  const hasSabotage = roundEvents?.some((event) => (
+    event.name === 'PlayerSabotaged' ||
+    (event.name === 'ActionOutcome' && Number(event.args?.action) === Action.SABOTAGE)
+  ));
+  const hasWinner = roundEvents?.some((event) => event.name === 'GameWon');
+  const maxPhase = hasWinner ? 3 : hasSabotage ? 2 : 1;
 
   // Advance phases on timers
   useEffect(() => {
     if (!roundEvents || roundEvents.length === 0) return;
-
-    // Determine which phases are needed
-    const hasSabotage =
-      roundEvents.some((e) => e.name === 'PlayerSabotaged') ||
-      roundEvents.some(
-        (e) =>
-          e.name === 'ActionOutcome' && Number(e.args?.action) === Action.SABOTAGE
-      );
-    const hasWinner = roundEvents.some((e) => e.name === 'GameWon');
-    const maxPhase = hasWinner ? 3 : hasSabotage ? 2 : 1;
-
-    if (phase > maxPhase) {
-      onComplete?.();
-      return;
-    }
-
-    // Phase 4 (winner) doesn't auto-advance
-    if (phase === 3) return;
+    if (phase >= maxPhase) return;
 
     const timer = setTimeout(() => {
       setPhase((p) => p + 1);
     }, PHASE_DURATIONS[phase]);
 
     return () => clearTimeout(timer);
-  }, [phase, roundEvents, onComplete]);
+  }, [maxPhase, phase, roundEvents]);
 
   // Reset phase when new round events arrive
   useEffect(() => {
@@ -87,7 +76,7 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
     .map((e) => e.args?.player);
 
   return (
-    <div className="border border-vault-border rounded bg-vault-panel p-4 space-y-4">
+    <div className="border border-vault-border rounded bg-vault-panel p-4 space-y-4" role="region" aria-label="Round resolution">
       {/* Phase label */}
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-vault-border" />
@@ -204,6 +193,18 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
             rounds={roundResolvedEvent?.args?.round}
             isCurrentUser={gameWonEvent.args?.winner?.toLowerCase() === currentAddress?.toLowerCase()}
           />
+        </div>
+      )}
+
+      {phase >= maxPhase && !hasWinner && (
+        <div className="flex justify-end border-t border-vault-border pt-4">
+          <button
+            type="button"
+            onClick={onComplete}
+            className="min-h-[44px] rounded border border-tungsten/45 bg-tungsten/10 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten transition hover:bg-tungsten/20"
+          >
+            Continue to next round
+          </button>
         </div>
       )}
     </div>

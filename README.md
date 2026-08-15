@@ -13,15 +13,18 @@ The repo currently ships:
 
 - Sepolia staging is live
 - current Sepolia proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
-- current Sepolia implementation: `0x6748415bce63c0fbf1e50ceb2128bfeac977224f`
-- staging is paused by default
+- current Sepolia implementation: `0x26adc1216bda368a74d786148dcab9baca74dd7f`
+- implementation source is publicly verified on Blockscout and Routescan
+- staging proxy is currently unpaused
 - autoloop is enabled on Sepolia
 - external entropy is required on Sepolia
 - the 2% fee config exists onchain and is enabled on Sepolia for testing only
+- guarded FREE operation `1` completed on Sepolia in nine rounds with two HSM-backed players
 - mainnet is not live yet
 - planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
 
 Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
+The latest read-only chain and provenance audit is in [docs/sepolia-readiness-audit.md](docs/sepolia-readiness-audit.md).
 
 ## Game Summary
 
@@ -222,7 +225,13 @@ npm run kms:address
 npm run kms:fund
 npm run deploy:kms
 npm run autoloop:start
+npm run verify:sepolia:funded # read-only preflight by default
+cd app && npm run verify:sepolia:funded-ui
 ```
+
+The funded Sepolia proof requires an explicit `PLUNDRIX_ALLOW_SEPOLIA_WRITES=true` opt-in. It creates only a FREE game, preserves a configurable operator reserve after a conservative gas ceiling, caps the number of rounds, and writes transaction evidence to `reports/sepolia-funded/latest.json`.
+
+The completed operation `1` proof is rendered from the production frontend at desktop and mobile widths by `verify:sepolia:funded-ui`. The gate also fails on serious or critical accessibility findings, mobile overflow, browser errors, or missing live winner state.
 
 ## Game Rules
 

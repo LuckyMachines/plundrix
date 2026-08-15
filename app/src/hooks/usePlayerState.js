@@ -22,11 +22,11 @@ export function usePlayerState(gameId, playerAddr) {
   });
 
   return {
-    locksCracked: data?.[0],
-    tools: data?.[1],
-    stunned: data?.[2],
-    registered: data?.[3],
-    actionSubmitted: data?.[4],
+    locksCracked: data?.[0] ?? 0n,
+    tools: data?.[1] ?? 0n,
+    stunned: data?.[2] ?? false,
+    registered: data?.[3] ?? false,
+    actionSubmitted: data?.[4] ?? false,
     isLoading,
     error,
     refetch,

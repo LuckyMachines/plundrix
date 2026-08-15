@@ -6,7 +6,7 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">
-          Effective Date: March 13, 2026
+          Effective Date: August 13, 2026
         </p>
       </div>
 
@@ -67,8 +67,10 @@ export default function PrivacyPage() {
               Analytics
             </h3>
             <p className="font-mono text-xs text-vault-text leading-relaxed">
-              We do not currently use third-party analytics services. If analytics tooling is
-              added in the future, this policy will be updated accordingly.
+              We use a self-hosted Plausible Analytics service at plausible.racerverse.com to
+              measure aggregate page views and outbound-link activity. Plausible is configured
+              without tracking cookies. The analytics service and its infrastructure may process
+              request metadata such as IP address and user agent to produce aggregate statistics.
             </p>
           </div>
         </div>

@@ -1,0 +1,148 @@
+{
+  "verifiedAt": "2026-08-14T04:18:53.282Z",
+  "chainId": 11155111,
+  "contractAddress": "0x1FF715D46470B4024D88A12838e08A60855f0AE2",
+  "gameId": "1",
+  "mode": "FREE",
+  "resumed": true,
+  "winner": "0xC7c627eC982988679D5D15E8ff9579fc0f0AB42f",
+  "rounds": [
+    {
+      "round": "6",
+      "operator": {
+        "locks": "0",
+        "tools": "2"
+      },
+      "opponent": {
+        "locks": "2",
+        "tools": "3"
+      }
+    },
+    {
+      "round": "7",
+      "operator": {
+        "locks": "0",
+        "tools": "2"
+      },
+      "opponent": {
+        "locks": "3",
+        "tools": "3"
+      }
+    },
+    {
+      "round": "8",
+      "operator": {
+        "locks": "0",
+        "tools": "3"
+      },
+      "opponent": {
+        "locks": "4",
+        "tools": "3"
+      }
+    },
+    {
+      "round": "9",
+      "operator": {
+        "locks": "1",
+        "tools": "3"
+      },
+      "opponent": {
+        "locks": "5",
+        "tools": "3"
+      }
+    }
+  ],
+  "transactions": [
+    {
+      "label": "fundOpponent",
+      "hash": "0xda6207c5393439729ee17f3071d57aedd4f665a9b150c21264ae6941bdaed9ca",
+      "gasUsed": "21000"
+    },
+    {
+      "label": "round6.operatorAction",
+      "hash": "0xb3aec7593ae1da55595189db56fb176a559fd191ed886561e4a3a2e2e74c92ed",
+      "gasUsed": "63713"
+    },
+    {
+      "label": "round6.opponentAction",
+      "hash": "0xef70549a19fc6a8ff8413fa8d3ab8e75b0af31eacc1165e5f4d2ca278eb7e9b3",
+      "gasUsed": "63676"
+    },
+    {
+      "label": "round6.entropy",
+      "hash": "0xa8936cd971c2234827db685125d55c9c372b5ccd9a3bceb4b616160f6643bd0c",
+      "gasUsed": "58633"
+    },
+    {
+      "label": "round6.resolve",
+      "hash": "0xe8538ca5b6641eda2af05b2df2f29a906fbf2f039883c64c3fcfe0dca9c9daac",
+      "gasUsed": "97831"
+    },
+    {
+      "label": "round7.operatorAction",
+      "hash": "0x3c9a95fcbb96e36b00c544def663300f2471555464213a9feabff464eb94d9e9",
+      "gasUsed": "63713"
+    },
+    {
+      "label": "round7.opponentAction",
+      "hash": "0x50d93a42d9fcca572bfd29e83b63992492cd3b3c23e5cd1cf7ccc28f28a261b7",
+      "gasUsed": "63676"
+    },
+    {
+      "label": "round7.entropy",
+      "hash": "0xbedc0685561c3cd397d8fd5fe2f9de8e20aef691552c75aeb6ec356679399ba2",
+      "gasUsed": "58645"
+    },
+    {
+      "label": "round7.resolve",
+      "hash": "0xf43d743f534f69fcf9fd0e2949b96d6af501220731c8c011922b71329ce47230",
+      "gasUsed": "97831"
+    },
+    {
+      "label": "round8.operatorAction",
+      "hash": "0xd9082a4830cfc0714f41dd886055d94605aae4c89132a9a531a993f70903384a",
+      "gasUsed": "63713"
+    },
+    {
+      "label": "round8.opponentAction",
+      "hash": "0xa863e1e99a4f5ffeb55f31dfcad46755eb9cde6d920004db8a5061f5cfda74dc",
+      "gasUsed": "63676"
+    },
+    {
+      "label": "round8.entropy",
+      "hash": "0xda31b795b42b5384cada866d6ab518b0b029d62f21089aa9976b323b9ca8b4fc",
+      "gasUsed": "58645"
+    },
+    {
+      "label": "round8.resolve",
+      "hash": "0x4bbf4c3f25ce7f5d63120684f9f36ff38771b69d44cb323decfce7eab81256a4",
+      "gasUsed": "103310"
+    },
+    {
+      "label": "round9.operatorAction",
+      "hash": "0x962444d37aa78a0087b255ce971214cdff8e133085e4bda5b21b99b691217192",
+      "gasUsed": "63676"
+    },
+    {
+      "label": "round9.opponentAction",
+      "hash": "0x1319f8509cf5eeabe594083af1cc362043600fad4576859dba93ee286cfc7266",
+      "gasUsed": "63676"
+    },
+    {
+      "label": "round9.entropy",
+      "hash": "0x7d2fd884826e04b0191df21cabf7d79bd7d14033fa7775c6cb8f5c653b122674",
+      "gasUsed": "58633"
+    },
+    {
+      "label": "round9.resolve",
+      "hash": "0x7ee3c28b28e39af787da866edebe01b1f8a86faaef19074f68b96c3442296a38",
+      "gasUsed": "143943"
+    }
+  ],
+  "balances": {
+    "operatorBefore": "0.04160652361928949",
+    "operatorAfter": "0.040525380451171337",
+    "opponentBefore": "0.005930758125922608",
+    "opponentAfter": "0.00573935591779858"
+  }
+}

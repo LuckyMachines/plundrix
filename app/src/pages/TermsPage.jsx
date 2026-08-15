@@ -1,175 +1,73 @@
+const SECTIONS = [
+  {
+    title: '1. Overview',
+    body: 'Plundrix is a multiplayer strategy game built on the Ethereum blockchain and operated by Lucky Machines, LLC ("we", "us", "our"). By using game.plundrix.com or interacting with the Plundrix smart contract, you agree to these Terms.',
+  },
+  {
+    title: '2. Eligibility',
+    body: 'You must be at least 18 years old to use Plundrix. You are responsible for confirming that your use complies with the laws that apply to you.',
+  },
+  {
+    title: '3. Current Game Mode',
+    body: 'The public beta is free to play, with no entry fees and no prizes. Standard blockchain gas fees may apply. The smart contract contains dormant paid-competition code, but that mode is not offered through the public beta. If it is ever offered, these Terms and the product disclosures will be updated before launch.',
+  },
+  {
+    title: '4. Strategy and Variable Outcomes',
+    body: 'Each round, players choose Pick, Search, or Sabotage. Those decisions affect lock-cracking probabilities, tool collection, and opponent disruption. Pick and Search include variable onchain resolution. Player decisions materially affect position and probabilities, but no particular result is guaranteed.',
+  },
+  {
+    title: '5. Blockchain Transactions',
+    body: 'Game actions are recorded on a public blockchain. You are responsible for wallet security, transaction review, and gas fees. Blockchain transactions are irreversible. Never share a private key or seed phrase with Plundrix or anyone claiming to represent Plundrix.',
+  },
+  {
+    title: '6. Smart Contract Risk',
+    body: 'The Plundrix contract uses an upgradeable proxy and may contain bugs or unforeseen behavior. The beta is provided as is. Interact only with the published proxy address and do not send funds to unsupported contract paths.',
+  },
+  {
+    title: '7. Agents and Bots',
+    body: 'Some players may be automated agents or bots. The product labels agent participation where that information is available, including on competition and session surfaces.',
+  },
+  {
+    title: '8. Beta Changes',
+    body: 'Features, mechanics, networks, and availability may change during beta. Sepolia is a test network and test-only fee settings do not represent a live production economy. Withdrawals and paid competition are not part of the current public beta.',
+  },
+  {
+    title: '9. Limitation of Liability',
+    body: 'To the maximum extent permitted by law, Lucky Machines, LLC is not liable for indirect, incidental, special, consequential, or punitive damages arising from use of Plundrix, including loss caused by wallet mistakes, network failures, or smart contract behavior.',
+  },
+  {
+    title: '10. Changes and Contact',
+    body: 'We may update these Terms by changing the effective date on this page. For questions, use the public Plundrix GitHub repository linked below.',
+  },
+];
+
 export default function TermsPage() {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-10 space-y-8">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-display font-bold tracking-[0.25em] text-tungsten uppercase">
-          Terms of Service
-        </h1>
-        <p className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">
-          Effective Date: March 13, 2026
-        </p>
+    <div className="mx-auto max-w-3xl px-6 py-12">
+      <header className="border-b border-vault-border pb-7">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-tungsten">Legal / Public beta</p>
+        <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-[0.08em] text-vault-text">Terms of Service</h1>
+        <p className="mt-3 font-mono text-xs uppercase tracking-wider text-vault-text-dim">Effective date: August 13, 2026</p>
+      </header>
+
+      <div className="divide-y divide-vault-border">
+        {SECTIONS.map((section) => (
+          <section key={section.title} className="py-7">
+            <h2 className="font-display text-xl font-semibold uppercase tracking-[0.08em] text-vault-text">{section.title}</h2>
+            <p className="mt-3 text-base leading-7 text-vault-text-dim">{section.body}</p>
+          </section>
+        ))}
       </div>
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          1. Overview
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          Plundrix is a skill-based multiplayer strategy game built on the Ethereum blockchain.
-          The game is operated by Lucky Machines, LLC ("we", "us", "our"). By accessing or
-          using Plundrix at game.plundrix.com or interacting with the Plundrix smart contract,
-          you agree to these Terms of Service.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          2. Eligibility
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          You must be at least 18 years old to use Plundrix. By using the service, you represent
-          that you meet this requirement and that your use complies with all applicable laws in
-          your jurisdiction.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          3. Game Modes
-        </h2>
-        <div className="space-y-2">
-          <p className="font-mono text-xs text-vault-text leading-relaxed">
-            <span className="text-tungsten">Free Mode:</span> No entry fees and no prizes.
-            Games are played for practice and enjoyment. Free-play games do not involve any
-            monetary transactions beyond standard blockchain gas fees.
-          </p>
-          <p className="font-mono text-xs text-vault-text leading-relaxed">
-            <span className="text-tungsten">Stakes Mode:</span> Players contribute entry fees
-            that form a player-funded prize pool. The winner receives the prize pool minus a 2%
-            protocol fee. Stakes mode is a skill-based competition where outcomes are determined
-            by player strategy, including action selection, timing, and tool management. Lucky
-            Machines does not fund prize pools — all prize money comes from player entry fees.
-          </p>
-        </div>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          4. Skill-Based Competition
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          Plundrix is a game of skill. Each round, players choose from strategic actions (Pick,
-          Search, Sabotage) that interact with game mechanics including lock-cracking, tool
-          collection, and opponent disruption. Outcomes are determined by these player-driven
-          decisions, not by chance. The game does not constitute gambling, a sweepstakes, or a
-          lottery.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          5. Blockchain Transactions
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          All game actions are recorded on the Ethereum blockchain. You are responsible for
-          maintaining your wallet security and paying any gas fees associated with transactions.
-          Blockchain transactions are irreversible. We are not responsible for lost funds due to
-          wallet mismanagement, incorrect transaction parameters, or network issues.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          6. Smart Contract Risks
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          The Plundrix smart contract is deployed as a UUPS upgradeable proxy. While we take
-          reasonable care to test and audit contract code, smart contracts carry inherent risks
-          including potential bugs, vulnerabilities, and unforeseen interactions. You interact
-          with the contract at your own risk. We make no guarantees regarding the security or
-          correctness of the smart contract.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          7. Agent and Bot Participation
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          Some players may be AI agents or automated bots. Agent and bot participation is tracked
-          and labeled on the leaderboard. Bot-only games appear on a separate agent ladder. Mixed
-          games (human and bot players) are disclosed as such.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          8. Beta Status
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          Plundrix is currently in beta. Features, mechanics, and fee structures may change.
-          The Sepolia testnet deployment is a staging environment and does not represent the
-          final production experience. Test-only fee settings on Sepolia do not constitute a
-          live economy.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          9. Withdrawals
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          Prize winnings and protocol fees are held in the smart contract and must be withdrawn
-          by the recipient. We do not custody user funds. The withdrawal function transfers ETH
-          directly from the contract to your wallet address.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          10. Limitation of Liability
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          To the maximum extent permitted by law, Lucky Machines, LLC shall not be liable for
-          any indirect, incidental, special, consequential, or punitive damages arising from
-          your use of Plundrix, including but not limited to loss of funds, data, or profits.
-          The service is provided "as is" without warranties of any kind.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          11. Modifications
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          We may update these Terms at any time. Continued use of Plundrix after changes
-          constitutes acceptance of the revised Terms. Material changes will be noted by
-          updating the effective date at the top of this page.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
-          12. Contact
-        </h2>
-        <p className="font-mono text-xs text-vault-text leading-relaxed">
-          For questions about these Terms, contact us via the{' '}
-          <a
-            href="https://github.com/LuckyMachines/plundrix"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-tungsten hover:text-tungsten-bright transition-colors underline"
-          >
-            Plundrix GitHub repository
-          </a>.
-        </p>
-      </section>
-
-      <div className="border-t border-vault-border pt-4">
-        <p className="font-mono text-xs text-vault-text-dim">
-          Lucky Machines, LLC. All rights reserved.
-        </p>
-      </div>
+      <a
+        href="https://github.com/LuckyMachines/plundrix"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten hover:bg-tungsten/10"
+      >
+        Plundrix on GitHub
+      </a>
+      <p className="mt-8 border-t border-vault-border pt-5 font-mono text-xs text-vault-text-dim">Lucky Machines, LLC. All rights reserved.</p>
     </div>
   );
 }

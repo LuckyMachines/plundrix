@@ -1,38 +1,10 @@
 @import "tailwindcss";
+@import "@fontsource/barlow-condensed/latin-400.css";
+@import "@fontsource/barlow-condensed/latin-600.css";
+@import "@fontsource/barlow-condensed/latin-700.css";
+@import "@fontsource/jetbrains-mono/latin-400.css";
 
-/* Self-hosted fonts from Cloudflare R2 — no runtime requests to Google */
-@font-face {
-  font-family: "Barlow Condensed";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("https://pub-c7556ea4360a4a18b2122b1dfb8ea926.r2.dev/fonts/barlow-condensed-400.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Barlow Condensed";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("https://pub-c7556ea4360a4a18b2122b1dfb8ea926.r2.dev/fonts/barlow-condensed-600.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Barlow Condensed";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("https://pub-c7556ea4360a4a18b2122b1dfb8ea926.r2.dev/fonts/barlow-condensed-700.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
-  font-weight: 400 500;
-  font-display: swap;
-  src: url("https://pub-c7556ea4360a4a18b2122b1dfb8ea926.r2.dev/fonts/jetbrains-mono-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+/* Bundled font files avoid third-party runtime requests and CORS failures. */
 
 @theme {
   --color-vault-dark: #0a0a0f;
@@ -40,12 +12,12 @@
   --color-vault-panel: #1a1a2e;
   --color-vault-border: #2a2a3e;
   --color-vault-text: #c8c8d4;
-  --color-vault-text-dim: #6a6a7e;
+  --color-vault-text-dim: #8b8a9e;
 
   --color-tungsten: #c4956a;
   --color-tungsten-bright: #e8b078;
 
-  --color-signal-red: #d44040;
+  --color-signal-red: #e25555;
   --color-signal-red-dim: #8b2020;
 
   --color-oxide-green: #40a080;
@@ -90,6 +62,35 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(232, 176, 120, 0.28);
+  color: #fff7ef;
+}
+
+.home-hero {
+  background:
+    radial-gradient(circle at 12% 35%, rgba(196, 149, 106, 0.09), transparent 32%),
+    #0a0a0f;
+}
+
+.hero-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 75%, #0a0a0f 100%);
+}
+
+@media (max-width: 1023px) {
+  .hero-art {
+    margin-top: -2rem;
+  }
 }
 
 /* --- Safe area padding for notched devices --- */

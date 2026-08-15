@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useAccount, useSwitchChain } from 'wagmi';
 import { sepolia } from 'wagmi/chains';
+import { supportedChains } from '../../config/wagmi';
 
 export default function NetworkSwitchBanner() {
   const { chain, isConnected } = useAccount();
   const { switchChain, isPending } = useSwitchChain();
   const [dismissed, setDismissed] = useState(false);
 
-  // Only show for connected users on a non-Sepolia chain
-  if (!isConnected || !chain || chain.id === sepolia.id || dismissed) return null;
+  const isSupported = supportedChains.some((supported) => supported.id === chain?.id);
+  if (!isConnected || !chain || isSupported || dismissed) return null;
 
   const isMainnet = chain.id === 1;
 
@@ -20,12 +21,12 @@ export default function NetworkSwitchBanner() {
           <div>
             <p className="font-mono text-xs text-tungsten uppercase tracking-wider">
               {isMainnet
-                ? 'You\u2019re on Ethereum Mainnet'
-                : `You\u2019re on ${chain.name} (Chain ${chain.id})`}
+                ? "You're on Ethereum Mainnet"
+                : `You're on ${chain.name} (Chain ${chain.id})`}
             </p>
             <p className="font-mono text-xs text-vault-text-dim mt-1 leading-relaxed">
               Plundrix is live on Sepolia testnet for free-play beta.
-              Switch to Sepolia to play — no real ETH required.
+              Switch to Sepolia to play. Test ETH is required only for network fees.
             </p>
           </div>
         </div>

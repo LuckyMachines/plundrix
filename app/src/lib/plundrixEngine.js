@@ -427,6 +427,7 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
 
   const emit = (type, payload = {}) => {
     const event = makeEvent(type, round, payload);
+    event.id = `${event.id}-${roundEvents.length}`;
     roundEvents.push(event);
     next.events.push(event);
     return event;
