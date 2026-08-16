@@ -275,3 +275,23 @@ Snapshot notes:
 - The player hub makes Instant Play and live Sepolia mutually understandable within the first viewport.
 - Automated checks continue to prove no-wallet play, live operation creation, accessibility, SEO, and both canonical domains.
 - First-time-player observation confirms that people understand the two play modes without explanation.
+
+## v0.13.0 - Domain specialization
+
+Date: 2026-08-16
+
+Overall grade: **A+ for automated cross-domain information architecture**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Marketing focus | A+ | `plundrix.com` is now a seven-section explanation of the fantasy, rules, product visuals, reasons to play, trust, and wallet questions. Eleven product-tour sections, including three simulated play surfaces, no longer compete with the game. |
+| Player-hub focus | A+ | `game.plundrix.com` remains the only surface that asks visitors to choose Instant Play or live Sepolia, then exposes the real operation browser and creation controls. |
+| Cross-domain conversion | A+ | Marketing uses one `Enter Player Hub` action and a direct trailer link. The network selector was removed from marketing so mode and network decisions happen where they can be acted on. |
+| Content differentiation | A+ | Marketing explains why and how Plundrix works; the game domain starts play and hosts operational utilities. AI-readable references and structured data use the same split. |
+| Responsive reliability | A+ | The marketing production build and zero-vulnerability audit pass. Desktop and mobile browser checks find seven major sections, no missing anchors, no horizontal overflow, and no marketing network toggle. |
+
+## A bar, stricter
+
+- First-time visitors can correctly describe the job of each domain after one visit.
+- Search engines consistently treat `plundrix.com` as the canonical overview and `game.plundrix.com` as the playable application.
+- Future marketing additions must provide acquisition, explanation, or trust value rather than recreate interactive game controls.

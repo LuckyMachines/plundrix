@@ -110,3 +110,13 @@
 - [x] Replace internal evidence and claim-validation language with player-facing trailer copy.
 - [x] Verify both builds, both production audits, SEO, accessibility, mobile navigation, and browser-wallet operation creation.
 - [ ] Validate the two-mode choice with first-time players after production deployment.
+
+## 10. v0.13 domain specialization
+
+- [x] Remove simulated play controls and duplicate round demonstrations from the marketing homepage.
+- [x] Reduce the marketing homepage from 19 to 7 major sections.
+- [x] Make marketing explain the fantasy, rules, proof, trust, and FAQs while the game domain owns playable decisions.
+- [x] Replace the marketing network selector with one Player Hub conversion path.
+- [x] Update marketing navigation, structured data, FAQ copy, and AI references to match the domain split.
+- [x] Verify the marketing build, production audit, anchors, CTAs, and desktop/mobile overflow.
+- [ ] Validate domain-role comprehension with first-time visitors.
