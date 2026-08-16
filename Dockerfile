@@ -26,6 +26,9 @@ FROM node:20-bookworm-slim AS runtime
 
 ENV NODE_ENV=production PORT=8080 AGENT_PORT=8787
 WORKDIR /workspace
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends curl \
+  && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY abi ./abi
