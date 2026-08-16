@@ -1,8 +1,9 @@
 FROM node:20-bookworm-slim AS frontend-build
 
+ARG NODE_ENV
 WORKDIR /workspace
 COPY app/package.json app/package-lock.json ./app/
-RUN npm --prefix app ci
+RUN npm --prefix app ci --include=dev
 COPY app ./app
 
 ARG VITE_CONTRACT_ADDRESS
