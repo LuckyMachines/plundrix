@@ -214,37 +214,41 @@ cast send $PROXY_ADDRESS "unpause()" \
 
 ---
 
-## Railway Deployment (Frontend)
+## Coolify Deployment (Frontend and Agent API)
 
-The frontend deploys to Railway from the `app/` directory.
+Production is self-hosted through Coolify on Hetzner. Coolify builds the root
+`Dockerfile`, serves the static application on port `8080`, and starts the
+read-only agent service internally when its chain settings exist. Requests under
+`/api/*` are proxied through the same public origin.
 
-### Configuration
+### Coolify application settings
 
-`app/railway.toml` handles build caching and start command:
+- Repository: `LuckyMachines/plundrix`
+- Branch: `main`
+- Build pack: Dockerfile
+- Dockerfile: `/Dockerfile`
+- Exposed port: `8080`
+- Health check: `/health`
+- Automatic deployment: enabled for pushes to `main`
 
-```toml
-[build]
-builder = "nixpacks"
-buildCommand = "npm install && npm run build"
+### Build variables
 
-[build.nixpacksPlan.phases.install]
-cacheDirectories = ["node_modules"]
-
-[build.nixpacksPlan.phases.build]
-cacheDirectories = ["node_modules", ".vite"]
-
-[deploy]
-startCommand = "node scripts/serve-dist.mjs"
-```
-
-### Environment Variables (Railway)
-
-Set in the Railway dashboard:
-
-```
+```text
 VITE_CONTRACT_ADDRESS=0x1ff715d46470b4024d88a12838e08a60855f0ae2
-VITE_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+VITE_RPC_URL=<production Sepolia RPC>
+VITE_AGENT_SERVICE_URL=https://game.plundrix.com
+VITE_WALLETCONNECT_PROJECT_ID=<public WalletConnect project ID>
+```
+
+### Runtime variables
+
+```text
+AGENT_CONTRACT_ADDRESS=0x1ff715d46470b4024d88a12838e08a60855f0ae2
+AGENT_RPC_URL=<production Sepolia RPC>
+AGENT_ALLOW_ORIGIN=https://game.plundrix.com
+AGENT_PORT=8787
 PORT=8080
 ```
 
-Pushes to `main` auto-deploy if connected to Railway.
+After a push, verify `/health`, `/llms.txt`, an `/images/og/*` asset, and
+`/api/competition/leaderboard?queue=all&limit=3` on the canonical host.

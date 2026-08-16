@@ -56,8 +56,8 @@ export default function PrivacyPage() {
               Hosting and Access Logs
             </h3>
             <p className="font-mono text-xs text-vault-text leading-relaxed">
-              Our hosting provider (Railway) may collect standard access logs including IP
-              addresses, browser type, and request timestamps. These logs are used for
+              Our self-hosted infrastructure may process standard access logs including IP
+              addresses, browser type, and request timestamps. These logs are used only for
               operational monitoring and security purposes.
             </p>
           </div>

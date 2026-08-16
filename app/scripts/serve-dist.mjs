@@ -1,9 +1,10 @@
 import { createServer, request as requestHttp } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { extname, join, normalize } from 'node:path';
+import { dirname, extname, join, normalize, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const port = Number(process.env.PORT || 8080);
-const distDir = join(process.cwd(), 'dist');
+const distDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 
 const mimeByExt = {
   '.html': 'text/html; charset=utf-8',

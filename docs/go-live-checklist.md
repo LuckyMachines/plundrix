@@ -19,10 +19,10 @@ Current Sepolia deployment:
 
 Frontend deployment:
 
-- host: Railway (`game.plundrix.com`)
+- host: self-hosted Coolify on Hetzner (`game.plundrix.com`)
 - staging: SUCCESS (2026-03-13)
 - production: SUCCESS (2026-03-13)
-- contract address in Railway env: `0x1ff715d46470b4024d88a12838e08a60855f0ae2` (corrected 2026-03-13)
+- contract address in Coolify build environment: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
 - toast notification system: live
 - mobile UI overhaul: shipped (2026-03-14)
 - self-hosted fonts on Cloudflare R2: shipped (2026-03-14)
@@ -42,7 +42,7 @@ MCP server (`mcp-server/`):
 - [x] Run full contract tests: `forge test` — 23 passed, 0 failed (2026-03-12)
 - [x] Run JS tests: `npm run test:js` — all passing (2026-03-12)
 - [x] Run app build: `cd app && npm run build` — clean build (2026-03-13)
-- [x] Verify staging app points at Sepolia proxy and RPC — Railway env corrected to `0x1ff...` (2026-03-13)
+- [x] Verify staging app points at Sepolia proxy and RPC - deployment environment corrected to `0x1ff...` (2026-03-13)
 - [x] Verify agent service points at Sepolia RPC and contract — config falls through to Sepolia RPC; README confirms staging proxy
 - [x] Verify autoloop worker can observe timed-out rounds — worker skips FREE games, resolves STAKES; KMS signer has GAME_MASTER_ROLE
 - [x] Verify entropy path works end to end on Sepolia — drand source reachable, KMS signer has RANDOMIZER_ROLE, contract requires external entropy
@@ -87,8 +87,8 @@ MCP server (`mcp-server/`):
 - [ ] Confirm worker host and process supervision
 - [ ] Confirm production RPC endpoint
 - [x] Confirm entropy source health checks — drand API responding (`https://api.drand.sh/public/latest`)
-- [x] Confirm app deploy target and env values — Railway staging + production deployed and healthy
-- [ ] Confirm agent-service deploy target and env values
+- [ ] Confirm Coolify uses the root Dockerfile, tracks `main`, and has automatic deployment enabled
+- [ ] Confirm the combined Coolify service has agent-service contract and RPC values
 - [ ] Confirm fee is disabled for mainnet launch
 - [ ] Confirm a rollback owner is available during launch window
 
