@@ -46,3 +46,5 @@ npm run test:e2e
 ```
 
 The SEO test validates generated metadata, JSON-LD parsing, clean-route serving, synchronized sitemaps, AI reference delivery, social assets, internal-route noindex headers, and MP4 byte-range responses.
+
+The production game process also hosts the read-only competition index on an internal port and proxies `/api/*` through the canonical game origin. This keeps leaderboard requests same-origin while preserving the friendly unavailable state for local builds without `VITE_AGENT_SERVICE_URL`.

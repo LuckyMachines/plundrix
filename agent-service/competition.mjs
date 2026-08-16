@@ -517,7 +517,7 @@ async function computeCompetitionIndex() {
   const registryMap = buildRegistryMap(registry);
   const [snapshots, histories] = await Promise.all([
     Promise.all(gameIds.map((gameId) => getGameSnapshot(gameId))),
-    Promise.all(gameIds.map((gameId) => getGameHistory(gameId, { fromBlock: 0n }))),
+    Promise.all(gameIds.map((gameId) => getGameHistory(gameId))),
   ]);
 
   const sessions = snapshots.map((snapshot, index) =>

@@ -1,4 +1,4 @@
-import { createServer } from 'node:http';
+import { createServer, request as requestHttp } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 
@@ -93,6 +93,25 @@ const server = createServer(async (req, res) => {
     if (pathname === '/health') {
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ ok: true, service: 'plundrix-web' }));
+      return;
+    }
+    if (pathname.startsWith('/api/')) {
+      const upstream = requestHttp({
+        hostname: '127.0.0.1',
+        port: Number(process.env.AGENT_PORT || 8787),
+        path: rawUrl,
+        method: req.method,
+        headers: { ...req.headers, host: '127.0.0.1' },
+      }, (upstreamResponse) => {
+        res.writeHead(upstreamResponse.statusCode || 502, upstreamResponse.headers);
+        upstreamResponse.pipe(res);
+      });
+      upstream.on('error', () => {
+        if (res.headersSent) return res.end();
+        res.writeHead(503, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: 'Live competition feed unavailable' }));
+      });
+      req.pipe(upstream);
       return;
     }
     if (!isSafePath(pathname)) {

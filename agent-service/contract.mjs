@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createPublicClient, http, isAddress } from 'viem';
+import { sepolia } from 'viem/chains';
 import { agentConfig } from './config.mjs';
 import {
   normalizeActionCode,
@@ -10,12 +11,16 @@ import {
 const abiPath = resolve(process.cwd(), 'abi', 'PlundrixGame.json');
 const abi = JSON.parse(readFileSync(abiPath, 'utf8'));
 const client = createPublicClient({
+  batch: { multicall: true },
+  chain: sepolia,
   transport: http(agentConfig.rpcUrl),
 });
 
 const cachedConstants = {
   value: null,
 };
+const recentLogsCache = new Map();
+let latestBlockCache = { expiresAt: 0, value: null };
 
 function asNumber(value) {
   return Number(value);
@@ -175,7 +180,14 @@ export async function getGameHistory(
   { fromBlock, toBlock } = {}
 ) {
   const gameId = typeof gameIdInput === 'bigint' ? gameIdInput : parseGameId(gameIdInput);
-  const latestBlock = toBlock ?? (await client.getBlockNumber());
+  const now = Date.now();
+  if (!latestBlockCache.value || latestBlockCache.expiresAt <= now) {
+    latestBlockCache = {
+      expiresAt: now + agentConfig.competitionCacheMs,
+      value: client.getBlockNumber(),
+    };
+  }
+  const latestBlock = toBlock ?? (await latestBlockCache.value);
   const earliestBlock =
     fromBlock ??
     (latestBlock > agentConfig.historyLookbackBlocks
@@ -197,22 +209,24 @@ export async function getGameHistory(
     'LockCracked',
   ];
 
-  const results = await Promise.all(
-    eventNames.map((eventName) =>
-      client.getContractEvents({
-        address: agentConfig.contractAddress,
-        abi,
-        eventName,
-        args: { gameID: gameId },
-        fromBlock: earliestBlock,
-        toBlock: latestBlock,
-        strict: false,
-      })
-    )
-  );
+  const cacheKey = `${earliestBlock}:${latestBlock}`;
+  if (!recentLogsCache.has(cacheKey)) {
+    recentLogsCache.clear();
+    recentLogsCache.set(cacheKey, client.getContractEvents({
+      address: agentConfig.contractAddress,
+      abi,
+      fromBlock: earliestBlock,
+      toBlock: latestBlock,
+      strict: false,
+    }));
+  }
+  const results = await recentLogsCache.get(cacheKey);
 
   const events = results
-    .flat()
+    .filter((log) =>
+      eventNames.includes(log.eventName) &&
+      BigInt(log.args?.gameID ?? 0) === gameId
+    )
     .map((log) => ({
       name: log.eventName,
       blockNumber: asNumber(log.blockNumber),

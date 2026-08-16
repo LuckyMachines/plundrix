@@ -95,6 +95,11 @@ Use `agent-service/data/player-registry.json` to mark addresses as `human`, `age
 npm run agent:start
 ```
 
+In Railway production, `plundrix-spa` starts this service on the internal
+`AGENT_PORT` and proxies `/api/*` through `game.plundrix.com`. This keeps the
+browser API same-origin and avoids a second public service. Set
+`VITE_AGENT_SERVICE_URL=https://game.plundrix.com` at build time.
+
 ## Test
 
 ```bash
