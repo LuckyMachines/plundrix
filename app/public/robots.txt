@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
+Disallow: /design
+Disallow: /design-system
+Disallow: /ghosts
+Disallow: /launch
+Disallow: /mutations
+Disallow: /ops
+Disallow: /playtest
+Disallow: /snapshot
 
 Sitemap: https://game.plundrix.com/sitemap.xml

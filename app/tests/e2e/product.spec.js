@@ -161,6 +161,8 @@ test('homepage explains the game and makes the turn demo interactive', async ({ 
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1, name: /crack the vault/i })).toBeVisible();
   await expect(page.getByText('No wallet needed')).toBeVisible();
+  await expect(page.getByLabel('Plundrix gameplay trailer preview')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Straight answers.' })).toBeVisible();
 
   const search = page.getByRole('button', { name: /search build an edge/i });
   await search.click();
@@ -180,8 +182,9 @@ test('mobile navigation exposes the important player journeys', async ({ page })
   await page.getByRole('button', { name: 'Open menu' }).click();
   const navigation = page.getByRole('navigation', { name: 'Mobile navigation' });
   await expect(navigation.getByRole('link', { name: 'Play 01', exact: true })).toBeVisible();
-  await expect(navigation.getByRole('link', { name: 'Replays 03', exact: true })).toBeVisible();
-  await expect(navigation.getByRole('link', { name: 'Compare 05', exact: true })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Trailer 02', exact: true })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Replays 04', exact: true })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Compare 06', exact: true })).toBeVisible();
 });
 
 test('practice mode completes a deterministic match without a wallet', async ({ page }) => {

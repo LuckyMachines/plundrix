@@ -33,6 +33,10 @@ function upsertJsonLd(id, data) {
   element.textContent = JSON.stringify(data);
 }
 
+function removeElement(selector) {
+  document.head.querySelector(selector)?.remove();
+}
+
 export default function Seo({
   title = 'PLUNDRIX',
   description = 'Plundrix is an onchain vault-heist strategy game with short turn-based sessions, sabotage, replays, and explicit bot play.',
@@ -54,16 +58,23 @@ export default function Seo({
     upsertMeta('meta[property="og:type"]', { property: 'og:type' }, { content: type });
     upsertMeta('meta[property="og:url"]', { property: 'og:url' }, { content: canonical });
     upsertMeta('meta[property="og:site_name"]', { property: 'og:site_name' }, { content: 'Plundrix' });
+    upsertMeta('meta[property="og:locale"]', { property: 'og:locale' }, { content: 'en_US' });
     upsertMeta('meta[name="twitter:card"]', { name: 'twitter:card' }, { content: 'summary_large_image' });
     upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title' }, { content: fullTitle });
     upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description' }, { content: description });
     if (image) {
       const imageUrl = image.startsWith('http') ? image : `${SITE_ORIGIN}${image}`;
       upsertMeta('meta[property="og:image"]', { property: 'og:image' }, { content: imageUrl });
+      upsertMeta('meta[property="og:image:alt"]', { property: 'og:image:alt' }, { content: 'Plundrix vault-heist game' });
       upsertMeta('meta[name="twitter:image"]', { name: 'twitter:image' }, { content: imageUrl });
+    } else {
+      removeElement('meta[property="og:image"]');
+      removeElement('meta[property="og:image:alt"]');
+      removeElement('meta[name="twitter:image"]');
     }
     upsertLink('canonical', canonical);
     if (jsonLd) upsertJsonLd('plundrix-jsonld', jsonLd);
+    else removeElement('#plundrix-jsonld');
   }, [canonical, description, fullTitle, image, jsonLd, type]);
 
   return null;

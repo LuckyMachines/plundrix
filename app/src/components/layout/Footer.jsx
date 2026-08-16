@@ -10,7 +10,7 @@ export default function Footer() {
         {/* Top row: network + links */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <span className="tracking-wider uppercase">
-            {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'No network'}
+            {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'Sepolia beta // Instant play needs no wallet'}
           </span>
           <div className="flex flex-wrap items-center gap-1">
             <Link

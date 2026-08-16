@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import GameBrowser from '../components/game/GameBrowser';
 import QuickStartPanel from '../components/game/QuickStartPanel';
@@ -74,14 +74,21 @@ const REPLAY_PROOF = [
   },
 ];
 
+const FAQ = [
+  ['Can I play without a wallet?', 'Yes. Instant Play starts a four-operator match against three clearly labeled agents in your browser. No signup, wallet, or test ETH is required.'],
+  ['What is actually onchain?', 'The live multiplayer beta runs through the published Plundrix contract on Ethereum Sepolia. Instant Play is a fast local version of the same Pick, Search, and Sabotage decision loop.'],
+  ['Does the beta cost money?', 'Plundrix has no cash prizes or paid public mode. Instant Play is free. Live Sepolia games may require free test ETH for network gas.'],
+  ['Are bots hidden as players?', 'No. Agents and bots are labeled wherever they participate. Live session state, outcomes, and the verified contract can be inspected publicly.'],
+];
+
 export default function HomePage() {
   const { data, isLoading, error } = useCompetitionOverview();
 
   return (
     <>
       <Seo
-        title="Plundrix - Onchain Vault-Heist Strategy"
-        description="Pick locks, search for tools, and sabotage rivals in a short-session onchain vault-heist strategy game for 2-4 players."
+        title="Plundrix - Crack the Vault. Break the Table."
+        description="Race through five locks, build better odds, and sabotage rivals in Plundrix. Start instantly with no wallet or join the live Sepolia beta."
         path="/"
         image="/images/plundrix-vault-hero.png"
         jsonLd={{
@@ -92,6 +99,16 @@ export default function HomePage() {
           playMode: 'MultiPlayer',
           numberOfPlayers: '2-4',
           gamePlatform: 'Web browser',
+          url: 'https://game.plundrix.com/',
+          applicationCategory: 'Game',
+          operatingSystem: 'Any modern web browser',
+          isAccessibleForFree: true,
+          inLanguage: 'en',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'USD',
+          },
         }}
       />
 
@@ -101,10 +118,10 @@ export default function HomePage() {
             <div className="mb-7 flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full border border-oxide-green/35 bg-oxide-green/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">
                 <span className="h-1.5 w-1.5 rounded-full bg-oxide-green shadow-[0_0_12px_rgba(64,160,128,0.9)]" />
-                Sepolia beta live
+                Instant play / no wallet
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-text-dim">
-                2-4 players / fully onchain
+                Live multiplayer beta on Sepolia
               </span>
             </div>
 
@@ -116,8 +133,8 @@ export default function HomePage() {
               <span className="mt-2 block text-tungsten-bright">Break the table.</span>
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-7 text-vault-text/80 sm:text-xl sm:leading-8">
-              Pick locks, search for an edge, or sabotage the rival about to win. Every player
-              moves at once. Every round leaves a story.
+              Race three rivals through five locks. Pick for progress, search for better odds,
+              or sabotage the player about to win. Everyone moves at once.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -129,19 +146,23 @@ export default function HomePage() {
                 <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">-&gt;</span>
               </Link>
               <Link
-                to="/simulator"
+                to="/trailer"
                 className="inline-flex min-h-[52px] items-center justify-center rounded-sm border border-vault-text/25 bg-vault-dark/35 px-6 font-mono text-xs uppercase tracking-[0.16em] text-vault-text backdrop-blur-sm transition hover:border-tungsten/60 hover:text-tungsten-bright"
               >
-                Try a practice heist
+                Watch 32-sec gameplay
               </Link>
             </div>
+
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+              Start against 3 labeled agents / no signup / rematch instantly
+            </p>
 
             <dl className="mt-12 grid max-w-xl grid-cols-2 border-y border-vault-border/70 sm:grid-cols-4">
               {[
                 ['05', 'Locks'],
                 ['03', 'Choices'],
-                ['01', 'Winner'],
-                ['100%', 'Replayable'],
+                ['2-4', 'Players'],
+                ['00', 'Signup'],
               ].map(([value, label]) => (
                 <div key={label} className="border-vault-border/70 px-3 py-4 first:pl-0 sm:border-r sm:last:border-r-0">
                   <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-vault-text-dim">{label}</dt>
@@ -172,15 +193,7 @@ export default function HomePage() {
       </section>
 
       <main>
-        <section className="border-b border-vault-border/70 bg-vault-surface/45">
-          <Link to="/trailer" className="group mx-auto flex max-w-7xl flex-col gap-4 px-5 py-7 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">New / 32-second gameplay trailer</p>
-              <p className="mt-2 font-display text-2xl uppercase text-vault-text">See the lobby, the pressure, and a real Sepolia breach.</p>
-            </div>
-            <span className="font-mono text-xs uppercase tracking-[0.16em] text-tungsten transition-transform group-hover:translate-x-1">Watch now -&gt;</span>
-          </Link>
-        </section>
+        <TrailerPreview />
 
         <section id="how-it-works" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <SectionHeading
@@ -251,6 +264,8 @@ export default function HomePage() {
           </div>
         </section>
 
+        <TrustAndFaq />
+
         <section id="live-operations" className="mx-auto max-w-7xl scroll-mt-20 px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <SectionHeading
             eyebrow="Live on Sepolia"
@@ -281,6 +296,107 @@ export default function HomePage() {
         </section>
       </main>
     </>
+  );
+}
+
+function TrailerPreview() {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    video.play().catch(() => {});
+    return () => video.pause();
+  }, []);
+
+  return (
+    <section className="border-b border-vault-border/70 bg-vault-surface/45">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:px-10 lg:py-16">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">32 seconds / real product captures</p>
+          <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-[0.95] text-vault-text sm:text-5xl">See the pressure before you play.</h2>
+          <p className="mt-5 max-w-lg text-base leading-7 text-vault-text-dim">
+            Watch a real lobby, active vault, simultaneous resolution, and the completed funded Sepolia operation. No staged testimonials or invented player stories.
+          </p>
+          <Link to="/trailer" className="mt-7 inline-flex min-h-[48px] items-center border border-tungsten/45 px-5 font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten transition hover:border-tungsten hover:text-tungsten-bright">
+            Trailer and chapter guide -&gt;
+          </Link>
+        </div>
+        <div className="overflow-hidden border border-vault-border bg-black shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+          <video
+            ref={videoRef}
+            className="aspect-video w-full bg-black object-contain"
+            controls
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            poster="/images/plundrix-vault-hero.webp"
+            aria-label="Plundrix gameplay trailer preview"
+          >
+            <source src="/video/plundrix-gameplay-trailer.mp4" type="video/mp4" />
+            Your browser does not support the Plundrix gameplay trailer.
+          </video>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TrustAndFaq() {
+  return (
+    <section className="border-b border-vault-border/70">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-24">
+        <div>
+          <SectionHeading
+            eyebrow="Inspect the operation"
+            title="The beta tells you what is real."
+            copy="Play locally with labeled agents, or take the same decision loop to the public Sepolia contract. The network, limitations, and proof stay explicit."
+          />
+          <div className="mt-8 grid gap-px border border-vault-border bg-vault-border sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            {[
+              ['Free beta', 'No cash prizes or paid public mode'],
+              ['Public contract', 'Verified implementation source'],
+              ['Labeled agents', 'No bots presented as people'],
+              ['Real proof', 'Funded Sepolia game completed'],
+            ].map(([title, detail]) => (
+              <div key={title} className="bg-vault-surface p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-oxide-green">{title}</p>
+                <p className="mt-2 text-sm leading-6 text-vault-text-dim">{detail}</p>
+              </div>
+            ))}
+          </div>
+          <a
+            href="https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-6 inline-flex min-h-[44px] items-center font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten hover:text-tungsten-bright"
+          >
+            Inspect verified source -&gt;
+          </a>
+        </div>
+
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-tungsten">Before you enter</p>
+          <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-[0.95] text-vault-text sm:text-5xl">Straight answers.</h2>
+          <div className="mt-8 divide-y divide-vault-border border-y border-vault-border">
+            {FAQ.map(([question, answer], index) => (
+              <details key={question} className="group py-1" open={index === 0 ? true : undefined}>
+                <summary className="flex min-h-[62px] cursor-pointer list-none items-center justify-between gap-5 py-3 font-display text-xl uppercase tracking-[0.04em] text-vault-text">
+                  {question}
+                  <span aria-hidden="true" className="font-mono text-tungsten transition group-open:rotate-45">+</span>
+                </summary>
+                <p className="max-w-2xl pb-5 pr-10 text-base leading-7 text-vault-text-dim">{answer}</p>
+              </details>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link to="/play" className="inline-flex min-h-[52px] items-center justify-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-vault-dark">Play instantly -&gt;</Link>
+            <a href="#live-operations" className="inline-flex min-h-[52px] items-center justify-center border border-vault-border px-6 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:border-tungsten/45">Open live tables</a>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

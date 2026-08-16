@@ -68,3 +68,16 @@
 - [ ] Deploy and publicly verify the upgraded implementation on Sepolia.
 - [ ] Configure and fund the bounded session-action relay, then enable the two frontend feature flags.
 - [ ] Validate the new Leader Hunter and anti-stun-lock rules in a separately versioned tournament run.
+
+## 7. v0.10 marketing-site conversion pass
+
+- [x] Distinguish instant no-wallet play from the live Sepolia multiplayer beta in the first viewport.
+- [x] Replace the secondary practice CTA with a direct 32-second gameplay-trailer path.
+- [x] Embed the real-capture trailer on the homepage with reduced-motion-aware autoplay behavior.
+- [x] Replace vague hero statistics with concrete locks, choices, player-count, and signup facts.
+- [x] Add direct answers for wallet, onchain, cost, and labeled-agent questions.
+- [x] Add public-contract, free-beta, labeled-agent, and funded-operation trust proof without testimonials or analytics disclosure.
+- [x] Add the trailer to desktop and mobile navigation and improve the disconnected footer state.
+- [x] Remove internal operator tools from the public sitemap and disallow them in robots.txt.
+- [x] Strengthen canonical, Open Graph, manifest, structured-data, and stale-route metadata handling.
+- [x] Verify the production build, zero-vulnerability production audit, valid SEO files, and full browser/accessibility portfolio.

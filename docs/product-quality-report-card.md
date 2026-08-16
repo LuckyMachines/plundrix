@@ -204,3 +204,24 @@ Overall grade: **A+ candidate** for the local automated product bar; live Sepoli
 - Run a separately versioned balance batch against the cooldown and Leader Hunter candidate.
 - Prove session authorization, silent signed action, relay receipt, revocation, expiry, and replay rejection in browser automation.
 - Keep testimonials, player stories, and analytics results private or absent until genuine source material and explicit publication approval exist.
+
+## v0.10.0 - Marketing-site conversion pass
+
+Date: 2026-08-16
+
+Overall grade: **A+ for the automated marketing-site bar**; human testimonials and analytics results remain deliberately absent.
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| First-viewport positioning | A+ | The hero now separates instant no-wallet play from live Sepolia multiplayer, states the five-lock and three-choice loop, and gives a concrete primary path against three labeled agents. |
+| Gameplay proof | A+ | The 32-second real-capture trailer is visible directly after the hero, respects reduced-motion preferences, and links to a chapter guide. Replay stories and the funded Sepolia finish remain inspectable without invented player narratives. |
+| Conversion path | A+ | Play, Trailer, and live-table paths are explicit in the hero, navigation, FAQ close, and operations section. Vague replayability statistics were replaced with concrete product facts. |
+| Trust and objections | A+ | Wallet, onchain, cost, and bot questions receive direct answers. Free-beta limits, labeled agents, public source, and funded-operation proof are stated without testimonials or published analytics. |
+| SEO and sharing | A | Canonical and social metadata, image alt metadata, manifest copy, VideoGame structured data, and stale-route cleanup are stronger. Internal operator tools were removed from the public sitemap and disallowed from crawling. Production deployment remains the final indexing check. |
+| Accessibility and reliability | A+ | Reduced-motion behavior, keyboard-native disclosures, runtime-error gates, serious/critical Axe checks, responsive navigation, production build, valid SEO files, and all 19 active browser scenarios pass. Production dependency audit reports zero vulnerabilities. |
+
+## Next stricter marketing bar
+
+- Deploy the pass and verify production canonical, social-card, sitemap, robots, video-range, and explorer-link responses.
+- Keep testimonials, quotes, stories, and analytics results absent unless genuine material and explicit publication approval become available.
+- Treat first-time-player comprehension as private product research rather than a public marketing claim.
