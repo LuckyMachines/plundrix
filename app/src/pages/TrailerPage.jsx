@@ -17,7 +17,22 @@ export default function TrailerPage() {
         title="Plundrix Gameplay Trailer"
         description="Watch a 32-second Plundrix gameplay trailer assembled from real product captures and original game art."
         path="/trailer"
-        image="/images/plundrix-vault-hero.png"
+        image="/images/og/plundrix-trailer.jpg"
+        imageAlt="Plundrix gameplay trailer - One vault. No safe turn."
+        video="/video/plundrix-gameplay-trailer.mp4"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'VideoObject',
+          name: 'Plundrix Gameplay Trailer',
+          description: 'A 32-second gameplay trailer assembled from real Plundrix product captures and original game art.',
+          thumbnailUrl: 'https://game.plundrix.com/images/og/plundrix-trailer.jpg',
+          contentUrl: 'https://game.plundrix.com/video/plundrix-gameplay-trailer.mp4',
+          embedUrl: 'https://game.plundrix.com/trailer',
+          uploadDate: '2026-08-15',
+          duration: 'PT32S',
+          inLanguage: 'en',
+          isFamilyFriendly: true,
+        }}
       />
 
       <header className="max-w-4xl">

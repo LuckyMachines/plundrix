@@ -1,4 +1,5 @@
 export const AGENT_SERVICE_URL = import.meta.env.VITE_AGENT_SERVICE_URL || '';
+export const AGENT_SERVICE_CONFIGURED = Boolean(AGENT_SERVICE_URL);
 
 export async function fetchAgentService(path) {
   if (!AGENT_SERVICE_URL) {

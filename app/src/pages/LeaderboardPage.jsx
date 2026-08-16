@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Spinner from '../components/shared/Spinner';
 import LeaderboardTable from '../components/competition/LeaderboardTable';
 import PlaystyleStats from '../components/competition/PlaystyleStats';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { useSessionHistory } from '../hooks/useSessionHistory';
+import { AGENT_SERVICE_CONFIGURED } from '../config/service';
 
 const FILTERS = [
   { value: 'all', label: 'All Profiles' },
@@ -45,19 +47,39 @@ export default function LeaderboardPage() {
         </div>
       </div>
 
-      {isLoading ? (
+      {!AGENT_SERVICE_CONFIGURED ? (
+        <UnavailableState />
+      ) : isLoading ? (
         <LoadingState label="Compiling standings..." />
       ) : error ? (
         <ErrorState error={error} />
       ) : (
         <LeaderboardTable
-          title={`${data.season.label} · ${FILTERS.find((filter) => filter.value === queue)?.label}`}
+          title={`${data.season.label} / ${FILTERS.find((filter) => filter.value === queue)?.label}`}
           entries={data.entries}
         />
       )}
 
       <PlaystyleStats profiles={summary.profiles} />
     </div>
+  );
+}
+
+function UnavailableState() {
+  return (
+    <section className="border border-tungsten/30 rounded bg-vault-surface p-8">
+      <p className="font-mono text-xs uppercase tracking-[0.22em] text-tungsten">
+        Live season standings are warming up
+      </p>
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-vault-text-dim">
+        The public ladder feed is temporarily unavailable. Instant Play, live operations, replays,
+        and your locally recorded playstyle remain available.
+      </p>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Link to="/play" className="btn-primary">Play instantly</Link>
+        <Link to="/replays" className="btn-secondary">Watch replays</Link>
+      </div>
+    </section>
   );
 }
 

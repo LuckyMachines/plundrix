@@ -81,3 +81,20 @@
 - [x] Remove internal operator tools from the public sitemap and disallow them in robots.txt.
 - [x] Strengthen canonical, Open Graph, manifest, structured-data, and stale-route metadata handling.
 - [x] Verify the production build, zero-vulnerability production audit, valid SEO files, and full browser/accessibility portfolio.
+
+## 8. v0.11 SEO and AI-search discovery pass
+
+- [x] Add `/play` and `/trailer` to the route metadata source used by production static generation.
+- [x] Exclude snapshots and internal operator tools from generated production sitemaps.
+- [x] Serve clean route-specific HTML instead of the generic SPA shell for public URLs.
+- [x] Add synchronized canonical, robots, Open Graph, Twitter, and JSON-LD tags to every generated public route.
+- [x] Add `WebSite`, `Organization`, `VideoGame`, visible FAQ, and `VideoObject` structured data where supported by page content.
+- [x] Add factual `llms.txt` and `llms-full.txt` references without testimonials or analytics disclosure.
+- [x] Explicitly permit major AI-search crawlers while preserving internal-route exclusions.
+- [x] Add internal and player-specific `X-Robots-Tag` noindex responses.
+- [x] Create and validate dedicated 1200x630 home, Instant Play, and trailer social cards.
+- [x] Art-direct three text-free social scene masters through Azure GPT Image 2 and apply exact copy in the deterministic renderer.
+- [x] Add route-specific social images and complete image dimensions, types, alt text, secure URLs, and video tags.
+- [x] Serve the trailer with `video/mp4`, byte ranges, and correct caching behavior.
+- [x] Add a repeatable SEO build test covering generated files and production HTTP behavior.
+- [x] Replace the unconfigured leaderboard's internal service error with a tested player-facing fallback and stop disabled polling.

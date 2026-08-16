@@ -42,7 +42,13 @@ export default function Seo({
   description = 'Plundrix is an onchain vault-heist strategy game with short turn-based sessions, sabotage, replays, and explicit bot play.',
   path,
   type = 'website',
-  image,
+  image = '/images/og/plundrix-home.jpg',
+  imageAlt = 'Plundrix simultaneous-action vault-heist strategy game',
+  imageWidth = 1200,
+  imageHeight = 630,
+  imageType = 'image/jpeg',
+  video,
+  noIndex = false,
   jsonLd,
 }) {
   const location = useLocation();
@@ -59,23 +65,64 @@ export default function Seo({
     upsertMeta('meta[property="og:url"]', { property: 'og:url' }, { content: canonical });
     upsertMeta('meta[property="og:site_name"]', { property: 'og:site_name' }, { content: 'Plundrix' });
     upsertMeta('meta[property="og:locale"]', { property: 'og:locale' }, { content: 'en_US' });
+    upsertMeta('meta[name="robots"]', { name: 'robots' }, {
+      content: noIndex
+        ? 'noindex,nofollow'
+        : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+    });
     upsertMeta('meta[name="twitter:card"]', { name: 'twitter:card' }, { content: 'summary_large_image' });
     upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title' }, { content: fullTitle });
     upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description' }, { content: description });
     if (image) {
       const imageUrl = image.startsWith('http') ? image : `${SITE_ORIGIN}${image}`;
       upsertMeta('meta[property="og:image"]', { property: 'og:image' }, { content: imageUrl });
-      upsertMeta('meta[property="og:image:alt"]', { property: 'og:image:alt' }, { content: 'Plundrix vault-heist game' });
+      upsertMeta('meta[property="og:image:secure_url"]', { property: 'og:image:secure_url' }, { content: imageUrl });
+      upsertMeta('meta[property="og:image:type"]', { property: 'og:image:type' }, { content: imageType });
+      upsertMeta('meta[property="og:image:width"]', { property: 'og:image:width' }, { content: String(imageWidth) });
+      upsertMeta('meta[property="og:image:height"]', { property: 'og:image:height' }, { content: String(imageHeight) });
+      upsertMeta('meta[property="og:image:alt"]', { property: 'og:image:alt' }, { content: imageAlt });
       upsertMeta('meta[name="twitter:image"]', { name: 'twitter:image' }, { content: imageUrl });
+      upsertMeta('meta[name="twitter:image:alt"]', { name: 'twitter:image:alt' }, { content: imageAlt });
     } else {
       removeElement('meta[property="og:image"]');
+      removeElement('meta[property="og:image:secure_url"]');
+      removeElement('meta[property="og:image:type"]');
+      removeElement('meta[property="og:image:width"]');
+      removeElement('meta[property="og:image:height"]');
       removeElement('meta[property="og:image:alt"]');
       removeElement('meta[name="twitter:image"]');
+      removeElement('meta[name="twitter:image:alt"]');
+    }
+    if (video) {
+      const videoUrl = video.startsWith('http') ? video : `${SITE_ORIGIN}${video}`;
+      upsertMeta('meta[property="og:video"]', { property: 'og:video' }, { content: videoUrl });
+      upsertMeta('meta[property="og:video:secure_url"]', { property: 'og:video:secure_url' }, { content: videoUrl });
+      upsertMeta('meta[property="og:video:type"]', { property: 'og:video:type' }, { content: 'video/mp4' });
+    } else {
+      removeElement('meta[property="og:video"]');
+      removeElement('meta[property="og:video:secure_url"]');
+      removeElement('meta[property="og:video:type"]');
     }
     upsertLink('canonical', canonical);
-    if (jsonLd) upsertJsonLd('plundrix-jsonld', jsonLd);
-    else removeElement('#plundrix-jsonld');
-  }, [canonical, description, fullTitle, image, jsonLd, type]);
+    removeElement('#plundrix-static-jsonld');
+    if (noIndex) {
+      removeElement('#plundrix-jsonld');
+    } else {
+      upsertJsonLd('plundrix-jsonld', jsonLd || {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: fullTitle,
+        description,
+        url: canonical,
+        isPartOf: {
+          '@type': 'WebSite',
+          name: 'Plundrix',
+          url: `${SITE_ORIGIN}/`,
+        },
+        inLanguage: 'en',
+      });
+    }
+  }, [canonical, description, fullTitle, image, imageAlt, imageHeight, imageType, imageWidth, jsonLd, noIndex, type, video]);
 
   return null;
 }

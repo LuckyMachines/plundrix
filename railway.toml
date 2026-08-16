@@ -1,10 +1,10 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm --prefix app ci && npm --prefix app run build"
+buildCommand = "node scripts/railway-build.mjs"
 nixpacksConfigPath = "nixpacks.toml"
 
 [deploy]
-startCommand = "cd app && node scripts/serve-dist.mjs"
-healthcheckPath = "/"
+startCommand = "node scripts/railway-start.mjs"
+healthcheckPath = "/health"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3

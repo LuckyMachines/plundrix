@@ -90,25 +90,62 @@ export default function HomePage() {
         title="Plundrix - Crack the Vault. Break the Table."
         description="Race through five locks, build better odds, and sabotage rivals in Plundrix. Start instantly with no wallet or join the live Sepolia beta."
         path="/"
-        image="/images/plundrix-vault-hero.png"
+        image="/images/og/plundrix-home.jpg"
+        imageAlt="Plundrix - Crack the Vault. Break the Table."
         jsonLd={{
           '@context': 'https://schema.org',
-          '@type': 'VideoGame',
-          name: 'Plundrix',
-          description: 'A short-session onchain vault-heist strategy game for 2-4 players.',
-          playMode: 'MultiPlayer',
-          numberOfPlayers: '2-4',
-          gamePlatform: 'Web browser',
-          url: 'https://game.plundrix.com/',
-          applicationCategory: 'Game',
-          operatingSystem: 'Any modern web browser',
-          isAccessibleForFree: true,
-          inLanguage: 'en',
-          offers: {
-            '@type': 'Offer',
-            price: '0',
-            priceCurrency: 'USD',
-          },
+          '@graph': [
+            {
+              '@type': 'WebSite',
+              '@id': 'https://game.plundrix.com/#website',
+              name: 'Plundrix',
+              url: 'https://game.plundrix.com/',
+              description: 'A simultaneous-action vault-heist strategy game.',
+              inLanguage: 'en',
+              publisher: { '@id': 'https://game.plundrix.com/#organization' },
+            },
+            {
+              '@type': 'Organization',
+              '@id': 'https://game.plundrix.com/#organization',
+              name: 'Lucky Machines, LLC',
+              url: 'https://game.plundrix.com/',
+              sameAs: ['https://github.com/LuckyMachines/plundrix'],
+            },
+            {
+              '@type': 'VideoGame',
+              '@id': 'https://game.plundrix.com/#game',
+              name: 'Plundrix',
+              description: 'A short-session vault-heist strategy game for 2-4 players.',
+              playMode: ['SinglePlayer', 'MultiPlayer'],
+              numberOfPlayers: '2-4',
+              gamePlatform: 'Web browser',
+              url: 'https://game.plundrix.com/',
+              image: 'https://game.plundrix.com/images/og/plundrix-home.jpg',
+              applicationCategory: 'Game',
+              operatingSystem: 'Any modern web browser',
+              isAccessibleForFree: true,
+              inLanguage: 'en',
+              author: { '@id': 'https://game.plundrix.com/#organization' },
+              potentialAction: {
+                '@type': 'PlayAction',
+                target: 'https://game.plundrix.com/play',
+              },
+              offers: {
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'USD',
+              },
+            },
+            {
+              '@type': 'FAQPage',
+              '@id': 'https://game.plundrix.com/#faq',
+              mainEntity: FAQ.map(([question, answer]) => ({
+                '@type': 'Question',
+                name: question,
+                acceptedAnswer: { '@type': 'Answer', text: answer },
+              })),
+            },
+          ],
         }}
       />
 

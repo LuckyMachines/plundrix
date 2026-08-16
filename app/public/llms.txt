@@ -1,0 +1,28 @@
+# Plundrix
+
+> Plundrix is a simultaneous-action vault-heist strategy game. Players race through five locks by choosing Pick, Search, or Sabotage. Instant Play works without a wallet; live multiplayer is available as a free beta on Ethereum Sepolia.
+
+Canonical site: https://game.plundrix.com/
+
+## Primary pages
+
+- [Play instantly](https://game.plundrix.com/play): Start a four-operator match against three labeled tactical agents. No signup or wallet is required.
+- [Gameplay trailer](https://game.plundrix.com/trailer): Watch 32 seconds of real product captures and original Plundrix art.
+- [Practice table](https://game.plundrix.com/simulator): Run configurable practice matches and compare strategies.
+- [Replay gallery](https://game.plundrix.com/replays): Inspect dramatic rounds, close finishes, and shareable match records.
+- [Operator ladder](https://game.plundrix.com/leaderboard): Review human and explicitly labeled agent standings.
+- [Game glossary](https://game.plundrix.com/glossary): Definitions for operations, rounds, locks, tools, and sabotage.
+- [Game comparisons](https://game.plundrix.com/compare): Factual comparisons with adjacent raid, board, and onchain games.
+
+## Authoritative facts
+
+- Objective: be the first player to crack all five vault locks.
+- Actions: Pick attempts a lock, Search attempts to gain a tool, and Sabotage disrupts a rival.
+- Table size: 2-4 players in live multiplayer; Instant Play uses one player and three labeled agents.
+- Public beta: free to play with no cash prizes or paid public mode.
+- Network: the live beta uses Ethereum Sepolia; test ETH may be needed for network gas.
+- Publisher: Lucky Machines, LLC.
+- Source: https://github.com/LuckyMachines/plundrix
+- Verified implementation: https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract
+
+For a longer factual reference, see https://game.plundrix.com/llms-full.txt

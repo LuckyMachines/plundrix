@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import NetworkSwitchBanner from './components/wallet/NetworkSwitchBanner';
@@ -7,6 +7,8 @@ import Modal from './components/shared/Modal';
 import Spinner from './components/shared/Spinner';
 import SessionAudioBridge from './components/shared/SessionAudioBridge';
 import HomePage from './pages/HomePage';
+import Seo from './components/seo/Seo';
+import { routeMeta } from './data/productSpine';
 
 const InstantPlayPage = lazy(() => import('./pages/InstantPlayPage'));
 const TrailerPage = lazy(() => import('./pages/TrailerPage'));
@@ -48,6 +50,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,rgba(196,149,106,0.08),transparent_45%),linear-gradient(180deg,var(--color-vault-dark),#111214)]">
+      <RouteMetadata />
       <Header onHelpClick={() => setIsHelpOpen(true)} />
       <NetworkSwitchBanner />
       <main className="flex-1">
@@ -106,5 +109,40 @@ export default function App() {
         </Suspense>
       </Modal>
     </div>
+  );
+}
+
+function RouteMetadata() {
+  const { pathname } = useLocation();
+  if (pathname === '/' || pathname === '/play' || pathname === '/trailer' || pathname.startsWith('/compare')) {
+    return null;
+  }
+
+  let metaPath = pathname;
+  let noIndex = false;
+  if (pathname.startsWith('/game/')) {
+    metaPath = '/game/:gameId';
+    noIndex = true;
+  } else if (pathname.startsWith('/profile/')) {
+    metaPath = '/profile/:address';
+    noIndex = true;
+  } else if (pathname.startsWith('/replay/')) {
+    metaPath = '/replay/:replayId';
+    noIndex = true;
+  }
+
+  const meta = routeMeta(metaPath);
+  if (!meta) {
+    return <Seo title="Page Not Found | Plundrix" description="This Plundrix route does not exist." path={pathname} noIndex />;
+  }
+
+  return (
+    <Seo
+      title={meta.title}
+      description={meta.description}
+      path={pathname}
+      image={meta.image}
+      noIndex={noIndex || meta.public === false}
+    />
   );
 }

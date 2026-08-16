@@ -9,4 +9,19 @@ Disallow: /ops
 Disallow: /playtest
 Disallow: /snapshot
 
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: ClaudeBot
+User-agent: GPTBot
+Allow: /
+Disallow: /design
+Disallow: /design-system
+Disallow: /ghosts
+Disallow: /launch
+Disallow: /mutations
+Disallow: /ops
+Disallow: /playtest
+Disallow: /snapshot
+
 Sitemap: https://game.plundrix.com/sitemap.xml

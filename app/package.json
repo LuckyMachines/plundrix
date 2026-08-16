@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/postbuild-seo-pages.mjs",
+    "build:social": "node scripts/build-social-cards.mjs",
     "preview": "vite preview",
     "simulate": "node scripts/simulate-game.mjs",
     "simulate:auto-balance": "node scripts/auto-balance.mjs",
@@ -44,6 +45,7 @@
     "test:design": "node scripts/test-design-control-tower.mjs",
     "test:telemetry": "node scripts/test-live-telemetry.mjs",
     "test:e2e": "playwright test",
+    "test:seo": "node scripts/test-seo-build.mjs",
     "test:e2e:ui": "playwright test --ui",
     "verify:sepolia:read": "node scripts/verify-sepolia-readonly.mjs",
     "verify:sepolia:funded-ui": "node scripts/capture-sepolia-funded.mjs",

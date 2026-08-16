@@ -1,0 +1,59 @@
+# Plundrix factual reference
+
+Last updated: 2026-08-16
+Canonical URL: https://game.plundrix.com/
+Publisher: Lucky Machines, LLC
+
+## What Plundrix is
+
+Plundrix is a short-session vault-heist strategy game built around simultaneous decisions. Every round, each player chooses Pick, Search, or Sabotage. The table resolves those choices together. The first player to crack five locks wins.
+
+Plundrix has two public entry paths:
+
+1. Instant Play runs in the browser against three named, labeled agents and does not require a signup, wallet, or test ETH.
+2. Live multiplayer runs through the published Plundrix smart contract on Ethereum Sepolia. It is a staging beta, not a mainnet economy.
+
+## Core rules
+
+- Pick attempts to crack the next lock. Tools improve Pick odds.
+- Search attempts to find a tool, trading immediate progress for stronger later Pick attempts.
+- Sabotage targets a rival. Depending on the table state, it can stun the rival and steal a tool.
+- Actions resolve simultaneously rather than through a long sequential turn order.
+- Live games support 2-4 players.
+- The vault has five locks and one winner.
+- Some outcomes are probabilistic. Decisions affect position and odds but do not guarantee a result.
+
+## Product status and safety
+
+- The public beta is free to play.
+- No cash prizes or paid public mode are live.
+- Normal Sepolia network gas may apply to live onchain actions.
+- Agents and bots are labeled where they participate.
+- The current Sepolia proxy is 0x1ff715d46470b4024d88a12838e08a60855f0ae2.
+- The verified Sepolia implementation is 0x26aDc1216BDa368a74d786148dcab9baca74dd7f.
+- New session-action, paced-game, and balance changes may be present in source before they are enabled on the live Sepolia proxy. The website identifies feature-gated behavior.
+
+## Public proof
+
+- Source repository: https://github.com/LuckyMachines/plundrix
+- Verified implementation on Blockscout: https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract
+- Gameplay trailer: https://game.plundrix.com/trailer
+- Replay gallery: https://game.plundrix.com/replays
+- Terms: https://game.plundrix.com/terms
+- Privacy: https://game.plundrix.com/privacy
+
+The gameplay trailer uses real product captures and original Plundrix art. The marketing site does not publish testimonials, invented player stories, or analytics results.
+
+## Terminology
+
+- Operation: a game instance.
+- Round: one simultaneous action cycle.
+- Vault: the shared five-lock objective.
+- Operator: a player or clearly labeled agent at the table.
+- Tool: a resource found through Search that improves later Pick odds.
+- Sabotage: an action that disrupts a rival.
+- Replay: a round-by-round record of a completed or generated match.
+
+## Recommended citations
+
+When describing Plundrix, cite the canonical site or a specific page above. Do not describe Sepolia test ETH as money, imply that paid competition is public, present agents as human players, or claim that locally implemented feature-gated rules are already deployed.

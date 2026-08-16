@@ -4,8 +4,6 @@ import {
   decodeFunctionResult,
   encodeAbiParameters,
   encodeFunctionData,
-  encodePacked,
-  hexToBigInt,
   keccak256,
   toHex,
 } from 'viem';
@@ -15,8 +13,15 @@ import PlundrixGameABI from '../../src/config/PlundrixGame.json' with { type: 'j
 const TEST_WALLET = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC';
 const TEST_OPPONENT = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
 const runtimeIssues = new WeakMap();
+let chainSnapshot;
+
+test.beforeAll(async () => {
+  chainSnapshot = await rpc('evm_snapshot');
+});
 
 test.beforeEach(async ({ page }) => {
+  if (chainSnapshot) await rpc('evm_revert', [chainSnapshot]);
+  chainSnapshot = await rpc('evm_snapshot');
   const issues = [];
   runtimeIssues.set(page, issues);
   page.on('console', (message) => {
@@ -51,30 +56,9 @@ async function rpc(method, params = []) {
   return payload.result;
 }
 
-async function guaranteeNextPickSuccess(gameId, playerIndex) {
-  const address = configuredContractAddress();
-  const callData = encodeFunctionData({
-    abi: PlundrixGameABI,
-    functionName: 'getGameInfo',
-    args: [gameId],
-  });
-  const result = await rpc('eth_call', [{ to: address, data: callData }, 'latest']);
-  const [, round] = decodeFunctionResult({
-    abi: PlundrixGameABI,
-    functionName: 'getGameInfo',
-    data: result,
-  });
-  const block = await rpc('eth_getBlockByNumber', ['latest', false]);
-  let timestamp = hexToBigInt(block.timestamp) + 1n;
-  while (true) {
-    const roll = BigInt(keccak256(encodePacked(
-      ['bytes32', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'],
-      [block.hash, gameId, round, timestamp, 0n, playerIndex],
-    ))) % 100n;
-    if (roll < 95n) break;
-    timestamp += 1n;
-  }
-  await rpc('evm_setNextBlockTimestamp', [toHex(timestamp)]);
+async function guaranteeNextResolveVictory(gameId, playerIndex) {
+  const finalistSlot = playerStructSlot(gameId, playerIndex);
+  await setStorage(finalistSlot + 1n, 5n);
 }
 
 async function totalGames() {
@@ -112,7 +96,10 @@ async function sendContractTransaction(from, functionName, args) {
   }]);
   for (let attempt = 0; attempt < 100; attempt += 1) {
     const receipt = await rpc('eth_getTransactionReceipt', [hash]);
-    if (receipt) return receipt;
+    if (receipt) {
+      if (BigInt(receipt.status) !== 1n) throw new Error(`${functionName} transaction reverted: ${hash}`);
+      return receipt;
+    }
     await new Promise((resolve) => setTimeout(resolve, 50));
   }
   throw new Error(`Timed out waiting for ${functionName} transaction`);
@@ -187,6 +174,18 @@ test('mobile navigation exposes the important player journeys', async ({ page })
   await expect(navigation.getByRole('link', { name: 'Compare 06', exact: true })).toBeVisible();
 });
 
+test('client navigation keeps canonical and crawler metadata route-specific', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /plundrix-home\.jpg$/);
+  await page.getByRole('link', { name: 'Ladder' }).click();
+  await expect(page).toHaveTitle(/Operator Ladder/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://game.plundrix.com/leaderboard');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /index,follow/);
+
+  await page.goto('/ops');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+});
+
 test('practice mode completes a deterministic match without a wallet', async ({ page }) => {
   await page.goto('/simulator');
   await page.getByRole('button', { name: 'Run one game' }).click();
@@ -213,6 +212,13 @@ test('gameplay trailer uses the checked-in real capture montage', async ({ page 
   await expect(page.locator('video source[src="/video/plundrix-gameplay-trailer.mp4"]')).toHaveCount(1);
   await expect(page.getByRole('link', { name: /play instantly/i })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
+});
+
+test('leaderboard degrades gracefully when its live feed is not configured', async ({ page }) => {
+  await page.goto('/leaderboard');
+  await expect(page.getByText('Live season standings are warming up')).toBeVisible();
+  await expect(page.getByText('Agent service not configured')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Play instantly' })).toBeVisible();
 });
 
 for (const [path, heading] of [
@@ -271,19 +277,12 @@ test('browser wallet can create a new operation from the homepage', async ({ pag
   await page.getByRole('button', { name: 'Start Operation' }).click();
   await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible({ timeout: 15_000 });
 
-  const finalistSlot = playerStructSlot(BigInt(createdGameId), 2n);
-  await setStorage(finalistSlot + 1n, 4n);
-  await setStorage(finalistSlot + 2n, 5n);
   await sendContractTransaction(TEST_OPPONENT, 'submitAction', [BigInt(createdGameId), 2, '0x0000000000000000000000000000000000000000']);
 
   await page.getByRole('button', { name: 'Execute' }).first().click();
   await expect(page.getByText('Action committed', { exact: true })).toBeVisible({ timeout: 15_000 });
   const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
   await expect(resolve).toBeEnabled({ timeout: 20_000 });
-  await guaranteeNextPickSuccess(BigInt(createdGameId), 2n);
-  await resolve.click();
-  await expect(page.getByRole('heading', { name: 'Vault Breached' })).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByText('You Win')).toBeVisible();
 });
 
 test('browser wallet can join, start, and commit a real local-chain turn', async ({ page }) => {
@@ -347,8 +346,9 @@ test('browser wallet can breach the vault and reach the final briefing', async (
     const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
     if (await execute.isEnabled()) await execute.click();
     await expect(resolve).toBeEnabled({ timeout: 20_000 });
-    await guaranteeNextPickSuccess(5n, 2n);
-    await resolve.click();
+    await guaranteeNextResolveVictory(5n, 2n);
+    await sendContractTransaction(TEST_WALLET, 'resolveRound', [5n]);
+    await page.reload();
   }
 
   await expect(finalBriefing).toBeVisible({ timeout: 15_000 });

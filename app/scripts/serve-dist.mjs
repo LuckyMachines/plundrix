@@ -10,6 +10,7 @@ const mimeByExt = {
   '.js': 'application/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -21,43 +22,101 @@ const mimeByExt = {
   '.woff2': 'font/woff2',
   '.map': 'application/json; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
+  '.mp4': 'video/mp4',
 };
 
 function isSafePath(pathname) {
   return !pathname.includes('..');
 }
 
-async function serveFile(res, filePath, fallbackContentType = 'application/octet-stream') {
+function isNoIndexPath(pathname) {
+  return [
+    '/design',
+    '/design-system',
+    '/game/',
+    '/ghosts',
+    '/launch',
+    '/mutations',
+    '/ops',
+    '/playtest',
+    '/profile/',
+    '/snapshot',
+  ].some((prefix) => pathname === prefix || pathname.startsWith(prefix));
+}
+
+async function serveFile(req, res, filePath, fallbackContentType = 'application/octet-stream') {
   const data = await readFile(filePath);
   const ext = extname(filePath).toLowerCase();
-  res.writeHead(200, {
+  const cacheControl = ['.html', '.json', '.txt', '.xml'].includes(ext)
+    ? 'no-cache'
+    : 'public, max-age=31536000, immutable';
+  const headers = {
     'Content-Type': mimeByExt[ext] || fallbackContentType,
-    'Cache-Control':
-      ext === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable',
-  });
-  res.end(data);
+    'Cache-Control': cacheControl,
+  };
+
+  if (ext === '.mp4') {
+    headers['Accept-Ranges'] = 'bytes';
+    const range = req.headers.range?.match(/^bytes=(\d*)-(\d*)$/);
+    if (range) {
+      const suffixLength = !range[1] && range[2] ? Number(range[2]) : null;
+      const start = suffixLength === null
+        ? Number(range[1] || 0)
+        : Math.max(0, data.length - suffixLength);
+      const end = suffixLength === null && range[2]
+        ? Math.min(Number(range[2]), data.length - 1)
+        : data.length - 1;
+      if (start > end || start >= data.length) {
+        res.writeHead(416, { 'Content-Range': `bytes */${data.length}` });
+        res.end();
+        return;
+      }
+      const chunk = data.subarray(start, end + 1);
+      res.writeHead(206, {
+        ...headers,
+        'Content-Range': `bytes ${start}-${end}/${data.length}`,
+        'Content-Length': chunk.length,
+      });
+      res.end(req.method === 'HEAD' ? undefined : chunk);
+      return;
+    }
+  }
+
+  res.writeHead(200, { ...headers, 'Content-Length': data.length });
+  res.end(req.method === 'HEAD' ? undefined : data);
 }
 
 const server = createServer(async (req, res) => {
   try {
     const rawUrl = req.url || '/';
     const pathname = decodeURIComponent(rawUrl.split('?')[0]);
+    if (pathname === '/health') {
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ ok: true, service: 'plundrix-web' }));
+      return;
+    }
     if (!isSafePath(pathname)) {
       res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('Bad request');
       return;
     }
+    if (isNoIndexPath(pathname)) {
+      res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    }
 
     const normalized = normalize(pathname).replace(/^\\+|^\/+/, '');
-    const target = normalized === '' ? 'index.html' : normalized;
-    const targetPath = join(distDir, target);
+    const targets = normalized === ''
+      ? ['index.html']
+      : [normalized, join(normalized, 'index.html')];
 
-    try {
-      await serveFile(res, targetPath);
-      return;
-    } catch {}
+    for (const target of targets) {
+      try {
+        await serveFile(req, res, join(distDir, target));
+        return;
+      } catch {}
+    }
 
-    await serveFile(res, join(distDir, 'index.html'), 'text/html; charset=utf-8');
+    await serveFile(req, res, join(distDir, 'index.html'), 'text/html; charset=utf-8');
   } catch {
     res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end('Internal server error');

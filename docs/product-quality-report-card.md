@@ -225,3 +225,25 @@ Overall grade: **A+ for the automated marketing-site bar**; human testimonials a
 - Deploy the pass and verify production canonical, social-card, sitemap, robots, video-range, and explorer-link responses.
 - Keep testimonials, quotes, stories, and analytics results absent unless genuine material and explicit publication approval become available.
 - Treat first-time-player comprehension as private product research rather than a public marketing claim.
+
+## v0.11.0 - SEO and AI-search discovery pass
+
+Date: 2026-08-16
+
+Overall grade: **A+ for the automated discovery and sharing bar**; external indexing remains a post-deployment observation.
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Static crawlability | A+ | Every public route receives clean route-specific HTML, a single canonical and robots directive, synchronized sitemap coverage, and internal-route exclusions. |
+| AI-search readiness | A | Factual `llms.txt` and `llms-full.txt` references, explicit major AI-search crawler rules, and page-grounded schema make the product easier to retrieve and cite. Search-engine ingestion cannot be guaranteed before deployment. |
+| Social sharing | A+ | Three original Azure GPT Image 2 scene masters give Home, Instant Play, and Trailer distinct 1200x630 cards; deterministic typography preserves exact copy. Route-specific Open Graph and Twitter metadata includes dimensions, MIME types, secure URLs, and descriptive alt text. |
+| Structured data | A+ | `WebSite`, `Organization`, `VideoGame`, visible `FAQPage`, `WebPage`, and `VideoObject` graphs reflect content that is actually present, without stale or duplicate client-navigation schema. |
+| Media delivery | A+ | The production server returns correct image and video types, immutable asset caching, MP4 byte ranges, clean-route HTML, and response-level noindex protection for internal and player-specific paths. |
+| Trust and privacy | A+ | Discovery files distinguish source, deployed contract, verified implementation, and beta limitations without testimonials, invented stories, or analytics results. |
+| Verification | A+ | The production build, dedicated HTTP/metadata SEO gate, zero-vulnerability production audit, 8 agent-service tests, and 21 active browser, wallet, accessibility, route, and graceful-degradation scenarios pass. Chain-backed browser tests are isolated from execution order. |
+
+## Next stricter discovery bar
+
+- Deploy and verify the canonical host's HTML, sitemap, robots, LLM references, cards, and trailer range responses.
+- Run rich-result and social-card debuggers against production URLs after caches can reach the new assets.
+- Submit the sitemap through already-owned webmaster consoles only when separately authorized; do not publish private analytics.
