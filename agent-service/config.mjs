@@ -60,12 +60,23 @@ export const agentConfig = {
   playerRegistryPath:
     getEnvString('AGENT_PLAYER_REGISTRY_PATH') ||
     resolve(process.cwd(), 'agent-service', 'data', 'player-registry.json'),
+  sessionRelayEnabled:
+    getEnvString('AGENT_ENABLE_SESSION_RELAY')?.toLowerCase() === 'true',
+  sessionRelayPrivateKey: getEnvString('AGENT_SESSION_RELAY_PRIVATE_KEY'),
 };
 
 export function validateAgentConfig() {
   if (!agentConfig.contractAddress) {
     throw new Error(
       'Missing AGENT_CONTRACT_ADDRESS or VITE_CONTRACT_ADDRESS for agent service'
+    );
+  }
+  if (
+    agentConfig.sessionRelayEnabled &&
+    !/^0x[a-fA-F0-9]{64}$/.test(agentConfig.sessionRelayPrivateKey || '')
+  ) {
+    throw new Error(
+      'AGENT_ENABLE_SESSION_RELAY requires AGENT_SESSION_RELAY_PRIVATE_KEY'
     );
   }
 }

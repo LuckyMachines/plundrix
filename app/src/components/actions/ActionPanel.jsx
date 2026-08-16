@@ -32,7 +32,18 @@ export default function ActionPanel({
   onTargetChange,
   quiet = false,
 }) {
-  const { submitAction, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
+  const {
+    submitAction,
+    authorizeSession,
+    revokeSession,
+    hasLocalSession,
+    sessionKeysEnabled,
+    hash,
+    isPending,
+    isConfirming,
+    isSuccess,
+    error,
+  } = useGameActions();
   useTxToast({ hash, isPending, isConfirming, isSuccess, error }, 'Action');
   useTxCueBridge({ gameId, label: 'Action', isPending, isConfirming, isSuccess, error });
   const [intent, setIntent] = useState('idle');
@@ -41,6 +52,7 @@ export default function ActionPanel({
   const [targetIntent, setTargetIntent] = useState('');
 
   const spectator = !!currentAddress && !registered;
+  const sessionActive = sessionKeysEnabled && hasLocalSession(gameId);
   const disconnected = !currentAddress;
   const disabled = !isConfigured || disconnected || spectator || actionSubmitted || isPending || isConfirming;
   const sabotageTargets = players.filter(
@@ -197,6 +209,29 @@ export default function ActionPanel({
             <span className="text-vault-text">2</span> search,{' '}
             <span className="text-vault-text">3</span> sabotage target.
           </p>
+
+          {sessionKeysEnabled && registered && (
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-vault-border bg-vault-dark/45 p-3">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">
+                  {sessionActive ? 'Session actions active' : 'One-confirmation session'}
+                </p>
+                <p className="mt-1 text-xs text-vault-text-dim">
+                  {sessionActive
+                    ? 'This browser signs turns locally; the configured relay submits them.'
+                    : 'Approve once to stop confirming every action in this operation.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => sessionActive ? revokeSession(gameId) : authorizeSession(gameId)}
+                disabled={isPending || isConfirming}
+                className="min-h-[44px] border border-oxide-green/40 px-3 font-mono text-[10px] uppercase tracking-[0.12em] text-oxide-green disabled:opacity-40"
+              >
+                {sessionActive ? 'Revoke session' : 'Enable session'}
+              </button>
+            </div>
+          )}
         </>
       )}
 

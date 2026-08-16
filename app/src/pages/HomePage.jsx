@@ -121,13 +121,13 @@ export default function HomePage() {
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#live-operations"
+              <Link
+                to="/play"
                 className="group inline-flex min-h-[52px] items-center justify-center gap-3 rounded-sm bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-vault-dark transition hover:bg-[#f2c18e]"
               >
-                Enter the vault
+                Play instantly
                 <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">-&gt;</span>
-              </a>
+              </Link>
               <Link
                 to="/simulator"
                 className="inline-flex min-h-[52px] items-center justify-center rounded-sm border border-vault-text/25 bg-vault-dark/35 px-6 font-mono text-xs uppercase tracking-[0.16em] text-vault-text backdrop-blur-sm transition hover:border-tungsten/60 hover:text-tungsten-bright"
@@ -172,6 +172,16 @@ export default function HomePage() {
       </section>
 
       <main>
+        <section className="border-b border-vault-border/70 bg-vault-surface/45">
+          <Link to="/trailer" className="group mx-auto flex max-w-7xl flex-col gap-4 px-5 py-7 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">New / 32-second gameplay trailer</p>
+              <p className="mt-2 font-display text-2xl uppercase text-vault-text">See the lobby, the pressure, and a real Sepolia breach.</p>
+            </div>
+            <span className="font-mono text-xs uppercase tracking-[0.16em] text-tungsten transition-transform group-hover:translate-x-1">Watch now -&gt;</span>
+          </Link>
+        </section>
+
         <section id="how-it-works" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <SectionHeading
             eyebrow="One choice. Three intentions."

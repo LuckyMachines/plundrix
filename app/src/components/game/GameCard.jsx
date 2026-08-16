@@ -1,11 +1,18 @@
 import { useNavigate } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { GameState, STATE_LABELS } from '../../lib/constants';
 import { formatBigInt } from '../../lib/formatting';
 import { getPressureState } from '../../lib/gameIntegration';
 import Spinner from '../shared/Spinner';
+import {
+  IS_CONTRACT_CONFIGURED,
+  NEXT_RULES_ENABLED,
+  PLUNDRIX_ABI,
+  PLUNDRIX_ADDRESS,
+} from '../../config/contract';
+import { toGameId } from '../../lib/gameId';
 
 const STATE_COLORS = {
   [GameState.OPEN]: 'text-oxide-green border-oxide-green/30 bg-oxide-green/5',
@@ -18,11 +25,25 @@ export default function GameCard({ gameId }) {
   const { address } = useAccount();
   const { state, currentRound, playerCount, roundStartTime, isLoading, error } = useGameInfo(gameId);
   const { players } = useGamePlayers(gameId, playerCount);
+  const parsedGameId = toGameId(gameId);
+  const { data: configuredRoundTimeout } = useReadContract({
+    address: PLUNDRIX_ADDRESS,
+    abi: PLUNDRIX_ABI,
+    functionName: 'roundTimeoutFor',
+    args: parsedGameId ? [parsedGameId] : undefined,
+    query: {
+      enabled: NEXT_RULES_ENABLED && IS_CONTRACT_CONFIGURED && parsedGameId !== null,
+      refetchInterval: 30_000,
+    },
+  });
 
   const stateNum = state !== undefined ? Number(state) : undefined;
   const stateLabel = stateNum !== undefined ? STATE_LABELS[stateNum] : '...';
   const stateColor = stateNum !== undefined ? STATE_COLORS[stateNum] : 'text-vault-text-dim border-vault-border bg-vault-dark/50';
-  const pressure = stateNum === GameState.ACTIVE ? getPressureState(roundStartTime, Date.now()) : null;
+  const roundTimeout = configuredRoundTimeout ? Number(configuredRoundTimeout) : undefined;
+  const pressure = stateNum === GameState.ACTIVE
+    ? getPressureState(roundStartTime, Date.now(), roundTimeout)
+    : null;
   const isUserInGame = players.some((player) => player?.toLowerCase() === address?.toLowerCase());
 
   return (

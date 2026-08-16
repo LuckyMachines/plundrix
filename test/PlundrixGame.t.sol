@@ -11,7 +11,30 @@ contract PlundrixGameV2 is PlundrixGame {
     }
 }
 
+contract PlundrixGameHarness is PlundrixGame {
+    function setLocks(uint256 gameId, uint256 playerIndex, uint256 locks) external {
+        _players[gameId][playerIndex].locksCracked = locks;
+    }
+
+    function tiebreakIndex(
+        uint256 gameId,
+        uint256 round,
+        uint256 seed,
+        uint256 finalistCount
+    ) external view returns (uint256) {
+        return _randomWord(gameId, round, seed) % finalistCount;
+    }
+}
+
 contract PlundrixGameTest is Test {
+    event TiebreakResolved(
+        uint256 indexed gameID,
+        uint256 indexed round,
+        address indexed winner,
+        uint256 finalistCount,
+        uint256 timeStamp
+    );
+
     PlundrixGame internal game;
     PlundrixGame internal implementation;
 
@@ -23,6 +46,7 @@ contract PlundrixGameTest is Test {
     address internal randomizer = address(0xABCD5);
     address internal player1 = address(0xB0B);
     address internal player2 = address(0xCAFE);
+    uint256 internal sessionPrivateKey = 0x515510;
 
     bytes32 internal constant ACTION_OUTCOME_SIG =
         keccak256(
@@ -32,7 +56,7 @@ contract PlundrixGameTest is Test {
         keccak256("RoundAutoResolved(uint256,uint256,address,uint256)");
 
     function setUp() external {
-        implementation = new PlundrixGame();
+        implementation = new PlundrixGameHarness();
         ERC1967Proxy proxy = new ERC1967Proxy(
             address(implementation),
             abi.encodeCall(
@@ -136,6 +160,193 @@ contract PlundrixGameTest is Test {
         assertEq(currentRound, 2);
     }
 
+    function test_createGameWithPaceUsesConfiguredTimeout() external {
+        vm.prank(player1);
+        uint256 gameId = game.createGameWithPace(45 seconds);
+        assertEq(game.roundTimeoutFor(gameId), 45 seconds);
+
+        vm.prank(player1);
+        game.registerPlayer(gameId);
+        vm.prank(player2);
+        game.registerPlayer(gameId);
+        vm.prank(player1);
+        game.startGame(gameId);
+
+        vm.warp(block.timestamp + 46 seconds);
+        game.resolveRound(gameId);
+        (, uint256 currentRound, , , ) = game.getGameInfo(gameId);
+        assertEq(currentRound, 2);
+    }
+
+    function test_existingGamesKeepClassicTimeout() external {
+        vm.prank(player1);
+        uint256 gameId = game.createGame();
+        assertEq(game.roundTimeoutFor(gameId), game.ROUND_TIMEOUT());
+    }
+
+    function _sessionDigest(
+        uint256 gameId,
+        address player,
+        PlundrixGame.Action action,
+        address target,
+        uint256 nonce,
+        uint256 deadline
+    ) internal view returns (bytes32) {
+        bytes32 domain = keccak256(
+            abi.encode(
+                keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
+                keccak256(bytes("Plundrix")),
+                keccak256(bytes("1")),
+                block.chainid,
+                address(game)
+            )
+        );
+        bytes32 structHash = keccak256(
+            abi.encode(
+                game.SESSION_ACTION_TYPEHASH(),
+                gameId,
+                player,
+                uint8(action),
+                target,
+                nonce,
+                deadline
+            )
+        );
+        return keccak256(abi.encodePacked("\x19\x01", domain, structHash));
+    }
+
+    function test_tiebreakUsesEntropyInsteadOfPlayerOrder() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+        PlundrixGameHarness harness = PlundrixGameHarness(address(game));
+        bool sawFirst;
+        bool sawSecond;
+
+        for (uint256 entropy = 1; entropy <= 32; entropy++) {
+            vm.prank(randomizer);
+            game.provideRoundEntropy(gameId, 1, entropy);
+            uint256 index = harness.tiebreakIndex(gameId, 1, 3, 2);
+            if (index == 0) sawFirst = true;
+            if (index == 1) sawSecond = true;
+        }
+
+        assertTrue(sawFirst, "tiebreak never selected first finalist");
+        assertTrue(sawSecond, "tiebreak never selected second finalist");
+    }
+
+    function test_simultaneousBreachEmitsTiebreakAndSelectsFinalist() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+        PlundrixGameHarness harness = PlundrixGameHarness(address(game));
+        harness.setLocks(gameId, 1, game.TOTAL_LOCKS());
+        harness.setLocks(gameId, 2, game.TOTAL_LOCKS());
+
+        vm.prank(player1);
+        game.submitAction(gameId, PlundrixGame.Action.SEARCH, address(0));
+        vm.prank(player2);
+        game.submitAction(gameId, PlundrixGame.Action.SEARCH, address(0));
+        vm.expectEmit(true, true, false, false);
+        emit TiebreakResolved(gameId, 1, address(0), 0, 0);
+        game.resolveRound(gameId);
+
+        (PlundrixGame.GameState state, , , , address winner) = game.getGameInfo(gameId);
+        assertEq(uint8(state), uint8(PlundrixGame.GameState.COMPLETE));
+        assertTrue(winner == player1 || winner == player2, "winner was not a finalist");
+    }
+
+    function test_sabotageCannotStunLockSameTarget() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+
+        vm.prank(player1);
+        game.submitAction(gameId, PlundrixGame.Action.SABOTAGE, player2);
+        vm.prank(player2);
+        game.submitAction(gameId, PlundrixGame.Action.SEARCH, address(0));
+        game.resolveRound(gameId);
+
+        vm.prank(player1);
+        game.submitAction(gameId, PlundrixGame.Action.SABOTAGE, player2);
+        vm.prank(player2);
+        game.submitAction(gameId, PlundrixGame.Action.SEARCH, address(0));
+        vm.recordLogs();
+        game.resolveRound(gameId);
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bool sawCooldown;
+        for (uint256 i = 0; i < logs.length; i++) {
+            if (
+                logs[i].topics.length == 0 ||
+                logs[i].topics[0] != ACTION_OUTCOME_SIG ||
+                address(uint160(uint256(logs[i].topics[3]))) != player1
+            ) continue;
+
+            (uint8 action, bool success, uint8 reason) = _decodeOutcome(logs[i].data);
+            if (
+                action == uint8(PlundrixGame.Action.SABOTAGE) &&
+                !success &&
+                reason == uint8(PlundrixGame.OutcomeReason.SABOTAGE_FAILED_COOLDOWN)
+            ) sawCooldown = true;
+        }
+
+        assertTrue(sawCooldown, "missing sabotage cooldown outcome");
+    }
+
+    function test_sessionKeySubmitsWithoutPlayerTransaction() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+        address sessionKey = vm.addr(sessionPrivateKey);
+
+        vm.prank(player1);
+        game.authorizeSessionKey(gameId, sessionKey);
+
+        uint256 deadline = block.timestamp + 10 minutes;
+        bytes32 digest = _sessionDigest(
+            gameId,
+            player1,
+            PlundrixGame.Action.PICK,
+            address(0),
+            0,
+            deadline
+        );
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(sessionPrivateKey, digest);
+        bytes memory signature = abi.encodePacked(r, s, v);
+
+        vm.prank(address(0xBEEF));
+        game.submitActionWithSession(
+            gameId,
+            player1,
+            PlundrixGame.Action.PICK,
+            address(0),
+            deadline,
+            signature
+        );
+
+        (, , , , bool submitted) = game.getPlayerState(gameId, player1);
+        (address storedKey, uint256 nonce) = game.getSessionKey(gameId, player1);
+        assertTrue(submitted, "session action was not submitted");
+        assertEq(storedKey, sessionKey);
+        assertEq(nonce, 1);
+
+        vm.expectRevert(bytes("Invalid session signature"));
+        game.submitActionWithSession(
+            gameId,
+            player1,
+            PlundrixGame.Action.PICK,
+            address(0),
+            deadline,
+            signature
+        );
+    }
+
+    function test_playerCanRevokeSessionKey() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+        address sessionKey = vm.addr(sessionPrivateKey);
+
+        vm.startPrank(player1);
+        game.authorizeSessionKey(gameId, sessionKey);
+        game.revokeSessionKey(gameId);
+        vm.stopPrank();
+
+        (address storedKey, ) = game.getSessionKey(gameId, player1);
+        assertEq(storedKey, address(0));
+    }
+
     function test_autoResolver_canBatchResolveTimedOutGames() external {
         uint256 gameId = _createActiveTwoPlayerGame();
         uint256 timeout = game.ROUND_TIMEOUT();
@@ -166,6 +377,37 @@ contract PlundrixGameTest is Test {
             }
         }
         assertTrue(sawAutoResolvedEvent, "round auto-resolved event missing");
+    }
+
+    function test_autoResolver_honorsFastGamePace() external {
+        vm.prank(player1);
+        uint256 gameId = game.createGameWithPace(45 seconds);
+        vm.prank(player1);
+        game.registerPlayer(gameId);
+        vm.prank(player2);
+        game.registerPlayer(gameId);
+        vm.prank(player1);
+        game.startGame(gameId);
+
+        vm.prank(gameMaster);
+        game.configureAutomation(true, 30 seconds, false);
+
+        vm.warp(block.timestamp + 44 seconds);
+        assertFalse(game.canAutoResolve(gameId));
+        vm.warp(block.timestamp + 2 seconds);
+        assertTrue(game.canAutoResolve(gameId));
+    }
+
+    function test_fastAutomationDelay_cannotResolveClassicGameEarly() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+
+        vm.prank(gameMaster);
+        game.configureAutomation(true, 30 seconds, false);
+
+        vm.warp(block.timestamp + 45 seconds);
+        assertFalse(game.canAutoResolve(gameId));
+        vm.warp(block.timestamp + game.ROUND_TIMEOUT());
+        assertTrue(game.canAutoResolve(gameId));
     }
 
     function test_pause_blocksGameplayMutations() external {

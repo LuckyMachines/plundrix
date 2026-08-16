@@ -12,6 +12,8 @@ export const SIM_DEFAULT_RULES = Object.freeze({
   pickChanceCap: 95,
   searchChance: 60,
   stunnedSearchChance: 30,
+  sabotageCooldownRounds: 1,
+  roundTimeoutSeconds: SIM_ROUND_TIMEOUT_SECONDS,
   minHealthyRounds: 8,
   maxHealthyRounds: 22,
   runawayLeadRound: 4,
@@ -41,6 +43,8 @@ export const SIM_OUTCOME_REASON = Object.freeze({
   SEARCH_FAILED_ROLL: 'SEARCH_FAILED_ROLL',
   SEARCH_FAILED_MAX_TOOLS: 'SEARCH_FAILED_MAX_TOOLS',
   SABOTAGE_FAILED_INVALID_TARGET: 'SABOTAGE_FAILED_INVALID_TARGET',
+  SABOTAGE_FAILED_COOLDOWN: 'SABOTAGE_FAILED_COOLDOWN',
+  SABOTAGE_BLOCKED_GADGET: 'SABOTAGE_BLOCKED_GADGET',
   SABOTAGE_SUCCESS_STEAL: 'SABOTAGE_SUCCESS_STEAL',
   SABOTAGE_SUCCESS_STUN_ONLY: 'SABOTAGE_SUCCESS_STUN_ONLY',
   SABOTAGE_SUCCESS_NO_TOOL: 'SABOTAGE_SUCCESS_NO_TOOL',
@@ -52,8 +56,16 @@ export const SIM_STRATEGIES = Object.freeze([
   { id: 'picker', label: 'Picker' },
   { id: 'searcher', label: 'Searcher' },
   { id: 'saboteur', label: 'Saboteur' },
+  { id: 'tool-hoarder', label: 'Tool Hoarder' },
+  { id: 'leader-hunter', label: 'Leader Hunter' },
   { id: 'random', label: 'Random' },
   { id: 'human', label: 'Human' },
+]);
+
+export const SIM_GADGETS = Object.freeze([
+  { id: 'precision-kit', label: 'Precision Kit', description: '+10% to your first Pick.' },
+  { id: 'signal-scanner', label: 'Signal Scanner', description: '+20% to your first Search.' },
+  { id: 'firewall', label: 'Firewall', description: 'Blocks the first Sabotage against you.' },
 ]);
 
 export const SIM_DEFAULT_STRATEGY_PROFILE = Object.freeze({
@@ -126,6 +138,7 @@ export const SIM_SCENARIOS = Object.freeze([
     seed: 'human-vs-bots',
     playerCount: 4,
     strategies: ['human', 'balanced', 'searcher', 'saboteur'],
+    gadgets: ['precision-kit', 'signal-scanner', 'firewall', 'precision-kit'],
     description: 'Manual player one with bot opponents.',
   },
   {
@@ -283,6 +296,18 @@ export function normalizeRuleset(rules = {}) {
       95,
       SIM_DEFAULT_RULES.stunnedSearchChance,
     ),
+    sabotageCooldownRounds: clampNumber(
+      rules.sabotageCooldownRounds,
+      0,
+      3,
+      SIM_DEFAULT_RULES.sabotageCooldownRounds,
+    ),
+    roundTimeoutSeconds: clampNumber(
+      rules.roundTimeoutSeconds,
+      15,
+      SIM_ROUND_TIMEOUT_SECONDS,
+      SIM_DEFAULT_RULES.roundTimeoutSeconds,
+    ),
     minHealthyRounds: clampNumber(
       rules.minHealthyRounds,
       1,
@@ -350,6 +375,7 @@ export function getScenarioOptions(scenarioId) {
     playerCount: scenario.playerCount,
     seed: scenario.seed,
     strategies: scenario.strategies,
+    gadgets: scenario.gadgets || [],
     strategyProfile: scenario.profile || SIM_DEFAULT_STRATEGY_PROFILE,
     scoreProfile: scenario.scoreProfile || null,
   };
@@ -366,6 +392,7 @@ export function createInitialSimulation(options = {}) {
   const seed = options.seed ?? scenario?.seed ?? 'plundrix-default-seed';
   const rules = normalizeRuleset({ ...SIM_DEFAULT_RULES, ...(options.rules || {}) });
   const playerPatches = options.playerPatches || scenario?.playerPatches || [];
+  const gadgets = options.gadgets || scenario?.gadgets || [];
 
   return {
     gameId: options.gameId || `sim-${hashString(seed).toString(16)}`,
@@ -385,6 +412,9 @@ export function createInitialSimulation(options = {}) {
       locksCracked: 0,
       tools: 0,
       stunned: false,
+      lastSabotagedRound: 0,
+      gadget: gadgets[index] || null,
+      gadgetReady: Boolean(gadgets[index]),
       registered: true,
       ...(playerPatches[index] || {}),
     })),
@@ -482,7 +512,9 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
     if (pending.action === SIM_ACTION.PICK) {
       let success = false;
       let reason = SIM_OUTCOME_REASON.PICK_FAILED_ROLL;
-      const chance = getPickChance(player, next.rules);
+      const gadgetBonus = player.gadgetReady && player.gadget === 'precision-kit' ? 10 : 0;
+      const chance = Math.min(next.rules.pickChanceCap, getPickChance(player, next.rules) + gadgetBonus);
+      if (gadgetBonus) player.gadgetReady = false;
 
       if (player.stunned) {
         reason = SIM_OUTCOME_REASON.PICK_FAILED_STUNNED;
@@ -512,7 +544,9 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
     } else if (pending.action === SIM_ACTION.SEARCH) {
       let success = false;
       let reason = SIM_OUTCOME_REASON.SEARCH_FAILED_ROLL;
-      const chance = getSearchChance(player, next.rules);
+      const gadgetBonus = player.gadgetReady && player.gadget === 'signal-scanner' ? 20 : 0;
+      const chance = Math.min(95, getSearchChance(player, next.rules) + gadgetBonus);
+      if (gadgetBonus) player.gadgetReady = false;
 
       if (roll < chance) {
         if (player.tools >= next.rules.maxTools) {
@@ -570,7 +604,43 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       continue;
     }
 
+    if (
+      next.rules.sabotageCooldownRounds > 0 &&
+      target.lastSabotagedRound > 0 &&
+      round - target.lastSabotagedRound <= next.rules.sabotageCooldownRounds
+    ) {
+      emit('ActionOutcome', {
+        actor: player.id,
+        target: target.id,
+        action: SIM_ACTION.SABOTAGE,
+        success: false,
+        reason: SIM_OUTCOME_REASON.SABOTAGE_FAILED_COOLDOWN,
+        locksCracked: player.locksCracked,
+        tools: player.tools,
+        stunned: player.stunned,
+        message: `${target.name} has counter-pressure protection this round.`,
+      });
+      continue;
+    }
+
+    if (target.gadgetReady && target.gadget === 'firewall') {
+      target.gadgetReady = false;
+      emit('ActionOutcome', {
+        actor: player.id,
+        target: target.id,
+        action: SIM_ACTION.SABOTAGE,
+        success: false,
+        reason: SIM_OUTCOME_REASON.SABOTAGE_BLOCKED_GADGET,
+        locksCracked: player.locksCracked,
+        tools: player.tools,
+        stunned: player.stunned,
+        message: `${target.name}'s Firewall blocked the sabotage.`,
+      });
+      continue;
+    }
+
     target.stunned = true;
+    target.lastSabotagedRound = round;
     emit('PlayerSabotaged', {
       actor: player.id,
       target: target.id,
@@ -607,7 +677,10 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
     message: `Round ${round} resolved.`,
   });
 
-  const winner = next.players.find((player) => player.locksCracked >= next.rules.totalLocks);
+  const finalists = next.players.filter((player) => player.locksCracked >= next.rules.totalLocks);
+  const winner = finalists.length > 1
+    ? finalists[deterministicRoll([next.seed, next.gameId, round, next.entropy, 'tiebreak']) % finalists.length]
+    : finalists[0];
   if (winner) {
     next.state = 'COMPLETE';
     next.winner = winner.id;
@@ -616,9 +689,16 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       rounds: round,
       message: `${winner.name} won in ${round} rounds.`,
     });
+    if (finalists.length > 1) {
+      emit('TiebreakResolved', {
+        actor: winner.id,
+        finalistCount: finalists.length,
+        message: `${winner.name} won the simultaneous breach tiebreak.`,
+      });
+    }
   } else {
     next.currentRound += 1;
-    next.roundStartTime += SIM_ROUND_TIMEOUT_SECONDS;
+    next.roundStartTime += next.rules.roundTimeoutSeconds;
   }
 
   next.roundHistory.push({
@@ -1483,6 +1563,8 @@ export function getContractParityChecks(rules = SIM_DEFAULT_RULES) {
     ['pickChanceCap', normalized.pickChanceCap, 95],
     ['searchChance', normalized.searchChance, 60],
     ['stunnedSearchChance', normalized.stunnedSearchChance, 30],
+    ['sabotageCooldownRounds', normalized.sabotageCooldownRounds, 1],
+    ['roundTimeoutSeconds', normalized.roundTimeoutSeconds, SIM_ROUND_TIMEOUT_SECONDS],
   ];
   return checks.map(([key, actual, expected]) => ({
     key,

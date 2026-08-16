@@ -6,7 +6,7 @@ import HelpButton from '../help/HelpButton';
 import AccessibilityToggle from './AccessibilityToggle';
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Play' },
+  { to: '/play', label: 'Play' },
   { to: '/simulator', label: 'Practice' },
   { to: '/replays', label: 'Replays' },
   { to: '/leaderboard', label: 'Ladder' },

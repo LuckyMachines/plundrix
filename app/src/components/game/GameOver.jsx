@@ -281,14 +281,21 @@ export default function GameOver({ gameId }) {
           to="/"
           className="font-display text-xs tracking-widest uppercase text-vault-text-dim hover:text-vault-text border border-vault-border rounded px-4 py-2 bg-vault-panel hover:bg-vault-dark transition-colors"
         >
-          Return to Console
+          Browse Operations
         </Link>
         <Link
-          to="/"
+          to="/play"
           className="font-display text-xs tracking-widest uppercase text-tungsten hover:text-tungsten-bright border border-tungsten/30 hover:border-tungsten/50 rounded px-4 py-2 bg-tungsten/5 hover:bg-tungsten/10 transition-colors"
         >
-          Create New Game
+          Instant Rematch
         </Link>
+        <button
+          type="button"
+          onClick={() => navigator.clipboard?.writeText(window.location.href)}
+          className="font-display text-xs tracking-widest uppercase text-oxide-green hover:text-vault-text border border-oxide-green/30 rounded px-4 py-2 bg-oxide-green/5 hover:bg-oxide-green/10 transition-colors"
+        >
+          Share Result
+        </button>
       </div>
 
       {/* Bottom classification */}

@@ -14,6 +14,11 @@ import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
+import {
+  SIM_ACTION,
+  createInitialSimulation,
+  resolveSimulationRound,
+} from '../app/src/lib/plundrixEngine.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -1004,5 +1009,53 @@ describe('PlundrixGame', () => {
         exec(1, 'registerPlayer', [gameId])
       ).rejects.toThrow();
     });
+  });
+});
+
+describe('A+ gameplay improvements', () => {
+  const allPick = {
+    'player-1': { action: SIM_ACTION.PICK },
+    'player-2': { action: SIM_ACTION.PICK },
+    'player-3': { action: SIM_ACTION.PICK },
+    'player-4': { action: SIM_ACTION.PICK },
+  };
+
+  it('blocks consecutive sabotage against the same target', () => {
+    let state = createInitialSimulation({ seed: 'cooldown-proof' });
+    const actions = {
+      ...allPick,
+      'player-1': { action: SIM_ACTION.SABOTAGE, sabotageTarget: 'player-2' },
+    };
+    state = resolveSimulationRound(state, actions);
+    state = resolveSimulationRound(state, actions);
+    expect(state.roundHistory[1].events.some((event) => event.reason === 'SABOTAGE_FAILED_COOLDOWN')).toBe(true);
+  });
+
+  it('lets a one-use Firewall block sabotage', () => {
+    const state = createInitialSimulation({ seed: 'firewall-proof', gadgets: [null, 'firewall'] });
+    const next = resolveSimulationRound(state, {
+      ...allPick,
+      'player-1': { action: SIM_ACTION.SABOTAGE, sabotageTarget: 'player-2' },
+    });
+    expect(next.roundHistory[0].events.some((event) => event.reason === 'SABOTAGE_BLOCKED_GADGET')).toBe(true);
+    expect(next.players[1].gadgetReady).toBe(false);
+  });
+
+  it('uses a tiebreak event when multiple players breach together', () => {
+    let tiedState = null;
+    for (let index = 0; index < 200 && !tiedState; index += 1) {
+      const state = createInitialSimulation({
+        seed: `tie-proof-${index}`,
+        rules: { totalLocks: 3 },
+        playerPatches: [
+          { locksCracked: 2, tools: 5 },
+          { locksCracked: 2, tools: 5 },
+        ],
+      });
+      const next = resolveSimulationRound(state, allPick);
+      if (next.events.some((event) => event.type === 'TiebreakResolved')) tiedState = next;
+    }
+    expect(tiedState).not.toBeNull();
+    expect(['player-1', 'player-2']).toContain(tiedState.winner);
   });
 });

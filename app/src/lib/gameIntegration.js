@@ -304,11 +304,12 @@ export function deriveIntegratedSession({
   pending = false,
   confirming = false,
   nowMs = Date.now(),
+  roundTimeout = ROUND_TIMEOUT,
 }) {
   const safeEvents = events || [];
   const safeLatestRoundEvents = latestRoundEvents || [];
   const safeRoundHistory = roundHistory || [];
-  const pressure = getPressureState(roundStartTime, nowMs);
+  const pressure = getPressureState(roundStartTime, nowMs, roundTimeout);
   const eventCues = buildEventCues(safeEvents, currentAddress);
   const latestCue = eventCues[eventCues.length - 1] || null;
   const latestRoundSummary = summarizeRoundEvents(safeLatestRoundEvents);

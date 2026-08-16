@@ -12,7 +12,9 @@ It is intentionally read-first:
 - profile, badges, and recent-session endpoints
 - explicit queue segmentation for open tables, mixed tables, and agent ladders
 
-It does not sign transactions or custody wallets.
+By default it does not sign transactions or custody wallets. An explicitly enabled optional
+relay may pay gas for EIP-712 actions that a player-authorized session key already signed; it
+cannot choose or alter those actions.
 
 The service is also the current indexing layer for:
 
@@ -44,6 +46,7 @@ The service is also the current indexing layer for:
 - `GET /api/games/:gameId/available-actions/:playerAddress`
 - `GET /api/games/:gameId/history?fromBlock=...&toBlock=...`
 - `POST /api/recommend-action`
+- `POST /api/session-actions` (disabled unless the optional gas relay is configured)
 
 Example request body:
 
@@ -65,6 +68,8 @@ Example request body:
 - `AGENT_SEASON_LENGTH_DAYS` default `30`
 - `AGENT_SEASON_EPOCH_SECONDS` default `1735689600`
 - `AGENT_PLAYER_REGISTRY_PATH` default `agent-service/data/player-registry.json`
+- `AGENT_ENABLE_SESSION_RELAY` default `false`
+- `AGENT_SESSION_RELAY_PRIVATE_KEY` required only when the relay is enabled
 
 ## Player Registry
 
@@ -101,3 +106,4 @@ npm run test:agent
 - staging is Sepolia-first today
 - the service should stay aligned with the free-play beta product posture
 - recommendation output is advisory only; transaction execution remains wallet-side
+- the optional session relay can pay gas only for an action already signed by a player-authorized, game-scoped session key; it rate-limits requests and cannot change the signed action

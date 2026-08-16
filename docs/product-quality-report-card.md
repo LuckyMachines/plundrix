@@ -180,3 +180,27 @@ Overall grade: **A+** for the automated product, provenance, and live-network ba
 
 - Import at least four facilitated first-match playtests and act on observed comprehension or drop-off failures.
 - Validate homepage claims and primary CTA comprehension with first-time players.
+
+## v0.9.0 - Fairness, instant play, and retention candidate
+
+Date: 2026-08-15
+
+Overall grade: **A+ candidate** for the local automated product bar; live Sepolia remains on the verified v0.8 implementation until an explicit upgrade.
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Rules fairness | A | Simultaneous breaches use an entropy-backed tiebreak instead of player order, and consecutive-round stun locking is rejected with an explicit outcome. A separately versioned live tournament must validate the balance effect. |
+| First session | A+ | `/play` starts a named four-operator match immediately, offers three pacing modes, teaches the loop in context, and requires no wallet. Browser interaction and serious/critical Axe checks pass. |
+| Tactical clarity | A+ | Pick and Search odds, Sabotage impact, target protection, gadget status, resolution outcomes, and the first-operation checklist stay visible at decision time. |
+| Strategic depth | A | Tactical play adds three one-use gadget identities without expanding the three-action contract surface. The gadgets remain an instant-play experiment rather than deployed onchain rules. |
+| Continuation and retention | A | Instant rematch, challenge links, result sharing, XP, levels, streaks, named identity, spectating links, and opt-in background-tab alerts create a coherent next-session loop. Server-backed cross-device identity is not part of this pass. |
+| Wallet friction | A candidate | The contract accepts revocable, expiring EIP-712 session actions and the optional relay verifies and submits them. The current Sepolia proxy does not expose this path until an approved upgrade and funded relay deployment. |
+| Marketing proof | A+ | A 32-second, 1 MB trailer uses real lobby, match, resolution, and funded Sepolia finish captures plus existing Plundrix art. It contains no testimonials, invented stories, or analytics disclosure. |
+| Technical reliability | A+ | 32 Solidity, 78 integration/simulator, 8 agent-service, 5 tournament-policy, production-build, zero-production-audit, and browser/accessibility gates pass. |
+
+## Next stricter A+ bar
+
+- Rehearse the UUPS upgrade locally, verify storage layout compatibility, and publish the new implementation source before enabling next-rule flags.
+- Run a separately versioned balance batch against the cooldown and Leader Hunter candidate.
+- Prove session authorization, silent signed action, relay receipt, revocation, expiry, and replay rejection in browser automation.
+- Keep testimonials, player stories, and analytics results private or absent until genuine source material and explicit publication approval exist.

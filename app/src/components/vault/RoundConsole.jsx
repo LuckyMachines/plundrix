@@ -2,7 +2,7 @@ import PhaseIndicator from './PhaseIndicator';
 import TimeoutDial from './TimeoutDial';
 import { formatBigInt } from '../../lib/formatting';
 
-export default function RoundConsole({ currentRound, roundStartTime, allSubmitted, gameState, canResolve, session }) {
+export default function RoundConsole({ currentRound, roundStartTime, roundTimeout, allSubmitted, gameState, canResolve, session }) {
   const pressureStage = session?.pressure?.stage || 'steady';
 
   return (
@@ -21,7 +21,7 @@ export default function RoundConsole({ currentRound, roundStartTime, allSubmitte
       <PhaseIndicator gameState={gameState} allSubmitted={allSubmitted} />
 
       {/* Timeout dial */}
-      <TimeoutDial roundStartTime={roundStartTime} pressure={session?.pressure} />
+      <TimeoutDial roundStartTime={roundStartTime} timeout={roundTimeout} pressure={session?.pressure} />
 
       <div className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
         <span className="text-vault-text">{session?.pressure?.label || 'Steady'}</span>

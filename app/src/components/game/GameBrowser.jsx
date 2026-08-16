@@ -16,6 +16,7 @@ export default function GameBrowser() {
   const { totalGames, isLoading, error, refetch } = useTotalGames();
   const {
     createGame,
+    createGameWithPace,
     createStakesGame,
     hash,
     isPending,
@@ -24,12 +25,14 @@ export default function GameBrowser() {
     error: txError,
     isConfigured,
     configError,
+    nextRulesEnabled,
   } = useGameActions();
   useTxToast({ hash, isPending, isConfirming, isSuccess, error: txError }, 'Game creation');
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createMode, setCreateMode] = useState(GameMode.FREE);
   const [entryFeeInput, setEntryFeeInput] = useState('0.01');
+  const [roundPace, setRoundPace] = useState(300);
 
   useEffect(() => {
     if (isSuccess) refetch();
@@ -125,6 +128,17 @@ export default function GameBrowser() {
               </p>
             )}
 
+            {nextRulesEnabled && createMode === GameMode.FREE && (
+              <label className="grid gap-2">
+                <span className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">Round pace</span>
+                <select value={roundPace} onChange={(event) => setRoundPace(Number(event.target.value))} className="min-h-[44px] rounded border border-vault-border bg-vault-dark px-3 font-mono text-xs text-vault-text">
+                  <option value={45}>Live / 45 seconds</option>
+                  <option value={90}>Tactical / 90 seconds</option>
+                  <option value={300}>Async / 5 minutes</option>
+                </select>
+              </label>
+            )}
+
             {/* Entry fee input (STAKES only) */}
             {createMode === GameMode.STAKES && (
               <div className="space-y-1">
@@ -153,6 +167,8 @@ export default function GameBrowser() {
                 onClick={() => {
                   if (createMode === GameMode.STAKES) {
                     createStakesGame(parseEther(entryFeeInput));
+                  } else if (nextRulesEnabled && roundPace !== 300) {
+                    createGameWithPace(roundPace);
                   } else {
                     createGame();
                   }

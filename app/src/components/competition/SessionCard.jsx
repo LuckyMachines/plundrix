@@ -15,7 +15,7 @@ export default function SessionCard({ session }) {
             Session #{session.gameId}
           </Link>
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-vault-text-dim mt-1">
-            {session.state} · {session.rounds} rounds · {session.playerCount} players
+            {session.state} / {session.rounds} rounds / {session.playerCount} players
           </p>
         </div>
         <QueuePill queue={session.queue} />
@@ -50,7 +50,7 @@ export default function SessionCard({ session }) {
                 <TypePill type={player.type} />
               </div>
               <div className="font-mono text-xs uppercase tracking-[0.18em] text-vault-text-dim mt-1">
-                {player.result} · {player.points} pts
+                {player.result} / {player.points} pts
               </div>
             </div>
             <div className="text-right font-mono text-xs uppercase tracking-[0.18em] text-vault-text-dim">
@@ -59,6 +59,15 @@ export default function SessionCard({ session }) {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex flex-wrap gap-2 border-t border-vault-border pt-3">
+        <Link to={`/game/${session.gameId}`} className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-tungsten">
+          {session.state === 'active' ? 'Spectate live' : 'Open operation'}
+        </Link>
+        <button type="button" onClick={() => navigator.clipboard?.writeText(`${window.location.origin}/game/${session.gameId}`)} className="min-h-[44px] border border-vault-border px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+          Copy link
+        </button>
       </div>
     </article>
   );

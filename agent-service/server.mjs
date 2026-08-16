@@ -14,8 +14,21 @@ import {
   parsePlayerAddress,
 } from './contract.mjs';
 import { buildAvailableActions, recommendAction } from './strategy.mjs';
+import { getSessionRelayStatus, relaySessionAction } from './session-relay.mjs';
 
 validateAgentConfig();
+
+const relayRequests = new Map();
+
+function enforceRelayRateLimit(req) {
+  const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  const client = forwarded || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const recent = (relayRequests.get(client) || []).filter((time) => now - time < 60_000);
+  if (recent.length >= 10) throw new Error('Session relay rate limit exceeded');
+  recent.push(now);
+  relayRequests.set(client, recent);
+}
 
 function writeJson(res, statusCode, payload) {
   res.writeHead(statusCode, {
@@ -93,6 +106,7 @@ const server = createServer(async (req, res) => {
         service: 'plundrix-agent-service',
         rpcUrl: agentConfig.rpcUrl,
         contractAddress: agentConfig.contractAddress,
+        sessionRelay: getSessionRelayStatus(),
       });
       return;
     }
@@ -190,6 +204,13 @@ const server = createServer(async (req, res) => {
       return;
     }
 
+    if (method === 'POST' && path === '/api/session-actions') {
+      enforceRelayRateLimit(req);
+      const body = await readBody(req);
+      writeJson(res, 201, await relaySessionAction(body));
+      return;
+    }
+
     writeJson(res, 404, {
       error: 'Not found',
       routes: [
@@ -205,6 +226,7 @@ const server = createServer(async (req, res) => {
         'GET /api/games/:gameId/available-actions/:playerAddress',
         'GET /api/games/:gameId/history',
         'POST /api/recommend-action',
+        'POST /api/session-actions',
       ],
     });
   } catch (error) {

@@ -6,8 +6,10 @@ import NetworkSwitchBanner from './components/wallet/NetworkSwitchBanner';
 import Modal from './components/shared/Modal';
 import Spinner from './components/shared/Spinner';
 import SessionAudioBridge from './components/shared/SessionAudioBridge';
+import HomePage from './pages/HomePage';
 
-const HomePage = lazy(() => import('./pages/HomePage'));
+const InstantPlayPage = lazy(() => import('./pages/InstantPlayPage'));
+const TrailerPage = lazy(() => import('./pages/TrailerPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
 const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'));
 const SessionsPage = lazy(() => import('./pages/SessionsPage'));
@@ -61,6 +63,8 @@ export default function App() {
         >
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/play" element={<InstantPlayPage />} />
+            <Route path="/trailer" element={<TrailerPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/sessions" element={<SessionsPage />} />
             <Route path="/profile/:address" element={<ProfilePage />} />

@@ -63,14 +63,23 @@ export function chooseAgentAction(agentId, { self, opponent, round, totalLocks =
       return decision(ACTION.PICK, 'Convert the completed tool stack into lock progress.');
 
     case 'leader-hunter':
-      if (rivalMatchPoint || (opponent.locks >= self.locks + 2 && opponent.tools > 0)) {
+      if (matchPoint && !self.stunned) {
+        return decision(ACTION.PICK, 'Take the winning attempt instead of extending the chase.');
+      }
+      if (self.tools > 0 && self.locks >= opponent.locks - 1 && !self.stunned) {
+        return decision(ACTION.PICK, 'Convert a credible position while the leader remains catchable.');
+      }
+      if (
+        (rivalMatchPoint && opponent.locks >= self.locks + 2)
+        || (opponent.locks >= self.locks + 2 && opponent.tools > 0)
+      ) {
         return decision(ACTION.SABOTAGE, 'Disrupt a rival with a decisive lock lead.', true);
       }
       if (self.stunned && opponent.locks >= self.locks + 2) {
         return decision(ACTION.SABOTAGE, 'Trade the stunned round for guaranteed disruption.', true);
       }
-      if (self.tools < 2) {
-        return decision(ACTION.SEARCH, 'Build a credible conversion position before advancing.');
+      if (self.tools === 0) {
+        return decision(ACTION.SEARCH, 'Find one tool, then resume pressure before the leader escapes.');
       }
       return decision(ACTION.PICK, 'Advance while the race remains compressed.');
 

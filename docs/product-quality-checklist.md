@@ -48,3 +48,23 @@
 - [x] Capture the completed live Sepolia winner state at desktop and mobile sizes with accessibility, overflow, and browser-error gates.
 - [ ] Validate homepage claims and CTA comprehension with first-time players.
 - [x] Re-grade after live-state e2e evidence is attached.
+
+## 6. v0.9 selected gameplay and retention pass
+
+- [x] Add player-authorized EIP-712 session actions with nonce, expiry, revocation, and an optional gas relay.
+- [x] Replace player-order victory selection with an entropy-backed simultaneous-breach tiebreak.
+- [x] Prevent consecutive-round stun locks while preserving a decisive Sabotage action.
+- [x] Tune Leader Hunter to convert one-tool and match-point positions sooner.
+- [x] Add instant agent-filled Blitz, Classic, and Tactical matches with no wallet requirement.
+- [x] Add configurable 30-second-to-one-day round pacing for the next contract deployment.
+- [x] Add a first-operation guide and explicit Pick, Search, and Sabotage consequence previews.
+- [x] Add one-use Precision Kit, Signal Scanner, and Firewall loadouts to Tactical instant play.
+- [x] Add instant rematch, result sharing, deterministic challenge links, and operation sharing.
+- [x] Add local operator identity, XP, levels, streaks, and persistent instant-play records.
+- [x] Make live sessions explicitly spectatable and shareable from the session feed.
+- [x] Add opt-in background-tab round notifications without exposing analytics.
+- [x] Produce and integrate a 32-second trailer from real gameplay captures and existing Plundrix art.
+- [x] Keep next-contract session and pacing features disabled until the upgraded implementation and relay are deployed.
+- [ ] Deploy and publicly verify the upgraded implementation on Sepolia.
+- [ ] Configure and fund the bounded session-action relay, then enable the two frontend feature flags.
+- [ ] Validate the new Leader Hunter and anti-stun-lock rules in a separately versioned tournament run.

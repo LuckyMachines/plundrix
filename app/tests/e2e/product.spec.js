@@ -191,6 +191,27 @@ test('practice mode completes a deterministic match without a wallet', async ({ 
   await expect(winnerMetric.getByText(/^Player [1-4]$/)).toBeVisible();
 });
 
+test('instant play starts against agents and resolves a guided turn', async ({ page }) => {
+  await page.goto('/play');
+  await expect(page.getByRole('heading', { name: 'Your table is ready.' })).toBeVisible();
+  await page.getByRole('button', { name: /breach the vault/i }).click();
+  await expect(page.getByRole('heading', { name: 'Round 1' })).toBeVisible();
+  await page.getByRole('button', { name: /^Search/i }).click();
+  await expect(page.getByText(/chance to gain a tool/i)).toBeVisible();
+  await page.getByRole('button', { name: /commit and resolve/i }).click();
+  await expect(page.getByRole('heading', { name: 'Round 2' })).toBeVisible();
+  await expect(page.getByText('Last resolution')).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+});
+
+test('gameplay trailer uses the checked-in real capture montage', async ({ page }) => {
+  await page.goto('/trailer');
+  await expect(page.getByRole('heading', { name: /one vault/i })).toBeVisible();
+  await expect(page.locator('video source[src="/video/plundrix-gameplay-trailer.mp4"]')).toHaveCount(1);
+  await expect(page.getByRole('link', { name: /play instantly/i })).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+});
+
 for (const [path, heading] of [
   ['/simulator', 'Tuning Lab'],
   ['/replays', 'Plundrix Replay Director'],
@@ -198,6 +219,8 @@ for (const [path, heading] of [
   ['/terms', /terms/i],
   ['/privacy', /privacy/i],
   ['/snapshot', /operation/i],
+  ['/play', 'Your table is ready.'],
+  ['/trailer', /one vault/i],
 ]) {
   test(`${path} renders its primary content`, async ({ page }) => {
     await page.goto(path);

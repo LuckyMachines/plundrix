@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { decodeEventLog } from 'viem';
 import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
@@ -23,6 +23,7 @@ import EventLog from '../shared/EventLog';
 import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
 import MissionCoach from './MissionCoach';
+import TurnAlertButton from '../game/TurnAlertButton';
 import SessionIntegrationRail from './SessionIntegrationRail';
 import CommandStrip from './CommandStrip';
 import RoundSummaryCard from './RoundSummaryCard';
@@ -30,7 +31,7 @@ import IntegrationDebugTrace from './IntegrationDebugTrace';
 import { useSessionHistoryRecorder } from '../../hooks/useSessionHistory';
 import { GameShell, QuietPanel } from '../gameplay/GameShell';
 import { LatestEventSurface, MatchStatusStrip, OpponentRail } from '../gameplay/ActiveMatchReadout';
-import { PLUNDRIX_ABI } from '../../config/contract';
+import { NEXT_RULES_ENABLED, PLUNDRIX_ABI, PLUNDRIX_ADDRESS } from '../../config/contract';
 
 export default function VaultBench({ gameId }) {
   const { address } = useAccount();
@@ -38,6 +39,14 @@ export default function VaultBench({ gameId }) {
   const { players, isLoading: playersLoading } = useGamePlayers(gameId, playerCount);
   const { locksCracked, tools, stunned, registered, actionSubmitted } = usePlayerState(gameId, address);
   const { allSubmitted } = useAllActionsSubmitted(gameId);
+  const { data: configuredRoundTimeout } = useReadContract({
+    address: PLUNDRIX_ADDRESS,
+    abi: PLUNDRIX_ABI,
+    functionName: 'roundTimeoutFor',
+    args: [BigInt(gameId)],
+    query: { enabled: NEXT_RULES_ENABLED && Boolean(gameId) },
+  });
+  const roundTimeout = configuredRoundTimeout ? Number(configuredRoundTimeout) : ROUND_TIMEOUT;
   const {
     resolveRound,
     hash: resolveHash,
@@ -97,12 +106,12 @@ export default function VaultBench({ gameId }) {
     function check() {
       const now = Math.floor(Date.now() / 1000);
       const elapsed = now - Number(roundStartTime);
-      setTimedOut(elapsed >= ROUND_TIMEOUT);
+      setTimedOut(elapsed >= roundTimeout);
     }
     check();
     const interval = setInterval(check, 1000);
     return () => clearInterval(interval);
-  }, [roundStartTime]);
+  }, [roundStartTime, roundTimeout]);
 
   const canResolve = allSubmitted || timedOut;
   const isLoading = gameLoading || playersLoading;
@@ -112,6 +121,7 @@ export default function VaultBench({ gameId }) {
     currentRound,
     playerCount,
     roundStartTime,
+    roundTimeout,
     allSubmitted,
     timedOut,
     canResolve,
@@ -222,6 +232,7 @@ export default function VaultBench({ gameId }) {
               <RoundConsole
                 currentRound={currentRound}
                 roundStartTime={roundStartTime}
+                roundTimeout={roundTimeout}
                 allSubmitted={allSubmitted}
                 gameState={state}
                 canResolve={canResolve}
@@ -251,6 +262,11 @@ export default function VaultBench({ gameId }) {
             canResolve={canResolve}
             allSubmitted={allSubmitted}
             session={session}
+          />
+          <TurnAlertButton
+            currentRound={currentRound}
+            gameState={state}
+            actionSubmitted={actionSubmitted}
           />
           <ActionPanel
             gameId={gameId}

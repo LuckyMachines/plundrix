@@ -93,7 +93,7 @@ export default function SabotageControl({
 
       {/* Flavor text */}
       <p className="font-mono text-xs text-vault-text-dim text-center mb-1 italic leading-relaxed">
-        No RNG - certainty
+        Deterministic against a vulnerable target
       </p>
 
       {stunned && (

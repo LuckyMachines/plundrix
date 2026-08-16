@@ -29,6 +29,8 @@ test('agents expose materially different decisions', () => {
   assert.equal(chooseAgentAction('tool-hoarder', state()).action, ACTION.SEARCH);
   assert.equal(chooseAgentAction('tool-hoarder', state({ tools: 2 })).action, ACTION.PICK);
   assert.equal(chooseAgentAction('leader-hunter', state({}, { locks: 4 })).action, ACTION.SABOTAGE);
+  assert.equal(chooseAgentAction('leader-hunter', state({ locks: 2 }, { locks: 4, tools: 1 })).action, ACTION.SABOTAGE);
+  assert.equal(chooseAgentAction('leader-hunter', state({ locks: 4, tools: 1 }, { locks: 4 })).action, ACTION.PICK);
   assert.equal(chooseAgentAction('saboteur', state({}, { tools: 2 })).action, ACTION.SABOTAGE);
   assert.equal(chooseAgentAction('saboteur', state({ tools: 2 }, { tools: 1, locks: 1 })).action, ACTION.PICK);
   assert.equal(chooseAgentAction('adaptive', state({ tools: 2 })).action, ACTION.PICK);

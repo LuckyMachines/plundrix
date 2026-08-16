@@ -6,6 +6,8 @@ The repo currently ships:
 
 - an upgradeable UUPS game contract with pause and role controls
 - a React app for local play and Sepolia staging
+- instant Blitz, Classic, and Tactical agent matches at `/play`
+- a 32-second real-capture gameplay trailer at `/trailer`
 - an agent/competition service for recommendations, profiles, sessions, badges, and ladders
 - KMS-backed deploy and autoloop tooling
 
@@ -22,6 +24,7 @@ The repo currently ships:
 - guarded FREE operation `1` completed on Sepolia in nine rounds with two HSM-backed players
 - mainnet is not live yet
 - planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
+- session actions, paced games, and the new balance rules are implemented locally but remain feature-flagged until an approved Sepolia upgrade
 
 Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
 The latest read-only chain and provenance audit is in [docs/sepolia-readiness-audit.md](docs/sepolia-readiness-audit.md).
@@ -180,6 +183,9 @@ VITE_CONTRACT_ADDRESS
 VITE_AGENT_SERVICE_URL
 VITE_FOUNDRY_RPC_URL
 VITE_ENABLE_FOUNDRY
+VITE_ENABLE_NEXT_RULES
+VITE_ENABLE_SESSION_KEYS
+VITE_SESSION_RELAY_URL
 ```
 
 Run:

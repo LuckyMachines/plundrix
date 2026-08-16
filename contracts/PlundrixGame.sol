@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /**
  * @title PlundrixGame
@@ -21,6 +22,7 @@ contract PlundrixGame is
     UUPSUpgradeable
 {
     using Counters for Counters.Counter;
+    using ECDSA for bytes32;
 
     // --- Roles ---
     bytes32 public constant GAME_MASTER_ROLE = keccak256("GAME_MASTER_ROLE");
@@ -35,9 +37,13 @@ contract PlundrixGame is
     uint256 public constant MAX_GAME_PLAYERS = 4;
     uint256 public constant MIN_GAME_PLAYERS = 2;
     uint256 public constant ROUND_TIMEOUT = 5 minutes;
+    uint256 public constant MIN_ROUND_TIMEOUT = 30 seconds;
     uint256 public constant MAX_AUTO_RESOLVE_DELAY = 1 days;
     uint256 public constant FEE_BPS = 200;
     uint256 public constant BASIS_POINTS_DENOMINATOR = 10_000;
+    bytes32 public constant SESSION_ACTION_TYPEHASH = keccak256(
+        "SessionAction(uint256 gameID,address player,uint8 action,address sabotageTarget,uint256 nonce,uint256 deadline)"
+    );
 
     // --- Enums ---
     enum Action {
@@ -70,7 +76,8 @@ contract PlundrixGame is
         SABOTAGE_SUCCESS_STEAL,
         SABOTAGE_SUCCESS_STUN_ONLY,
         SABOTAGE_SUCCESS_NO_TOOL,
-        NO_SUBMISSION
+        NO_SUBMISSION,
+        SABOTAGE_FAILED_COOLDOWN
     }
 
     // --- Structs ---
@@ -110,7 +117,7 @@ contract PlundrixGame is
     Counters.Counter private _gameIdCounter;
 
     mapping(uint256 => GameInfo) private _games;
-    mapping(uint256 => mapping(uint256 => PlayerState)) private _players;
+    mapping(uint256 => mapping(uint256 => PlayerState)) internal _players;
     mapping(uint256 => mapping(address => uint256)) private _playerIndex;
     mapping(uint256 => mapping(address => PendingAction)) private _pendingActions;
     mapping(uint256 => mapping(uint256 => uint256)) private _roundEntropy;
@@ -125,6 +132,10 @@ contract PlundrixGame is
     mapping(uint256 => uint256)  private _entryFee;
     mapping(uint256 => uint256)  private _pot;
     mapping(address => uint256)  private _withdrawable;
+    mapping(uint256 => mapping(address => uint256)) private _lastSabotagedRound;
+    mapping(uint256 => mapping(address => address)) private _sessionKeys;
+    mapping(uint256 => mapping(address => uint256)) private _sessionNonces;
+    mapping(uint256 => uint256) private _gameRoundTimeout;
 
     modifier validGame(uint256 gameID) {
         require(_gameExists(gameID), "Game does not exist");
@@ -203,6 +214,30 @@ contract PlundrixGame is
         uint256 indexed gameID,
         address winner,
         uint256 rounds,
+        uint256 timeStamp
+    );
+    event TiebreakResolved(
+        uint256 indexed gameID,
+        uint256 indexed round,
+        address indexed winner,
+        uint256 finalistCount,
+        uint256 timeStamp
+    );
+    event SessionKeyAuthorized(
+        uint256 indexed gameID,
+        address indexed player,
+        address indexed sessionKey,
+        uint256 timeStamp
+    );
+    event SessionKeyRevoked(
+        uint256 indexed gameID,
+        address indexed player,
+        address indexed sessionKey,
+        uint256 timeStamp
+    );
+    event GamePaceSelected(
+        uint256 indexed gameID,
+        uint256 roundTimeout,
         uint256 timeStamp
     );
     event AutomationSettingsUpdated(
@@ -317,7 +352,7 @@ contract PlundrixGame is
     ) external onlyRole(GAME_MASTER_ROLE) {
         if (autoResolveEnabled) {
             require(
-                autoResolveDelay >= ROUND_TIMEOUT,
+                autoResolveDelay >= MIN_ROUND_TIMEOUT,
                 "Auto delay below round timeout"
             );
             require(
@@ -420,6 +455,22 @@ contract PlundrixGame is
     }
 
     /**
+     * @notice Create a free game with a live or asynchronous round timer.
+     */
+    function createGameWithPace(
+        uint256 roundTimeout
+    ) external whenNotPaused returns (uint256 gameID) {
+        require(roundTimeout >= MIN_ROUND_TIMEOUT, "Round timeout too short");
+        require(roundTimeout <= MAX_AUTO_RESOLVE_DELAY, "Round timeout too long");
+        _gameIdCounter.increment();
+        gameID = _gameIdCounter.current();
+        _games[gameID].state = GameState.OPEN;
+        _gameRoundTimeout[gameID] = roundTimeout;
+        emit GameCreated(gameID, msg.sender, block.timestamp);
+        emit GamePaceSelected(gameID, roundTimeout, block.timestamp);
+    }
+
+    /**
      * @notice Create a game with a specific mode and optional entry fee.
      * @param mode FREE or STAKES.
      * @param entryFee Per-player entry fee in wei (must be 0 for FREE).
@@ -514,13 +565,82 @@ contract PlundrixGame is
         Action action,
         address sabotageTarget
     ) external validGame(gameID) whenNotPaused {
+        _submitAction(gameID, msg.sender, action, sabotageTarget);
+    }
+
+    /**
+     * @notice Authorize a local session key for gas-sponsored action relays.
+     * @dev The player remains in control and can revoke or replace the key at any time.
+     */
+    function authorizeSessionKey(
+        uint256 gameID,
+        address sessionKey
+    ) external validGame(gameID) whenNotPaused {
+        require(_playerIndex[gameID][msg.sender] > 0, "Not a registered player");
+        require(sessionKey != address(0), "Session key required");
+        _sessionKeys[gameID][msg.sender] = sessionKey;
+        emit SessionKeyAuthorized(gameID, msg.sender, sessionKey, block.timestamp);
+    }
+
+    function revokeSessionKey(
+        uint256 gameID
+    ) external validGame(gameID) {
+        address sessionKey = _sessionKeys[gameID][msg.sender];
+        require(sessionKey != address(0), "No session key");
+        delete _sessionKeys[gameID][msg.sender];
+        emit SessionKeyRevoked(gameID, msg.sender, sessionKey, block.timestamp);
+    }
+
+    /**
+     * @notice Submit an action signed by a player-authorized session key.
+     * @dev Any relayer may pay gas, but cannot alter the signed game action.
+     */
+    function submitActionWithSession(
+        uint256 gameID,
+        address player,
+        Action action,
+        address sabotageTarget,
+        uint256 deadline,
+        bytes calldata signature
+    ) external validGame(gameID) whenNotPaused {
+        require(block.timestamp <= deadline, "Session action expired");
+        address sessionKey = _sessionKeys[gameID][player];
+        require(sessionKey != address(0), "Session key not authorized");
+
+        uint256 nonce = _sessionNonces[gameID][player];
+        bytes32 structHash = keccak256(
+            abi.encode(
+                SESSION_ACTION_TYPEHASH,
+                gameID,
+                player,
+                uint8(action),
+                sabotageTarget,
+                nonce,
+                deadline
+            )
+        );
+        bytes32 digest = keccak256(
+            abi.encodePacked("\x19\x01", _sessionDomainSeparator(), structHash)
+        );
+        require(digest.recover(signature) == sessionKey, "Invalid session signature");
+
+        _sessionNonces[gameID][player] = nonce + 1;
+        _submitAction(gameID, player, action, sabotageTarget);
+    }
+
+    function _submitAction(
+        uint256 gameID,
+        address playerAddr,
+        Action action,
+        address sabotageTarget
+    ) internal {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.ACTIVE, "Game not active");
 
-        uint256 playerIdx = _playerIndex[gameID][msg.sender];
+        uint256 playerIdx = _playerIndex[gameID][playerAddr];
         require(playerIdx > 0, "Not a registered player");
         require(
-            !_pendingActions[gameID][msg.sender].submitted,
+            !_pendingActions[gameID][playerAddr].submitted,
             "Action already submitted"
         );
         require(
@@ -532,7 +652,7 @@ contract PlundrixGame is
 
         if (action == Action.SABOTAGE) {
             require(
-                sabotageTarget != msg.sender,
+                sabotageTarget != playerAddr,
                 "Cannot sabotage yourself"
             );
             require(
@@ -541,7 +661,7 @@ contract PlundrixGame is
             );
         }
 
-        _pendingActions[gameID][msg.sender] = PendingAction({
+        _pendingActions[gameID][playerAddr] = PendingAction({
             action: action,
             sabotageTarget: sabotageTarget,
             submitted: true
@@ -549,7 +669,7 @@ contract PlundrixGame is
 
         emit ActionSubmitted(
             gameID,
-            msg.sender,
+            playerAddr,
             action,
             sabotageTarget,
             game.currentRound,
@@ -575,7 +695,7 @@ contract PlundrixGame is
     ) internal validGame(gameID) {
         GameInfo storage game = _games[gameID];
         require(game.state == GameState.ACTIVE, "Game not active");
-        bool timedOut = block.timestamp >= game.roundStartTime + ROUND_TIMEOUT;
+        bool timedOut = block.timestamp >= game.roundStartTime + roundTimeoutFor(gameID);
         bool autoResolveWindowOpen = block.timestamp >=
             game.roundStartTime + _autoResolveDelay;
 
@@ -725,32 +845,25 @@ contract PlundrixGame is
             );
         }
 
-        // Check for winner
-        for (uint256 i = 1; i <= game.playerCount; i++) {
-            if (_players[gameID][i].locksCracked >= TOTAL_LOCKS) {
-                game.state = GameState.COMPLETE;
-                game.winner = _players[gameID][i].addr;
-                emit GameWon(
-                    gameID,
-                    game.winner,
-                    round,
-                    block.timestamp
-                );
+        address roundWinner = _selectRoundWinner(gameID, round, game.playerCount);
+        if (roundWinner != address(0)) {
+            game.state = GameState.COMPLETE;
+            game.winner = roundWinner;
+            emit GameWon(gameID, game.winner, round, block.timestamp);
 
-                if (_gameMode[gameID] == GameMode.STAKES && _pot[gameID] > 0) {
-                    uint256 pot = _pot[gameID];
-                    _pot[gameID] = 0;
-                    uint256 feeAmount = 0;
-                    if (_feeEnabled && _feeRecipient != address(0)) {
-                        feeAmount = (pot * FEE_BPS) / BASIS_POINTS_DENOMINATOR;
-                        _withdrawable[_feeRecipient] += feeAmount;
-                    }
-                    _withdrawable[game.winner] += pot - feeAmount;
-                    emit PrizeDistributed(gameID, game.winner, pot - feeAmount, feeAmount, block.timestamp);
+            if (_gameMode[gameID] == GameMode.STAKES && _pot[gameID] > 0) {
+                uint256 pot = _pot[gameID];
+                _pot[gameID] = 0;
+                uint256 feeAmount = 0;
+                if (_feeEnabled && _feeRecipient != address(0)) {
+                    feeAmount = (pot * FEE_BPS) / BASIS_POINTS_DENOMINATOR;
+                    _withdrawable[_feeRecipient] += feeAmount;
                 }
-
-                return;
+                _withdrawable[game.winner] += pot - feeAmount;
+                emit PrizeDistributed(gameID, game.winner, pot - feeAmount, feeAmount, block.timestamp);
             }
+
+            return;
         }
 
         // Advance to next round
@@ -834,8 +947,22 @@ contract PlundrixGame is
         }
         PlayerState storage targetPlayer = _players[gameID][targetIdx];
 
+        // A player cannot be stun-locked in consecutive rounds. This keeps
+        // sabotage decisive while guaranteeing one round of counterplay.
+        if (
+            _lastSabotagedRound[gameID][targetAddr] > 0 &&
+            _lastSabotagedRound[gameID][targetAddr] + 1 == _games[gameID].currentRound
+        ) {
+            return (
+                false,
+                OutcomeReason.SABOTAGE_FAILED_COOLDOWN,
+                targetAddr
+            );
+        }
+
         // Stun the target for next round
         targetPlayer.stunned = true;
+        _lastSabotagedRound[gameID][targetAddr] = _games[gameID].currentRound;
         emit PlayerSabotaged(
             gameID,
             attacker.addr,
@@ -870,25 +997,76 @@ contract PlundrixGame is
         );
     }
 
+    function _sessionDomainSeparator() internal view returns (bytes32) {
+        return keccak256(
+            abi.encode(
+                keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
+                keccak256(bytes("Plundrix")),
+                keccak256(bytes("1")),
+                block.chainid,
+                address(this)
+            )
+        );
+    }
+
+    function _selectRoundWinner(
+        uint256 gameID,
+        uint256 round,
+        uint256 playerCount
+    ) internal returns (address winner) {
+        address[] memory finalists = new address[](playerCount);
+        uint256 finalistCount;
+
+        for (uint256 i = 1; i <= playerCount; i++) {
+            if (_players[gameID][i].locksCracked >= TOTAL_LOCKS) {
+                finalists[finalistCount] = _players[gameID][i].addr;
+                finalistCount++;
+            }
+        }
+
+        if (finalistCount == 0) {
+            return address(0);
+        }
+        if (finalistCount == 1) {
+            return finalists[0];
+        }
+
+        uint256 winnerIndex = _randomWord(gameID, round, playerCount + 1) % finalistCount;
+        winner = finalists[winnerIndex];
+        emit TiebreakResolved(
+            gameID,
+            round,
+            winner,
+            finalistCount,
+            block.timestamp
+        );
+    }
+
+    function _randomWord(
+        uint256 gameID,
+        uint256 round,
+        uint256 seed
+    ) internal view returns (uint256) {
+        return uint256(
+            keccak256(
+                abi.encodePacked(
+                    blockhash(block.number - 1),
+                    gameID,
+                    round,
+                    block.timestamp,
+                    _roundEntropy[gameID][round],
+                    seed
+                )
+            )
+        );
+    }
+
     function _pseudoRandom(
         uint256 gameID,
         uint256 round,
         uint256 seed
     ) internal view returns (uint256) {
-        uint256 entropy = _roundEntropy[gameID][round];
-        return
-            uint256(
-                keccak256(
-                    abi.encodePacked(
-                        blockhash(block.number - 1),
-                        gameID,
-                        round,
-                        block.timestamp,
-                        entropy,
-                        seed
-                    )
-                )
-            ) % 100;
+        return _randomWord(gameID, round, seed) % 100;
     }
 
     // --- View Functions ---
@@ -1038,6 +1216,20 @@ contract PlundrixGame is
         return _roundEntropy[gameID][round];
     }
 
+    function getSessionKey(
+        uint256 gameID,
+        address player
+    ) external view validGame(gameID) returns (address sessionKey, uint256 nonce) {
+        return (_sessionKeys[gameID][player], _sessionNonces[gameID][player]);
+    }
+
+    function roundTimeoutFor(
+        uint256 gameID
+    ) public view validGame(gameID) returns (uint256) {
+        uint256 configured = _gameRoundTimeout[gameID];
+        return configured == 0 ? ROUND_TIMEOUT : configured;
+    }
+
     function canAutoResolve(
         uint256 gameID
     ) external view validGame(gameID) returns (bool) {
@@ -1061,7 +1253,8 @@ contract PlundrixGame is
         }
         if (
             block.timestamp <
-            game.roundStartTime + _autoResolveDelay
+            game.roundStartTime + roundTimeoutFor(gameID) ||
+            block.timestamp < game.roundStartTime + _autoResolveDelay
         ) {
             return false;
         }
@@ -1095,5 +1288,5 @@ contract PlundrixGame is
         return (_gameMode[gameID], _entryFee[gameID], _pot[gameID]);
     }
 
-    uint256[44] private __gap;
+    uint256[40] private __gap;
 }
