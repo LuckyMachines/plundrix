@@ -350,7 +350,7 @@ function TrailerPreview() {
     <section className="border-b border-vault-border/70 bg-vault-surface/45">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:px-10 lg:py-16">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">32 seconds / real product captures</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">32-second trailer</p>
           <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-[0.95] text-vault-text sm:text-5xl">See the pressure before you play.</h2>
           <p className="mt-5 max-w-lg text-base leading-7 text-vault-text-dim">
             Watch four operators race from the opening move to the final lock, with every bluff and setback still visible.

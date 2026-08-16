@@ -200,7 +200,7 @@ test('instant play starts against agents and resolves a guided turn', async ({ p
   await expectNoSeriousA11yIssues(page);
 });
 
-test('gameplay trailer uses the checked-in real capture montage', async ({ page }) => {
+test('gameplay trailer presents the complete vault race', async ({ page }) => {
   await page.goto('/trailer');
   await expect(page.getByRole('heading', { name: /one vault/i })).toBeVisible();
   await expect(page.locator('video source[src="/video/plundrix-gameplay-trailer.mp4"]')).toHaveCount(1);

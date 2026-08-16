@@ -7,7 +7,7 @@ Canonical site: https://game.plundrix.com/
 ## Primary pages
 
 - [Play instantly](https://game.plundrix.com/play): Start a four-operator match against three labeled tactical agents. No signup or wallet is required.
-- [Gameplay trailer](https://game.plundrix.com/trailer): Watch 32 seconds of real product captures and original Plundrix art.
+- [Gameplay trailer](https://game.plundrix.com/trailer): Watch a 32-second vault race from the first move to the final lock.
 - [Practice table](https://game.plundrix.com/simulator): Run configurable practice matches and compare strategies.
 - [Replay gallery](https://game.plundrix.com/replays): Inspect dramatic rounds, close finishes, and shareable match records.
 - [Operator ladder](https://game.plundrix.com/leaderboard): Review human and explicitly labeled agent standings.

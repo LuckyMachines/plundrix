@@ -27,7 +27,7 @@ const cards = [
     output: 'plundrix-trailer.jpg',
     eyebrow: 'GAMEPLAY TRAILER',
     headline: ['ONE VAULT.', 'NO SAFE TURN.'],
-    footer: '32 SECONDS / REAL CAPTURES',
+    footer: 'FOUR OPERATORS / FIVE LOCKS',
   },
 ];
 

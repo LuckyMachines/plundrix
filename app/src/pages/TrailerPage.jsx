@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
 
 const CHAPTERS = [
-  ['00:00', 'Enter the vault', 'Original Plundrix vault art introduces the five-lock objective.'],
-  ['00:04', 'Assemble the table', 'The real configured lobby shows the join and start flow.'],
-  ['00:08', 'Make the read', 'A captured active match shows live locks, tools, rivals, and actions.'],
-  ['00:12', 'Resolve together', 'The production resolution state reveals simultaneous outcomes.'],
-  ['00:16', 'Break their plan', 'Sabotage and comeback art extend the actual mechanic.'],
-  ['00:24', 'Breach confirmed', 'The funded Sepolia winner screen supplies live-network proof.'],
+  ['00:00', 'Enter the vault', 'Five locks stand between the table and the score.'],
+  ['00:04', 'Assemble the table', 'Operators take their seats and the first round opens.'],
+  ['00:08', 'Make the read', 'Locks, tools, and rival intentions shape the next move.'],
+  ['00:12', 'Resolve together', 'All four decisions land and the table changes at once.'],
+  ['00:16', 'Break their plan', 'A well-timed Sabotage turns a leader into a target.'],
+  ['00:24', 'Breach confirmed', 'One operator cracks the final lock and takes the vault.'],
 ];
 
 export default function TrailerPage() {
@@ -15,7 +15,7 @@ export default function TrailerPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-12">
       <Seo
         title="Plundrix Gameplay Trailer"
-        description="Watch a 32-second Plundrix gameplay trailer assembled from real product captures and original game art."
+        description="Watch a 32-second Plundrix vault race from the first move to the final lock."
         path="/trailer"
         image="/images/og/plundrix-trailer.jpg"
         imageAlt="Plundrix gameplay trailer - One vault. No safe turn."
@@ -24,7 +24,7 @@ export default function TrailerPage() {
           '@context': 'https://schema.org',
           '@type': 'VideoObject',
           name: 'Plundrix Gameplay Trailer',
-          description: 'A 32-second gameplay trailer assembled from real Plundrix product captures and original game art.',
+          description: 'A 32-second Plundrix vault race from the first move to the final lock.',
           thumbnailUrl: 'https://game.plundrix.com/images/og/plundrix-trailer.jpg',
           contentUrl: 'https://game.plundrix.com/video/plundrix-gameplay-trailer.mp4',
           embedUrl: 'https://game.plundrix.com/trailer',
@@ -36,7 +36,7 @@ export default function TrailerPage() {
       />
 
       <header className="max-w-4xl">
-        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">32 seconds / captured gameplay</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">32-second trailer</p>
         <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-[0.88] text-vault-text sm:text-7xl lg:text-8xl">One vault. Three intentions. No safe turn.</h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-vault-text-dim">Four operators. Five locks. Every choice lands at once. Watch the table turn in 32 seconds.</p>
       </header>
