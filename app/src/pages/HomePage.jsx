@@ -353,7 +353,7 @@ function TrailerPreview() {
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">32 seconds / real product captures</p>
           <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-[0.95] text-vault-text sm:text-5xl">See the pressure before you play.</h2>
           <p className="mt-5 max-w-lg text-base leading-7 text-vault-text-dim">
-            Watch a real lobby, active vault, simultaneous resolution, and the completed funded Sepolia operation. No staged testimonials or invented player stories.
+            Watch four operators race from the opening move to the final lock, with every bluff and setback still visible.
           </p>
           <Link to="/trailer" className="mt-7 inline-flex min-h-[48px] items-center border border-tungsten/45 px-5 font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten transition hover:border-tungsten hover:text-tungsten-bright">
             Trailer and chapter guide -&gt;

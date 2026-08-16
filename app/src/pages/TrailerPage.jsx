@@ -38,7 +38,7 @@ export default function TrailerPage() {
       <header className="max-w-4xl">
         <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">32 seconds / captured gameplay</p>
         <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-[0.88] text-vault-text sm:text-7xl lg:text-8xl">One vault. Three intentions. No safe turn.</h1>
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-vault-text-dim">Lobby, active play, simultaneous resolution, replay art, and the completed funded Sepolia operation - without testimonials or invented claims.</p>
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-vault-text-dim">Four operators. Five locks. Every choice lands at once. Watch the table turn in 32 seconds.</p>
       </header>
 
       <section className="mt-9 overflow-hidden border border-vault-border bg-black shadow-[0_30px_90px_rgba(0,0,0,0.35)]">

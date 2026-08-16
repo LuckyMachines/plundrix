@@ -98,3 +98,15 @@
 - [x] Serve the trailer with `video/mp4`, byte ranges, and correct caching behavior.
 - [x] Add a repeatable SEO build test covering generated files and production HTTP behavior.
 - [x] Replace the unconfigured leaderboard's internal service error with a tested player-facing fallback and stop disabled polling.
+
+## 9. v0.12 cross-domain journey reconciliation
+
+- [x] Assign acquisition, rules, previews, and trust to `plundrix.com`.
+- [x] Replace the game marketing homepage with a player hub for Instant Play and live Sepolia.
+- [x] Keep the live operation browser and create-operation workflow directly on the player hub.
+- [x] Permanently redirect the retired marketing `/play` page to the game player hub.
+- [x] Remove the retired route from the marketing sitemap and distinguish Player Hub from Instant Play in AI references.
+- [x] Collapse duplicate marketing footer links into Player Hub, Instant Play, and Ladder.
+- [x] Replace internal evidence and claim-validation language with player-facing trailer copy.
+- [x] Verify both builds, both production audits, SEO, accessibility, mobile navigation, and browser-wallet operation creation.
+- [ ] Validate the two-mode choice with first-time players after production deployment.

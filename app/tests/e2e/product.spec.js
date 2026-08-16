@@ -144,22 +144,16 @@ async function expectNoSeriousA11yIssues(page) {
   expect(violations, violations.map(({ id, nodes }) => `${id}: ${nodes.length} node(s)`).join('\n')).toEqual([]);
 }
 
-test('homepage explains the game and makes the turn demo interactive', async ({ page }) => {
+test('player hub separates instant play from live operations', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: /crack the vault/i })).toBeVisible();
-  await expect(page.getByText('No wallet needed')).toBeVisible();
-  await expect(page.getByLabel('Plundrix gameplay trailer preview')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Straight answers.' })).toBeVisible();
-
-  const search = page.getByRole('button', { name: /search build an edge/i });
-  await search.click();
-  await expect(search).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.getByText(/find a tension wrench/i)).toBeVisible();
-
-  const sabotage = page.getByRole('button', { name: /sabotage break their plan/i });
-  await sabotage.click();
-  await expect(page.getByText(/rook is stunned/i)).toBeVisible();
-  await expect(page.locator('img[src^="/images/replay-"]')).toHaveCount(3);
+  await expect(page.getByRole('heading', { level: 1, name: 'Choose your breach.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Play instantly' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Join a live table' })).toBeVisible();
+  await expect(page.getByRole('link', { name: /start instant match/i })).toHaveAttribute('href', '/play');
+  await expect(page.getByRole('link', { name: /open live operations/i })).toHaveAttribute('href', '#live-operations');
+  await expect(page.getByRole('heading', { name: 'Live operations' })).toBeVisible();
+  await expect(page.getByRole('link', { name: /learn the rules/i })).toHaveAttribute('href', 'https://plundrix.com/#how-it-works');
+  await expect(page.getByText('Straight answers.')).toHaveCount(0);
   await expectNoSeriousA11yIssues(page);
 });
 

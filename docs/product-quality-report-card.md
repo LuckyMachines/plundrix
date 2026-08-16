@@ -247,3 +247,31 @@ Overall grade: **A+ for the automated discovery and sharing bar**; external inde
 - Deploy and verify the canonical host's HTML, sitemap, robots, LLM references, cards, and trailer range responses.
 - Run rich-result and social-card debuggers against production URLs after caches can reach the new assets.
 - Submit the sitemap through already-owned webmaster consoles only when separately authorized; do not publish private analytics.
+
+## v0.12.0 - Cross-domain player journey
+
+Date: 2026-08-16
+
+Overall grade: **A** for cross-domain information architecture
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Domain roles | A | `plundrix.com` now owns positioning, rules, previews, and trust; `game.plundrix.com` owns choosing and entering a playable mode. The former marketing `/play` page no longer competes with the game. |
+| First decision | A+ | The game opens with one explicit choice: instant no-wallet play or a live Sepolia table. The live operation browser and creation controls remain on the same page. |
+| Conversion path | A | Marketing play links converge on the game player hub, while Instant Play remains a named secondary destination. Production click-through still needs post-deploy verification. |
+| Copy voice | A | Player-facing pages describe choices, rivals, locks, and table pressure. Internal evidence language and disclaimers about invented claims were removed from the trailer journey. |
+| Discovery / SEO | A | The retired marketing `/play` URL redirects permanently, is absent from the marketing sitemap, and AI references identify the player hub and Instant Play separately. |
+| Technical reliability | A+ | Both production builds and audits pass, the SEO gate passes, player-hub accessibility and mobile navigation pass, and browser-wallet operation creation still passes from the new hub. |
+
+Snapshot notes:
+
+- Before this pass, both domains presented acquisition-style landing pages and the marketing site maintained a third, thin `/play` bridge.
+- The game root is now an operational player hub rather than a second marketing homepage.
+- Human first-click comprehension remains the only meaningful evidence gap.
+
+## A bar, stricter
+
+- A production visitor can move from any primary marketing CTA to the player hub without encountering another pitch page.
+- The player hub makes Instant Play and live Sepolia mutually understandable within the first viewport.
+- Automated checks continue to prove no-wallet play, live operation creation, accessibility, SEO, and both canonical domains.
+- First-time-player observation confirms that people understand the two play modes without explanation.

@@ -6,7 +6,7 @@ import NetworkSwitchBanner from './components/wallet/NetworkSwitchBanner';
 import Modal from './components/shared/Modal';
 import Spinner from './components/shared/Spinner';
 import SessionAudioBridge from './components/shared/SessionAudioBridge';
-import HomePage from './pages/HomePage';
+import PlayerHubPage from './pages/PlayerHubPage';
 import Seo from './components/seo/Seo';
 import { routeMeta } from './data/productSpine';
 
@@ -65,7 +65,7 @@ export default function App() {
           }
         >
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<PlayerHubPage />} />
             <Route path="/play" element={<InstantPlayPage />} />
             <Route path="/trailer" element={<TrailerPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />

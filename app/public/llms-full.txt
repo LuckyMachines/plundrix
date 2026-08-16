@@ -42,7 +42,7 @@ Plundrix has two public entry paths:
 - Terms: https://game.plundrix.com/terms
 - Privacy: https://game.plundrix.com/privacy
 
-The gameplay trailer uses real product captures and original Plundrix art. The marketing site does not publish testimonials, invented player stories, or analytics results.
+The 32-second gameplay trailer follows a match from the lobby to the final lock.
 
 ## Terminology
 
