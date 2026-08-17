@@ -27,26 +27,34 @@ export default function PlayerHubPage() {
           </div>
 
           <div className="mt-10 grid gap-4 lg:grid-cols-2">
-            <article className="border border-tungsten/50 bg-tungsten/10 p-6 sm:p-8">
+            <article className="relative min-h-[340px] overflow-hidden border border-tungsten/50 bg-vault-dark p-6 sm:p-8">
+              <img src="/images/plundrix-instant-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-40" />
+              <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/35" />
+              <div className="relative flex h-full flex-col items-start">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-tungsten">No wallet</p>
               <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Play instantly</h2>
-              <p className="mt-4 max-w-xl text-base leading-7 text-vault-text-dim">
+              <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">
                 Pick, Search, and Sabotage through a complete match. Choose a pace, face three distinct agents, and learn by playing.
               </p>
-              <Link to="/play" className="mt-7 inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-vault-dark">
+              <Link to="/play" className="mt-auto inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-vault-dark">
                 Start instant match -&gt;
               </Link>
+              </div>
             </article>
 
-            <article className="border border-vault-border bg-vault-dark/45 p-6 sm:p-8">
+            <article className="relative min-h-[340px] overflow-hidden border border-vault-border bg-vault-dark p-6 sm:p-8">
+              <img src="/images/plundrix-live-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-40" />
+              <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/35" />
+              <div className="relative flex h-full flex-col items-start">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">Wallet + Sepolia</p>
               <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Join a live table</h2>
-              <p className="mt-4 max-w-xl text-base leading-7 text-vault-text-dim">
+              <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">
                 Create or enter a 2-4 player operation. Your moves resolve together onchain, so every round is a read on the table.
               </p>
-              <a href="#live-operations" className="mt-7 inline-flex min-h-[52px] items-center border border-oxide-green/50 px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-oxide-green">
+              <a href="#live-operations" className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/50 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-oxide-green">
                 Open live operations -&gt;
               </a>
+              </div>
             </article>
           </div>
         </div>

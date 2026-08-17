@@ -212,7 +212,7 @@ export default function InstantPlayPage() {
           </div>
 
           <aside className="relative min-h-[420px] border-t border-vault-border lg:border-l lg:border-t-0">
-            <img src="/images/replay-close-finish.webp" alt="Four operators converge on the final vault lock" className="absolute inset-0 h-full w-full object-cover" />
+            <img src="/images/plundrix-instant-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-vault-dark via-vault-dark/45 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-tungsten">Operator record</p>

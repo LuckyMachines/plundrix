@@ -1,0 +1,55 @@
+{
+  "source": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\_worktrees\\plundrix-marketing-coolify\\public\\images\\plundrix-marketing-hero-v2-gpt-image-2.png",
+  "segments": [
+    {
+      "p1": [
+        210,
+        1110
+      ],
+      "p2": [
+        730,
+        650
+      ]
+    },
+    {
+      "p1": [
+        470,
+        1110
+      ],
+      "p2": [
+        835,
+        625
+      ]
+    },
+    {
+      "p1": [
+        1578,
+        1110
+      ],
+      "p2": [
+        1213,
+        625
+      ]
+    },
+    {
+      "p1": [
+        1838,
+        1110
+      ],
+      "p2": [
+        1318,
+        650
+      ]
+    }
+  ],
+  "vanishingPointPixels": [
+    1024.0,
+    383.63
+  ],
+  "vanishingPointNormalized": [
+    0.5,
+    0.33301
+  ],
+  "horizonAssumption": "horizontal line through fitted vanishing point",
+  "fitResidualRmsPixels": 5.325
+}

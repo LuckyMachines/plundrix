@@ -120,3 +120,15 @@
 - [x] Update marketing navigation, structured data, FAQ copy, and AI references to match the domain split.
 - [x] Verify the marketing build, production audit, anchors, CTAs, and desktop/mobile overflow.
 - [ ] Validate domain-role comprehension with first-time visitors.
+
+## 11. v0.14 cross-domain visual expansion
+
+- [x] Generate a dedicated marketing hero through Azure GPT Image 2 and reject the first inaccurate lock-count composition.
+- [x] Generate a distinct breached-vault conversion scene for the marketing close.
+- [x] Generate separate Instant Play and live-table scenes with mode-specific visual storytelling.
+- [x] Preserve source PNGs and deliver optimized 120-194 KB WebP derivatives.
+- [x] Keep real product screenshots as proof and generated scenes as decorative atmosphere.
+- [x] Capture desktop and mobile marketing, Player Hub, and Instant Play states.
+- [x] Verify builds, targeted interactions, image delivery, browser errors, serious/critical accessibility, and horizontal overflow.
+- [x] Preserve before/after comparisons, relative depth evidence, perspective calibration, prompts, and acceptance results.
+- [ ] Validate faster mode recognition with first-time visitors.

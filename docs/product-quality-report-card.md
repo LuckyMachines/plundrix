@@ -295,3 +295,24 @@ Overall grade: **A+ for automated cross-domain information architecture**
 - First-time visitors can correctly describe the job of each domain after one visit.
 - Search engines consistently treat `plundrix.com` as the canonical overview and `game.plundrix.com` as the playable application.
 - Future marketing additions must provide acquisition, explanation, or trust value rather than recreate interactive game controls.
+
+## v0.14.0 - Cross-domain visual expansion
+
+Date: 2026-08-16
+
+Overall grade: **A+ for automated visual identity and delivery**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Marketing art direction | A+ | Two dedicated Azure GPT Image 2 scenes now establish the vault chamber in the hero and a breached corridor at conversion, replacing the generic SVG atmosphere without pretending to be gameplay. |
+| Game art direction | A+ | Instant Play depicts one operator facing three mechanical rivals; live play depicts four connected stations and five vault locks. Both remain subordinate to real controls and status. |
+| Brand cohesion | A+ | Blackened steel, oxidized brass, warm vault light, restrained teal circuitry, and sabotage red now span marketing, Player Hub, Instant Play, replay art, and social cards. |
+| Product truth | A+ | Real screenshots remain the marketing proof layer. Generated scenes are decorative, text-free, and never labeled as captures or player evidence. |
+| Responsive and accessible delivery | A+ | Four 1.5-3.2 MB archival PNGs produce 120-194 KB WebP delivery assets. Six desktop/mobile browser states have no runtime errors, serious/critical Axe findings, or horizontal overflow. |
+| Visual evidence | A+ | Original-resolution comparisons, relative depth maps, a perspective fit, clean guide, final captures, prompts, and an acceptance checklist are checked in. |
+
+## A bar, stricter
+
+- Observe first-time visitors to confirm that the two Player Hub scenes improve mode recognition without slowing the first click.
+- Keep generated atmosphere visually distinct from literal gameplay proof in every future campaign and store listing.
+- Extend the same material language only where a new surface has a distinct narrative job; avoid decorative asset proliferation.
