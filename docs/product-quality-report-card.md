@@ -440,3 +440,24 @@ Overall grade: **A for the implemented and automated retention loop; real-player
 - Observe at least four first-time players through setup, first action, gadget recognition, result comprehension, and replay intent using the new recorder.
 - Gather enough privacy-safe samples to evaluate all ten gadget activation and win rates plus every bargain's selection and outcome rate.
 - Replace the session-memory weekly board with durable storage and signed or server-replayed score verification before presenting it as a competitive season.
+
+## v0.20.0 - Sepolia game and workshop deployment
+
+Date: 2026-09-06
+
+Overall grade: **A for deployment integrity; public source publication and a post-upgrade live match remain open evidence.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Game upgrade | A+ | The KMS-authorized UUPS upgrade succeeded and the EIP-1967 implementation slot independently resolves to `0x238345d04cb4b6f2d46ba0218d32b6a086be1963`. |
+| Workshop deployment | A+ | A dedicated implementation and ERC-1967 proxy were deployed, initialized, and linked to the game. Both contracts independently return the other proxy address. |
+| Catalog truth | A+ | Live reads return 1,200 blueprints and 10 gameplay chassis, matching the tested product catalog. |
+| State preservation | A+ | The game remains unpaused with automation enabled, a 300-second delay, external entropy required, and the existing 200 bps Sepolia-only fee configuration unchanged. |
+| Operational control | A+ | The HSM-backed KMS signer retains the game and workshop upgrader roles; all five deployment receipts succeeded. |
+| Public provenance | B+ | Addresses, transactions, proxy slots, code sizes, role reads, and configuration are recorded. Public source publication for the two new implementations is pending because no explorer API credential is configured in this environment. |
+
+### Remaining deployment evidence
+
+- Publish both new implementation sources through Sourcify or a supported explorer verifier.
+- Run one guarded FREE operation through the upgraded proxy with an equipped workshop gadget.
+- Set `VITE_WORKSHOP_ADDRESS` in each deployed frontend environment before enabling connected workshop actions.

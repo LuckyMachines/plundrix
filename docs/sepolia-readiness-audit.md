@@ -4,6 +4,8 @@ Date: 2026-08-13
 
 Scope: read-only chain and public-source verification, followed by an explicitly approved, guarded FREE create-to-victory journey using two HSM-backed players. No deployments or role changes were made.
 
+> Historical audit note: this document records the 2026-08-13 implementation and funded journey. The proxy was upgraded and a workshop was deployed on 2026-09-06. See [sepolia-workshop-deployment.md](sepolia-workshop-deployment.md) for the current addresses, transactions, and post-deployment reads.
+
 ## Live state
 
 - chain ID: `11155111`

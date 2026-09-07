@@ -219,3 +219,13 @@
 - [x] Capture privacy-safe gadget, bargain, run-stage, rivalry, and completion telemetry.
 - [x] Add a structured first-time-player observation recorder without inventing participant evidence.
 - [x] Add pure-logic, service, browser, accessibility, responsive, build, and visual evidence coverage.
+
+## 17. v0.20 Sepolia workshop deployment
+
+- [x] Upgrade the Sepolia game proxy through the HSM-backed KMS signer.
+- [x] Deploy and initialize the workshop implementation and ERC-1967 proxy.
+- [x] Link game and workshop proxies in both directions.
+- [x] Verify successful receipts, implementation slots, code, roles, catalog counts, and preserved game settings.
+- [x] Record the deployment addresses, transactions, checks, and frontend handoff.
+- [ ] Publish the new implementation sources on a public verifier.
+- [ ] Run a guarded post-upgrade FREE operation with an equipped workshop gadget.

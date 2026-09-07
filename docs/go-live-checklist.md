@@ -10,11 +10,14 @@ Current launch plan:
 Current Sepolia deployment:
 
 - proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
-- implementation: `0x26adc1216bda368a74d786148dcab9baca74dd7f`, deployed 2026-03-12 via KMS (`autoloop-deployer`)
+- implementation: `0x238345d04cb4b6f2d46ba0218d32b6a086be1963`, upgraded 2026-09-06 via KMS (`autoloop-deployer`)
+- workshop proxy: `0x74cabd34b2e29a914025ceb598df4e3652c418f5`
+- workshop implementation: `0x4df49b5d262b78416dde598f3a4df2103a3260cd`
+- workshop catalog: 10 gameplay chassis and 1,200 stable blueprints; game/workshop linkage verified in both directions
 - status: **LIVE** (unpaused 2026-03-13, tx `0xb31a24063ac8c74a9f8de802b149f477c21a33434d486eab8e7da96ef6b3030f`)
 - automation: enabled (delay=300s, external entropy required)
 - fee setting: enabled for testing only (bps=200, recipient=`0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79`)
-- provenance: runtime matches commit `28e3194` after normalizing the five compiler-declared UUPS immutable ranges; source is verified on Blockscout and Routescan
+- provenance: the prior implementation matches commit `28e3194` and remains explorer-verified; the current implementation and workshop addresses are tied to successful receipts and exact EIP-1967 slot reads in the deployment record, with public source publication pending
 - funded journey: FREE operation `1` completed in nine rounds with two HSM-backed players; final resolve `0x7ee3c28b28e39af787da866edebe01b1f8a86faaef19074f68b96c3442296a38`; desktop/mobile production UI proof passed
 
 Frontend deployment:
@@ -48,6 +51,7 @@ MCP server (`mcp-server/`):
 - [x] Verify entropy path works end to end on Sepolia — drand source reachable, KMS signer has RANDOMIZER_ROLE, contract requires external entropy
 - [x] Verify pause and unpause both succeed on Sepolia — unpaused via KMS 2026-03-13
 - [x] Verify one upgrade rehearsal succeeds on Sepolia — KMS upgrade completed 2026-03-12
+- [x] Upgrade the game to the current workshop-aware implementation and deploy/link the workshop on Sepolia - five successful KMS-signed receipts, independently read back 2026-09-06
 - [x] Verify fee config reads correctly on Sepolia — `getFeeSettings()` returns enabled, bps=200, recipient set
 - [x] Verify fee stays test-only and is not presented as live monetization — footer disclaimer in place
 - [x] Complete a guarded FREE create-to-victory journey on Sepolia with two HSM-backed players - operation `1`, nine rounds (2026-08-13)

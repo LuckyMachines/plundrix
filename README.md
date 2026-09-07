@@ -17,8 +17,10 @@ The repo currently ships:
 
 - Sepolia staging is live
 - current Sepolia proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
-- current Sepolia implementation: `0x26adc1216bda368a74d786148dcab9baca74dd7f`
-- implementation source is publicly verified on Blockscout and Routescan
+- current Sepolia implementation: `0x238345d04cb4b6f2d46ba0218d32b6a086be1963`
+- current Sepolia workshop proxy: `0x74cabd34b2e29a914025ceb598df4e3652c418f5`
+- current Sepolia workshop implementation: `0x4df49b5d262b78416dde598f3a4df2103a3260cd`
+- the previously deployed game implementation remains publicly verified; publication of the new game and workshop implementation sources is pending
 - staging proxy is currently unpaused
 - autoloop is enabled on Sepolia
 - external entropy is required on Sepolia
@@ -26,10 +28,11 @@ The repo currently ships:
 - guarded FREE operation `1` completed on Sepolia in nine rounds with two HSM-backed players
 - mainnet is not live yet
 - planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
-- session actions, paced games, and the new balance rules are implemented locally but remain feature-flagged until an approved Sepolia upgrade
+- session actions, paced games, the new balance rules, and the workshop linkage are deployed on Sepolia
 
 Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
 The latest read-only chain and provenance audit is in [docs/sepolia-readiness-audit.md](docs/sepolia-readiness-audit.md).
+The 2026-09-06 game upgrade and workshop deployment record is in [docs/sepolia-workshop-deployment.md](docs/sepolia-workshop-deployment.md).
 The living interface reference and review workflow are documented in [docs/design-system.md](docs/design-system.md).
 The manifest-driven art direction, generation, delivery, and review workflow is documented in [docs/art-pipeline.md](docs/art-pipeline.md).
 The current implementation grade and remaining human-evidence bar are documented in [docs/product-quality-report-card.md](docs/product-quality-report-card.md).
