@@ -7,6 +7,7 @@ import VaultBench from '../components/vault/VaultBench';
 import GameOver from '../components/game/GameOver';
 import Spinner from '../components/shared/Spinner';
 import ContractConfigNotice from '../components/shared/ContractConfigNotice';
+import WorkshopLoadoutStatus from '../components/game/WorkshopLoadoutStatus';
 
 export default function GamePage() {
   const { gameId } = useParams();
@@ -26,16 +27,20 @@ export default function GamePage() {
         </span>
       </div>
 
+      {parsedGameId !== null && !isLoading && !error && (
+        <WorkshopLoadoutStatus gameId={gameId} gameState={state} />
+      )}
+
       {parsedGameId === null && (
         <div className="border border-signal-red/30 rounded bg-vault-panel p-8 text-center">
           <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
-            Invalid game ID
+            Invalid operation ID
           </p>
           <Link
             to="/"
             className="inline-block mt-4 font-mono text-xs tracking-wider uppercase text-tungsten border border-tungsten/30 rounded px-3 py-1 hover:bg-tungsten/10"
           >
-            Return to Console
+            Return to Hub
           </Link>
         </div>
       )}
@@ -44,7 +49,7 @@ export default function GamePage() {
         <div className="border border-vault-border rounded bg-vault-panel p-12 flex items-center justify-center gap-3">
           <Spinner size="w-5 h-5" />
           <span className="font-mono text-xs text-vault-text-dim tracking-wider uppercase">
-            Loading game data...
+            Loading operation data...
           </span>
         </div>
       )}
@@ -52,7 +57,7 @@ export default function GamePage() {
       {parsedGameId !== null && error && (
         <div className="border border-signal-red/30 rounded bg-vault-panel p-8 text-center">
           <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
-            Failed to load game data for #{gameId}
+            Failed to load operation data for #{gameId}
           </p>
           <p className="font-mono text-xs text-vault-text-dim mt-2 break-all">
             {error?.shortMessage || error?.message || String(error)}
@@ -61,7 +66,7 @@ export default function GamePage() {
             to="/"
             className="inline-block mt-4 font-mono text-xs tracking-wider uppercase text-tungsten border border-tungsten/30 rounded px-3 py-1 hover:bg-tungsten/10"
           >
-            Return to Console
+            Return to Hub
           </Link>
         </div>
       )}

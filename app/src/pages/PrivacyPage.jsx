@@ -68,7 +68,10 @@ export default function PrivacyPage() {
             </h3>
             <p className="font-mono text-xs text-vault-text leading-relaxed">
               We use a self-hosted Plausible Analytics service at plausible.racerverse.com to
-              measure aggregate page views and outbound-link activity. Plausible is configured
+              measure aggregate page views, outbound-link activity, and product events such as
+              starting or completing a match, choosing a mode, sharing a challenge, or beginning
+              a wallet connection. Event properties are limited to coarse gameplay categories and
+              do not include wallet addresses, replay seeds, names, or free-form text. Plausible is configured
               without tracking cookies. The analytics service and its infrastructure may process
               request metadata such as IP address and user agent to produce aggregate statistics.
             </p>

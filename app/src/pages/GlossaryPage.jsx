@@ -53,8 +53,8 @@ export default function GlossaryPage() {
           Use this glossary when you want a quick read on the words, actions, and match signals
           you will see across the Plundrix table.
         </p>
-        <Link to="/map" className="mt-4 inline-flex min-h-[44px] items-center rounded border border-tungsten/55 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">
-          Open game map
+        <Link to="/play" className="mt-4 inline-flex min-h-[44px] items-center rounded border border-tungsten/55 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">
+          Play instantly
         </Link>
       </section>
     </CohesionLayout>

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "assetId": "instant-breach",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T20:00:57.541Z",
+  "candidate": {
+    "path": "assets/art-source/candidates/instant-breach-flux2-pro-v1.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 642756,
+    "sha256": "79f76aa15fb00af00c09537f2c54d3410c67a60fdc3a2c92dffe4c0e9dac51ea"
+  },
+  "prompt": "Use case: stylized-concept\nAsset type: Player Hub mode-card artwork\nPrimary request: Make solo play against three readable mechanical rivals feel immediate and welcoming.\nScene/backdrop: A compact clandestine training vault shared by one foreground workbench and three rival stations.\nSubject: One operator position facing three clearly mechanical rivals around a five-lock vault. Reusable parts: five mechanically distinct lock stages arranged as one readable progression; an empty, grounded operator workbench with tactile levers, gauges, and precision tools; a clearly non-human mechanical rival station with a distinct posture and instrument silhouette; a calm, low-detail dark field reserved for live interface copy.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Square card art weighted right and low with a calm dark upper-left copy field. Square master with the focal machinery weighted right and low; reserve the upper-left for HTML copy.\nLighting/mood: Warm approachable vault light with subtle cool separation between the three rivals. Approachable pressure with a clear invitation to act.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; engraved calibration marks; braided cable; smoked glass\nJoy target: invitation. The waiting rival stations make the table feel alive before the first action.\nRestraint: Competitive, not menacing; no blockchain imagery.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; no faces; no blockchain iconography; no fake controls; exactly three rival stations; one foreground player workbench; five-lock objective remains legible; Exactly five lock stages; never add decorative lock-like modules.; A station implies one player position without depicting an unverified human player.; The rival must read as an agent, not a human participant.; Negative space must remain free of focal props and generated text.\nAvoid: human faces; crowded upper-left detail; victory before play begins\nOutput intent: 1024x1024 source master saved as assets/art-source/scenes/plundrix-instant-breach-gpt-image-2.png",
+  "manualChecks": [
+    "focal subject reads at 240px wide",
+    "no text, logo, watermark, fake UI, coins, or treasure",
+    "mechanical details match the declared gameplay truth",
+    "desktop and mobile crops preserve the focal beat"
+  ]
+}

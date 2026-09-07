@@ -18,14 +18,14 @@ Mode: project-local Azure GPT Image 2 wrapper, high-quality PNG generation. No m
 
 ## Instant Play
 
-- Source: `public/images/plundrix-instant-breach-gpt-image-2.png`
+- Source: `assets/art-source/scenes/plundrix-instant-breach.png`
 - Delivery: `public/images/plundrix-instant-breach.webp`
 - Size: 1024x1024
 - Prompt: "Use case: stylized-concept. Asset type: Player Hub mode-card artwork for Plundrix Instant Play. Scene: a compact clandestine training vault with one foreground operator workbench facing three distinct mechanical rival stations, all aimed toward the same five-lock circular vault mechanism. Premium painterly 3D industrial realism, blackened steel, aged brass, worn enamel, warm amber and restrained teal light. Square composition with the detailed vault and three rival stations concentrated to the right and lower edge, leaving calm dark upper-left space for live HTML copy and controls. Clear depth planes and grounded objects. Energetic and approachable, no blockchain imagery. No people, faces, coins, treasure, text, letters, numbers, logo, watermark, border, interface, screens, cards, or fake UI."
 
 ## Live multiplayer
 
-- Source: `public/images/plundrix-live-breach-gpt-image-2.png`
+- Source: `assets/art-source/scenes/plundrix-live-breach-gpt-image-2.png`
 - Delivery: `public/images/plundrix-live-breach.webp`
 - Size: 1024x1024
 - Prompt: "Use case: stylized-concept. Asset type: Player Hub mode-card artwork for Plundrix live multiplayer. Scene: four empty operator terminals arranged around a monumental five-lock vault mechanism, linked by fine luminous teal circuit paths embedded in a dark metal table, while one restrained sabotage-red path crosses the formation. Premium painterly 3D industrial realism, blackened steel, oxidized brass, worn enamel, amber vault glow, subtle cool network light. Square composition with the vault and connected stations concentrated to the right and lower edge, leaving calm dark upper-left space for live HTML copy and controls. Strong table perspective, grounded contact shadows, sophisticated competitive mood. No people, faces, cryptocurrency symbols, coins, treasure, text, letters, numbers, logo, watermark, border, interface, screens, cards, or fake UI."

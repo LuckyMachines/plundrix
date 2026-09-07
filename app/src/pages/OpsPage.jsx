@@ -70,7 +70,7 @@ export default function OpsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="internal-tool-page max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       <PageIntro route="/ops" />
       <ProductLoopRail activeStep="observe" compact />
       <LatestEvidence compact />

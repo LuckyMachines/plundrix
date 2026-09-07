@@ -1,24 +1,22 @@
-import { useAccount } from 'wagmi';
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Footer() {
-  const { chain, isConnected } = useAccount();
+const FooterNetworkStatus = lazy(() => import('../wallet/FooterNetworkStatus'));
 
+export default function Footer({ web3Enabled = false }) {
   return (
     <footer className="border-t border-vault-border bg-vault-surface/60 mt-auto safe-bottom">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-5 text-xs font-mono text-vault-text-dim">
         {/* Top row: network + links */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <span className="tracking-wider uppercase">
-            {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'Sepolia beta // Instant play needs no wallet'}
+            {web3Enabled ? (
+              <Suspense fallback="Sepolia beta // Checking wallet">
+                <FooterNetworkStatus />
+              </Suspense>
+            ) : 'Sepolia beta // Instant play needs no wallet'}
           </span>
           <div className="flex flex-wrap items-center gap-1">
-            <Link
-              to="/map"
-              className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
-            >
-              Map
-            </Link>
             <Link
               to="/glossary"
               className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
@@ -30,6 +28,12 @@ export default function Footer() {
               className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
             >
               Compare
+            </Link>
+            <Link
+              to="/workshop"
+              className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
+            >
+              Workshop
             </Link>
             <Link
               to="/terms"

@@ -1,0 +1,55 @@
+{
+  "source": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\assets\\art-source\\scenes\\plundrix-instant-breach.png",
+  "segments": [
+    {
+      "p1": [
+        0.0,
+        768.0
+      ],
+      "p2": [
+        393.0,
+        598.0
+      ]
+    },
+    {
+      "p1": [
+        1023.0,
+        768.0
+      ],
+      "p2": [
+        630.0,
+        598.0
+      ]
+    },
+    {
+      "p1": [
+        0.0,
+        711.0
+      ],
+      "p2": [
+        395.0,
+        588.0
+      ]
+    },
+    {
+      "p1": [
+        1023.0,
+        711.0
+      ],
+      "p2": [
+        628.0,
+        588.0
+      ]
+    }
+  ],
+  "vanishingPointPixels": [
+    511.5,
+    549.33
+  ],
+  "vanishingPointNormalized": [
+    0.49951,
+    0.53646
+  ],
+  "horizonAssumption": "horizontal line through the fitted vanishing point",
+  "fitResidualRmsPixels": 2.331
+}

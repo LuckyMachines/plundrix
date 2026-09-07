@@ -6,7 +6,7 @@ import {
 } from '../config/contract';
 import { toGameId } from '../lib/gameId';
 
-export function useGameInfo(gameId) {
+export function useGameInfo(gameId, { enabled = true, refetchInterval = 5000 } = {}) {
   const parsedGameId = toGameId(gameId);
 
   const { data, isLoading, error, refetch } = useReadContract({
@@ -15,8 +15,11 @@ export function useGameInfo(gameId) {
     functionName: 'getGameInfo',
     args: parsedGameId ? [parsedGameId] : undefined,
     query: {
-      enabled: IS_CONTRACT_CONFIGURED && parsedGameId !== null,
-      refetchInterval: 5000,
+      enabled: enabled && IS_CONTRACT_CONFIGURED && parsedGameId !== null,
+      refetchInterval: (query) => {
+        const state = query.state.data?.[0];
+        return Number(state) === 2 ? false : refetchInterval;
+      },
     },
   });
 

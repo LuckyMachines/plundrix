@@ -20,11 +20,18 @@ const STATE_COLORS = {
   [GameState.COMPLETE]: 'text-vault-text-dim border-vault-text-dim/30 bg-vault-text-dim/5',
 };
 
-export default function GameCard({ gameId }) {
+export default function GameCard({ gameId, summary = null, loadPlayers = true }) {
   const navigate = useNavigate();
   const { address } = useAccount();
-  const { state, currentRound, playerCount, roundStartTime, isLoading, error } = useGameInfo(gameId);
-  const { players } = useGamePlayers(gameId, playerCount);
+  const live = useGameInfo(gameId, { enabled: !summary, refetchInterval: 15_000 });
+  const state = summary?.stateCode ?? live.state;
+  const currentRound = summary?.currentRound ?? live.currentRound;
+  const playerCount = summary?.playerCount ?? live.playerCount;
+  const roundStartTime = summary?.roundStartTime ?? live.roundStartTime;
+  const isLoading = summary ? false : live.isLoading;
+  const error = summary ? null : live.error;
+  const { players } = useGamePlayers(gameId, playerCount, { enabled: loadPlayers });
+  const stateNum = state !== undefined ? Number(state) : undefined;
   const parsedGameId = toGameId(gameId);
   const { data: configuredRoundTimeout } = useReadContract({
     address: PLUNDRIX_ADDRESS,
@@ -33,11 +40,10 @@ export default function GameCard({ gameId }) {
     args: parsedGameId ? [parsedGameId] : undefined,
     query: {
       enabled: NEXT_RULES_ENABLED && IS_CONTRACT_CONFIGURED && parsedGameId !== null,
-      refetchInterval: 30_000,
+      refetchInterval: stateNum === GameState.COMPLETE ? false : 30_000,
     },
   });
 
-  const stateNum = state !== undefined ? Number(state) : undefined;
   const stateLabel = stateNum !== undefined ? STATE_LABELS[stateNum] : '...';
   const stateColor = stateNum !== undefined ? STATE_COLORS[stateNum] : 'text-vault-text-dim border-vault-border bg-vault-dark/50';
   const roundTimeout = configuredRoundTimeout ? Number(configuredRoundTimeout) : undefined;
@@ -85,7 +91,7 @@ export default function GameCard({ gameId }) {
             <div className="flex items-center gap-6">
               <div>
                 <p className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
-                  Operatives
+                  Players
                 </p>
                 <p className="font-mono text-xs text-vault-text">
                   {formatBigInt(playerCount)}

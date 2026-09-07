@@ -65,7 +65,7 @@ forge build
 npm run deploy:local
 ```
 
-This deploys the implementation + proxy and writes the address to `app/.env.local`.
+This deploys the game and workshop implementations + proxies and writes both addresses to `app/.env.local`.
 
 ### 4. Sync ABI
 
@@ -73,7 +73,7 @@ This deploys the implementation + proxy and writes the address to `app/.env.loca
 npm run sync:abi
 ```
 
-Copies the compiled ABI from `out/` to `app/src/config/PlundrixGame.json`.
+Copies the compiled ABIs from `out/` to `app/src/config/PlundrixGame.json` and `app/src/config/PlundrixWorkshop.json`.
 
 ### 5. Start Frontend
 
@@ -183,6 +183,7 @@ ANVIL_RPC_URL=http://127.0.0.1:18645
 
 ```bash
 VITE_CONTRACT_ADDRESS=0x...          # Proxy address
+VITE_WORKSHOP_ADDRESS=0x...          # Workshop proxy address
 VITE_RPC_URL=https://...             # Read RPC
 VITE_WALLETCONNECT_PROJECT_ID=       # Optional WalletConnect
 ```

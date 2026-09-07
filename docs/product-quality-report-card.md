@@ -316,3 +316,104 @@ Overall grade: **A+ for automated visual identity and delivery**
 - Observe first-time visitors to confirm that the two Player Hub scenes improve mode recognition without slowing the first click.
 - Keep generated atmosphere visually distinct from literal gameplay proof in every future campaign and store listing.
 - Extend the same material language only where a new surface has a distinct narrative job; avoid decorative asset proliferation.
+
+## v0.15.0 - Full game and site experience pass
+
+Date: 2026-09-06
+
+Overall grade: **A-** (up from the audit baseline of **B-**)
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| First session and joy | A- | Instant Play now starts without wallet chrome, teaches the first decision in context, gives rivals readable personalities, stages the reveal with visual and optional audio feedback, and ends with rank and score-challenge continuation. Four observed first-time sessions remain the strict A evidence. |
+| Gameplay and balance | A | Agent policy now respects sabotage protection, stops low-value zero-lock attacks, and changes strategy before stalls become dominant. The deterministic smoke grade improved from 81/B to 93/A; all four scenarios score 83 or higher. |
+| Information architecture | A | Public navigation centers Hub, Play now, Trailer, Replays, and Results. Internal design, simulation, mutation, launch, and operations tools require development mode or an explicit production flag. Unknown routes show a useful 404 instead of silently rendering the shell. |
+| Live-operation performance | A- | The homepage now requests one capped 24-game catalog instead of mounting the full 116-game history with per-card reads. Only live tables are expanded, six completed tables are optional, and completed cards stop polling. A production RUM comparison remains outstanding. |
+| Replay experience | A- | Gallery artwork is correctly associated, filters use player language, technical import/export tools are collapsed, director tools are secondary, and invalid IDs no longer open an unrelated replay. A curated usability session is still needed to validate the ideal information density. |
+| Accessibility and responsive UX | A | Modal focus trapping and restoration, Escape dismissal, 44px targets, pressed-state semantics, persistent readability/motion/sound controls, a non-autoplay trailer, mobile rival scrolling, and a sticky primary action address the observed barriers. The existing automated browser/accessibility portfolio remains the regression gate. |
+| Trust, privacy, and data truth | A- | Unregistered identities are labeled Unverified rather than Human; unavailable event-derived statistics and estimated finish times are disclosed; analytics exclude addresses, seeds, names, and free text; privacy copy reflects collection. Historical completeness still depends on upstream event availability. |
+| Marketing conversion | A | Primary CTAs now land directly in no-wallet play, live Sepolia is an explicit secondary choice, screenshot proof is expandable, the exact deployed contract is linked, legal scopes are named, and waitlist consent and anti-spam handling are clearer. Genuine testimonials remain deliberately absent. |
+| Reliability and security | A | Both production builds pass, both production dependency audits report zero vulnerabilities, and agent, replay, fun, telemetry, cohesion, and SEO checks pass. The game server returns real 404/noindex responses and supplies CSP, HSTS, frame, MIME, referrer, and permissions headers. |
+| Measurement and learning | B+ | Privacy-safe route, play, round, completion, share, wallet, and live-create events now exist. Production funnel baselines and four first-time-player observations are not yet available, so this area cannot honestly receive an A. |
+
+### What changed from the B- audit
+
+- The slowest and noisiest surface was redesigned around current playable tables instead of rendering every historical game.
+- The no-wallet game now has stronger pacing, personality, feedback, mobile ergonomics, and a reason to replay or challenge someone.
+- Player-facing surfaces no longer expose internal product-development tools or silently accept invalid URLs.
+- Replay, session, identity, timestamp, and analytics language now distinguish verified facts from unavailable data.
+- Marketing now converts directly into play and removes choices that looked functional but did not create value.
+
+### Remaining evidence before a strict A
+
+- Observe at least four first-time players and act on confusion, abandonment, or delight signals.
+- Compare production catalog latency, first-action completion, match completion, and challenge-share rates after deployment.
+- Verify production headers, canonical routes, social previews, and explorer links at the deployed domains.
+- Complete legal review before any paid mode or prize language is enabled.
+
+## v0.16.0 - Design-system remediation pass
+
+Date: 2026-09-06
+
+Overall grade: **A** for the implemented and automated product bar; human and post-deployment evidence remain open.
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Core decision UX | A | Instant and live actions now precede supporting detail at small widths, the Instant commit control stays reachable above the safe area, and active local operations survive reload. |
+| Responsive system | A | The former 511px Instant overflow and wide internal-tool page leaks are closed. Design-system previews respond to their own container width, and mobile live play exposes Pick inside the first viewport. |
+| Accessibility and recovery | A | A skip link, global 44px control floor, 12px microcopy floor, reduced-motion resolution timing, focusable scroll regions, scoped replay shortcuts, and an application error boundary close the observed critical gaps. |
+| Feedback and trust | A | Copy, save, share, import, wallet, session, profile, and ladder states now confirm outcomes or explain unavailable services. Practice-only rules are explicitly distinguished from the current live contract. |
+| Design governance | A | The 14-section system now stores reviewer, version, status, priority, section notes, and global notes; reviews can be filtered, imported, exported, or reset. The index is compact at desktop widths. |
+| Language coherence | A | Player-facing terminology consistently uses operation for a match, player for participation, and operator only for an identity or persona. Action controls lead with Pick, Search, and Sabotage. |
+| Frontend delivery | A | Wallet and query providers load only on routes that need them, no-wallet pages no longer preload the former 323 KB web3 vendor bundle, and production source maps are omitted. |
+| Automated verification | A | The final production build and SEO delivery check pass; Playwright reports 30 passed with only the opt-in visual-evidence capture skipped. The game, agent, Solidity, replay, fun, telemetry, design, and cohesion suites also pass. |
+| Human evidence | B+ | The product is materially easier to test and annotate, but four observed first-time sessions and production funnel baselines are still required for a strict evidence-complete A+. |
+
+### Remaining evidence before A+
+
+- Observe at least four first-time players through setup, first action, resolution, and replay/rematch.
+- Validate deployed route performance and the play/share funnels using privacy-safe aggregate analytics.
+- Complete legal review before enabling paid play or prizes.
+
+## v0.17.0 - Modular art pipeline
+
+Date: 2026-09-06
+
+Overall grade: **A for the production system and current asset truth; human response evidence remains open.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Art direction | A | One executable contract now governs product truths, palette, materials, lighting, shape language, constraints, and six joy principles. |
+| Modularity | A | Asset recipes compose five family grammars with reusable vault, table, action, accent, and outcome parts instead of copying monolithic prompts. |
+| Production reliability | A | One command path compiles prompts, builds responsive derivatives and social typography, validates dimensions and byte budgets, and records SHA-256 provenance. |
+| Delivery hygiene | A | Six multi-megabyte scene masters moved out of `public/`; only optimized WebP/JPEG derivatives enter production. |
+| Reviewability | A | The Design System exposes accepted, revision-needed, and reusable-part counts, family rules, joy targets, source paths, and the accepted part kit. |
+| Current art accuracy | A | All thirteen assets are accepted. The new Instant Play master combines a text-free four-station scene with exactly five deterministic lock-module instances; four reusable FLUX.2-pro parts retain real alpha and source provenance. |
+
+### Next art evidence
+
+- Test the four accepted transparent parts in future action-state compositions and animation passes.
+- Observe thumbnail recognition and emotional response with first-time players before expanding the asset family.
+
+## v0.18.0 - Signature workshop and inventory depth
+
+Date: 2026-09-06
+
+Overall grade: **A for the implemented workshop system; competitive balance evidence remains open.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Catalog truth | A+ | The product now says exactly what exists: 10 gameplay-distinct gadgets and 1,200 stable finish/calibration configurations. Unsupported power statistics are gone, while every existing ID and serial remains stable. |
+| Gameplay identity | A | All 10 chassis have deterministic, conditional effects in both the local engine and smart contracts. Their numerical strengths still need observed competitive-play balance evidence. |
+| Visual modularity | A | One accepted chassis master combines with 10 material treatments, 12 calibration glyphs, and rarity details at runtime. This creates visible identity without manufacturing 1,200 near-duplicate raster files. |
+| Workshop UX | A+ | A chassis-first browser, live builder, explicit gameplay/appearance split, 30 authored builds, favorites, comparison, lookup, recipe deficits, and grouped collection progress replace the repetitive card wall. |
+| Economy and reversibility | A | Players see missing materials before assembly and can reclaim non-starter blueprints for half of each recipe, rounded up. Economy tuning remains a live balance task. |
+| Contract integrity | A | Ownership, starters, IDs, and storage compatibility are preserved; 52 Solidity tests and connected browser deployment pass. Moving roster orchestration into the Workshop and using a size-oriented optimizer profile leave 666 bytes of EIP-170 runtime headroom. |
+| Accessibility and responsive quality | A | Serious/critical Axe checks pass, controls retain accessible names and targets, and explicit body-width assertions pass at desktop and mobile sizes. |
+| Reviewability | A+ | The living Design System, compact 1,200-cell configuration atlas, six current-state captures, and a before/after comparison make the whole inventory inspectable without repetition. |
+
+### Stricter A+ bar
+
+- Observe competitive sessions across all 10 signatures and tune strengths from real pick, win, and consumption rates.
+- Preserve at least 500 bytes of production game-contract runtime headroom as future rules evolve.
+- Validate authored-build recognition, crafting comprehension, and reclaim confidence with first-time players.

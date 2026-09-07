@@ -26,6 +26,26 @@ const mimeByExt = {
   '.mp4': 'video/mp4',
 };
 
+const publicClientRoutes = new Set([
+  '/',
+  '/play',
+  '/trailer',
+  '/leaderboard',
+  '/sessions',
+  '/terms',
+  '/privacy',
+  '/replays',
+  '/compare',
+  '/glossary',
+]);
+
+function isKnownClientPath(pathname) {
+  return publicClientRoutes.has(pathname) ||
+    /^\/game\/\d+$/.test(pathname) ||
+    /^\/profile\/0x[a-fA-F0-9]{40}$/.test(pathname) ||
+    /^\/replay\/[a-zA-Z0-9-]+$/.test(pathname);
+}
+
 function isSafePath(pathname) {
   return !pathname.includes('..');
 }
@@ -45,7 +65,7 @@ function isNoIndexPath(pathname) {
   ].some((prefix) => pathname === prefix || pathname.startsWith(prefix));
 }
 
-async function serveFile(req, res, filePath, fallbackContentType = 'application/octet-stream') {
+async function serveFile(req, res, filePath, fallbackContentType = 'application/octet-stream', statusCode = 200) {
   const data = await readFile(filePath);
   const ext = extname(filePath).toLowerCase();
   const cacheControl = ['.html', '.json', '.txt', '.xml'].includes(ext)
@@ -54,6 +74,12 @@ async function serveFile(req, res, filePath, fallbackContentType = 'application/
   const headers = {
     'Content-Type': mimeByExt[ext] || fallbackContentType,
     'Cache-Control': cacheControl,
+    'Content-Security-Policy': "default-src 'self'; connect-src 'self' https: wss:; img-src 'self' data:; media-src 'self'; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' https://plausible.racerverse.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   };
 
   if (ext === '.mp4') {
@@ -83,7 +109,7 @@ async function serveFile(req, res, filePath, fallbackContentType = 'application/
     }
   }
 
-  res.writeHead(200, { ...headers, 'Content-Length': data.length });
+  res.writeHead(statusCode, { ...headers, 'Content-Length': data.length });
   res.end(req.method === 'HEAD' ? undefined : data);
 }
 
@@ -136,7 +162,17 @@ const server = createServer(async (req, res) => {
       } catch {}
     }
 
-    await serveFile(req, res, join(distDir, 'index.html'), 'text/html; charset=utf-8');
+    const knownClientPath = isKnownClientPath(pathname);
+    if (!knownClientPath) {
+      res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    }
+    await serveFile(
+      req,
+      res,
+      join(distDir, 'index.html'),
+      'text/html; charset=utf-8',
+      knownClientPath ? 200 : 404,
+    );
   } catch {
     res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end('Internal server error');

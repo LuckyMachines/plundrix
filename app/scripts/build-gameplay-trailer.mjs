@@ -4,14 +4,14 @@ import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const scenes = [
-  'public/images/plundrix-vault-hero.png',
+  'assets/art-source/scenes/plundrix-vault-hero.png',
   'reports/visual-audit/a-plus/lobby-desktop.png',
   'reports/visual-audit/a-plus/active-desktop.png',
   'reports/visual-audit/a-plus/resolution-desktop.png',
-  'public/images/replay-sabotage.png',
-  'public/images/replay-comeback.png',
+  'assets/art-source/scenes/replay-sabotage.png',
+  'assets/art-source/scenes/replay-comeback.png',
   'reports/visual-audit/a-plus/sepolia-funded-game-over-desktop.png',
-  'public/images/replay-close-finish.png',
+  'assets/art-source/scenes/replay-close-finish.png',
 ].map((file) => path.join(root, file));
 
 const secondsPerScene = 4;

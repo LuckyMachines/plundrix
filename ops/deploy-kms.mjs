@@ -17,6 +17,9 @@ const root = resolve(__dirname, '..');
 const artifact = JSON.parse(
   readFileSync(resolve(root, 'out/PlundrixGame.sol/PlundrixGame.json'), 'utf8')
 );
+const workshopArtifact = JSON.parse(
+  readFileSync(resolve(root, 'out/PlundrixWorkshop.sol/PlundrixWorkshop.json'), 'utf8')
+);
 const proxyArtifact = JSON.parse(
   readFileSync(resolve(root, 'out/ERC1967Proxy.sol/ERC1967Proxy.json'), 'utf8')
 );
@@ -39,6 +42,12 @@ const autoResolveEnabled =
 const autoResolveDelay = BigInt(getEnv('AUTO_RESOLVE_DELAY', '300'));
 const requireExternalEntropy =
   getEnv('REQUIRE_EXTERNAL_ENTROPY', 'true').toLowerCase() === 'true';
+
+if (signerAddress.toLowerCase() !== gameMaster.toLowerCase()) {
+  throw new Error(
+    'Signer must match GAME_MASTER_ADDRESS to connect the workshop during deployment'
+  );
+}
 
 const client = createChainClient({ chainName, rpcUrl });
 
@@ -95,11 +104,48 @@ const proxyReceipt = await client.waitForTransactionReceipt({
 });
 const proxyAddress = proxyReceipt.contractAddress;
 
-if ((autoResolveEnabled || requireExternalEntropy) && signerAddress !== gameMaster) {
-  throw new Error(
-    'Signer must match GAME_MASTER_ADDRESS when applying automation settings at deploy time'
-  );
-}
+const workshopImplementationHash = await deployContractWithKms({
+  client,
+  address: signerAddress,
+  bytecode: workshopArtifact.bytecode.object,
+  ...signerConfig,
+});
+const workshopImplementationReceipt = await client.waitForTransactionReceipt({
+  hash: workshopImplementationHash,
+});
+const workshopImplementationAddress = workshopImplementationReceipt.contractAddress;
+
+const workshopProxyHash = await deployContractWithKms({
+  client,
+  address: signerAddress,
+  bytecode: proxyArtifact.bytecode.object,
+  constructorTypes: 'address, bytes',
+  constructorArgs: [
+    workshopImplementationAddress,
+    encodeFunctionData({
+      abi: workshopArtifact.abi,
+      functionName: 'initialize',
+      args: [proxyAddress, defaultAdmin, upgrader],
+    }),
+  ],
+  ...signerConfig,
+});
+const workshopProxyReceipt = await client.waitForTransactionReceipt({
+  hash: workshopProxyHash,
+});
+const workshopProxyAddress = workshopProxyReceipt.contractAddress;
+
+const configureWorkshopHash = await writeContractWithKms({
+  client,
+  address: signerAddress,
+  contractAddress: proxyAddress,
+  abi: artifact.abi,
+  functionName: 'configureWorkshop',
+  args: [workshopProxyAddress],
+  ...signerConfig,
+});
+await client.waitForTransactionReceipt({ hash: configureWorkshopHash });
+console.log(`configureWorkshopTx=${configureWorkshopHash}`);
 
 if (autoResolveEnabled || requireExternalEntropy) {
   const configureHash = await writeContractWithKms({
@@ -119,3 +165,7 @@ console.log(`implementationTx=${implementationHash}`);
 console.log(`implementation=${implementationAddress}`);
 console.log(`proxyTx=${proxyHash}`);
 console.log(`proxy=${proxyAddress}`);
+console.log(`workshopImplementationTx=${workshopImplementationHash}`);
+console.log(`workshopImplementation=${workshopImplementationAddress}`);
+console.log(`workshopProxyTx=${workshopProxyHash}`);
+console.log(`workshopProxy=${workshopProxyAddress}`);

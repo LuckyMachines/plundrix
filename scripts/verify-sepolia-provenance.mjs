@@ -86,13 +86,14 @@ if (sourceRecord.is_verified !== true) {
 }
 
 const expectedCompiler = `v${artifact.metadata?.compiler?.version}`;
+const expectedOptimizerRuns = Number(artifact.metadata?.settings?.optimizer?.runs);
 if (sourceRecord.name !== 'PlundrixGame') {
   fail(`unexpected Blockscout contract name: ${sourceRecord.name}`);
 }
 if (sourceRecord.compiler_version !== expectedCompiler) {
   fail(`Blockscout compiler differs (${sourceRecord.compiler_version} != ${expectedCompiler})`);
 }
-if (sourceRecord.optimization_enabled !== true || sourceRecord.optimization_runs !== 200) {
+if (sourceRecord.optimization_enabled !== true || sourceRecord.optimization_runs !== expectedOptimizerRuns) {
   fail(`unexpected Blockscout optimizer settings: enabled=${sourceRecord.optimization_enabled}, runs=${sourceRecord.optimization_runs}`);
 }
 
@@ -108,7 +109,7 @@ if (routescanPayload.status !== '1' || !routescanRecord) {
 if (routescanRecord.ContractName !== 'PlundrixGame'
   || routescanRecord.CompilerVersion !== expectedCompiler
   || routescanRecord.OptimizationUsed !== '1'
-  || Number(routescanRecord.Runs) !== 200
+  || Number(routescanRecord.Runs) !== expectedOptimizerRuns
   || routescanRecord.EVMVersion !== 'london') {
   fail('Routescan source settings do not match the compiled implementation');
 }

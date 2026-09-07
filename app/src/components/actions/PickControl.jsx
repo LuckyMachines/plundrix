@@ -50,9 +50,9 @@ export default function PickControl({
       onInvalidIntent={onInvalidIntent}
     >
       {/* Label */}
-      <h4 className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
-        Set Tension
-      </h4>
+      <p className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
+        Pick / Set tension
+      </p>
 
       {/* Tension dial SVG */}
       <div className="relative mb-3">
@@ -126,7 +126,7 @@ export default function PickControl({
         }}
         disabled={disabled || isJammed}
         className={`
-          w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
+          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
           border transition-all duration-200
           ${disabled || isJammed
             ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'
@@ -134,7 +134,7 @@ export default function PickControl({
           }
         `}
       >
-        Execute
+        Pick
       </button>
     </AliveActionCard>
   );

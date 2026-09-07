@@ -36,6 +36,10 @@ function writeJson(res, statusCode, payload) {
     'Access-Control-Allow-Origin': agentConfig.allowOrigin,
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
   });
   res.end(JSON.stringify(payload, null, 2));
 }

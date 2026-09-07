@@ -72,7 +72,7 @@ function makeDefaultProfile(address, registryEntry) {
     address,
     displayName:
       registryEntry?.displayName || `${address.slice(0, 6)}...${address.slice(-4)}`,
-    type: registryEntry?.type || 'human',
+    type: registryEntry?.type || 'unverified',
     team: registryEntry?.team || null,
     bio: registryEntry?.bio || null,
     labels: registryEntry?.labels || [],
@@ -111,7 +111,7 @@ function makeStatBucket() {
 
 export function classifyQueue(players) {
   const participantTypes = players.map((player) => player.type || 'human');
-  const nonHumans = participantTypes.filter((type) => type !== 'human').length;
+  const nonHumans = participantTypes.filter((type) => type === 'agent' || type === 'bot').length;
 
   if (nonHumans === 0) return 'open';
   if (nonHumans === players.length) return 'agent_ladder';
@@ -154,9 +154,9 @@ export function derivePointsForSession(session, playerStats) {
   }
 
   let points = 12;
-  points += playerStats.locksCracked * 14;
-  points += playerStats.toolsFound * 3;
-  points += playerStats.sabotages * 6;
+  points += Number(playerStats.locksCracked || 0) * 14;
+  points += Number(playerStats.toolsFound || 0) * 3;
+  points += Number(playerStats.sabotages || 0) * 6;
 
   if (session.winner?.toLowerCase() === playerStats.address.toLowerCase()) {
     points += 90;
@@ -183,7 +183,7 @@ function buildSession(snapshot, history, registryMap) {
       displayName:
         registered?.displayName ||
         `${player.address.slice(0, 6)}...${player.address.slice(-4)}`,
-      type: registered?.type || 'human',
+      type: registered?.type || 'unverified',
       labels: registered?.labels || [],
       team: registered?.team || null,
       locksCracked: player.locksCracked,
@@ -201,23 +201,28 @@ function buildSession(snapshot, history, registryMap) {
     snapshot.game.roundStartTime ||
     createdAt;
   const wonEvent = history.events.find((event) => event.name === 'GameWon');
-  const completedAt = wonEvent?.args?.timeStamp || null;
+  const completedAt = wonEvent?.args?.timeStamp ||
+    (snapshot.game.state === 'COMPLETE' ? snapshot.game.roundStartTime : null);
+  const completedAtEstimated = Boolean(completedAt && !wonEvent?.args?.timeStamp);
   const rounds =
     wonEvent?.args?.rounds ||
     history.events.filter((event) => event.name === 'RoundResolved').length ||
     snapshot.game.currentRound;
   const queue = classifyQueue(players);
   const season = getSeasonForTimestamp(completedAt || startedAt || createdAt);
+  const hasActionHistory = history.events.some((event) =>
+    ['LockCracked', 'ToolFound', 'PlayerSabotaged', 'ActionOutcome'].includes(event.name)
+  );
   const statsByPlayer = new Map(
     players.map((player) => [
       toLower(player.address),
       {
         address: player.address,
-        locksCracked: 0,
-        toolsFound: 0,
-        sabotages: 0,
-        stunsReceived: 0,
-        noSubmissions: 0,
+        locksCracked: hasActionHistory ? 0 : player.locksCracked,
+        toolsFound: hasActionHistory ? 0 : player.tools,
+        sabotages: hasActionHistory ? 0 : null,
+        stunsReceived: hasActionHistory ? 0 : null,
+        noSubmissions: hasActionHistory ? 0 : null,
       },
     ])
   );
@@ -289,6 +294,7 @@ function buildSession(snapshot, history, registryMap) {
     createdAt,
     startedAt,
     completedAt,
+    completedAtEstimated,
     winner: snapshot.game.winner,
     rounds,
     playerCount: players.length,
@@ -300,6 +306,7 @@ function buildSession(snapshot, history, registryMap) {
       noSubmissionsTotal,
       roundResolutions: history.events.filter((event) => event.name === 'RoundResolved')
         .length,
+      historyComplete: hasActionHistory,
     },
   };
 }
@@ -459,7 +466,7 @@ export function buildCompetitionIndexFromGames(
     }));
 
   const agentLadder = [...profileList]
-    .filter((profile) => profile.type !== 'human')
+    .filter((profile) => profile.type === 'agent' || profile.type === 'bot')
     .sort((left, right) => {
       if (right.season.ladderWins !== left.season.ladderWins) {
         return right.season.ladderWins - left.season.ladderWins;
@@ -566,7 +573,7 @@ export async function getLeaderboard({
       ? index.agentLadder
       : index.leaderboard.filter((entry) => {
           if (queue === 'all') return true;
-          if (queue === 'agents') return entry.type !== 'human';
+          if (queue === 'agents') return entry.type === 'agent' || entry.type === 'bot';
           if (queue === 'humans') return entry.type === 'human';
           return true;
         });

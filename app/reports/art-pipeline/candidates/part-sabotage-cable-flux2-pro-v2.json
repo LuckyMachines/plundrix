@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-sabotage-cable",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T20:19:21.070Z",
+  "candidate": {
+    "path": "assets/art-source/parts/sabotage-cable.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 809812,
+    "sha256": "4ddec77d11fccefadf6cd50f56c6cb446cfed10edab7a32341a107747fb2535d"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/raw/part-sabotage-cable-flux2-pro-v2-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 337010,
+    "sha256": "1bc8bc2ac3e204f93f96652114a39a03a1ddb270189dd6b892c83c01cddd8e62"
+  },
+  "prompt": "Provider priority: OBJECT REQUIREMENT: one severed braided cable with two inert cut ends and visible copper strands. No spark, electric arc, glow, smoke, flame, debris, or other active effect.\nBACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Create one modular severed cable that communicates disruption without explosive violence.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One short braided industrial cable with a cleanly severed end, copper strands, and a small connector. Reusable parts: one severed braided cable emitting a restrained red spark and a traceable path toward a rival station.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Single curved object with complete silhouette and 12 percent transparent padding. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio key light; no baked-in spark so animation can supply state. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; engraved calibration marks; braided cable; smoked glass\nJoy target: mischief. The clean cut creates an instantly readable consequence.\nRestraint: No destruction beyond the cable itself.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; one cable only; complete silhouette; Sabotage disrupts a rival; avoid indiscriminate destruction.\nAvoid: electric arc; fire; explosion; scene background\nOutput intent: 1024x1024 source master saved as assets/art-source/parts/sabotage-cable.png",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "cable reads at 96px",
+    "no spark or state effect is baked in"
+  ],
+  "lifecycle": "promoted",
+  "promotedAt": "2026-09-06T20:24:58.415Z"
+}

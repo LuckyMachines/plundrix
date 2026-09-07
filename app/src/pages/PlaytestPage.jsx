@@ -132,7 +132,7 @@ export default function PlaytestPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="internal-tool-page max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       <PageIntro route="/playtest" />
       <ProductLoopRail activeStep="playtest" compact />
       <section className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">

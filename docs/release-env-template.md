@@ -9,6 +9,7 @@ Use this template before promoting Plundrix beyond internal playtest. Values tha
 - Release owner:
 - Rollback owner:
 - Contract proxy address:
+- Workshop proxy address:
 - Chain id:
 - RPC URL:
 - Agent-service URL:
@@ -29,6 +30,7 @@ Use this template before promoting Plundrix beyond internal playtest. Values tha
 - Rollback owner available during launch window.
 - Clean deploy env values confirmed.
 - Frontend mainnet proxy and RPC config confirmed.
+- Game proxy points to the approved workshop proxy, and the frontend workshop address matches it.
 
 ## Machine-Readable Source
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useAccessibility } from '../../context/AccessibilityContext';
 
 const CUE_PROFILE = {
   'intent.pick': [220, 0.035],
@@ -43,6 +44,7 @@ function playCue(audioContext, cue, index) {
 }
 
 export default function SessionAudioBridge() {
+  const { soundEnabled } = useAccessibility();
   const contextRef = useRef(null);
   const armedRef = useRef(false);
 
@@ -65,7 +67,7 @@ export default function SessionAudioBridge() {
 
   useEffect(() => {
     const onCues = (event) => {
-      if (!armedRef.current) return;
+      if (!armedRef.current || !soundEnabled) return;
       if (!contextRef.current) contextRef.current = createContext();
       const cues = event.detail?.cues || [];
       cues.slice(-3).forEach((cue, index) => playCue(contextRef.current, cue, index));
@@ -73,7 +75,7 @@ export default function SessionAudioBridge() {
 
     window.addEventListener('plundrix:sound-cues', onCues);
     return () => window.removeEventListener('plundrix:sound-cues', onCues);
-  }, []);
+  }, [soundEnabled]);
 
   return null;
 }

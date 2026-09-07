@@ -6,6 +6,7 @@ import Spinner from '../components/shared/Spinner';
 import { useCompetitionProfile } from '../hooks/useCompetitionProfile';
 import { useCompetitionSessions } from '../hooks/useCompetitionSessions';
 import { useSessionHistory } from '../hooks/useSessionHistory';
+import { AGENT_SERVICE_CONFIGURED } from '../config/service';
 
 export default function ProfilePage() {
   const { address } = useParams();
@@ -32,7 +33,14 @@ export default function ProfilePage() {
         </Link>
       </div>
 
-      {profileQuery.isLoading ? (
+      <div>
+        <p className="label">Competition profile</p>
+        <h1 className="mt-2 break-all font-display text-3xl uppercase text-tungsten">{address}</h1>
+      </div>
+
+      {!AGENT_SERVICE_CONFIGURED ? (
+        <UnavailableState />
+      ) : profileQuery.isLoading ? (
         <LoadingState />
       ) : profileQuery.error ? (
         <ErrorState error={profileQuery.error} />
@@ -61,6 +69,19 @@ export default function ProfilePage() {
         </>
       )}
     </div>
+  );
+}
+
+function UnavailableState() {
+  return (
+    <section className="rounded border border-tungsten/30 bg-vault-surface p-8">
+      <p className="font-mono text-xs uppercase tracking-[0.22em] text-tungsten">Profile feed is warming up</p>
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-vault-text-dim">
+        This verified profile needs the competition index, which is not connected in this environment.
+        No player data has been guessed or substituted.
+      </p>
+      <Link to="/leaderboard" className="btn-secondary mt-5">Return to leaderboards</Link>
+    </section>
   );
 }
 

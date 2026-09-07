@@ -1,13 +1,18 @@
 import { useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import SessionCard from '../components/competition/SessionCard';
 import Spinner from '../components/shared/Spinner';
 import { useCompetitionSessions } from '../hooks/useCompetitionSessions';
+import { AGENT_SERVICE_CONFIGURED } from '../config/service';
 
 const STATE_FILTERS = ['all', 'open', 'active', 'complete'];
 const QUEUE_FILTERS = ['all', 'open', 'mixed', 'agent_ladder'];
+const QUEUE_LABELS = { all: 'All tables', open: 'Open play', mixed: 'Mixed', agent_ladder: 'Agent ladder' };
 
 export default function SessionsPage() {
-  const [state, setState] = useState('all');
+  const [params] = useSearchParams();
+  const requestedState = params.get('state');
+  const [state, setState] = useState(STATE_FILTERS.includes(requestedState) ? requestedState : 'all');
   const [queue, setQueue] = useState('all');
   const { data, isLoading, error } = useCompetitionSessions({
     state,
@@ -26,28 +31,37 @@ export default function SessionsPage() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 rounded border border-vault-border bg-vault-surface p-4 lg:flex-row lg:items-center lg:justify-between">
+      <nav className="flex flex-wrap gap-2" aria-label="Competition views">
+        <Link to="/sessions" className="btn-primary" aria-current="page">Sessions</Link>
+        <Link to="/leaderboard" className="btn-secondary">Leaderboards</Link>
+      </nav>
+
+      {AGENT_SERVICE_CONFIGURED && <div className="flex flex-col gap-4 rounded border border-vault-border bg-vault-surface p-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-2">
           {STATE_FILTERS.map((value) => (
             <button
+              type="button"
               key={value}
               onClick={() => setState(value)}
-              className={`rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
+              aria-pressed={state === value}
+              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
                 state === value
                   ? 'border-tungsten/50 bg-tungsten/10 text-tungsten'
                   : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/70'
               }`}
             >
-              {value}
+              {QUEUE_LABELS[value]}
             </button>
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
           {QUEUE_FILTERS.map((value) => (
             <button
+              type="button"
               key={value}
               onClick={() => setQueue(value)}
-              className={`rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
+              aria-pressed={queue === value}
+              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
                 queue === value
                   ? 'border-oxide-green/50 bg-oxide-green/10 text-oxide-green'
                   : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/70'
@@ -57,9 +71,11 @@ export default function SessionsPage() {
             </button>
           ))}
         </div>
-      </div>
+      </div>}
 
-      {isLoading ? (
+      {!AGENT_SERVICE_CONFIGURED ? (
+        <UnavailableState />
+      ) : isLoading ? (
         <LoadingState />
       ) : error ? (
         <ErrorState error={error} />
@@ -75,6 +91,22 @@ export default function SessionsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function UnavailableState() {
+  return (
+    <section className="rounded border border-tungsten/30 bg-vault-surface p-8">
+      <p className="font-mono text-xs uppercase tracking-[0.22em] text-tungsten">Live session feed is warming up</p>
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-vault-text-dim">
+        The verified operation index is not connected in this environment. You can still play a full
+        local match, enter a live operation directly, or browse saved replays.
+      </p>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Link to="/play" className="btn-primary">Play instantly</Link>
+        <Link to="/replays" className="btn-secondary">Browse replays</Link>
+      </div>
+    </section>
   );
 }
 

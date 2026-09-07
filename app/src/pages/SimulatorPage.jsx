@@ -471,7 +471,7 @@ export default function SimulatorPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="internal-tool-page max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

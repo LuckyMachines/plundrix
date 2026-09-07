@@ -6,7 +6,7 @@ import {
 } from '../config/contract';
 import { toGameId } from '../lib/gameId';
 
-export function useGamePlayers(gameId, playerCount) {
+export function useGamePlayers(gameId, playerCount, { enabled = true } = {}) {
   const count = Number(playerCount || 0);
   const parsedGameId = toGameId(gameId);
   const gameIdArg = parsedGameId ?? 0n;
@@ -22,7 +22,7 @@ export function useGamePlayers(gameId, playerCount) {
     contracts,
     query: {
       enabled:
-        IS_CONTRACT_CONFIGURED && count > 0 && parsedGameId !== null,
+        enabled && IS_CONTRACT_CONFIGURED && count > 0 && parsedGameId !== null,
     },
   });
 

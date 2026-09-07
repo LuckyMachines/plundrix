@@ -35,8 +35,8 @@ export default function QuickStartPanel() {
       </ol>
 
       <div className="flex flex-wrap items-center gap-3 px-5 py-4">
-        <Link to="/simulator" className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten hover:bg-tungsten/10">
-          Practice first
+        <Link to="/play" className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten hover:bg-tungsten/10">
+          Practice instantly
         </Link>
         <button
           type="button"

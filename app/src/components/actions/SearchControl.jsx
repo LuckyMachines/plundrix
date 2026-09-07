@@ -33,9 +33,9 @@ export default function SearchControl({
       onInvalidIntent={onInvalidIntent}
     >
       {/* Label */}
-      <h4 className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
-        Sweep Compartment
-      </h4>
+      <p className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
+        Search / Sweep compartment
+      </p>
 
       {/* Signal strength meter */}
       <div className="flex items-end gap-1 h-12 sm:h-14 mb-2">
@@ -97,7 +97,7 @@ export default function SearchControl({
         }}
         disabled={disabled}
         className={`
-          w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
+          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
           border transition-all duration-200 mt-3
           ${disabled
             ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'
@@ -105,7 +105,7 @@ export default function SearchControl({
           }
         `}
       >
-        Execute
+        Search
       </button>
     </AliveActionCard>
   );

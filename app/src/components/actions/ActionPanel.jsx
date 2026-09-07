@@ -257,20 +257,6 @@ export default function ActionPanel({
         </p>
       )}
 
-      <div className="mb-4">
-        <ActionPresenceField
-          intent={activeIntent}
-          committed={actionSubmitted}
-          stunned={stunned}
-          disabled={disabled || !!blockedReason}
-          invalidCount={invalidCount}
-          targetLocked={targetIntent !== ''}
-          tools={tools}
-          players={players}
-          recommendedIntent={session?.recommendedIntent}
-        />
-      </div>
-
       {(!quiet || activeIntent === 'sabotage' || targetIntent) && (
         <TargetCycler
           players={players}
@@ -324,6 +310,25 @@ export default function ActionPanel({
           externalTarget={targetIntent}
         />
       </div>
+
+      <details className="mt-4 rounded border border-vault-border bg-vault-dark/35 p-3">
+        <summary className="min-h-[44px] cursor-pointer content-center font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
+          Show tactical presence
+        </summary>
+        <div className="mt-3">
+          <ActionPresenceField
+            intent={activeIntent}
+            committed={actionSubmitted}
+            stunned={stunned}
+            disabled={disabled || !!blockedReason}
+            invalidCount={invalidCount}
+            targetLocked={targetIntent !== ''}
+            tools={tools}
+            players={players}
+            recommendedIntent={session?.recommendedIntent}
+          />
+        </div>
+      </details>
 
       {/* Transaction status */}
       <TxStatus

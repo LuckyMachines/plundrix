@@ -1,0 +1,11 @@
+{
+  "model": "depth-anything/Depth-Anything-V2-Small-hf",
+  "interpretation": "Per-image relative depth only; warm/bright is relatively near and cool/dark is relatively far. Not metric distance.",
+  "reference": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\art-expansion-v2\\reference\\instant-setup-desktop.png",
+  "actual": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\art-expansion-v2\\actual\\instant-setup-desktop.png",
+  "outputs": [
+    "reference-grayscale.png",
+    "actual-grayscale.png",
+    "reference-vs-actual-depth.png"
+  ]
+}

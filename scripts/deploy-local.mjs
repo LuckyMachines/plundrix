@@ -40,8 +40,8 @@ function run(command, args) {
   });
 }
 
-function extractAddressFromOutput(output) {
-  const match = output.match(/PlundrixGame:\s*(0x[a-fA-F0-9]{40})/);
+function extractAddressFromOutput(output, label = 'PlundrixGame') {
+  const match = output.match(new RegExp(`${label}:\\s*(0x[a-fA-F0-9]{40})`));
   return match?.[1] || null;
 }
 
@@ -88,17 +88,18 @@ function upsertEnv(content, key, value) {
   return `${content}${line}\n`;
 }
 
-function writeAppEnvLocal(contractAddress) {
+function writeAppEnvLocal(contractAddress, workshopAddress) {
   const envLocalPath = resolve(root, 'app', '.env.local');
   let content = existsSync(envLocalPath) ? readFileSync(envLocalPath, 'utf8') : '';
   content = upsertEnv(content, 'VITE_CONTRACT_ADDRESS', contractAddress);
+  content = upsertEnv(content, 'VITE_WORKSHOP_ADDRESS', workshopAddress);
   content = upsertEnv(content, 'VITE_FOUNDRY_RPC_URL', anvilRpcUrl);
   writeFileSync(envLocalPath, content);
 }
 
 async function main() {
   if (dryRun) {
-    console.log('[dry-run] Would run forge local deploy and update app/.env.local');
+    console.log('[dry-run] Would deploy the game and workshop, then update app/.env.local');
     return;
   }
 
@@ -113,13 +114,18 @@ async function main() {
 
   const contractAddress =
     extractAddressFromOutput(output) || extractAddressFromBroadcast();
+  const workshopAddress = extractAddressFromOutput(output, 'Workshop proxy');
 
   if (!contractAddress) {
     throw new Error('Could not determine deployed PlundrixGame address.');
   }
+  if (!workshopAddress) {
+    throw new Error('Could not determine deployed PlundrixWorkshop address.');
+  }
 
   console.log(`Detected deployed address: ${contractAddress}`);
-  writeAppEnvLocal(contractAddress);
+  console.log(`Detected workshop address: ${workshopAddress}`);
+  writeAppEnvLocal(contractAddress, workshopAddress);
   console.log('Updated app/.env.local');
 
   await run('node', ['scripts/sync-abi.mjs']);

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-quickset-clamp",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T21:53:05.945Z",
+  "candidate": {
+    "path": "assets/art-source/parts/inventory/quickset-clamp.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 771686,
+    "sha256": "1e62dfef74ef329c7021a9f4c02b00fe4b8bd7de195064dcb78b7489f8571748"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/raw/part-quickset-clamp-flux2-pro-v1-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 328436,
+    "sha256": "595dfb26ff29573594a68fb79739231e54f21b02f8ce12242219403fa1d3c0dd"
+  },
+  "prompt": "Provider priority: ABSOLUTELY BLANK OBJECT SURFACES. OBJECT REQUIREMENT: one compact clamp with exactly two blunt padded jaws and one coiled tension spring. No text, letters, numbers, symbols, labels, logo, watermark, screen, gauge, hands, people, face, limbs, weapon, coins, treasure, or scene background.\nBACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Create a precise spring-loaded gadget for fast-start workshop builds.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One compact blackened-steel clamp with exactly two padded brass jaws and one visible coiled spring. Reusable parts: one compact precision clamp with two padded jaws and a coiled tension spring.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: One centered collectible object in front three-quarter view, complete silhouette, sturdy contact point, 14 percent transparent padding. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio key with warm amber edge light and one restrained semantic accent. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; machined calibration grooves without glyphs; braided cable; smoked glass\nJoy target: readiness. The poised jaws make the first move feel prepared and immediate.\nRestraint: A precision tool, not a trap or weapon.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; one object only; readable at 64px; blank manufactured surfaces; A quickset clamp supports a fast opening attempt; it is a tool, not a trap.\nAvoid: text; letters; numbers; symbols; logo; screen; gauge; hand; person; face; weapon; coins; treasure; scene background\nOutput canvas: exactly 1024x1024; image only; no title, caption, interface, border, or watermark.",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "silhouette reads at 64px",
+    "contains no writing, face, weapon, or currency cues"
+  ],
+  "lifecycle": "promoted",
+  "promotedAt": "2026-09-06T22:00:48.842Z",
+  "composite": null
+}

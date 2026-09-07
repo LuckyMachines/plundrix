@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { parseEther } from 'viem';
 import { useTotalGames } from '../../hooks/useTotalGames';
+import { useGameCatalog } from '../../hooks/useGameCatalog';
 import { useGameActions } from '../../hooks/useGameActions';
 import { useTxToast } from '../../hooks/useTxToast';
 import { GameMode } from '../../lib/constants';
 import GameCard from './GameCard';
 import Spinner from '../shared/Spinner';
 import TxStatus from '../shared/TxStatus';
+import Modal from '../shared/Modal';
+import { trackProductEvent } from '../../lib/analytics';
 
 const ENABLE_STAKES = import.meta.env.VITE_ENABLE_STAKES === 'true';
+const FALLBACK_CARD_LIMIT = 12;
+const ARCHIVE_PREVIEW_LIMIT = 6;
 
 export default function GameBrowser() {
   const { address } = useAccount();
   const { totalGames, isLoading, error, refetch } = useTotalGames();
+  const catalog = useGameCatalog(24);
   const {
     createGame,
     createGameWithPace,
@@ -27,7 +34,7 @@ export default function GameBrowser() {
     configError,
     nextRulesEnabled,
   } = useGameActions();
-  useTxToast({ hash, isPending, isConfirming, isSuccess, error: txError }, 'Game creation');
+  useTxToast({ hash, isPending, isConfirming, isSuccess, error: txError }, 'Operation creation');
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createMode, setCreateMode] = useState(GameMode.FREE);
@@ -35,21 +42,32 @@ export default function GameBrowser() {
   const [roundPace, setRoundPace] = useState(300);
 
   useEffect(() => {
-    if (isSuccess) refetch();
-  }, [isSuccess, refetch]);
+    if (isSuccess) {
+      refetch();
+      catalog.refetch();
+    }
+  }, [isSuccess, refetch, catalog.refetch]);
 
   const count = totalGames !== undefined ? Number(totalGames) : 0;
 
-  // Build array from totalGames down to 1 (most recent first)
-  const gameIds = Array.from({ length: count }, (_, i) => count - i);
+  const catalogGames = catalog.data?.games || [];
+  const liveGames = catalogGames.filter((game) => game.state !== 'COMPLETE');
+  const completedGames = catalogGames
+    .filter((game) => game.state === 'COMPLETE')
+    .slice(0, ARCHIVE_PREVIEW_LIMIT);
+  const fallbackIds = Array.from(
+    { length: Math.min(count, FALLBACK_CARD_LIMIT) },
+    (_, index) => count - index,
+  );
+  const usingCatalog = catalogGames.length > 0;
 
   return (
     <div className="border border-vault-border rounded bg-vault-surface">
       {/* Header bar */}
       <div className="border-b border-vault-border px-6 py-4 flex items-center justify-between">
-        <h2 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase">
-          Active Operations
-        </h2>
+        <h3 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+          Available now
+        </h3>
 
         {address && (
           <button
@@ -64,7 +82,7 @@ export default function GameBrowser() {
                 <Spinner size="w-3 h-3" /> Creating...
               </span>
             ) : (
-              'Create Game'
+              'Create Operation'
             )}
           </button>
         )}
@@ -98,9 +116,8 @@ export default function GameBrowser() {
       )}
 
       {/* Create Game Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="border border-vault-border rounded bg-vault-panel p-6 w-full max-w-sm space-y-4">
+      <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} ariaLabel="Create a live operation">
+          <div className="border border-vault-border rounded bg-vault-panel p-6 w-full space-y-4">
             <h3 className="font-mono text-xs tracking-[0.3em] text-tungsten uppercase">
               New Operation
             </h3>
@@ -165,6 +182,7 @@ export default function GameBrowser() {
               </button>
               <button
                 onClick={() => {
+                  trackProductEvent('Live Operation Create Started', { mode: createMode === GameMode.STAKES ? 'stakes' : 'free' });
                   if (createMode === GameMode.STAKES) {
                     createStakesGame(parseEther(entryFeeInput));
                   } else if (nextRulesEnabled && roundPace !== 300) {
@@ -181,13 +199,12 @@ export default function GameBrowser() {
               </button>
             </div>
           </div>
-        </div>
-      )}
+      </Modal>
 
       {/* Game list */}
       {isConfigured ? (
       <div className="px-6 py-5">
-        {isLoading ? (
+        {isLoading || (catalog.isLoading && !catalog.isError) ? (
           <div className="flex items-center justify-center py-12 gap-3">
             <Spinner size="w-5 h-5" />
             <span className="font-mono text-xs text-vault-text-dim tracking-wider uppercase">
@@ -204,24 +221,60 @@ export default function GameBrowser() {
             </p>
           </div>
         ) : count === 0 ? (
-          <div className="text-center py-12">
-            <p className="font-mono text-xs text-vault-text-dim italic">
-              No operations found. Create one to begin.
-            </p>
+          <div className="border border-oxide-green/25 bg-oxide-green/5 px-5 py-9 text-center">
+            <p className="font-display text-2xl uppercase text-vault-text">The first table is yours</p>
+            <p className="mt-2 text-sm text-vault-text-dim">Create a free live operation above, or learn the vault in Instant Play.</p>
+            <Link to="/play" className="mt-4 inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Play instantly</Link>
+          </div>
+        ) : usingCatalog ? (
+          <div className="space-y-6">
+            {liveGames.length > 0 ? (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {liveGames.map((game) => (
+                  <GameCard key={game.gameId} gameId={game.gameId} summary={game} loadPlayers={false} />
+                ))}
+              </div>
+            ) : (
+              <div className="border border-oxide-green/25 bg-oxide-green/5 px-5 py-7 text-center">
+                <p className="font-display text-2xl uppercase text-vault-text">No live tables right now</p>
+                <p className="mt-2 text-sm text-vault-text-dim">Create a free table or warm up instantly while the vault is quiet.</p>
+                <Link to="/play" className="mt-4 inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Play instantly</Link>
+              </div>
+            )}
+            {completedGames.length > 0 && (
+              <details className="border-t border-vault-border pt-5">
+                <summary className="min-h-[44px] cursor-pointer font-mono text-xs uppercase tracking-[0.16em] text-vault-text-dim hover:text-vault-text">
+                  Recent completed operations ({completedGames.length} shown)
+                </summary>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {completedGames.map((game) => (
+                    <GameCard key={game.gameId} gameId={game.gameId} summary={game} loadPlayers={false} />
+                  ))}
+                </div>
+                <Link to="/sessions?state=complete" className="mt-4 inline-flex min-h-[44px] items-center font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Browse operation history -&gt;</Link>
+              </details>
+            )}
           </div>
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {gameIds.map((id) => (
-              <GameCard key={id} gameId={id} />
-            ))}
+          <div className="space-y-4">
+            {catalog.isError && (
+              <p className="border border-vault-border bg-vault-dark/50 p-3 text-xs text-vault-text-dim">
+                Live index unavailable. Showing the {fallbackIds.length} newest operations with reduced polling.
+              </p>
+            )}
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {fallbackIds.map((id) => (
+                <GameCard key={id} gameId={id} loadPlayers={false} />
+              ))}
+            </div>
           </div>
         )}
       </div>
       ) : (
         <div className="px-5 py-5">
-          <a href="/simulator" className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten hover:bg-tungsten/10">
-            Open practice table
-          </a>
+          <Link to="/play" className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten hover:bg-tungsten/10">
+            Play instantly
+          </Link>
         </div>
       )}
     </div>

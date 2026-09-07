@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-firewall",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T20:55:49.456Z",
+  "candidate": {
+    "path": "assets/art-source/parts/firewall.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 883096,
+    "sha256": "fd9c9f0482cd0fa584786551cdf7cc10c7a4e16a0530a3ce59a5b547c1939abc"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/raw/part-firewall-flux2-pro-v1-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 367031,
+    "sha256": "d720d4ba2f1fcdaaba998f0279f4588e21c058eea27a9152bec5f682ffc1c767"
+  },
+  "prompt": "Provider priority: OBJECT REQUIREMENT: one compact defensive mechanical relay with layered rectangular shutters and copper heat fins. It is equipment, not a heraldic shield. No flame, wall, screen, writing, letters, numbers, symbols, logos, or pseudo-text.\nBACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Create the canonical Firewall as a sturdy physical relay that can absorb one disruption.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One dense blackened-steel relay with overlapping shutters, sturdy feet, and oxidized copper heat fins. Reusable parts: one dense defensive relay with overlapping steel shutters and oxidized copper heat fins.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Single centered object in three-quarter view with a complete silhouette and 12 percent transparent padding. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio light with a cool protective rim. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; machined calibration grooves without glyphs; braided cable; smoked glass\nJoy target: security. Layered shutters make one saved turn feel physically credible.\nRestraint: No literal wall, shield badge, fire, or invulnerability spectacle.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; one relay only; compact readable silhouette; The Firewall absorbs one sabotage attempt; it is protective equipment, not a shield emblem.\nAvoid: shield symbol; flames; castle wall; text; numbers; screen; scene background\nOutput canvas: exactly 1024x1024; image only; no title, caption, interface, border, or watermark.",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "reads as defensive equipment at 72px",
+    "contains no shield emblem, fire, or writing"
+  ],
+  "lifecycle": "promoted",
+  "promotedAt": "2026-09-06T21:05:12.021Z",
+  "composite": null
+}

@@ -28,6 +28,13 @@ test('classifyQueue distinguishes open, mixed, and agent ladder sessions', () =>
     ]),
     'agent_ladder'
   );
+  assert.equal(
+    classifyQueue([
+      { type: 'agent' },
+      { type: 'unverified' },
+    ]),
+    'mixed'
+  );
 });
 
 test('derivePointsForSession rewards wins, locks, sabotages, and clean play', () => {
@@ -47,6 +54,25 @@ test('derivePointsForSession rewards wins, locks, sabotages, and clean play', ()
   );
 
   assert.equal(points, 12 + 42 + 6 + 6 + 90 + 10 + 8);
+});
+
+test('derivePointsForSession does not award clean-play points when history is unavailable', () => {
+  const points = derivePointsForSession(
+    {
+      state: 'COMPLETE',
+      queue: 'open',
+      winner: '0x2000000000000000000000000000000000000002',
+    },
+    {
+      address: '0x1000000000000000000000000000000000000001',
+      locksCracked: 0,
+      toolsFound: 0,
+      sabotages: null,
+      noSubmissions: null,
+    }
+  );
+
+  assert.equal(points, 12);
 });
 
 test('buildCompetitionIndexFromGames produces leaderboard, badges, and agent ladder', () => {

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "assetId": "victory-breach",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T21:00:12.919Z",
+  "candidate": {
+    "path": "assets/art-source/candidates/victory-breach-flux2-pro-v2.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 422957,
+    "sha256": "0efaca4a7408e456376b7e1772310dda09104ffb40793d83a8f170151aaf1795"
+  },
+  "rawCandidate": null,
+  "prompt": "Provider priority: ABSOLUTELY TEXT FREE. SCENE REQUIREMENT: one monumental round vault door has just opened into warm light. Use broad blank metal wall panels with no diagrams, calibration marks, writing, glyphs, numbers, formulas, signage, logos, watermarks, screens, or interface shapes anywhere. Show five chunky retracted locking bolts around the opening and no other lock-like mechanisms. No coins, treasure, gems, cash, people, confetti, explosion, or debris.\n\nUse case: stylized-concept\nAsset type: game victory and resolution backdrop\nPrimary request: Show the vault opening as earned mechanical release and give the final result a memorable emotional peak.\nScene/backdrop: The same clandestine blackened-steel vault chamber immediately after a successful breach.\nSubject: One open vault mechanism with five visibly retracted lock bolts and controlled warm light beyond it. Reusable parts: one monumental circular bank-vault mechanism with a strong uninterrupted silhouette; exactly five clearly separated lock stages arranged as one readable progression, with no extra lock-like rings; controlled warm light escaping through a newly opened mechanical seam; a calm, low-detail dark field reserved for a later HTML overlay.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Square master with the open mechanism weighted right, low-detail shadow through the center, and meaningful detail surviving a shallow 1024x420 crop. Square master designed to survive a shallow banner crop, with a calm center field for live result text.\nLighting/mood: Warm light escapes through the open seam into cool near-black shadows; restrained dust motes only. Earned relief, warm release, and quiet mechanical satisfaction rather than spectacle.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; machined calibration grooves without glyphs; braided cable; smoked glass\nJoy target: earned release. A precise mechanical opening pays off the tension of every earlier choice.\nRestraint: Quiet triumph without loot, fireworks, or a fabricated crowd.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; no people; no treasure or coins; no fake interface; preserve live-copy legibility; one open vault only; five retracted bolts; center remains calm enough for live winner copy; Use exactly five distinct lock stages only when the stages are individually visible.; Exactly five lock stages; never add decorative lock-like modules.; A breach should feel earned and precise rather than explosive.; Negative space must remain free of focal props and generated text.\nAvoid: coins; treasure; cash; people; confetti; explosion; text; fake interface\nOutput canvas: exactly 1024x1024; image only; no title, caption, interface, border, or watermark.",
+  "manualChecks": [
+    "open vault reads in the 1024x420 crop",
+    "no text, treasure, explosion, or people",
+    "warm release supports rather than obscures live result text"
+  ]
+}

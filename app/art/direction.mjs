@@ -1,0 +1,63 @@
+export const ART_SYSTEM_VERSION = '1.3.0';
+
+export const ART_DIRECTION = Object.freeze({
+  name: 'The Brass Vault',
+  promise: 'Every image should make one consequential choice feel tangible, readable, and worth remembering.',
+  productTruths: [
+    'Plundrix is a simultaneous-action vault race for two to four players.',
+    'The vault has five locks.',
+    'The three player actions are Pick, Search, and Sabotage.',
+    'The workshop has exactly 1,200 deterministic blueprints: ten chassis by ten finishes by twelve calibrations.',
+    'Workshop variants map visibly to existing practice protocols and never imply hidden or purchasable power.',
+    'Generated atmosphere is never presented as a screenshot or evidence of live play.',
+    'Agents are visibly mechanical or explicitly labeled; generated art must not imply a human community that has not been proven.',
+  ],
+  style: 'Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.',
+  palette: [
+    'near-black steel #0A0A0F',
+    'vault-panel indigo #1A1A2E',
+    'oxidized brass #C4956A',
+    'warm victory brass #E8B078',
+    'restrained blueprint blue #3A7CC4',
+    'restrained sabotage red #F06A6A',
+    'sparingly used search green #40A080',
+  ],
+  materials: [
+    'blackened steel',
+    'aged and oxidized brass',
+    'worn enamel',
+    'machined calibration grooves without glyphs',
+    'braided cable',
+    'smoked glass',
+  ],
+  lighting: 'Warm amber task light against cool near-black shadows, with one restrained semantic accent and no crushed focal detail.',
+  shapeLanguage: 'Concentric vault geometry, radial locks, sturdy mechanical joints, chamfered instrument housings, and intentional negative space.',
+  referenceAnchors: [
+    { path: 'assets/art-source/scenes/plundrix-vault-hero.png', role: 'identity and architectural scale reference' },
+    { path: 'assets/art-source/scenes/replay-sabotage.png', role: 'material, wear, and close-detail reference' },
+  ],
+  globalConstraints: [
+    'one unmistakable focal beat',
+    'clear depth separation when the asset contains a scene',
+    'readable at thumbnail size',
+    'leave live UI copy and controls to HTML',
+    'no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface',
+    'no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter',
+  ],
+  joyPrinciples: [
+    'Anticipation: show a mechanism one action away from changing.',
+    'Agency: make the cause of the moment visually traceable to Pick, Search, or Sabotage.',
+    'Surprise: reserve one unusual light, tool, or reaction for the dramatic beat.',
+    'Mastery: reward close inspection with mechanically plausible detail.',
+    'Relief: give successful scenes a warmer, more open silhouette without becoming gaudy.',
+    'Social drama: imply rivals through stations, traces, and consequences rather than fabricated people.',
+  ],
+  qualityGates: Object.freeze({
+    thumbnailReadability: 'The focal subject remains identifiable at 240px wide.',
+    cropSafety: 'The focal beat survives both the declared desktop and mobile crops.',
+    truthfulMechanics: 'Lock count, table scale, action color, and player count match the asset brief.',
+    uiSeparation: 'Generated art contains no baked-in copy, controls, or fake game state.',
+    accessibility: 'Every shipping asset has useful alt text, or an empty alt when it is purely decorative.',
+    delivery: 'Shipping derivatives meet the declared dimensions and byte budget; archival masters stay outside public/.',
+  }),
+});

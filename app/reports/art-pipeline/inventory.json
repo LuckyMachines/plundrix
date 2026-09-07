@@ -1,0 +1,789 @@
+{
+  "schemaVersion": 1,
+  "artSystemVersion": "1.3.0",
+  "generatedAt": "2026-09-06T22:27:55.464Z",
+  "assets": [
+    {
+      "id": "vault-hero",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/scenes/plundrix-vault-hero.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 1481377,
+        "sha256": "60c630817df0bcfc3d0d0f74835d17593ac7f72208dbb82d160a9ed1651b20e8"
+      },
+      "outputs": [
+        {
+          "path": "public/images/plundrix-vault-hero.webp",
+          "width": 1024,
+          "height": 1024,
+          "pixelFormat": "rgb",
+          "bytes": 89656,
+          "sha256": "7c10c316e76147cd0a5880b534d66c8e8f98f57ddc553f555a47ca88fc9cf786"
+        }
+      ],
+      "family": "vault-atmosphere"
+    },
+    {
+      "id": "instant-breach",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/scenes/plundrix-instant-breach.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 918414,
+        "sha256": "abebd076f3d7455872b2b4c9418a3517de595b5a5705f92d370e4bbe8af2f904"
+      },
+      "outputs": [
+        {
+          "path": "public/images/plundrix-instant-breach.webp",
+          "width": 1024,
+          "height": 1024,
+          "pixelFormat": "rgb",
+          "bytes": 37492,
+          "sha256": "b02359ef823ba1eb51dc2d6c6f26ae808ca70d63fbd66f09bc09a73dc7368bab"
+        }
+      ],
+      "family": "mode-key-art"
+    },
+    {
+      "id": "live-breach",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/scenes/plundrix-live-breach-gpt-image-2.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 1636858,
+        "sha256": "d979914a731d0ebb5cd91b863cdfc04049b26edd598ac07073f621df68c4a1c6"
+      },
+      "outputs": [
+        {
+          "path": "public/images/plundrix-live-breach.webp",
+          "width": 1024,
+          "height": 1024,
+          "pixelFormat": "rgb",
+          "bytes": 124894,
+          "sha256": "666275f535933f70690ac196b07b3c5b50760dd7d2dc6ca603538cccb83dab65"
+        }
+      ],
+      "family": "mode-key-art"
+    },
+    {
+      "id": "replay-comeback",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/scenes/replay-comeback.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 1827212,
+        "sha256": "10fba82cb100c618d781141cf73d2b4e5fb5a0c1a362ef99ff7907eb190f31e3"
+      },
+      "outputs": [
+        {
+          "path": "public/images/replay-comeback.webp",
+          "width": 1024,
+          "height": 1024,
+          "pixelFormat": "rgb",
+          "bytes": 173884,
+          "sha256": "c852f56e9260c77ef44850dc47d68a38281986ca554cd47ca90c9279b26b05fc"
+        }
+      ],
+      "family": "replay-story"
+    },
+    {
+      "id": "replay-sabotage",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/scenes/replay-sabotage.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 1713848,
+        "sha256": "7d1df5d66cd945bbf37fe3ddf3e94a80a88d7302d09311b41c71ea3e966cf6a3"
+      },
+      "outputs": [
+        {
+          "path": "public/images/replay-sabotage.webp",
+          "width": 1024,
+          "height": 1024,
+          "pixelFormat": "rgb",
+          "bytes": 156010,
+          "sha256": "51d72249e0c38b4ecb1fc86b532d58887a9970999972839bd504083e693708f5"
+        }
+      ],
+      "family": "replay-story"
+    },
+    {
+      "id": "replay-close-finish",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/scenes/replay-close-finish.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 1709480,
+        "sha256": "329f58ca34bc8b3210bf4b99782dc2801f7f2d2689423abad56fb80dcaf108fe"
+      },
+      "outputs": [
+        {
+          "path": "public/images/replay-close-finish.webp",
+          "width": 1024,
+          "height": 1024,
+          "pixelFormat": "rgb",
+          "bytes": 134804,
+          "sha256": "8a3d7fbf1882cd106b21f81bbc011e68f1db9380d8b9f6bdd47d0f23a8944da3"
+        }
+      ],
+      "family": "replay-story"
+    },
+    {
+      "id": "social-home",
+      "status": "accepted",
+      "source": {
+        "path": "assets/social-source/plundrix-home-gpt-image-2.png",
+        "width": 1536,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 2255822,
+        "sha256": "93fc595573d14430145466b04724463f34137aa074ab66604b795d29cb31d024"
+      },
+      "outputs": [
+        {
+          "path": "public/images/og/plundrix-home.jpg",
+          "width": 1200,
+          "height": 630,
+          "pixelFormat": "rgb",
+          "bytes": 110719,
+          "sha256": "c9e5ae63fe9363a7f5c2d80c471cb09f63a970b24b3d2bc5d953613a4a2a1191"
+        }
+      ],
+      "family": "social-source"
+    },
+    {
+      "id": "social-play",
+      "status": "accepted",
+      "source": {
+        "path": "assets/social-source/plundrix-play-gpt-image-2.png",
+        "width": 1536,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 2377450,
+        "sha256": "fd29d8c26ddeb94f7eef6c14ef52abf0d11e3e9f3ce9a13db71af7921c27d496"
+      },
+      "outputs": [
+        {
+          "path": "public/images/og/plundrix-play.jpg",
+          "width": 1200,
+          "height": 630,
+          "pixelFormat": "rgb",
+          "bytes": 110453,
+          "sha256": "5ac45c89339ae65ade01fa51e9055e63c6dd01b162444c66e0f3e8c76f1346ae"
+        }
+      ],
+      "family": "social-source"
+    },
+    {
+      "id": "social-trailer",
+      "status": "accepted",
+      "source": {
+        "path": "assets/social-source/plundrix-trailer-gpt-image-2.png",
+        "width": 1536,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 2504218,
+        "sha256": "3c8077fb106525b06f509f69bfc761f7d5482b496a6439621209ecbd7fcc4ab2"
+      },
+      "outputs": [
+        {
+          "path": "public/images/og/plundrix-trailer.jpg",
+          "width": 1200,
+          "height": 630,
+          "pixelFormat": "rgb",
+          "bytes": 152872,
+          "sha256": "ac2190a16fb8afecfcadffbbe60558ca7021538387e99cdc859f52cdeb64c0d8"
+        }
+      ],
+      "family": "social-source"
+    },
+    {
+      "id": "part-lock-module",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/lock-module.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 1185491,
+        "sha256": "54bb5493171219e4a2f35a34cb151a0726f6d1bf7fa36d38bd214370e1e83fa1"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/lock-module.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 41452,
+          "sha256": "69e524fdf723b61bc7b26edb44bb3f491b2e8e84d72db9c35fde73ac92f43d6a"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-pick-tool",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/pick-tool.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 803663,
+        "sha256": "fffc55743699b93af4f39f385d1c02e1d344463a79dc9e84e71704b31af29579"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/pick-tool.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 15476,
+          "sha256": "8480e3b7e9c4d857a5a2f1b3f360d31b7f630a1f48316203457940cfee0868b4"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-search-kit",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/search-kit.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 953791,
+        "sha256": "e7728884508efd4a2538b680c447081be1c1519ca631a6bbd5596b106f449839"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/search-kit.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 35310,
+          "sha256": "7282ba8315d7a61ab92a170e64ef7d88b0b382016dcea06ac0bd6bbb7e981b14"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-sabotage-cable",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/sabotage-cable.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 809812,
+        "sha256": "4ddec77d11fccefadf6cd50f56c6cb446cfed10edab7a32341a107747fb2535d"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/sabotage-cable.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 24868,
+          "sha256": "49d7c097e5bfca053abfbfd7b175f678f9503db9034aef9f8e4842f05df80d42"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "victory-breach",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/scenes/victory-breach.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgb",
+        "bytes": 461346,
+        "sha256": "3d00a242d757a4acca3e4c3d53143b0a65a10908b7a8cdd2e25a4802bc9b7828"
+      },
+      "outputs": [
+        {
+          "path": "public/images/victory-breach.webp",
+          "width": 1024,
+          "height": 420,
+          "pixelFormat": "rgb",
+          "bytes": 17198,
+          "sha256": "f52b0e1027e8d5f1c5fa7dc655b9d1ebd279f630b8bd664357450729f1957b9e"
+        }
+      ],
+      "family": "outcome-key-art"
+    },
+    {
+      "id": "part-precision-kit",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/precision-kit.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 921465,
+        "sha256": "033e5db8e2cb5bd0f1c1123a949b5680f28ef0dff1d03f4ff36f16b5b00b9bdb"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/precision-kit.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 24844,
+          "sha256": "d1538f054f2fa6e3ac47fb18507249a03502401e746797f14c99399ec9fe8056"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-signal-scanner",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/signal-scanner.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 858451,
+        "sha256": "6fa27a2f52c879477a7a694d39766012c298fa456865fe4b07493b8b15d57c52"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/signal-scanner.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 20724,
+          "sha256": "4d8fca5e21609ad051920234db9e345136271475cdd39ff6c23938f95e16c212"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-firewall",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/firewall.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 883096,
+        "sha256": "fd9c9f0482cd0fa584786551cdf7cc10c7a4e16a0530a3ce59a5b547c1939abc"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/firewall.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 24580,
+          "sha256": "1a1292ea8eda05cde8a4bd741417175a1d05a461644c49099944bd74bf21e232"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-rook-device",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/rook-device.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 820049,
+        "sha256": "854015581ea7d04244e34e0eda507320392b02980abbf3563c19c5fe399a6fc5"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/rook-device.webp",
+          "width": 384,
+          "height": 384,
+          "pixelFormat": "rgba",
+          "bytes": 14216,
+          "sha256": "75b32791997b2fd6d228769630e15dca8bf96c281c95c463df9bb3e050032046"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-mara-device",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/mara-device.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 903858,
+        "sha256": "a01562a02f415d9ace2f01c13d386be60c883923525ea2859befb6e055e8ae49"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/mara-device.webp",
+          "width": 384,
+          "height": 384,
+          "pixelFormat": "rgba",
+          "bytes": 21626,
+          "sha256": "93bee4a743db7970fce0f75c6cf1126c17eed20eaf81b8a83fdcf00c2a2b0275"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-vesper-device",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/vesper-device.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 771194,
+        "sha256": "aec12cffd39b0fd75fbf23024133387d6cb9f41ddd7c0196effe98e029de6e8f"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/vesper-device.webp",
+          "width": 384,
+          "height": 384,
+          "pixelFormat": "rgba",
+          "bytes": 9724,
+          "sha256": "ac23354c81bf839965f0ac46b14a3e448786cee93484fb65e78fead9d17578d6"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-breach-seal",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/breach-seal.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 1012290,
+        "sha256": "f14147ab4cb6d3e5b9aab2cf26379eb2b69fabc546adf9654072eb524cf3beef"
+      },
+      "outputs": [
+        {
+          "path": "public/images/parts/breach-seal.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 27836,
+          "sha256": "70cffd74b6ef71ccca5339e6acae7bb474e3a6a2650fd62707bd0d65b642c25d"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-torque-driver",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/torque-driver.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 884641,
+        "sha256": "f13bbc5a7678b74d87c890576333a1b3b4b63c30db5dc31f01e3a6b97865b51d"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/torque-driver.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 22714,
+          "sha256": "7cb45dbadaa905851e862bb50e60f8307c488763f6ec8097a29d67a5505e8e21"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-echo-coil",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/echo-coil.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 897858,
+        "sha256": "cd33b7f72e3fad0f5b9bed84cad44fd51a574313bcfe9deb9e40b656bdc7dfac"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/echo-coil.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 27486,
+          "sha256": "13f6e463d25c636dc447bdbdf5f3e2811c0c63c8efc627bc06a28ea4c6084d08"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-decoy-relay",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/decoy-relay.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 787060,
+        "sha256": "794118ed0ff41b22f48bff37a27926c00df54b23f01f9dacf61060d1edc19951"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/decoy-relay.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 15190,
+          "sha256": "11998a2230599651ea88ad279ca9f51ec8dd565f407e53268657f8fc7f334f98"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-counterweight",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/counterweight.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 878911,
+        "sha256": "596977a17fb274f2b990896fae44a03dc96ff4f6a72fe1b0913027bafe114074"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/counterweight.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 16804,
+          "sha256": "32f9de4d8fdd0b85c5d7e21e0cdab62b629848720557590c4a67e1ea589141ce"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-quickset-clamp",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/quickset-clamp.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 771686,
+        "sha256": "1e62dfef74ef329c7021a9f4c02b00fe4b8bd7de195064dcb78b7489f8571748"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/quickset-clamp.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 36008,
+          "sha256": "f8742ec72cbfc7eec78e29486be07ffba279275154947284891ab822c5456e66"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-cache-siphon",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/cache-siphon.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 826441,
+        "sha256": "9c98a4aa2e9b2b3deb8cbbc5f99b95d132d0bf046fe1df755ef0de1920e33472"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/cache-siphon.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 19198,
+          "sha256": "5cc5ac82e89e67a4bd5144a74c4c01abd7927322630b40dc84d51d7e3ceb15f1"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-route-compass",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/route-compass.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 627187,
+        "sha256": "3c9c2e844b58a47704162b1521382987d8044b046d6a2acbed2bd79a496709b3"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/route-compass.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 21558,
+          "sha256": "a04ec9cb22d8679b5c2a99b653b8f307bcb0894295ebd67dba1673a93a2086a1"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-brass-cogs",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/brass-cogs.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 787688,
+        "sha256": "08e32f4f56fdab46b678d554cd0cd276d1fd8655f01d660208e87355b267d9d2"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/brass-cogs.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 15976,
+          "sha256": "58e711fd294790126660a713aa0ca2f4437fe8a88b2c5d84bf870590d081fb46"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-cipher-glass",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/cipher-glass.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 775552,
+        "sha256": "45544c3763312308d65949370245ec046245a953e80985b12a1d4153d03a7338"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/cipher-glass.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 18038,
+          "sha256": "ab6c423040ad67e928c7e34b9c6fb41d180a2ecada8ad70ea232ce248165b337"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-flux-wire",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/flux-wire.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 750363,
+        "sha256": "0b7242d3988a72246d1f93a3c11254d73f068eb3efa6c2df5080c322383444f4"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/flux-wire.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 17936,
+          "sha256": "cbed8f1087096200e099cac2f783bcef6c798cfb87539cbe3470bd34a39d71e4"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-tungsten-shard",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/tungsten-shard.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 1060507,
+        "sha256": "eeaa64534d206c0da5966fb909aae6df84e9bd3458ad49d279e6162df805e34a"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/tungsten-shard.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 30324,
+          "sha256": "5e236dc0636d5e42b8cb55d592dd08e8fb26b6beb8f12f9c4671abb71d52803d"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-oxide-catalyst",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/oxide-catalyst.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 1069743,
+        "sha256": "679fb0b976079b06bb3b3da1544df6ec8e5b2e5664184e8049e2928ee70226e8"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/oxide-catalyst.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 24690,
+          "sha256": "e8ffd899c84cd4e8209854bb0f0b8f2cb8fc828e98c43e7cf50d92ba0a5ceca8"
+        }
+      ],
+      "family": "transparent-part"
+    },
+    {
+      "id": "part-vault-resin",
+      "status": "accepted",
+      "source": {
+        "path": "assets/art-source/parts/inventory/vault-resin.png",
+        "width": 1024,
+        "height": 1024,
+        "pixelFormat": "rgba",
+        "bytes": 613206,
+        "sha256": "4f14102d12a002ada1bc08394ee15ffdf5f9b8b9cf1986016cd4efd3ee9c0afd"
+      },
+      "outputs": [
+        {
+          "path": "public/images/inventory/vault-resin.webp",
+          "width": 512,
+          "height": 512,
+          "pixelFormat": "rgba",
+          "bytes": 10602,
+          "sha256": "97c59d36f0000fa226c20649ab0bdc5dfbae6f097d1497ac46e7946edc011581"
+        }
+      ],
+      "family": "transparent-part"
+    }
+  ]
+}

@@ -132,3 +132,78 @@
 - [x] Verify builds, targeted interactions, image delivery, browser errors, serious/critical accessibility, and horizontal overflow.
 - [x] Preserve before/after comparisons, relative depth evidence, perspective calibration, prompts, and acceptance results.
 - [ ] Validate faster mode recognition with first-time visitors.
+
+## 12. v0.15 full product experience pass
+
+- [x] Replace the operation browser's per-card RPC fan-out with one capped, batched catalog request and stop polling completed cards.
+- [x] Separate live tables from a collapsed recent archive and provide a useful instant-play empty state.
+- [x] Reduce the public navigation to Hub, Play now, Trailer, Replays, and Results; gate internal tools behind an explicit development flag.
+- [x] Add route-level scroll restoration, a visible not-found page, HTTP 404 responses, and noindex headers for unknown and internal routes.
+- [x] Add production CSP, HSTS, clickjacking, MIME-sniffing, referrer, and permissions protections to the game server.
+- [x] Make the Field Manual and create-operation overlays keyboard-modal, focus-trapped, Escape-dismissable, and focus-restoring.
+- [x] Add a persisted global sound preference, make the trailer user-initiated, and strengthen reduced-motion/readability behavior.
+- [x] Improve Instant Play with rival personalities, rank feedback, staged reveals, audio cues, a visual vault, mobile horizontal rivals, a sticky commit action, and score challenges.
+- [x] Tune agent decision policy to avoid protected sabotage targets and prolonged stall loops.
+- [x] Raise the deterministic fun smoke score from 81/B to 93/A, with every scenario at 83 or above.
+- [x] Repair replay artwork matching, simplify gallery filters, hide advanced import/export and director controls, and reject invalid replay IDs.
+- [x] Stop classifying unregistered addresses as humans and label incomplete historical metrics and estimated completion times honestly.
+- [x] Add privacy-safe product event instrumentation without wallet addresses, seeds, names, or free-form text.
+- [x] Send every primary marketing CTA directly to Instant Play, preserve live Sepolia as a clear secondary path, and remove the nonfunctional network choice.
+- [x] Link the exact deployed contract, enlarge screenshot proof, distinguish site/game legal links, and add the public source repository.
+- [x] Add waitlist consent copy, email autofill semantics, a status live region, segment retention, and a honeypot field.
+- [x] Make marketing reveal effects progressive enhancement and correct inaccurate no-backend structured-data claims.
+- [x] Upgrade the marketing dependency set, build both sites, pass production audits, and rerun product, agent, replay, fun, telemetry, cohesion, and SEO checks.
+- [ ] Observe at least four first-time players completing Instant Play and the marketing-to-game handoff.
+- [ ] Confirm post-deployment analytics funnels, production headers, social previews, and indexed routes without publishing private player data.
+- [ ] Have counsel review the final public legal copy before enabling paid play or prizes.
+
+## 13. v0.16 design-system implementation pass
+
+- [x] Eliminate active Instant Play mobile overflow and keep the commit action fixed above the safe area.
+- [x] Persist and restore active Instant Play operations; add an explicit exit action.
+- [x] Put live-game action controls before supporting stage detail on mobile and keep the first Pick action in the opening viewport.
+- [x] Scope replay keyboard shortcuts to the focused viewer instead of intercepting unrelated controls.
+- [x] Add success and failure feedback for replay, session, result, challenge, import, and wallet actions.
+- [x] Add an application error boundary, keyboard skip link, reduced-motion-aware resolution timing, 44px controls, and a 12px microcopy floor.
+- [x] Add honest Sessions and Profile fallbacks when the competition service is not configured, plus linked Results navigation and scoring disclosure.
+- [x] Normalize player-facing nouns around operation, player, and operator persona; document practice/live rule differences.
+- [x] Add reviewer, version, per-section priority and notes, import, reset, filtered index, and container-responsive previews to the design system.
+- [x] Make wide internal tools self-contained and keyboard-scrollable without mobile page overflow.
+- [x] Correct the Design Control Tower human-gap metric when a hypothesis explicitly awaits human playtesting.
+- [x] Route-split wallet and query infrastructure away from no-wallet pages and omit production source maps.
+- [x] Add regression coverage for mobile Instant Play persistence/containment, replay shortcut scope, service fallbacks, live first-viewport action placement, and internal-tool overflow.
+- [x] Pass the final production build, SEO delivery checks, and all 30 active Playwright journeys; keep visual-evidence capture explicitly opt-in.
+- [ ] Observe four first-time players and attach qualitative evidence to the review ledger.
+- [ ] Validate production funnels and delivery after deployment.
+
+## 14. v0.17 modular art pipeline
+
+- [x] Define one versioned art-direction contract for product truth, palette, materials, lighting, shape language, and joy.
+- [x] Split reusable vault, station, action, accent, outcome, and composition parts from asset-specific briefs.
+- [x] Define family recipes for atmosphere, mode art, replay stories, social sources, and transparent parts.
+- [x] Move archival scene masters out of the public delivery tree.
+- [x] Compile consistent Markdown and JSON prompt packs from the shared manifest.
+- [x] Build optimized WebP/JPEG derivatives and exact social typography from one command path.
+- [x] Validate paths, dimensions, byte budgets, provenance, source availability, and delivery availability.
+- [x] Record a hash-based art inventory and expose pipeline state in the living Design System.
+- [x] Create generation-ready briefs for a lock module, Pick tool, Search kit, and sabotage cable.
+- [x] Flag the former Instant Play master after the stricter five-lock truth check failed, then retain it in the retired archive.
+- [x] Regenerate and accept Instant Play with four empty workstations and exactly five deterministically composited lock modules.
+- [x] Generate, alpha-extract, crop-test, and accept the four transparent part masters through Azure FLUX.2-pro.
+
+## 15. v0.18 signature workshop and inventory depth
+
+- [x] Reframe the inventory around 10 gameplay-distinct chassis and 1,200 stable configurations.
+- [x] Preserve all existing configuration IDs, serials, recipes, ownership, and starter compatibility.
+- [x] Replace the flat 1,200-card wall with chassis selection, a live builder, and grouped collection progress.
+- [x] Give finish and calibration layers visible material patterns, color, glyphs, and module identities.
+- [x] Remove unsupported stat bars and distinguish gameplay effects from appearance-only choices.
+- [x] Author 30 memorable named builds with unique lore and guarantee 1,200 unique display names.
+- [x] Add favorite, two-build comparison, direct lookup, missing-material guidance, and reclaim/refund flows.
+- [x] Implement the 10 signature rules in both practice logic and upgrade-compatible smart contracts.
+- [x] Make Tactical play use the equipped signature build instead of a redundant protocol picker.
+- [x] Rebuild the contact sheet as a compact configuration atlas with 16 shared images and 1,200 review cells.
+- [x] Validate the catalog, production build, 52 Solidity tests, 83 JavaScript tests, connected browser behavior, accessibility, and responsive overflow.
+- [x] Capture and inspect desktop, mobile, builder, design-system, atlas, and before/after visual evidence.
+- [ ] Balance the 10 signature strengths with observed competitive play and telemetry.
+- [x] Increase production game-contract runtime headroom from 15 bytes to 666 bytes by moving roster orchestration into the Workshop and using a size-oriented optimizer profile.

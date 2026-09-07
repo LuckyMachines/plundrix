@@ -6,6 +6,7 @@ import {
   exportReplayMarkdown,
   saveReplayToLibrary,
 } from '../../lib/replayDirector';
+import { copyText } from '../../lib/clipboard';
 
 function downloadText(filename, text, type = 'text/plain') {
   const blob = new Blob([text], { type });
@@ -26,28 +27,42 @@ export default function ReplayViewer({ replay, comparison }) {
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(1200);
   const [cinematicMode, setCinematicMode] = useState(false);
-  const [analysisMode, setAnalysisMode] = useState(true);
+  const [analysisMode, setAnalysisMode] = useState(false);
+  const [toolStatus, setToolStatus] = useState('');
 
-  useEffect(() => {
-    const onKey = (event) => {
-      if (event.key === 'ArrowRight') {
-        setActiveRound((round) => Math.min(rounds[rounds.length - 1] || round, round + 1));
-      }
-      if (event.key === 'ArrowLeft') {
-        setActiveRound((round) => Math.max(1, round - 1));
-      }
-      if (event.key === ' ') {
-        event.preventDefault();
-        setPlaying((value) => !value);
-      }
-      const number = Number(event.key);
-      if (Number.isInteger(number) && number > 0 && replay.highlights[number - 1]) {
-        setActiveRound(replay.highlights[number - 1].round);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [replay.highlights, rounds]);
+  const handleKeyDown = (event) => {
+    if (event.target !== event.currentTarget) return;
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      setActiveRound((round) => Math.min(rounds[rounds.length - 1] || round, round + 1));
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      setActiveRound((round) => Math.max(1, round - 1));
+    }
+    if (event.key === ' ') {
+      event.preventDefault();
+      setPlaying((value) => !value);
+    }
+    const number = Number(event.key);
+    if (Number.isInteger(number) && number > 0 && replay.highlights[number - 1]) {
+      setActiveRound(replay.highlights[number - 1].round);
+    }
+  };
+
+  const copyShareLink = async () => {
+    try {
+      await copyText(replay.shareUrl);
+      setToolStatus('Replay link copied.');
+    } catch (error) {
+      setToolStatus(error?.message || 'Replay link could not be copied.');
+    }
+  };
+
+  const saveReplay = () => {
+    saveReplayToLibrary(replay);
+    setToolStatus('Replay saved to this device.');
+  };
 
   useEffect(() => {
     if (!playing) return undefined;
@@ -68,7 +83,13 @@ export default function ReplayViewer({ replay, comparison }) {
   const activePlayers = activeRoundItems[0]?.snapshot?.afterPlayers || [];
 
   return (
-    <div className={cinematicMode ? 'min-h-screen bg-vault-dark' : ''}>
+    <div
+      className={cinematicMode ? 'min-h-screen bg-vault-dark' : ''}
+      role="region"
+      aria-label="Replay viewer. Focus this region to use arrow, number, and space shortcuts."
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+    >
       <section className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -105,25 +126,35 @@ export default function ReplayViewer({ replay, comparison }) {
             <option value={1200}>1x</option>
             <option value={700}>1.5x</option>
           </select>
-          <ControlButton onClick={() => setCinematicMode((value) => !value)} label="Toggle cinematic mode">
-            Cinematic
-          </ControlButton>
-          <ControlButton onClick={() => setAnalysisMode((value) => !value)} label="Toggle analysis mode">
-            Analysis
-          </ControlButton>
-          <ControlButton onClick={() => navigator.clipboard?.writeText(replay.shareUrl)} label="Copy share link">
-            Copy link
-          </ControlButton>
-          <ControlButton onClick={() => saveReplayToLibrary(replay)} label="Save replay">
-            Save
-          </ControlButton>
-          <ControlButton onClick={() => downloadText(`${replay.id}.json`, exportReplayJson(replay), 'application/json')} label="Export JSON">
-            JSON
-          </ControlButton>
-          <ControlButton onClick={() => downloadText(`${replay.id}.md`, exportReplayMarkdown(replay), 'text/markdown')} label="Export Markdown">
-            Markdown
-          </ControlButton>
         </div>
+        <details className="mt-3 rounded border border-vault-border bg-vault-panel/45 p-3">
+          <summary className="cursor-pointer font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
+            Replay tools
+          </summary>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <ControlButton onClick={() => setCinematicMode((value) => !value)} label="Toggle cinematic mode">
+              Cinematic
+            </ControlButton>
+            <ControlButton onClick={() => setAnalysisMode((value) => !value)} label="Toggle analysis mode">
+              Analysis
+            </ControlButton>
+            <ControlButton onClick={copyShareLink} label="Copy share link">
+              Copy link
+            </ControlButton>
+            <ControlButton onClick={saveReplay} label="Save replay">
+              Save
+            </ControlButton>
+            <ControlButton onClick={() => downloadText(`${replay.id}.json`, exportReplayJson(replay), 'application/json')} label="Export JSON">
+              JSON
+            </ControlButton>
+            <ControlButton onClick={() => downloadText(`${replay.id}.md`, exportReplayMarkdown(replay), 'text/markdown')} label="Export Markdown">
+              Markdown
+            </ControlButton>
+          </div>
+          <p className="mt-3 font-mono text-xs text-vault-text-dim" role="status" aria-live="polite">
+            {toolStatus || 'Keyboard: focus the replay viewer, then use arrows, Space, or highlight numbers.'}
+          </p>
+        </details>
       </section>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">

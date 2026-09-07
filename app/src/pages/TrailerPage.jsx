@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
 
@@ -11,6 +12,15 @@ const CHAPTERS = [
 ];
 
 export default function TrailerPage() {
+  const videoRef = useRef(null);
+
+  const seekTo = (time) => {
+    if (!videoRef.current) return;
+    const [minutes, seconds] = time.split(':').map(Number);
+    videoRef.current.currentTime = minutes * 60 + seconds;
+    videoRef.current.play().catch(() => {});
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-12">
       <Seo
@@ -43,11 +53,10 @@ export default function TrailerPage() {
 
       <section className="mt-9 overflow-hidden border border-vault-border bg-black shadow-[0_30px_90px_rgba(0,0,0,0.35)]">
         <video
+          ref={videoRef}
           className="aspect-video w-full bg-black object-contain"
           controls
-          autoPlay
           muted
-          loop
           playsInline
           preload="metadata"
           poster="/images/plundrix-vault-hero.webp"
@@ -60,11 +69,12 @@ export default function TrailerPage() {
 
       <section className="mt-8 grid gap-px border border-vault-border bg-vault-border md:grid-cols-2 xl:grid-cols-3">
         {CHAPTERS.map(([time, title, copy]) => (
-          <article key={time} className="bg-vault-surface p-5">
+          <button type="button" key={time} onClick={() => seekTo(time)} className="min-h-[132px] bg-vault-surface p-5 text-left hover:bg-vault-panel focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-tungsten">
             <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten">{time}</p>
             <h2 className="mt-2 font-display text-2xl uppercase text-vault-text">{title}</h2>
             <p className="mt-3 text-sm leading-6 text-vault-text-dim">{copy}</p>
-          </article>
+            <span className="mt-4 block font-mono text-xs uppercase tracking-[0.12em] text-tungsten">Play chapter -&gt;</span>
+          </button>
         ))}
       </section>
 

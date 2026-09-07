@@ -3,7 +3,7 @@ import { GameState } from '../../lib/constants';
 const PHASES = [
   { key: 'submit', label: 'SUBMIT' },
   { key: 'resolve', label: 'RESOLVE' },
-  { key: 'next', label: 'NEXT ROUND' },
+  { key: 'next', label: 'NEXT', accessibleLabel: 'NEXT ROUND' },
   { key: 'winner', label: 'WINNER' },
 ];
 
@@ -20,14 +20,15 @@ export default function PhaseIndicator({ gameState, allSubmitted }) {
   const activeKey = getActivePhase(gameState, allSubmitted);
 
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex w-full items-center justify-center gap-0.5" aria-label="Operation phase">
       {PHASES.map((phase, i) => {
         const isActive = phase.key === activeKey;
         return (
-          <div key={phase.key} className="flex items-center">
+          <div key={phase.key} className="flex min-w-0 items-center">
             <div
+              aria-label={phase.accessibleLabel || phase.label}
               className={`
-                px-2 py-1 text-xs font-mono uppercase tracking-wider
+                whitespace-nowrap px-1.5 py-1 text-[10px] font-mono uppercase tracking-normal sm:px-2 sm:text-xs sm:tracking-wider
                 border transition-all duration-300
                 ${isActive
                   ? 'border-tungsten/60 bg-tungsten/15 text-tungsten-bright shadow-[0_0_8px_rgba(196,149,106,0.15)]'

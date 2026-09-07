@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-search-kit",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T20:12:50.364Z",
+  "candidate": {
+    "path": "assets/art-source/parts/search-kit.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 953791,
+    "sha256": "e7728884508efd4a2538b680c447081be1c1519ca631a6bbd5596b106f449839"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/raw/part-search-kit-flux2-pro-v1-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 389569,
+    "sha256": "cbb6c1d722f5401e070832a2c1c9b050775def659d648e89ed48ad2af9d8da3a"
+  },
+  "prompt": "BACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Create the canonical Search kit with one visible useful discovery and room for external state effects.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One compact opened field kit containing precision tools and one empty fitted compartment. Reusable parts: an opened field kit revealing one useful precision tool with a restrained green discovery glint.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Single centered kit, open at a readable angle, complete silhouette, 12 percent transparent padding. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio key light; only a faint restrained green reflection. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; engraved calibration marks; braided cable; smoked glass\nJoy target: discovery. The fitted compartments suggest the satisfaction of finding exactly the needed tool.\nRestraint: Do not imply a guaranteed powerful reward.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; single coherent kit; complete silhouette; Search finds tools; it does not directly crack a lock.\nAvoid: treasure chest; coins; loot explosion; scene background\nOutput intent: 1024x1024 source master saved as assets/art-source/parts/search-kit.png",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "kit reads at 96px",
+    "object does not resemble a treasure chest"
+  ],
+  "lifecycle": "promoted",
+  "promotedAt": "2026-09-06T20:24:57.156Z"
+}

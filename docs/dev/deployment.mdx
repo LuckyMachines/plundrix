@@ -5,7 +5,7 @@ description: Deploy Plundrix to Sepolia or mainnet, upgrade the proxy, and manag
 
 # Deployment & Upgrades
 
-Plundrix uses a UUPS proxy pattern. The proxy address stays the same across upgrades — only the implementation behind it changes.
+Plundrix uses two UUPS proxies: `PlundrixGame` for match state and `PlundrixWorkshop` for salvage, crafted blueprints, and loadouts. Each proxy address stays stable while its implementation can be upgraded independently.
 
 ---
 
@@ -35,7 +35,7 @@ Plundrix uses a UUPS proxy pattern. The proxy address stays the same across upgr
 npm run deploy:local
 ```
 
-Uses a Forge script with the default Anvil private key. Writes the proxy address to `app/.env.local`.
+Uses a Forge script with the default Anvil private key. Writes both proxy addresses to `app/.env.local`.
 
 ### Sepolia / Mainnet (KMS)
 
@@ -60,7 +60,9 @@ npm run deploy:kms
 This:
 1. Deploys the `PlundrixGame` implementation via KMS-signed transaction
 2. Deploys the `ERC1967Proxy` pointing to the implementation, with `initialize()` encoded
-3. Optionally calls `configureAutomation()` if auto-resolve or entropy is enabled
+3. Deploys the `PlundrixWorkshop` implementation and proxy
+4. Calls `configureWorkshop()` so only the game can lock, consume, and reward gadgets
+5. Optionally calls `configureAutomation()` if auto-resolve or entropy is enabled
 
 ### Forge Script (Private Key)
 
@@ -123,6 +125,16 @@ forge script script/UpgradePlundrix.s.sol \
   --broadcast
 ```
 
+Upgrade the workshop independently with either:
+
+```bash
+WORKSHOP_PROXY_ADDRESS=0x... npm run upgrade:workshop:kms
+
+# Or with a private key
+WORKSHOP_PROXY_ADDRESS=0x... PRIVATE_KEY=0x... \
+forge script script/UpgradeWorkshop.s.sol --rpc-url $RPC_URL --broadcast
+```
+
 ### Post-Upgrade Verification
 
 ```bash
@@ -132,6 +144,8 @@ node scripts/sync-abi.mjs
 # Verify new functions are accessible
 cast call $PROXY_ADDRESS "getGameMode(uint256)" 1 --rpc-url $RPC_URL
 cast call $PROXY_ADDRESS "withdrawableBalance(address)" $ADDRESS --rpc-url $RPC_URL
+cast call $PROXY_ADDRESS "workshop()(address)" --rpc-url $RPC_URL
+cast call $WORKSHOP_PROXY_ADDRESS "game()(address)" --rpc-url $RPC_URL
 ```
 
 ---
@@ -235,6 +249,7 @@ read-only agent service internally when its chain settings exist. Requests under
 
 ```text
 VITE_CONTRACT_ADDRESS=0x1ff715d46470b4024d88a12838e08a60855f0ae2
+VITE_WORKSHOP_ADDRESS=<workshop proxy address>
 VITE_RPC_URL=<production Sepolia RPC>
 VITE_AGENT_SERVICE_URL=https://game.plundrix.com
 VITE_WALLETCONNECT_PROJECT_ID=<public WalletConnect project ID>

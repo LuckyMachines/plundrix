@@ -210,7 +210,7 @@ export const PLAYTEST_TEMPLATES = Object.freeze({
     setup: ['Use the target environment.', 'Start from a fresh browser/session.', 'Record every setup and wallet friction point.'],
     script: ['Walk through route load, wallet connect, game discovery, game join, one round, and replay review.'],
     facilitatorNotes: ['Only intervene when the session is blocked.', 'Mark exact route and step for every failure.'],
-    tasks: ['Open app.', 'Connect wallet.', 'Find or create game.', 'Submit one action.', 'Review result or replay.'],
+    tasks: ['Open app.', 'Connect wallet.', 'Find or create an operation.', 'Choose one action.', 'Review the result or replay.'],
     expectedObservations: ['Setup path is complete.', 'Network and wallet states are understandable.'],
     passCriteria: ['Tester reaches a resolved round.', 'No blocker remains unresolved.'],
     failCriteria: ['Wallet/network blocks session.', 'Tester cannot reach a playable state.'],

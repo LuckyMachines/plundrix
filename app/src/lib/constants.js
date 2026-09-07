@@ -13,6 +13,8 @@ export const OutcomeReason = {
   SABOTAGE_SUCCESS_STUN_ONLY: 9,
   SABOTAGE_SUCCESS_NO_TOOL: 10,
   NO_SUBMISSION: 11,
+  SABOTAGE_FAILED_COOLDOWN: 12,
+  SABOTAGE_BLOCKED_GADGET: 13,
 };
 export const TOTAL_LOCKS = 5;
 export const MAX_TOOLS = 5;
@@ -39,6 +41,8 @@ export const OUTCOME_REASON_LABELS = {
   [OutcomeReason.SABOTAGE_SUCCESS_STUN_ONLY]: 'Target stunned',
   [OutcomeReason.SABOTAGE_SUCCESS_NO_TOOL]: 'Target stunned, no tool to steal',
   [OutcomeReason.NO_SUBMISSION]: 'No action submitted',
+  [OutcomeReason.SABOTAGE_FAILED_COOLDOWN]: 'Sabotage cooling down',
+  [OutcomeReason.SABOTAGE_BLOCKED_GADGET]: 'Firewall absorbed the sabotage',
 };
 
 export const STATE_LABELS = {

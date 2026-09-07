@@ -135,10 +135,13 @@ if (-not (Wait-ForHttp -Port $vitePort)) {
 }
 
 $contractAddress = ''
+$workshopAddress = ''
 $envLocal = Join-Path $app '.env.local'
 if (Test-Path $envLocal) {
   $line = Get-Content $envLocal | Where-Object { $_ -like 'VITE_CONTRACT_ADDRESS=*' } | Select-Object -First 1
   if ($line) { $contractAddress = $line.Split('=')[1] }
+  $workshopLine = Get-Content $envLocal | Where-Object { $_ -like 'VITE_WORKSHOP_ADDRESS=*' } | Select-Object -First 1
+  if ($workshopLine) { $workshopAddress = $workshopLine.Split('=')[1] }
 }
 
 $pidPayload = @{
@@ -155,6 +158,7 @@ Write-Host "ANVIL_RPC_URL=$anvilRpcUrl"
 Write-Host "VITE_PORT=$vitePort"
 Write-Host "APP_URL=http://localhost:$vitePort"
 if ($contractAddress) { Write-Host "CONTRACT_ADDRESS=$contractAddress" }
+if ($workshopAddress) { Write-Host "WORKSHOP_ADDRESS=$workshopAddress" }
 if ($anvilPid) { Write-Host "ANVIL_PID=$anvilPid" }
 if ($vitePid) { Write-Host "VITE_PID=$vitePid" }
 Write-Host "ANVIL_LOG=$anvilLog"

@@ -33,9 +33,11 @@ export default function LeaderboardPage() {
         <div className="flex flex-wrap gap-2">
           {FILTERS.map((filter) => (
             <button
+              type="button"
               key={filter.value}
               onClick={() => setQueue(filter.value)}
-              className={`rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
+              aria-pressed={queue === filter.value}
+              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
                 queue === filter.value
                   ? 'border-tungsten/50 bg-tungsten/10 text-tungsten'
                   : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/70'
@@ -46,6 +48,11 @@ export default function LeaderboardPage() {
           ))}
         </div>
       </div>
+
+      <nav className="flex flex-wrap gap-2" aria-label="Competition views">
+        <Link to="/sessions" className="btn-secondary">Sessions</Link>
+        <Link to="/leaderboard" className="btn-primary" aria-current="page">Leaderboards</Link>
+      </nav>
 
       {!AGENT_SERVICE_CONFIGURED ? (
         <UnavailableState />
@@ -61,6 +68,17 @@ export default function LeaderboardPage() {
       )}
 
       <PlaystyleStats profiles={summary.profiles} />
+
+      <details className="rounded border border-vault-border bg-vault-surface p-4">
+        <summary className="cursor-pointer font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+          How standings work
+        </summary>
+        <p className="mt-4 max-w-4xl text-sm leading-6 text-vault-text-dim">
+          Completed operations award 12 base points, 14 per lock, 3 per tool, 6 per sabotage,
+          90 for a win, and 10 for submitting every round. Mixed tables add 4 points; agent-ladder
+          tables add 8. Rankings sort by points, then wins. Open operations award no points until complete.
+        </p>
+      </details>
     </div>
   );
 }

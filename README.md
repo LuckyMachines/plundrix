@@ -5,6 +5,7 @@ Plundrix is a fully on-chain competitive vault-heist game. Two to four players r
 The repo currently ships:
 
 - an upgradeable UUPS game contract with pause and role controls
+- an upgradeable onchain workshop with 10 gameplay-distinct gadgets and 1,200 stable visual configurations
 - a React app for local play and Sepolia staging
 - instant Blitz, Classic, and Tactical agent matches at `/play`
 - a 32-second real-capture gameplay trailer at `/trailer`
@@ -28,6 +29,8 @@ The repo currently ships:
 
 Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
 The latest read-only chain and provenance audit is in [docs/sepolia-readiness-audit.md](docs/sepolia-readiness-audit.md).
+The living interface reference and review workflow are documented in [docs/design-system.md](docs/design-system.md).
+The manifest-driven art direction, generation, delivery, and review workflow is documented in [docs/art-pipeline.md](docs/art-pipeline.md).
 
 ## Game Summary
 
@@ -53,7 +56,7 @@ See [docs/legal-notes.md](docs/legal-notes.md) for the canonical product-claims 
 
 ## Contract Architecture
 
-`PlundrixGame` is deployed behind an `ERC1967Proxy` using UUPS upgrades.
+`PlundrixGame` and `PlundrixWorkshop` are deployed behind separate `ERC1967Proxy` instances using UUPS upgrades. Keeping crafting in a dedicated module leaves the game below the EVM bytecode ceiling while the game contract remains the only authority allowed to lock, consume, or reward loadouts.
 
 Key features:
 
@@ -64,6 +67,9 @@ Key features:
 - optional required external entropy mode
 - optional autoloop resolution mode
 - dormant 2% fee configuration for future paid modes
+- deterministic, non-transferable salvage and gadget ownership
+- one equipped gadget snapshotted per player when a match starts
+- single-use Precision Kit, Signal Scanner, and Firewall protocols resolved by `PlundrixGame`
 
 Important constraint:
 
@@ -180,12 +186,14 @@ Frontend env vars:
 VITE_RPC_URL
 VITE_WALLETCONNECT_PROJECT_ID
 VITE_CONTRACT_ADDRESS
+VITE_WORKSHOP_ADDRESS
 VITE_AGENT_SERVICE_URL
 VITE_FOUNDRY_RPC_URL
 VITE_ENABLE_FOUNDRY
 VITE_ENABLE_NEXT_RULES
 VITE_ENABLE_SESSION_KEYS
 VITE_SESSION_RELAY_URL
+VITE_ENABLE_INTERNAL_TOOLS # development-only tools; leave false for public builds
 ```
 
 Run:

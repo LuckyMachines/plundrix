@@ -6,6 +6,7 @@ import WinnerReveal from './WinnerReveal';
 import { Action } from '../../lib/constants';
 import { getOutcomeReasonLabel } from '../../lib/outcomes';
 import { truncateAddress } from '../../lib/formatting';
+import { useAccessibility } from '../../context/AccessibilityContext';
 
 const PHASE_LABELS = [
   'PHASE 1: PICK & SEARCH',
@@ -17,6 +18,7 @@ const PHASE_LABELS = [
 const PHASE_DURATIONS = [1500, 500, 1500, 0]; // ms per phase; phase 4 waits for callback
 
 export default function ResolveSequence({ roundEvents, currentAddress, onComplete }) {
+  const { reducedMotion } = useAccessibility();
   const [phase, setPhase] = useState(0);
   const hasSabotage = roundEvents?.some((event) => (
     event.name === 'PlayerSabotaged' ||
@@ -32,10 +34,10 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
 
     const timer = setTimeout(() => {
       setPhase((p) => p + 1);
-    }, PHASE_DURATIONS[phase]);
+    }, reducedMotion ? 20 : PHASE_DURATIONS[phase]);
 
     return () => clearTimeout(timer);
-  }, [maxPhase, phase, roundEvents]);
+  }, [maxPhase, phase, reducedMotion, roundEvents]);
 
   // Reset phase when new round events arrive
   useEffect(() => {

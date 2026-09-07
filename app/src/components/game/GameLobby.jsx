@@ -109,7 +109,7 @@ export default function GameLobby({ gameId }) {
         {!isStakes && (
           <div className="border border-vault-border/70 bg-vault-dark/30 rounded p-3">
             <p className="font-mono text-xs text-vault-text-dim italic">
-              Free-play mode -- game may stall if players go AFK.
+              Free-play mode - this operation may stall if players leave.
             </p>
           </div>
         )}
@@ -147,7 +147,7 @@ export default function GameLobby({ gameId }) {
             </div>
           ) : players.length === 0 ? (
             <p className="font-mono text-xs text-vault-text-dim italic">
-              No operatives registered yet.
+              No players registered yet.
             </p>
           ) : (
             <ul className="space-y-1">
@@ -212,7 +212,7 @@ export default function GameLobby({ gameId }) {
 
           {canStart && count < 2 && (
             <p className="self-center font-mono text-xs text-vault-text-dim italic">
-              Minimum 2 operatives required to begin.
+              Minimum 2 players required to begin.
             </p>
           )}
 

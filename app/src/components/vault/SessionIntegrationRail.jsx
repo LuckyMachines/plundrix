@@ -60,7 +60,7 @@ export default function SessionIntegrationRail({ session }) {
 
         <div>
           <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
-            Operative
+            Player
           </p>
           <p className="font-mono text-sm text-vault-text mt-1 capitalize">
             {status.posture}

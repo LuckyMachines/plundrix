@@ -21,7 +21,7 @@ const ACTIONS = [
     name: 'Sabotage',
     label: ACTION_LABELS[Action.SABOTAGE],
     color: 'border-signal-red/40 text-signal-red',
-    desc: 'Target another operative to stun them for one round, jamming their tools and negating their Pick.',
+    desc: 'Target another player to stun them for one round, jamming their tools and negating their Pick.',
   },
 ];
 

@@ -44,9 +44,9 @@ export default function SabotageControl({
       onInvalidIntent={onInvalidIntent}
     >
       {/* Label */}
-      <h4 className="font-mono text-xs text-signal-red/80 uppercase tracking-[0.25em] mb-3">
-        Cut Line
-      </h4>
+      <p className="font-mono text-xs text-signal-red/80 uppercase tracking-[0.25em] mb-3">
+        Sabotage / Cut line
+      </p>
 
       {/* Crosshair icon */}
       <div className="mb-3">
@@ -115,7 +115,7 @@ export default function SabotageControl({
         }}
         disabled={!canExecute}
         className={`
-          w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
+          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
           border transition-all duration-200 mt-3
           ${!canExecute
             ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'
@@ -123,7 +123,7 @@ export default function SabotageControl({
           }
         `}
       >
-        Execute
+        Sabotage
       </button>
     </AliveActionCard>
   );

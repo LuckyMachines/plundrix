@@ -12,6 +12,7 @@
     "autoloop:start": "node ops/autoloop-worker.mjs",
     "deploy:local": "node scripts/deploy-local.mjs",
     "deploy:kms": "node ops/deploy-kms.mjs",
+    "upgrade:workshop:kms": "node ops/upgrade-workshop-kms.mjs",
     "dev:local:start": "powershell -ExecutionPolicy Bypass -File scripts/start-local-dev.ps1",
     "dev:local:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-local-dev.ps1",
     "kms:address": "node ops/kms-address.mjs",

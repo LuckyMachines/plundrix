@@ -2,15 +2,17 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
-import NetworkSwitchBanner from './components/wallet/NetworkSwitchBanner';
 import Modal from './components/shared/Modal';
 import Spinner from './components/shared/Spinner';
 import SessionAudioBridge from './components/shared/SessionAudioBridge';
-import PlayerHubPage from './pages/PlayerHubPage';
 import Seo from './components/seo/Seo';
 import { routeMeta } from './data/productSpine';
+import { analyticsRoute, trackProductEvent } from './lib/analytics';
 
+const PlayerHubPage = lazy(() => import('./pages/PlayerHubPage'));
+const NetworkSwitchBanner = lazy(() => import('./components/wallet/NetworkSwitchBanner'));
 const InstantPlayPage = lazy(() => import('./pages/InstantPlayPage'));
+const WorkshopPage = lazy(() => import('./pages/WorkshopPage'));
 const TrailerPage = lazy(() => import('./pages/TrailerPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
 const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'));
@@ -33,9 +35,11 @@ const CompareDetailPage = lazy(() => import('./pages/CompareDetailPage'));
 const GlossaryPage = lazy(() => import('./pages/GlossaryPage'));
 const ProductMapPage = lazy(() => import('./pages/ProductMapPage'));
 const DesignSystemPage = lazy(() => import('./pages/DesignSystemPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
+const INTERNAL_TOOLS_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 
-export default function App() {
+export default function App({ web3Enabled = false }) {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [helpInitialTab, setHelpInitialTab] = useState('overview');
 
@@ -50,10 +54,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,rgba(196,149,106,0.08),transparent_45%),linear-gradient(180deg,var(--color-vault-dark),#111214)]">
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <RouteMetadata />
-      <Header onHelpClick={() => setIsHelpOpen(true)} />
-      <NetworkSwitchBanner />
-      <main className="flex-1">
+      <ScrollToTop />
+      <RouteAnalytics />
+      <Header onHelpClick={() => setIsHelpOpen(true)} web3Enabled={web3Enabled} />
+      {web3Enabled && <Suspense fallback={null}><NetworkSwitchBanner /></Suspense>}
+      <main className="min-w-0 flex-1" id="main-content" tabIndex="-1">
         <Suspense
           fallback={
             <div className="max-w-6xl mx-auto px-6 py-10 flex items-center gap-3">
@@ -67,6 +74,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<PlayerHubPage />} />
             <Route path="/play" element={<InstantPlayPage />} />
+            <Route path="/workshop" element={<WorkshopPage />} />
             <Route path="/trailer" element={<TrailerPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/sessions" element={<SessionsPage />} />
@@ -74,27 +82,32 @@ export default function App() {
             <Route path="/game/:gameId" element={<GamePage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/snapshot" element={<SnapshotPage />} />
-            <Route path="/simulator" element={<SimulatorPage />} />
             <Route path="/replays" element={<ReplaysPage />} />
             <Route path="/replay/:replayId" element={<ReplayPage />} />
-            <Route path="/ops" element={<OpsPage />} />
-            <Route path="/launch" element={<LaunchPage />} />
-            <Route path="/ghosts" element={<GhostsPage />} />
-            <Route path="/mutations" element={<MutationsPage />} />
-            <Route path="/playtest" element={<PlaytestPage />} />
-            <Route path="/design" element={<DesignTowerPage />} />
             <Route path="/compare" element={<CompareIndexPage />} />
             <Route path="/compare/:slug" element={<CompareDetailPage />} />
             <Route path="/glossary" element={<GlossaryPage />} />
-            <Route path="/map" element={<ProductMapPage />} />
-            <Route path="/design-system" element={<DesignSystemPage />} />
+            {INTERNAL_TOOLS_ENABLED && (
+              <>
+                <Route path="/snapshot" element={<SnapshotPage />} />
+                <Route path="/simulator" element={<SimulatorPage />} />
+                <Route path="/ops" element={<OpsPage />} />
+                <Route path="/launch" element={<LaunchPage />} />
+                <Route path="/ghosts" element={<GhostsPage />} />
+                <Route path="/mutations" element={<MutationsPage />} />
+                <Route path="/playtest" element={<PlaytestPage />} />
+                <Route path="/design" element={<DesignTowerPage />} />
+                <Route path="/map" element={<ProductMapPage />} />
+                <Route path="/design-system" element={<DesignSystemPage />} />
+              </>
+            )}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </main>
-      <Footer />
+      <Footer web3Enabled={web3Enabled} />
       <SessionAudioBridge />
-      <Modal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)}>
+      <Modal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} ariaLabel="Plundrix field manual">
         <Suspense
           fallback={
             <div className="p-8 flex items-center gap-3">
@@ -110,6 +123,26 @@ export default function App() {
       </Modal>
     </div>
   );
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [pathname]);
+
+  return null;
+}
+
+function RouteAnalytics() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    trackProductEvent('Page Viewed', { surface: analyticsRoute(pathname) });
+  }, [pathname]);
+
+  return null;
 }
 
 function RouteMetadata() {
@@ -132,7 +165,7 @@ function RouteMetadata() {
   }
 
   const meta = routeMeta(metaPath);
-  if (!meta) {
+  if (!meta || (meta.public === false && !INTERNAL_TOOLS_ENABLED)) {
     return <Seo title="Page Not Found | Plundrix" description="This Plundrix route does not exist." path={pathname} noIndex />;
   }
 

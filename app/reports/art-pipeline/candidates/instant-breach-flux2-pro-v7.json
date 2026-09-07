@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "assetId": "instant-breach",
+  "provider": "Azure AI Foundry + Plundrix compositor",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T20:29:33.641Z",
+  "candidate": {
+    "path": "assets/art-source/scenes/plundrix-instant-breach.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 918414,
+    "sha256": "abebd076f3d7455872b2b4c9418a3517de595b5a5705f92d370e4bbe8af2f904"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/raw/instant-breach-flux2-pro-v7-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 423189,
+    "sha256": "51d5cd0657f496b65b43d260cf57dc83c9e452a570cefe90cae61ad35869366a"
+  },
+  "prompt": "Create a square 1024x1024 text-free cinematic game environment base for a premium industrial vault strategy game. COMPOSITE BASE ONLY: show exactly four empty workstations, all separate: one large player workbench across the lower foreground and exactly three smaller plain mechanical rival benches in the middle distance at left, center, and right. Behind them is one wide, completely blank, flat blackened-steel vault panel occupying the upper-right half, intentionally empty for five lock modules that will be composited later. The blank vault panel must contain zero locks, zero circles, zero holes, zero dials, zero gauges, and zero decorations. Each workstation uses only simple unlabeled levers and a few precision hand tools. No screens, monitors, digital displays, gauges, keyboards, chairs, writing, letters, numbers, labels, symbols, logos, watermarks, borders, people, robots, body parts, or faces. Premium painterly 3D game art, physically grounded blackened steel, aged brass, worn enamel, warm amber task light against cool near-black shadows. Preserve calm dark low-detail negative space in the upper-left for later HTML copy. Competitive and welcoming, not menacing. Image only.",
+  "composite": {
+    "basePrompt": "Create a square 1024x1024 text-free cinematic game environment base for a premium industrial vault strategy game. COMPOSITE BASE ONLY: show exactly four empty workstations, all separate: one large player workbench across the lower foreground and exactly three smaller plain mechanical rival benches in the middle distance at left, center, and right. Behind them is one wide, completely blank, flat blackened-steel vault panel occupying the upper-right half, intentionally empty for five lock modules that will be composited later. The blank vault panel must contain zero locks, zero circles, zero holes, zero dials, zero gauges, and zero decorations. Each workstation uses only simple unlabeled levers and a few precision hand tools. No screens, monitors, digital displays, gauges, keyboards, chairs, writing, letters, numbers, labels, symbols, logos, watermarks, borders, people, robots, body parts, or faces. Premium painterly 3D game art, physically grounded blackened steel, aged brass, worn enamel, warm amber task light against cool near-black shadows. Preserve calm dark low-detail negative space in the upper-left for later HTML copy. Competitive and welcoming, not menacing. Image only.",
+    "part": "assets/art-source/parts/lock-module.png",
+    "expectedCount": 5,
+    "size": 104,
+    "positions": [
+      [
+        420,
+        214
+      ],
+      [
+        530,
+        214
+      ],
+      [
+        640,
+        214
+      ],
+      [
+        750,
+        214
+      ],
+      [
+        860,
+        214
+      ]
+    ],
+    "clones": [
+      {
+        "from": [510, 616, 70, 68],
+        "to": [440, 616]
+      },
+      {
+        "from": [820, 616, 70, 68],
+        "to": [750, 616]
+      }
+    ]
+  },
+  "manualChecks": [
+    "focal subject reads at 240px wide",
+    "no text, logo, watermark, fake UI, coins, or treasure",
+    "mechanical details match the declared gameplay truth",
+    "desktop and mobile crops preserve the focal beat"
+  ],
+  "lifecycle": "promoted",
+  "promotedAt": "2026-09-06T20:32:03.156Z"
+}

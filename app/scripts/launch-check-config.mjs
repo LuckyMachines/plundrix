@@ -41,16 +41,20 @@ const merged = { ...env, ...process.env };
 const errors = [];
 const warnings = [];
 const contract = merged.VITE_CONTRACT_ADDRESS || merged.VITE_PLUNDRIX_CONTRACT;
+const workshop = merged.VITE_WORKSHOP_ADDRESS;
 const chainId = Number(merged.VITE_CHAIN_ID);
 
 if (!isAddress(contract)) errors.push('VITE_CONTRACT_ADDRESS must be a valid EVM address.');
+if (workshop && !isAddress(workshop)) errors.push('VITE_WORKSHOP_ADDRESS must be a valid EVM address when supplied.');
 if (!Number.isInteger(chainId) || chainId <= 0) errors.push('VITE_CHAIN_ID must be a positive integer.');
 if (!existsSync(join(process.cwd(), 'src', 'config', 'PlundrixGame.json'))) errors.push('PlundrixGame ABI is missing from app/src/config.');
+if (!existsSync(join(process.cwd(), 'src', 'config', 'PlundrixWorkshop.json'))) errors.push('PlundrixWorkshop ABI is missing from app/src/config.');
 if (!existsSync(join(process.cwd(), 'src', 'config', 'contract.js'))) errors.push('Frontend contract config module is missing.');
 if (!String(await readFile(join(process.cwd(), 'src', 'config', 'contract.js'), 'utf8')).includes('VITE_CONTRACT_ADDRESS')) {
   errors.push('Frontend config must read VITE_CONTRACT_ADDRESS.');
 }
 if (!merged.VITE_MAINNET_RPC_URL && chainId === 8453) warnings.push('VITE_MAINNET_RPC_URL is blank; route checks can still pass, but mainnet readiness should remain blocked.');
+if (!workshop) warnings.push('VITE_WORKSHOP_ADDRESS is blank; the workshop will run in local-practice mode only.');
 if (merged.PLUNDRIX_FEE_DISABLED !== 'true') warnings.push('PLUNDRIX_FEE_DISABLED should be true for free-play beta launch.');
 
 if (args.json) {

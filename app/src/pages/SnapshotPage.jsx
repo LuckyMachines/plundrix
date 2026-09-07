@@ -206,7 +206,7 @@ export default function SnapshotPage() {
       <section data-snapshot="profile" className="snapshot-frame space-y-4">
         <div className="border border-vault-border rounded bg-vault-surface p-5">
           <h2 className="font-display text-3xl uppercase tracking-[0.18em] text-tungsten">
-            0x71F2 Operative
+            0x71F2 Player
           </h2>
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-vault-text-dim mt-2">
             Observed Session Story

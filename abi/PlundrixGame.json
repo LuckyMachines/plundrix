@@ -311,6 +311,19 @@
   },
   {
     "type": "function",
+    "name": "configureWorkshop",
+    "inputs": [
+      {
+        "name": "workshopAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "createGame",
     "inputs": [
       {
@@ -1113,6 +1126,19 @@
         "name": "",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "workshop",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
       }
     ],
     "stateMutability": "view"
@@ -2042,5 +2068,23 @@
       }
     ],
     "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "WorkshopConfigured",
+    "inputs": [
+      {
+        "name": "workshop",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "InvalidWorkshop",
+    "inputs": []
   }
 ]

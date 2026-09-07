@@ -88,6 +88,7 @@ export default function PlayerHubPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link to="/trailer" className="inline-flex min-h-[44px] items-center border border-vault-border px-4 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text">Watch trailer</Link>
+            <Link to="/workshop" className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-[10px] uppercase tracking-[0.14em] text-tungsten">Open workshop</Link>
             <Link to="/replays" className="inline-flex min-h-[44px] items-center border border-vault-border px-4 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text">Browse replays</Link>
             <a href="https://plundrix.com" className="inline-flex min-h-[44px] items-center border border-vault-border px-4 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text">About Plundrix</a>
           </div>

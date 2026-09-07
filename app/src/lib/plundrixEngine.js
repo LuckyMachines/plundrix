@@ -1,4 +1,5 @@
 import { buildFunTelemetry, scoreFunTelemetry } from './funSystems.js';
+import { GADGET_CHASSIS, GADGET_CHASSIS_BY_ID } from '../data/gadgetInventory.js';
 
 export const SIM_MIN_PLAYERS = 2;
 export const SIM_MAX_PLAYERS = 4;
@@ -62,11 +63,16 @@ export const SIM_STRATEGIES = Object.freeze([
   { id: 'human', label: 'Human' },
 ]);
 
-export const SIM_GADGETS = Object.freeze([
-  { id: 'precision-kit', label: 'Precision Kit', description: '+10% to your first Pick.' },
-  { id: 'signal-scanner', label: 'Signal Scanner', description: '+20% to your first Search.' },
-  { id: 'firewall', label: 'Firewall', description: 'Blocks the first Sabotage against you.' },
-]);
+export const SIM_GADGETS = Object.freeze(GADGET_CHASSIS.map((gadget) => Object.freeze({
+  id: gadget.id,
+  label: gadget.label,
+  description: gadget.effect,
+  protocol: gadget.protocol,
+})));
+
+function getGadgetSignature(id) {
+  return GADGET_CHASSIS_BY_ID[id] || null;
+}
 
 export const SIM_DEFAULT_STRATEGY_PROFILE = Object.freeze({
   aggression: 55,
@@ -512,13 +518,19 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
     if (pending.action === SIM_ACTION.PICK) {
       let success = false;
       let reason = SIM_OUTCOME_REASON.PICK_FAILED_ROLL;
-      const gadgetBonus = player.gadgetReady && player.gadget === 'precision-kit' ? 10 : 0;
-      const chance = Math.min(next.rules.pickChanceCap, getPickChance(player, next.rules) + gadgetBonus);
-      if (gadgetBonus) player.gadgetReady = false;
+      let gadgetBonus = 0;
+      const signature = player.gadgetReady ? getGadgetSignature(player.gadget) : null;
 
       if (player.stunned) {
         reason = SIM_OUTCOME_REASON.PICK_FAILED_STUNNED;
-      } else if (roll < chance) {
+      } else {
+        if (signature?.id === 'precision-kit') gadgetBonus = 10;
+        if (signature?.id === 'torque-driver' && player.tools > 0) gadgetBonus = 18;
+        if (signature?.id === 'quickset-clamp' && player.locksCracked === 0) gadgetBonus = 14;
+        if (gadgetBonus) player.gadgetReady = false;
+      }
+      const chance = Math.min(next.rules.pickChanceCap, getPickChance(player, next.rules) + gadgetBonus);
+      if (!player.stunned && roll < chance) {
         success = true;
         reason = SIM_OUTCOME_REASON.PICK_SUCCESS;
         player.locksCracked += 1;
@@ -544,8 +556,21 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
     } else if (pending.action === SIM_ACTION.SEARCH) {
       let success = false;
       let reason = SIM_OUTCOME_REASON.SEARCH_FAILED_ROLL;
-      const gadgetBonus = player.gadgetReady && player.gadget === 'signal-scanner' ? 20 : 0;
-      const chance = Math.min(95, getSearchChance(player, next.rules) + gadgetBonus);
+      const signature = player.gadgetReady ? getGadgetSignature(player.gadget) : null;
+      let baseChance = getSearchChance(player, next.rules);
+      let gadgetBonus = 0;
+      let toolsFound = 1;
+      if (signature?.id === 'signal-scanner') gadgetBonus = 20;
+      if (signature?.id === 'echo-coil' && round >= 3) gadgetBonus = 26;
+      if (signature?.id === 'cache-siphon' && player.tools < next.rules.maxTools) {
+        gadgetBonus = 12;
+        toolsFound = 2;
+      }
+      if (signature?.id === 'route-compass') {
+        baseChance = next.rules.searchChance;
+        gadgetBonus = 10;
+      }
+      const chance = Math.min(95, baseChance + gadgetBonus);
       if (gadgetBonus) player.gadgetReady = false;
 
       if (roll < chance) {
@@ -554,7 +579,7 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         } else {
           success = true;
           reason = SIM_OUTCOME_REASON.SEARCH_SUCCESS;
-          player.tools += 1;
+          player.tools = Math.min(next.rules.maxTools, player.tools + toolsFound);
           emit('ToolFound', {
             actor: player.id,
             tools: player.tools,
@@ -623,8 +648,13 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       continue;
     }
 
-    if (target.gadgetReady && target.gadget === 'firewall') {
+    const targetSignature = target.gadgetReady ? getGadgetSignature(target.gadget) : null;
+    if (targetSignature?.protocol === 'firewall') {
       target.gadgetReady = false;
+      if (targetSignature.id === 'decoy-relay' && player.tools > 0) player.tools -= 1;
+      if (targetSignature.id === 'counterweight' && target.locksCracked < player.locksCracked) {
+        target.tools = Math.min(next.rules.maxTools, target.tools + 1);
+      }
       emit('ActionOutcome', {
         actor: player.id,
         target: target.id,
@@ -634,7 +664,7 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         locksCracked: player.locksCracked,
         tools: player.tools,
         stunned: player.stunned,
-        message: `${target.name}'s Firewall blocked the sabotage.`,
+        message: `${target.name}'s ${targetSignature.label} blocked the sabotage.`,
       });
       continue;
     }
@@ -755,15 +785,20 @@ export function chooseStrategyAction(
     id,
     'sabotage',
   ]);
+  const targetProtected = Boolean(
+    target?.lastSabotagedRound &&
+    state.currentRound - target.lastSabotagedRound <= state.rules.sabotageCooldownRounds
+  );
   const roleAllowsInventorySabotage = ['saboteur', 'leader-hunter', 'tool-hoarder', 'random'].includes(id);
   const wantsSabotage =
     target &&
+    !targetProtected &&
     id !== 'human' &&
     sabotageRoll < profile.sabotageThreshold &&
     (nearLeaderWin ||
       behindLeader >= 2 ||
       (roleAllowsInventorySabotage && target.tools > 1) ||
-      (id === 'saboteur' && target.locksCracked >= player.locksCracked));
+      (id === 'saboteur' && target.locksCracked > player.locksCracked));
 
   if (id === 'human') {
     return {
@@ -773,8 +808,12 @@ export function chooseStrategyAction(
   }
 
   if (id === 'picker') {
-    if (wantsSabotage && profile.aggression < 80) {
+    if (wantsSabotage && (nearLeaderWin || profile.aggression < 80)) {
       return { action: SIM_ACTION.SABOTAGE, sabotageTarget: target.id };
+    }
+    const setupRoll = deterministicRoll([state.seed, state.currentRound, player.index, 'picker-setup']);
+    if (!player.stunned && player.tools === 0 && player.locksCracked < 2 && setupRoll < 22) {
+      return { action: SIM_ACTION.SEARCH, sabotageTarget: target?.id || null };
     }
     return {
       action: player.stunned && player.tools < state.rules.maxTools ? SIM_ACTION.SEARCH : SIM_ACTION.PICK,
@@ -834,11 +873,17 @@ export function chooseStrategyAction(
   }
 
   if (id === 'saboteur') {
-    if (target && (wantsSabotage || target.tools > 0 || target.locksCracked >= player.locksCracked)) {
+    const mustAdvance = state.currentRound >= Math.ceil(state.rules.maxHealthyRounds * 0.65) ||
+      player.tools >= 2 ||
+      player.locksCracked >= state.rules.totalLocks - 2;
+    if (mustAdvance && !player.stunned) {
+      return { action: SIM_ACTION.PICK, sabotageTarget: target?.id || null };
+    }
+    if (target && !targetProtected && (wantsSabotage || target.tools > 1)) {
       return { action: SIM_ACTION.SABOTAGE, sabotageTarget: target.id };
     }
     return {
-      action: player.tools < 2 ? SIM_ACTION.SEARCH : SIM_ACTION.PICK,
+      action: player.tools < 1 ? SIM_ACTION.SEARCH : SIM_ACTION.PICK,
       sabotageTarget: target?.id || null,
     };
   }

@@ -129,6 +129,7 @@ npm run deploy:kms
 5. Update app env/config.
 
 - set `VITE_CONTRACT_ADDRESS` to the proxy address
+- set `VITE_WORKSHOP_ADDRESS` to the workshop proxy address
 - set `VITE_RPC_URL` to your production read RPC
 - confirm the marketing site links to live Terms and Privacy pages
 
@@ -143,6 +144,7 @@ Note: the autoloop worker only resolves STAKES games. FREE games use default mov
 7. Unpause only after:
 
 - UI points at the proxy
+- `PlundrixGame.workshop()` matches the reviewed workshop proxy
 - worker is live
 - entropy source is healthy
 - test transactions succeeded on the production chain
@@ -155,6 +157,15 @@ Note: the autoloop worker only resolves STAKES games. FREE games use default mov
 3. Call `upgradeTo` from the configured `UPGRADER_ROLE` address.
 4. Run smoke tests against the same proxy address.
 5. Keep the worker paused or stopped during sensitive migrations if behavior changed.
+
+For an existing game proxy adopting the workshop:
+
+1. Upgrade the game proxy with `script/UpgradePlundrix.s.sol` so `configureWorkshop` exists.
+2. Set `PLUNDRIX_ADDRESS` to that game proxy and run `script/DeployWorkshop.s.sol` from a `GAME_MASTER_ROLE` signer.
+3. Verify both directions: `game.workshop() == workshopProxy` and `workshop.game() == gameProxy`.
+4. Set `VITE_WORKSHOP_ADDRESS`, sync both ABIs, and run one complete no-stakes smoke match.
+
+Future workshop-only upgrades use `script/UpgradeWorkshop.s.sol` or `npm run upgrade:workshop:kms` with `WORKSHOP_PROXY_ADDRESS`; do not point the app at an implementation address.
 
 ## Emergency Response
 

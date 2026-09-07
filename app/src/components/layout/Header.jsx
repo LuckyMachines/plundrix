@@ -1,22 +1,23 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import ConnectButton from '../wallet/ConnectButton';
-import NetworkBadge from '../wallet/NetworkBadge';
 import HelpButton from '../help/HelpButton';
 import AccessibilityToggle from './AccessibilityToggle';
 
 const NAV_ITEMS = [
-  { to: '/play', label: 'Play' },
+  { to: '/', label: 'Hub' },
+  { to: '/play', label: 'Play now' },
+  { to: '/workshop', label: 'Workshop' },
   { to: '/trailer', label: 'Trailer' },
-  { to: '/simulator', label: 'Practice' },
   { to: '/replays', label: 'Replays' },
-  { to: '/leaderboard', label: 'Ladder' },
-  { to: '/compare', label: 'Compare' },
+  { to: '/sessions', label: 'Results' },
 ];
+const ConnectButton = lazy(() => import('../wallet/ConnectButton'));
+const NetworkBadge = lazy(() => import('../wallet/NetworkBadge'));
 
-export default function Header({ onHelpClick }) {
+export default function Header({ onHelpClick, web3Enabled = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const walletOptional = !web3Enabled;
   const isActive = (to) => (to === '/' ? location.pathname === '/' : location.pathname === to || location.pathname.startsWith(`${to}/`));
 
   useEffect(() => setMenuOpen(false), [location.pathname]);
@@ -28,7 +29,7 @@ export default function Header({ onHelpClick }) {
 
   return (
     <header className="safe-top sticky top-0 z-40 border-b border-vault-border/80 bg-vault-dark/90 backdrop-blur-xl">
-      <div className="mx-auto flex min-h-[68px] max-w-7xl items-center gap-5 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-[68px] max-w-[1536px] items-center gap-5 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="group flex shrink-0 items-center gap-3" aria-label="Plundrix home">
           <span className="grid h-8 w-8 place-items-center border border-tungsten/45 bg-tungsten/5 transition group-hover:border-tungsten">
             <svg viewBox="0 0 32 32" className="h-5 w-5 text-tungsten" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
@@ -37,10 +38,10 @@ export default function Header({ onHelpClick }) {
               <path d="M16 5v8M16 19v8M5 16h8M19 16h8M8.2 8.2l5.6 5.6M18.2 18.2l5.6 5.6" />
             </svg>
           </span>
-          <span className="hidden font-display text-xl font-bold uppercase tracking-[0.24em] text-vault-text sm:inline">Plundrix</span>
+          <span className="font-display text-lg font-bold uppercase tracking-[0.18em] text-vault-text sm:text-xl sm:tracking-[0.24em]">Plundrix</span>
         </Link>
 
-        <nav className="ml-auto hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
+        <nav className="ml-auto hidden items-center gap-1 min-[1600px]:flex" aria-label="Primary navigation">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.to}
@@ -56,15 +57,16 @@ export default function Header({ onHelpClick }) {
           ))}
         </nav>
 
-        <div className="hidden shrink-0 items-center gap-2 lg:flex">
+        <div className="ml-auto hidden shrink-0 items-center gap-2 min-[1600px]:ml-0 min-[1600px]:flex">
           <AccessibilityToggle />
           <HelpButton onClick={onHelpClick} />
-          <NetworkBadge />
-          <ConnectButton />
+          {!walletOptional && <Suspense fallback={null}><NetworkBadge /></Suspense>}
+          {!walletOptional && <Suspense fallback={null}><ConnectButton /></Suspense>}
+          {walletOptional && <Link to="/#live-operations" className="inline-flex min-h-[44px] items-center border border-vault-border px-3 font-mono text-xs uppercase tracking-[0.12em] text-vault-text-dim hover:text-tungsten">Live tables</Link>}
         </div>
 
-        <div className="ml-auto flex items-center gap-2 lg:hidden">
-          <ConnectButton />
+        <div className="ml-auto flex items-center gap-2 min-[1600px]:hidden">
+          {!walletOptional && <Suspense fallback={null}><ConnectButton /></Suspense>}
           <button
             type="button"
             onClick={() => setMenuOpen((value) => !value)}
@@ -83,7 +85,7 @@ export default function Header({ onHelpClick }) {
       </div>
 
       {menuOpen && (
-        <div className="fixed inset-x-0 top-[69px] h-[calc(100dvh-69px)] border-t border-vault-border bg-vault-dark/98 px-5 py-6 backdrop-blur-xl lg:hidden">
+        <div className="fixed inset-x-0 top-[69px] h-[calc(100dvh-69px)] border-t border-vault-border bg-vault-dark/98 px-5 py-6 backdrop-blur-xl min-[1600px]:hidden">
           <nav className="grid gap-2" aria-label="Mobile navigation">
             {NAV_ITEMS.map((item, index) => (
               <Link
@@ -104,7 +106,7 @@ export default function Header({ onHelpClick }) {
               <AccessibilityToggle />
               <HelpButton onClick={onHelpClick} />
             </div>
-            <NetworkBadge />
+            {!walletOptional && <Suspense fallback={null}><NetworkBadge /></Suspense>}
           </div>
           <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.16em] text-oxide-green">Sepolia beta live / free play</p>
         </div>

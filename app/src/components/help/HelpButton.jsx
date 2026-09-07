@@ -2,7 +2,7 @@ export default function HelpButton({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="w-8 h-8 flex items-center justify-center rounded border border-vault-border
+      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded border border-vault-border
                  bg-vault-dark/40 text-vault-text-dim hover:text-tungsten hover:border-tungsten/40
                  transition-colors"
       aria-label="Open Field Manual"

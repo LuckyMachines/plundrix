@@ -11,7 +11,7 @@ export const CANONICAL_TERMS = Object.freeze([
   ['Replay', 'A round-by-round record of what happened in a match.'],
 ]);
 
-export const CTA_VERBS = Object.freeze(['Play', 'Pick', 'Search', 'Sabotage', 'Replay', 'Compare', 'Review']);
+export const CTA_VERBS = Object.freeze(['Play', 'Pick', 'Search', 'Sabotage', 'Replay', 'Compare', 'Review', 'Watch', 'Run', 'Import', 'Decide', 'Assemble', 'Equip']);
 
 export const MATCH_SIGNAL_TYPES = Object.freeze([
   'lock progress',
@@ -26,14 +26,14 @@ export const PRODUCT_LOOP = Object.freeze([
   {
     id: 'play',
     label: 'Play',
-    route: '/',
-    summary: 'Create and play operations.',
+    route: '/play',
+    summary: 'Start a no-wallet vault race.',
   },
   {
-    id: 'simulate',
-    label: 'Practice',
-    route: '/simulator',
-    summary: 'Try match setups before you play.',
+    id: 'craft',
+    label: 'Craft',
+    route: '/workshop',
+    summary: 'Turn match salvage into a personal gadget.',
   },
   {
     id: 'replay',
@@ -42,16 +42,10 @@ export const PRODUCT_LOOP = Object.freeze([
     summary: 'Review the turns that changed a match.',
   },
   {
-    id: 'ghosts',
-    label: 'Agents',
-    route: '/ghosts',
-    summary: 'Compare labeled agent playstyles.',
-  },
-  {
-    id: 'mutate',
-    label: 'Rules',
-    route: '/mutations',
-    summary: 'Preview alternate table rules.',
+    id: 'live',
+    label: 'Live',
+    route: '/#live-operations',
+    summary: 'Join a Sepolia multiplayer table.',
   },
 ]);
 
@@ -74,19 +68,31 @@ export const ROUTE_META = Object.freeze({
     description: 'Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.',
     image: '/images/og/plundrix-home.jpg',
     primaryCta: 'Play',
-    nextRoutes: ['/simulator', '/replays'],
+    nextRoutes: ['/play', '/replays'],
   },
   '/play': {
     label: 'Instant Play',
     navGroup: 'Play',
     routeClass: 'game',
-    loopStep: 'play',
+    loopStep: 'live',
     purpose: 'Start a Plundrix vault race without a wallet.',
     title: 'Play Plundrix Instantly - No Wallet Required',
     description: 'Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup or wallet.',
     image: '/images/og/plundrix-play.jpg',
     primaryCta: 'Play',
-    nextRoutes: ['/trailer', '/simulator'],
+    nextRoutes: ['/workshop', '/replays'],
+  },
+  '/workshop': {
+    label: 'Workshop',
+    navGroup: 'Play',
+    routeClass: 'game',
+    loopStep: 'craft',
+    purpose: 'Assemble and equip modular practice gadgets from earned salvage.',
+    title: 'Operator Workshop - 10 Signature Gadgets, 1,200 Builds | Plundrix',
+    description: 'Choose one of ten gameplay-distinct gadgets, then assemble a visible material and calibration configuration for your next Plundrix operation.',
+    image: '/images/og/plundrix-play.jpg',
+    primaryCta: 'Assemble',
+    nextRoutes: ['/play', '/replays'],
   },
   '/trailer': {
     label: 'Trailer',
@@ -166,6 +172,7 @@ export const ROUTE_META = Object.freeze({
     description: 'Run Plundrix practice matches, compare rule sets, and generate replay links.',
     primaryCta: 'Run',
     nextRoutes: ['/replays', '/mutations'],
+    public: false,
   },
   '/replays': {
     label: 'Replays',
@@ -176,7 +183,7 @@ export const ROUTE_META = Object.freeze({
     title: 'Plundrix Replay Director',
     description: 'Review dramatic operations, close finishes, and shareable table stories.',
     primaryCta: 'Review',
-    nextRoutes: ['/simulator', '/mutations'],
+    nextRoutes: ['/play', '/sessions'],
   },
   '/replay/:replayId': {
     label: 'Replay',
@@ -187,7 +194,7 @@ export const ROUTE_META = Object.freeze({
     title: 'Plundrix Replay',
     description: 'Inspect one Plundrix replay with timeline, highlights, dramatic scoring, and operation context.',
     primaryCta: 'Review',
-    nextRoutes: ['/replays', '/simulator'],
+    nextRoutes: ['/replays', '/play'],
   },
   '/ghosts': {
     label: 'Agents',
@@ -282,6 +289,7 @@ export const ROUTE_META = Object.freeze({
     description: 'See how Plundrix play, practice matches, replays, agents, and rules connect.',
     primaryCta: 'Review',
     nextRoutes: ['/simulator', '/replays'],
+    public: false,
   },
   '/glossary': {
     label: 'Glossary',
@@ -295,13 +303,13 @@ export const ROUTE_META = Object.freeze({
     nextRoutes: ['/map', '/compare'],
   },
   '/design-system': {
-    label: 'UI Kit',
+    label: 'Design System',
     navGroup: 'Reference',
     routeClass: 'reference',
     loopStep: 'play',
-    purpose: 'Review the game interface.',
-    title: 'Plundrix Interface Guide',
-    description: 'Review Plundrix gameplay screens, action controls, vault states, operator states, event language, and match-state vocabulary.',
+    purpose: 'Review and govern the complete game interface.',
+    title: 'Plundrix Design System',
+    description: 'Review Plundrix foundations, components, gameplay states, responsive patterns, assets, voice, accessibility, and system-wide coverage.',
     primaryCta: 'Review',
     nextRoutes: ['/', '/snapshot'],
     public: false,

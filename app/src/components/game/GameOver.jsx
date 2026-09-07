@@ -6,11 +6,20 @@ import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { useGameActions } from '../../hooks/useGameActions';
 import { useTxToast } from '../../hooks/useTxToast';
-import { PLUNDRIX_ABI, PLUNDRIX_ADDRESS, IS_CONTRACT_CONFIGURED } from '../../config/contract';
+import {
+  PLUNDRIX_ABI,
+  PLUNDRIX_ADDRESS,
+  PLUNDRIX_WORKSHOP_ABI,
+  PLUNDRIX_WORKSHOP_ADDRESS,
+  IS_CONTRACT_CONFIGURED,
+  IS_WORKSHOP_CONFIGURED,
+} from '../../config/contract';
 import { truncateAddress, formatBigInt } from '../../lib/formatting';
 import { TOTAL_LOCKS } from '../../lib/constants';
 import Spinner from '../shared/Spinner';
 import TxStatus from '../shared/TxStatus';
+import { copyText } from '../../lib/clipboard';
+import { useToast } from '../../context/ToastContext';
 
 function PlayerRow({ gameId, playerAddr, winner }) {
   const { locksCracked, tools, isLoading } = usePlayerState(gameId, playerAddr);
@@ -69,6 +78,7 @@ function PlayerRow({ gameId, playerAddr, winner }) {
 }
 
 export default function GameOver({ gameId }) {
+  const toast = useToast();
   const { address } = useAccount();
   const { winner, currentRound, playerCount, isLoading, error } = useGameInfo(gameId);
   const { players } = useGamePlayers(gameId, playerCount);
@@ -94,8 +104,24 @@ export default function GameOver({ gameId }) {
     args: [address],
     query: { enabled: !!address && IS_CONTRACT_CONFIGURED },
   });
+  const { data: salvageSettled } = useReadContract({
+    address: PLUNDRIX_WORKSHOP_ADDRESS,
+    abi: PLUNDRIX_WORKSHOP_ABI,
+    functionName: 'matchSettled',
+    args: address ? [BigInt(gameId), address] : undefined,
+    query: { enabled: Boolean(address && IS_WORKSHOP_CONFIGURED) },
+  });
 
   const isCurrentUserWinner = winner?.toLowerCase() === address?.toLowerCase();
+
+  const shareResult = async () => {
+    try {
+      await copyText(window.location.href);
+      toast.success('Result link copied.', { title: 'Ready to share' });
+    } catch (shareError) {
+      toast.error(shareError?.message || 'The result link could not be copied.', { title: 'Copy failed' });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -112,7 +138,7 @@ export default function GameOver({ gameId }) {
     return (
       <div className="border border-signal-red/30 rounded bg-vault-panel p-8 text-center">
         <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
-          Failed to load game results
+          Failed to load operation results
         </p>
       </div>
     );
@@ -133,16 +159,18 @@ export default function GameOver({ gameId }) {
         </div>
 
         {/* Winner display */}
-        <div className="relative p-8 text-center overflow-hidden">
-          {/* Subtle radial glow */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'radial-gradient(ellipse at center, rgba(218,165,32,0.08) 0%, transparent 60%)',
-            }}
+        <div className="relative overflow-hidden p-8 text-left sm:p-10">
+          <img
+            src="/images/victory-breach.webp"
+            alt=""
+            width="1024"
+            height="420"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-vault-dark/80 via-transparent to-vault-dark/20" />
 
-          <div className="relative z-10 space-y-4">
+          <div className="relative z-10 max-w-xl space-y-4">
             <h2 className="text-2xl font-display font-bold tracking-[0.3em] text-tungsten-bright uppercase">
               Vault Breached
             </h2>
@@ -164,7 +192,7 @@ export default function GameOver({ gameId }) {
               </p>
             </div>
 
-            <div className="flex items-center justify-center gap-8">
+            <div className="flex items-center gap-8">
               <div className="space-y-1">
                 <p className="font-display text-xs tracking-widest text-vault-text-dim uppercase">
                   Rounds
@@ -175,7 +203,7 @@ export default function GameOver({ gameId }) {
               </div>
               <div className="space-y-1">
                 <p className="font-display text-xs tracking-widest text-vault-text-dim uppercase">
-                  Operators
+                  Players
                 </p>
                 <p className="font-mono text-lg text-vault-text tabular-nums">
                   {formatBigInt(playerCount)}
@@ -190,16 +218,16 @@ export default function GameOver({ gameId }) {
       <div className="border border-vault-border rounded bg-vault-panel overflow-hidden">
         <div className="bg-vault-dark border-b border-vault-border px-4 py-2">
           <span className="font-display text-xs tracking-[0.3em] text-vault-text-dim uppercase">
-            Operator Report
+            Player Report
           </span>
         </div>
 
-        <div className="overflow-x-auto" role="region" aria-label="Operator report table" tabIndex={0}>
+        <div className="overflow-x-auto" role="region" aria-label="Player report table" tabIndex={0}>
           <table className="w-full min-w-[400px]">
             <thead>
               <tr className="border-b border-vault-border bg-vault-dark/50">
                 <th className="px-4 py-2 text-left font-display text-xs tracking-widest text-vault-text-dim uppercase">
-                  Operator
+                  Player
                 </th>
                 <th className="px-4 py-2 text-center font-display text-xs tracking-widest text-vault-text-dim uppercase">
                   Locks
@@ -275,8 +303,18 @@ export default function GameOver({ gameId }) {
         </div>
       )}
 
+      {salvageSettled && (
+        <div className="flex flex-wrap items-center justify-between gap-4 border border-oxide-green/30 bg-oxide-green/5 px-5 py-4">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">Salvage secured</p>
+            <p className="mt-1 text-sm text-vault-text-dim">Your onchain locker received {isCurrentUserWinner ? '8' : '5'} crafting units from this operation.</p>
+          </div>
+          <Link to="/workshop" className="border border-oxide-green/40 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green hover:bg-oxide-green/10">Open workshop</Link>
+        </div>
+      )}
+
       {/* Actions */}
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex flex-wrap items-center justify-center gap-4">
         <Link
           to="/"
           className="font-display text-xs tracking-widest uppercase text-vault-text-dim hover:text-vault-text border border-vault-border rounded px-4 py-2 bg-vault-panel hover:bg-vault-dark transition-colors"
@@ -291,7 +329,7 @@ export default function GameOver({ gameId }) {
         </Link>
         <button
           type="button"
-          onClick={() => navigator.clipboard?.writeText(window.location.href)}
+          onClick={shareResult}
           className="font-display text-xs tracking-widest uppercase text-oxide-green hover:text-vault-text border border-oxide-green/30 rounded px-4 py-2 bg-oxide-green/5 hover:bg-oxide-green/10 transition-colors"
         >
           Share Result

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-signal-scanner",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T21:00:28.558Z",
+  "candidate": {
+    "path": "assets/art-source/parts/signal-scanner.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 858451,
+    "sha256": "6fa27a2f52c879477a7a694d39766012c298fa456865fe4b07493b8b15d57c52"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/raw/part-signal-scanner-flux2-pro-v2-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 352195,
+    "sha256": "ecf5c670b42f9784defd49ad820e1dac1912ed8a92bbab29c5eacbe71816fa4b"
+  },
+  "prompt": "Provider priority: ABSOLUTELY BLANK OBJECT SURFACES. OBJECT REQUIREMENT: one compact sensor shaped as a simple brass horseshoe around one domed green glass lens, with one short physical antenna and two plain side knobs. Do not include a front panel. No screen, gauge, waveform, tick marks, text, letters, numbers, symbols, labels, logo, or pseudo-text.\nBACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Create the canonical Signal Scanner as a compact analog discovery instrument.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One handheld-sized blackened-steel signal scanner with an aged brass frame and a single green glass lens. Reusable parts: one compact analog signal scanner with a single green glass lens and no display.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Single centered object in three-quarter view with a complete silhouette and 12 percent transparent padding. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio light with a faint green lens reflection. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; machined calibration grooves without glyphs; braided cable; smoked glass\nJoy target: curiosity. The one luminous lens suggests a hidden signal waiting to be found.\nRestraint: No digital UI or guaranteed reward.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; one scanner only; one green lens only; The Signal Scanner improves Search; it reveals information rather than opening a lock.\nAvoid: screen; gauge; waveform; text; numbers; hand; scene background\nOutput canvas: exactly 1024x1024; image only; no title, caption, interface, border, or watermark.",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "one lens reads at 72px",
+    "no screen, gauge, writing, or pseudo-text"
+  ],
+  "lifecycle": "promoted",
+  "promotedAt": "2026-09-06T21:05:11.686Z",
+  "composite": null
+}

@@ -60,6 +60,8 @@ export function profileTypeLabel(type) {
       return 'Agent';
     case 'bot':
       return 'Bot';
+    case 'unverified':
+      return 'Unverified';
     default:
       return 'Human';
   }

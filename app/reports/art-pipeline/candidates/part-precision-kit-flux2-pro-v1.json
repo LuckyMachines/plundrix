@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-precision-kit",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T20:55:12.879Z",
+  "candidate": {
+    "path": "assets/art-source/parts/precision-kit.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 921465,
+    "sha256": "033e5db8e2cb5bd0f1c1123a949b5680f28ef0dff1d03f4ff36f16b5b00b9bdb"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/raw/part-precision-kit-flux2-pro-v1-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 391736,
+    "sha256": "65b84dba765e8ea8378547e90b3244a51b3185d2fa8c858afd5638300262ccf8"
+  },
+  "prompt": "BACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Create the canonical Precision Kit as a compact collectible equipment module.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One fitted blackened-steel tool tray containing exactly three fine brass lock tools and one tension collar. Reusable parts: one compact fitted precision kit with three fine lock tools and a brass tension collar.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Single centered kit in three-quarter view with a complete silhouette and 12 percent transparent padding. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio light with a restrained amber edge. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; machined calibration grooves without glyphs; braided cable; smoked glass\nJoy target: prepared confidence. Ordered, purpose-built tools make the next Pick feel skillful.\nRestraint: No hands, weapons, sparks, or success state.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; one coherent kit; exactly three fine tools; The Precision Kit improves a Pick attempt; it is equipment, not a weapon.\nAvoid: text; numbers; logos; treasure chest; hand; weapon; scene background\nOutput canvas: exactly 1024x1024; image only; no title, caption, interface, border, or watermark.",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "reads as precision equipment at 72px",
+    "contains no writing or weapon silhouette"
+  ],
+  "lifecycle": "promoted",
+  "promotedAt": "2026-09-06T21:05:11.346Z",
+  "composite": null
+}

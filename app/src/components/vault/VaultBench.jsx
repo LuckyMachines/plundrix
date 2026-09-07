@@ -253,38 +253,44 @@ export default function VaultBench({ gameId }) {
       )}
       action={(
         <div className="grid gap-4">
-          <MissionCoach
-            connected={!!address}
-            registered={registered}
-            actionSubmitted={actionSubmitted}
-            stunned={stunned}
-            tools={tools}
-            canResolve={canResolve}
-            allSubmitted={allSubmitted}
-            session={session}
-          />
-          <TurnAlertButton
-            currentRound={currentRound}
-            gameState={state}
-            actionSubmitted={actionSubmitted}
-          />
-          <ActionPanel
-            gameId={gameId}
-            isConfigured={isConfigured}
-            configError={configError}
-            stunned={stunned}
-            registered={registered}
-            actionSubmitted={actionSubmitted}
-            tools={tools}
-            players={players}
-            currentAddress={address}
-            session={session}
-            onIntentChange={setActionIntent}
-            onTargetChange={setTargetAddress}
-            quiet
-          />
+          <div className="live-guidance">
+            <MissionCoach
+              connected={!!address}
+              registered={registered}
+              actionSubmitted={actionSubmitted}
+              stunned={stunned}
+              tools={tools}
+              canResolve={canResolve}
+              allSubmitted={allSubmitted}
+              session={session}
+            />
+          </div>
+          <div className="live-turn-alert">
+            <TurnAlertButton
+              currentRound={currentRound}
+              gameState={state}
+              actionSubmitted={actionSubmitted}
+            />
+          </div>
+          <div className="live-action-controls">
+            <ActionPanel
+              gameId={gameId}
+              isConfigured={isConfigured}
+              configError={configError}
+              stunned={stunned}
+              registered={registered}
+              actionSubmitted={actionSubmitted}
+              tools={tools}
+              players={players}
+              currentAddress={address}
+              session={session}
+              onIntentChange={setActionIntent}
+              onTargetChange={setTargetAddress}
+              quiet
+            />
+          </div>
           {canResolve && (
-            <QuietPanel className="border-oxide-green/35">
+            <QuietPanel className="live-resolve-action border-oxide-green/35">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h4 className="font-mono text-xs text-oxide-green uppercase tracking-wider">

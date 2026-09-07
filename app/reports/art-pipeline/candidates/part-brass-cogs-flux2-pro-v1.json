@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-brass-cogs",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T21:54:36.667Z",
+  "candidate": {
+    "path": "assets/art-source/parts/inventory/brass-cogs.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 787688,
+    "sha256": "08e32f4f56fdab46b678d554cd0cd276d1fd8655f01d660208e87355b267d9d2"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/raw/part-brass-cogs-flux2-pro-v1-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 353328,
+    "sha256": "d8b43de4b143c8a362462d1f5174c8e6352bc1e42c131a8281bafaf29035130e"
+  },
+  "prompt": "Provider priority: ABSOLUTELY BLANK OBJECT SURFACES. OBJECT REQUIREMENT: exactly three thick interlocking aged-brass gear blanks in one tidy stack. No text, letters, numbers, symbols, labels, logo, watermark, screen, gauge, hands, people, face, limbs, weapon, coins, treasure, or scene background.\nBACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Create an unmistakable small bundle of reusable mechanical crafting stock.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One tidy interlocking stack of exactly three thick aged-brass gear blanks with empty center bores. Reusable parts: one tidy stack of three interlocking aged-brass gear blanks.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: One centered collectible object in front three-quarter view, complete silhouette, sturdy contact point, 14 percent transparent padding. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio key with warm amber edge light and one restrained semantic accent. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; machined calibration grooves without glyphs; braided cable; smoked glass\nJoy target: tactile collection. A satisfying nested stack makes basic salvage feel useful.\nRestraint: Raw workshop stock, never currency or treasure.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; one object only; readable at 64px; blank manufactured surfaces; Brass cogs are crafting stock, not coins or treasure.\nAvoid: text; letters; numbers; symbols; logo; screen; gauge; hand; person; face; weapon; coins; treasure; scene background\nOutput canvas: exactly 1024x1024; image only; no title, caption, interface, border, or watermark.",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "silhouette reads at 64px",
+    "contains no writing, face, weapon, or currency cues"
+  ],
+  "lifecycle": "promoted",
+  "promotedAt": "2026-09-06T22:00:49.064Z",
+  "composite": null
+}

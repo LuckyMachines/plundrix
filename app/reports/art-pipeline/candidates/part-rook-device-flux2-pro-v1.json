@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-rook-device",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T20:57:01.798Z",
+  "candidate": {
+    "path": "assets/art-source/candidates/part-rook-device-flux2-pro-v1.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 977763,
+    "sha256": "a45729589f76e245302301aad9e79538b9005a28824185bd44325f07023aad23"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/candidates/part-rook-device-flux2-pro-v1-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 412195,
+    "sha256": "56b2e015f42470243df324fa550705076605bb0886c19bf7135d67561fa83d92"
+  },
+  "prompt": "BACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Give Rook a distinct mechanical identity that communicates decisive pressure.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One compact high-torque lock-driving piston on a broad stable base, with one warm amber pressure chamber. Reusable parts: one compact high-torque lock-driving piston with a broad stable base and warm amber mechanism.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Single centered squat object, complete silhouette, readable from the front at 64px. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio light with restrained amber reflection. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; machined calibration grooves without glyphs; braided cable; smoked glass\nJoy target: competitive recognition. The poised piston makes Rook feel ready to close the race.\nRestraint: Mechanical device only, never a character body or weapon.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; one device only; broad stable silhouette; Rook is the closer agent; show decisive pressure without a face or humanoid body.\nAvoid: face; eyes; limbs; robot body; gun; text; logo; scene background\nOutput canvas: exactly 1024x1024; image only; no title, caption, interface, border, or watermark.",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "reads as a forceful device at 64px",
+    "has no face, limbs, weapon silhouette, or writing"
+  ]
+}

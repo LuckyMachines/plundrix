@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "assetId": "part-vesper-device",
+  "provider": "Azure AI Foundry",
+  "model": "FLUX.2-pro",
+  "generatedAt": "2026-09-06T20:57:35.273Z",
+  "candidate": {
+    "path": "assets/art-source/candidates/part-vesper-device-flux2-pro-v1.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgba",
+    "bytes": 676948,
+    "sha256": "cc2f475ca194438a7957faa5436e14c2011a0f045d4b5bf569ab67c94b026f0e"
+  },
+  "rawCandidate": {
+    "path": "assets/art-source/candidates/part-vesper-device-flux2-pro-v1-raw.png",
+    "width": 1024,
+    "height": 1024,
+    "pixelFormat": "rgb",
+    "bytes": 297344,
+    "sha256": "69f85134d6c0b88d01e013d005e2032e9e62a40b2b85e254f6a74fce72975d12"
+  },
+  "prompt": "Provider priority: OBJECT REQUIREMENT: one compact forked cable-intercept relay with two prongs and one restrained red enamel line. No spark, electric arc, screen, crosshair, weapon, text, letters, numbers, symbols, face, eyes, limbs, or robot body.\nBACKGROUND REQUIREMENT: fill every background pixel with flat uniform pure magenta #FF00FF. Do not draw a checkerboard, floor, horizon, vignette, glow, gradient, contact shadow, or environmental reflection. The object must not contain magenta. Every object surface must be blank: no letters, numbers, labels, symbols, logos, or pseudo-text.\nUse case: stylized-concept\nAsset type: transparent-background modular game-art cutout\nPrimary request: Give Vesper a distinct mechanical identity that communicates targeted interference.\nScene/backdrop: Flat uniform pure magenta #FF00FF extraction matte.\nSubject: One compact forked cable-intercept relay with two insulated prongs and one restrained red enamel cut-line. Reusable parts: one compact forked cable-intercept relay with a restrained red cut-line accent.\nStyle/medium: Premium painterly 3D game art with physically grounded industrial realism and crisp, readable silhouettes.\nComposition/framing: Single centered forked object, complete silhouette, readable from the front at 64px. Single centered object, complete silhouette, generous transparent padding, consistent three-quarter view.\nLighting/mood: Neutral studio light with a restrained red reflection. Tactile, collectible, and immediately legible.\nColor palette: near-black steel #0A0A0F; vault-panel indigo #1A1A2E; oxidized brass #C4956A; warm victory brass #E8B078; restrained blueprint blue #3A7CC4; restrained sabotage red #F06A6A; sparingly used search green #40A080\nMaterials/textures: blackened steel; aged and oxidized brass; worn enamel; machined calibration grooves without glyphs; braided cable; smoked glass\nJoy target: competitive recognition. The forked relay makes Vesper’s targeted disruption immediately legible.\nRestraint: Mischievous machinery, not a weapon or violent character.\nConstraints: one unmistakable focal beat; clear depth separation when the asset contains a scene; readable at thumbnail size; leave live UI copy and controls to HTML; no text, letters, numbers, logos, watermark, border, cards, screens, or fake interface; no cryptocurrency symbols, coins, piles of treasure, guns, gore, explosions, or generic cyberpunk clutter; solid uniform pure magenta #FF00FF background for deterministic extraction; no cast shadow outside the object footprint; no scene dressing; one device only; two prongs only; Vesper is the disruptor agent; show targeted interference without a face or humanoid body.\nAvoid: spark; electric arc; crosshair; weapon; face; eyes; limbs; text; scene background\nOutput canvas: exactly 1024x1024; image only; no title, caption, interface, border, or watermark.",
+  "manualChecks": [
+    "transparent corners have zero alpha",
+    "reads as a disrupting device at 64px",
+    "has no sparks, face, limbs, weapon silhouette, or writing"
+  ]
+}

@@ -14,7 +14,7 @@ export default function SectionOverview() {
     <div className="font-mono text-xs text-vault-text leading-relaxed space-y-1">
       <SectionHeader>Objective</SectionHeader>
       <p>
-        You are one of {MIN_GAME_PLAYERS}&ndash;{MAX_GAME_PLAYERS} operatives
+        You are one of {MIN_GAME_PLAYERS}&ndash;{MAX_GAME_PLAYERS} players
         racing to crack a vault secured by <span className="text-tungsten">{TOTAL_LOCKS} locks</span>.
         The first player to pick all {TOTAL_LOCKS} locks wins the heist.
       </p>
@@ -23,7 +23,7 @@ export default function SectionOverview() {
       <ol className="list-decimal list-inside space-y-1 pl-1">
         <li>
           <span className="text-vault-text-dim">Submit Phase</span> &mdash;
-          Every operative secretly chooses one action (Pick, Search, or Sabotage)
+          Every player secretly chooses one action (Pick, Search, or Sabotage)
           and submits it on-chain.
         </li>
         <li>

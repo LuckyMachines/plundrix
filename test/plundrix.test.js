@@ -1041,6 +1041,63 @@ describe('A+ gameplay improvements', () => {
     expect(next.players[1].gadgetReady).toBe(false);
   });
 
+  it('keeps a Torque Driver armed until the operator has a tool', () => {
+    const state = createInitialSimulation({ seed: 'torque-condition', gadgets: ['torque-driver'] });
+    const next = resolveSimulationRound(state, allPick);
+    expect(next.players[0].gadgetReady).toBe(true);
+  });
+
+  it('lets a Quickset Clamp fire on the opening Pick', () => {
+    const state = createInitialSimulation({ seed: 'quickset-opening', gadgets: ['quickset-clamp'] });
+    const next = resolveSimulationRound(state, allPick);
+    expect(next.players[0].gadgetReady).toBe(false);
+    const outcome = next.roundHistory[0].events.find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1');
+    expect(outcome.chance).toBe(54);
+  });
+
+  it('lets Route Compass search through a stun at full strength', () => {
+    const state = createInitialSimulation({
+      seed: 'route-through-noise',
+      gadgets: ['route-compass'],
+      playerPatches: [{ stunned: true }],
+    });
+    const next = resolveSimulationRound(state, {
+      ...allPick,
+      'player-1': { action: SIM_ACTION.SEARCH },
+    });
+    const outcome = next.roundHistory[0].events.find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1');
+    expect(outcome.chance).toBe(70);
+    expect(next.players[0].gadgetReady).toBe(false);
+  });
+
+  it('lets Decoy Relay return pressure to an equipped attacker', () => {
+    const state = createInitialSimulation({
+      seed: 'decoy-return',
+      gadgets: [null, 'decoy-relay'],
+      playerPatches: [{ tools: 1 }],
+    });
+    const next = resolveSimulationRound(state, {
+      ...allPick,
+      'player-1': { action: SIM_ACTION.SABOTAGE, sabotageTarget: 'player-2' },
+    });
+    expect(next.players[0].tools).toBe(0);
+    expect(next.players[1].gadgetReady).toBe(false);
+  });
+
+  it('lets Counterweight create a comeback tool against a leader', () => {
+    const state = createInitialSimulation({
+      seed: 'counterweight-comeback',
+      gadgets: [null, 'counterweight'],
+      playerPatches: [{ locksCracked: 2 }, { locksCracked: 0 }],
+    });
+    const next = resolveSimulationRound(state, {
+      ...allPick,
+      'player-1': { action: SIM_ACTION.SABOTAGE, sabotageTarget: 'player-2' },
+    });
+    expect(next.players[1].tools).toBe(1);
+    expect(next.players[1].gadgetReady).toBe(false);
+  });
+
   it('uses a tiebreak event when multiple players breach together', () => {
     let tiedState = null;
     for (let index = 0; index < 200 && !tiedState; index += 1) {

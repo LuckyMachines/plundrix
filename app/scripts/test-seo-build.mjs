@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 
@@ -55,10 +55,18 @@ expectIncludes(trailerHtml, '"@type":"VideoObject"', 'trailer structured data');
 expectIncludes(trailerHtml, 'property="og:video"', 'trailer Open Graph tags');
 expectIncludes(comparisonHtml, 'images/og/plundrix-home.jpg', 'comparison social image');
 expectIncludes(sitemap, '<loc>https://game.plundrix.com/play</loc>', 'sitemap');
+expectIncludes(sitemap, '<loc>https://game.plundrix.com/workshop</loc>', 'sitemap');
 expectIncludes(sitemap, '<loc>https://game.plundrix.com/trailer</loc>', 'sitemap');
 assert.ok(!sitemap.includes('/ops</loc>'), 'sitemap should exclude operator tools');
 assert.equal(sitemap, publicSitemap, 'public and production sitemaps should stay synchronized');
 expectIncludes(llms, '## Authoritative facts', 'llms.txt');
+assert.equal(
+  (playHtml.match(/rel="modulepreload"/g) || []).length,
+  1,
+  'no-wallet routes should preload only the React runtime, not wallet or query clients',
+);
+const productionAssets = await readdir(resolve(appDir, 'dist', 'assets'));
+assert.equal(productionAssets.some((filename) => filename.endsWith('.map')), false, 'production source maps should not ship');
 
 const server = spawn(process.execPath, ['scripts/serve-dist.mjs'], {
   cwd: appDir,

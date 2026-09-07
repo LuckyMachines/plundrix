@@ -4,6 +4,7 @@ const AccessibilityContext = createContext(null);
 
 const READABILITY_KEY = 'plundrix_readability_mode';
 const REDUCED_MOTION_KEY = 'plundrix_reduced_motion';
+const SOUND_KEY = 'plundrix_sound_enabled';
 
 function readBoolean(key, fallback) {
   if (typeof window === 'undefined') return fallback;
@@ -24,6 +25,9 @@ export function AccessibilityProvider({ children }) {
   const [reducedMotion, setReducedMotion] = useState(() =>
     readBoolean(REDUCED_MOTION_KEY, prefersReducedMotion)
   );
+  const [soundEnabled, setSoundEnabled] = useState(() =>
+    readBoolean(SOUND_KEY, true)
+  );
 
   useEffect(() => {
     window.localStorage.setItem(READABILITY_KEY, String(readabilityMode));
@@ -35,14 +39,20 @@ export function AccessibilityProvider({ children }) {
     document.documentElement.classList.toggle('reduced-motion-ui', reducedMotion);
   }, [reducedMotion]);
 
+  useEffect(() => {
+    window.localStorage.setItem(SOUND_KEY, String(soundEnabled));
+  }, [soundEnabled]);
+
   const value = useMemo(
     () => ({
       readabilityMode,
       reducedMotion,
+      soundEnabled,
       setReadabilityMode,
       setReducedMotion,
+      setSoundEnabled,
     }),
-    [readabilityMode, reducedMotion]
+    [readabilityMode, reducedMotion, soundEnabled]
   );
 
   return (

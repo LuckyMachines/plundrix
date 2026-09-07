@@ -7,12 +7,12 @@ const STEPS = [
   {
     num: 2,
     title: 'Create or Join',
-    desc: 'Start a new heist from the home page, or join an open game from the browser.',
+    desc: 'Start a new heist from the home page, or join an open operation from the browser.',
   },
   {
     num: 3,
     title: 'Wait for Launch',
-    desc: 'The game begins once 2\u20134 operatives have joined the lobby.',
+    desc: 'The operation begins once 2\u20134 players have joined the lobby.',
   },
   {
     num: 4,
@@ -32,7 +32,7 @@ const STEPS = [
   {
     num: 7,
     title: 'Repeat Until Victory',
-    desc: 'Continue round by round. First operative to crack all 5 locks wins the heist.',
+    desc: 'Continue round by round. The first player to crack all 5 locks wins the heist.',
   },
 ];
 

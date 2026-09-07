@@ -55,10 +55,10 @@ export default function CompareDetailPage() {
               Play Plundrix
             </Link>
             <Link
-              to="/simulator"
+              to="/play"
               className="flex min-h-[44px] items-center rounded border border-vault-border px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-vault-text-dim hover:border-tungsten/60 hover:text-vault-text"
             >
-              Open simulator
+              Play instantly
             </Link>
           </div>
         </div>

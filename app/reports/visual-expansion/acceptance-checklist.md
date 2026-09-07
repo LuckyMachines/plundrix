@@ -4,8 +4,8 @@ Date: 2026-08-16
 
 ## Reference packet
 
-- Identity anchor: `public/images/plundrix-vault-hero.png`
-- Material anchor: `public/images/replay-sabotage.png`
+- Identity anchor: `assets/art-source/scenes/plundrix-vault-hero.png`
+- Material anchor: `assets/art-source/scenes/replay-sabotage.png`
 - Baseline marketing captures: `baseline/marketing-desktop.png`, `baseline/marketing-mobile.png`
 - Baseline player-hub captures: `baseline/game-desktop.png`, `baseline/game-mobile.png`
 
@@ -60,3 +60,7 @@ Date: 2026-08-16
 - Product screenshots remain literal interface proof; generated art is never presented as a screenshot.
 - Player Hub artwork is deliberately subdued beneath live copy and controls.
 - The local comparison has an empty operation browser while the production baseline may contain active Sepolia operations.
+
+## 2026-09-06 pipeline re-audit
+
+The stricter manifest-driven truth gate found that the former Instant Play source contained more visible lock-like modules than the five-lock rule allowed. It has now been replaced by an accepted FLUX.2-pro environment with four empty workstations and exactly five instances of the reusable lock module. The superseded master remains in `assets/art-source/retired/`; generation decisions and hashes remain under `reports/art-pipeline/`.

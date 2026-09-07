@@ -32,7 +32,7 @@ Date: 2026-08-13
 ## Image generation record
 
 - Mode: local Azure GPT Image 2 wrapper requested by the project owner.
-- Source: `public/images/plundrix-vault-hero.png`
+- Source: `assets/art-source/scenes/plundrix-vault-hero.png`
 - Web derivative: `public/images/plundrix-vault-hero.webp`
 - Prompt: "Use case: stylized-concept. Asset type: landing page hero artwork for a competitive vault-heist strategy game. A monumental circular bank-vault locking mechanism half-open inside a clandestine high-tech heist workshop, with five readable locking bolts; premium painterly 3D key art; oxidized brass, blackened steel, worn enamel; center-right vault with calm shadowed left space; warm amber interior against cool near-black shadows; charcoal, gunmetal, aged brass, restrained teal and red signals; no people, coins, treasure, text, letters, logo, watermark, UI, or border."
 

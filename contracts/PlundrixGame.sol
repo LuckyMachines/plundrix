@@ -9,6 +9,28 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
+interface IPlundrixWorkshopRules {
+    function game() external view returns (address);
+
+    function lockGameLoadouts(uint256 gameID) external;
+
+    function consumeGadgetEffect(
+        uint256 gameID,
+        address operator,
+        uint8 expectedProtocol,
+        uint256 round,
+        uint256 tools,
+        uint256 locksCracked
+    ) external returns (uint8 signature, uint8 strength);
+
+    function settleGame(
+        uint256 gameID,
+        uint256 rounds,
+        address winner,
+        uint256 entropy
+    ) external;
+}
+
 /**
  * @title PlundrixGame
  * @notice A single-zone heist game where 2-4 rival operatives compete to crack a vault with 5 locks.
@@ -22,6 +44,8 @@ contract PlundrixGame is
     UUPSUpgradeable
 {
     using Counters for Counters.Counter;
+
+    error InvalidWorkshop();
     using ECDSA for bytes32;
 
     // --- Roles ---
@@ -77,7 +101,8 @@ contract PlundrixGame is
         SABOTAGE_SUCCESS_STUN_ONLY,
         SABOTAGE_SUCCESS_NO_TOOL,
         NO_SUBMISSION,
-        SABOTAGE_FAILED_COOLDOWN
+        SABOTAGE_FAILED_COOLDOWN,
+        SABOTAGE_BLOCKED_GADGET
     }
 
     // --- Structs ---
@@ -136,6 +161,7 @@ contract PlundrixGame is
     mapping(uint256 => mapping(address => address)) private _sessionKeys;
     mapping(uint256 => mapping(address => uint256)) private _sessionNonces;
     mapping(uint256 => uint256) private _gameRoundTimeout;
+    address private _workshop;
 
     modifier validGame(uint256 gameID) {
         require(_gameExists(gameID), "Game does not exist");
@@ -287,6 +313,7 @@ contract PlundrixGame is
         Action action,
         uint256 timeStamp
     );
+    event WorkshopConfigured(address indexed workshop);
 
     // --- Constructor ---
 
@@ -455,6 +482,21 @@ contract PlundrixGame is
     }
 
     /**
+     * @notice Connect the separately upgradeable crafting and gadget-rules module.
+     * @dev A zero address disables workshop rules without affecting existing games.
+     */
+    function configureWorkshop(
+        address workshopAddress
+    ) external onlyRole(GAME_MASTER_ROLE) {
+        if (
+            workshopAddress != address(0) &&
+            IPlundrixWorkshopRules(workshopAddress).game() != address(this)
+        ) revert InvalidWorkshop();
+        _workshop = workshopAddress;
+        emit WorkshopConfigured(workshopAddress);
+    }
+
+    /**
      * @notice Create a free game with a live or asynchronous round timer.
      */
     function createGameWithPace(
@@ -548,6 +590,10 @@ contract PlundrixGame is
         game.state = GameState.ACTIVE;
         game.currentRound = 1;
         game.roundStartTime = block.timestamp;
+
+        if (_workshop != address(0)) {
+            IPlundrixWorkshopRules(_workshop).lockGameLoadouts(gameID);
+        }
 
         emit GameStarted(gameID, block.timestamp);
     }
@@ -851,6 +897,8 @@ contract PlundrixGame is
             game.winner = roundWinner;
             emit GameWon(gameID, game.winner, round, block.timestamp);
 
+            _settleWorkshopRewards(gameID, round, game.winner);
+
             if (_gameMode[gameID] == GameMode.STAKES && _pot[gameID] > 0) {
                 uint256 pot = _pot[gameID];
                 _pot[gameID] = 0;
@@ -883,8 +931,16 @@ contract PlundrixGame is
             return (false, OutcomeReason.PICK_FAILED_STUNNED);
         }
 
-        // Base 40% + 15% per tool, capped at 95%
-        uint256 chance = 40 + (player.tools * 15);
+        // Each Precision-family chassis has one visible, deterministic signature.
+        (, uint8 gadgetStrength) = _consumeWorkshopEffect(
+            gameID,
+            player.addr,
+            1,
+            player.tools,
+            player.locksCracked
+        );
+        uint256 gadgetBonus = gadgetStrength;
+        uint256 chance = 40 + (player.tools * 15) + gadgetBonus;
         if (chance > 95) {
             chance = 95;
         }
@@ -908,8 +964,23 @@ contract PlundrixGame is
         PlayerState storage player,
         uint256 rand
     ) internal returns (bool success, OutcomeReason reason) {
-        // 60% success, 30% if stunned
-        uint256 chance = player.stunned ? 30 : 60;
+        // Signal-family signatures vary in timing, reliability, and yield.
+        (uint8 chassis, uint8 gadgetStrength) = _consumeWorkshopEffect(
+            gameID,
+            player.addr,
+            2,
+            player.tools,
+            player.locksCracked
+        );
+        uint256 baseChance = player.stunned ? 30 : 60;
+        uint256 gadgetBonus = gadgetStrength;
+        uint256 toolsFound = 1;
+        if (chassis == 8 && gadgetStrength > 0) toolsFound = 2;
+        if (chassis == 9 && gadgetStrength > 0) baseChance = 60;
+        uint256 chance = baseChance + gadgetBonus;
+        if (chance > 95) {
+            chance = 95;
+        }
 
         if (rand >= chance) {
             return (false, OutcomeReason.SEARCH_FAILED_ROLL);
@@ -919,7 +990,8 @@ contract PlundrixGame is
             return (false, OutcomeReason.SEARCH_FAILED_MAX_TOOLS);
         }
 
-        player.tools++;
+        uint256 room = MAX_TOOLS - player.tools;
+        player.tools += toolsFound > room ? room : toolsFound;
         emit ToolFound(
             gameID,
             player.addr,
@@ -956,6 +1028,37 @@ contract PlundrixGame is
             return (
                 false,
                 OutcomeReason.SABOTAGE_FAILED_COOLDOWN,
+                targetAddr
+            );
+        }
+
+        (uint8 chassis, uint8 gadgetStrength) = _consumeWorkshopEffect(
+            gameID,
+            targetAddr,
+            3,
+            targetPlayer.tools,
+            targetPlayer.locksCracked
+        );
+        if (gadgetStrength > 0) {
+            // Decoy Relay returns pressure by stripping one attacker tool.
+            if (chassis == 5 && attacker.tools > 0) attacker.tools--;
+            // Counterweight creates a comeback resource only against a leader.
+            if (
+                chassis == 6 &&
+                targetPlayer.locksCracked < attacker.locksCracked &&
+                targetPlayer.tools < MAX_TOOLS
+            ) {
+                targetPlayer.tools++;
+                emit ToolFound(
+                    gameID,
+                    targetAddr,
+                    targetPlayer.tools,
+                    block.timestamp
+                );
+            }
+            return (
+                false,
+                OutcomeReason.SABOTAGE_BLOCKED_GADGET,
                 targetAddr
             );
         }
@@ -1067,6 +1170,39 @@ contract PlundrixGame is
         uint256 seed
     ) internal view returns (uint256) {
         return _randomWord(gameID, round, seed) % 100;
+    }
+
+    function _consumeWorkshopEffect(
+        uint256 gameID,
+        address operator,
+        uint8 protocol,
+        uint256 tools,
+        uint256 locksCracked
+    ) internal returns (uint8 signature, uint8 strength) {
+        if (_workshop == address(0)) return (0, 0);
+        return
+            IPlundrixWorkshopRules(_workshop).consumeGadgetEffect(
+                gameID,
+                operator,
+                protocol,
+                _games[gameID].currentRound,
+                tools,
+                locksCracked
+            );
+    }
+
+    function _settleWorkshopRewards(
+        uint256 gameID,
+        uint256 round,
+        address winner
+    ) internal {
+        if (_workshop == address(0)) return;
+        IPlundrixWorkshopRules(_workshop).settleGame(
+            gameID,
+            round,
+            winner,
+            _roundEntropy[gameID][round]
+        );
     }
 
     // --- View Functions ---
@@ -1216,6 +1352,10 @@ contract PlundrixGame is
         return _roundEntropy[gameID][round];
     }
 
+    function workshop() external view returns (address) {
+        return _workshop;
+    }
+
     function getSessionKey(
         uint256 gameID,
         address player
@@ -1288,5 +1428,5 @@ contract PlundrixGame is
         return (_gameMode[gameID], _entryFee[gameID], _pot[gameID]);
     }
 
-    uint256[40] private __gap;
+    uint256[39] private __gap;
 }
