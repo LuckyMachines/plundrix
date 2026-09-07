@@ -164,7 +164,8 @@ test('mobile navigation exposes the important player journeys', async ({ page })
   const navigation = page.getByRole('navigation', { name: 'Mobile navigation' });
   await expect(navigation.getByRole('link', { name: 'Hub 01', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Play now 02', exact: true })).toBeVisible();
-  await expect(navigation.getByRole('link', { name: 'Workshop 03', exact: true })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Vault run 03', exact: true })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Workshop 04', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Replays 05', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Results 06', exact: true })).toBeVisible();
 });
@@ -217,6 +218,24 @@ test('instant play starts against agents and resolves a guided turn', async ({ p
   await expect(page.getByRole('heading', { name: 'Round 2' })).toBeVisible();
   await expect(page.getByText('Last resolution')).toBeVisible();
   await expectNoSeriousA11yIssues(page);
+});
+
+test('vault run starts, exposes a meaningful route tradeoff, and resolves a gambit', async ({ page }) => {
+  await page.goto('/vault-run');
+  await page.evaluate(() => localStorage.removeItem('plundrix-vault-run-v1'));
+  await page.reload();
+  await expect(page.getByRole('heading', { name: /three vaults/i })).toBeVisible();
+  await page.getByRole('button', { name: 'Begin vault run' }).click();
+  await expect(page.getByRole('heading', { name: 'Every route leaves fingerprints.' })).toBeVisible();
+  await page.getByRole('button', { name: /kick the hinge/i }).click();
+  await expect(page.getByRole('heading', { name: 'Outer Ring' })).toBeVisible();
+  await expect(page.getByText('Round 1', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: /double or nothing/i }).click();
+  await page.getByRole('button', { name: 'Commit Pick' }).click();
+  await expect(page.getByText('Last round')).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
 test('tactical art reinforces gadgets, actions, and rival identities', async ({ page }) => {
@@ -362,6 +381,7 @@ for (const [path, heading] of [
   ['/privacy', /privacy/i],
   ['/snapshot', /operation/i],
   ['/play', 'Your table is ready.'],
+  ['/vault-run', /three vaults/i],
   ['/trailer', /one vault/i],
 ]) {
   test(`${path} renders its primary content`, async ({ page }) => {
@@ -584,6 +604,26 @@ test('capture workshop visual evidence', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/design-system#inventory');
   await page.locator('#inventory').screenshot({ path: 'reports/workshop-v2/actual/design-system-inventory.png' });
+});
+
+test('capture vault-run visual evidence', async ({ page }) => {
+  test.setTimeout(60_000);
+  test.skip(!process.env.PLUNDRIX_CAPTURE_EVIDENCE, 'Run explicitly to refresh review evidence.');
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/vault-run');
+  await page.evaluate(() => localStorage.removeItem('plundrix-vault-run-v1'));
+  await page.reload();
+  await expect(page.getByRole('heading', { name: /three vaults/i })).toBeVisible();
+  await page.screenshot({ path: 'reports/vault-run-v1/actual/setup-desktop.png', fullPage: true });
+  await page.getByRole('button', { name: 'Begin vault run' }).click();
+  await page.screenshot({ path: 'reports/vault-run-v1/actual/route-desktop.png', fullPage: true });
+  await page.getByRole('button', { name: /bribe the map/i }).click();
+  await page.screenshot({ path: 'reports/vault-run-v1/actual/active-desktop.png', fullPage: true });
+  await page.getByRole('button', { name: 'Commit Pick' }).click();
+  await expect(page.getByText(/signature protocol/i)).toBeVisible();
+  await page.screenshot({ path: 'reports/vault-run-v1/actual/signature-desktop.png', fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: 'reports/vault-run-v1/actual/active-mobile.png', fullPage: true });
 });
 
 test('capture configured visual evidence', async ({ page }) => {

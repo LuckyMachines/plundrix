@@ -19,6 +19,11 @@ import {
   createInitialSimulation,
   resolveSimulationRound,
 } from '../app/src/lib/plundrixEngine.js';
+import { createDefaultInventory, getGadgetMastery, grantGadgetMasteryState, grantMatchSalvageState, normalizeInventory } from '../app/src/lib/inventoryStore.js';
+import { readBalanceTelemetry, recordLocalBalanceSample } from '../app/src/lib/gadgetTelemetry.js';
+import { createChronicle, recordRivalryMatch, rivalTaunt } from '../app/src/lib/playerChronicle.js';
+import { summarizeObservations } from '../app/src/lib/observationStore.js';
+import { applyVaultRound, buildVaultActionMap, createVaultRun, startVaultStage } from '../app/src/lib/vaultRun.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -1053,6 +1058,22 @@ describe('A+ gameplay improvements', () => {
     expect(next.players[0].gadgetReady).toBe(false);
     const outcome = next.roundHistory[0].events.find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1');
     expect(outcome.chance).toBe(54);
+    expect(next.roundHistory[0].events.some((event) => event.type === 'GadgetActivated' && event.gadget === 'quickset-clamp')).toBe(true);
+  });
+
+  it('resolves explicit high-risk round bargains', () => {
+    const state = createInitialSimulation({
+      seed: 'bargain-proof',
+      playerPatches: [{ tools: 1 }],
+    });
+    const next = resolveSimulationRound(state, {
+      ...allPick,
+      'player-1': { action: SIM_ACTION.PICK, bargain: 'hotwire' },
+    });
+    const outcome = next.roundHistory[0].events.find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1');
+    expect(outcome.chance).toBe(75);
+    expect(next.players[0].tools).toBe(0);
+    expect(next.roundHistory[0].events.some((event) => event.type === 'BargainResolved' && event.bargain === 'hotwire')).toBe(true);
   });
 
   it('lets Route Compass search through a stun at full strength', () => {
@@ -1114,5 +1135,91 @@ describe('A+ gameplay improvements', () => {
     }
     expect(tiedState).not.toBeNull();
     expect(['player-1', 'player-2']).toContain(tiedState.winner);
+  });
+});
+
+describe('vault-run retention systems', () => {
+  it('creates and starts a three-stage run with an explicit route tradeoff', () => {
+    const run = createVaultRun({ seed: 'run-proof', gadget: 'precision-kit' });
+    const active = startVaultStage(run, 'hot-entry');
+    expect(active.status).toBe('ACTIVE');
+    expect(active.heat).toBe(1);
+    expect(active.currentMatch.rules.totalLocks).toBe(3);
+    expect(active.currentMatch.players[1].tools).toBe(1);
+  });
+
+  it('settles a won vault and carries progress to the next route', () => {
+    let run = startVaultStage(createVaultRun({ seed: 'run-settle', gadget: 'precision-kit' }), 'inside-route');
+    run.currentMatch.players[0].locksCracked = 2;
+    run.currentMatch.players[0].tools = 5;
+    for (let index = 0; index < 8 && run.status === 'ACTIVE'; index += 1) {
+      run = applyVaultRound(run, buildVaultActionMap(run, { action: SIM_ACTION.PICK }));
+    }
+    expect(run.path).toHaveLength(1);
+    expect(run.path[0].won).toBe(true);
+    expect(run.status).toBe('ROUTE');
+    expect(run.stageIndex).toBe(1);
+    expect(run.score).toBeGreaterThan(0);
+  });
+
+  it('can carry one gadget through all three vaults to a complete run', () => {
+    let run = createVaultRun({ seed: 'complete-run-proof', gadget: 'signal-scanner' });
+    for (let stageIndex = 0; stageIndex < 3; stageIndex += 1) {
+      run = startVaultStage(run, stageIndex === 1 ? 'hot-entry' : 'inside-route');
+      run.currentMatch.players[0].locksCracked = run.currentMatch.rules.totalLocks - 1;
+      run.currentMatch.players[0].tools = 5;
+      for (let round = 0; round < 8 && run.status === 'ACTIVE'; round += 1) {
+        run = applyVaultRound(run, buildVaultActionMap(run, { action: SIM_ACTION.PICK }));
+      }
+    }
+    expect(run.status).toBe('COMPLETE');
+    expect(run.path).toHaveLength(3);
+    expect(run.path.every((entry) => entry.won)).toBe(true);
+  });
+
+  it('migrates inventory and awards visible gadget mastery', () => {
+    const migrated = normalizeInventory({ ...createDefaultInventory(), version: 2, mastery: undefined });
+    const awarded = grantGadgetMasteryState(migrated, { gadgetId: 'precision-kit', won: true, activated: true, runCompleted: true });
+    const mastery = getGadgetMastery(awarded.next, 'precision-kit');
+    expect(awarded.xp).toBe(165);
+    expect(mastery.level).toBe(2);
+    expect(mastery.title).toBe('Field Tinkerer');
+  });
+
+  it('lets dangerous routes multiply salvage without duplicating claims', () => {
+    const base = createDefaultInventory();
+    const normal = grantMatchSalvageState(base, { matchId: 'normal-drop', won: true, rewardMultiplier: 1 });
+    const boosted = grantMatchSalvageState(base, { matchId: 'boosted-drop', won: true, rewardMultiplier: 1.5 });
+    expect(boosted.drops.reduce((sum, item) => sum + item.amount, 0)).toBeGreaterThan(normal.drops.reduce((sum, item) => sum + item.amount, 0));
+    expect(grantMatchSalvageState(boosted.next, { matchId: 'boosted-drop', won: true, rewardMultiplier: 1.5 }).awarded).toBe(false);
+  });
+
+  it('turns match events into persistent rival grudges and contextual lines', () => {
+    const chronicle = recordRivalryMatch(createChronicle(), {
+      winner: 'player-2',
+      events: [{ type: 'PlayerSabotaged', actor: 'player-1', target: 'player-2' }],
+    });
+    expect(chronicle.rivals.Rook.grudge).toBe(2);
+    expect(chronicle.rivals.Rook.encounters).toBe(1);
+    expect(rivalTaunt('Rook', chronicle.rivals.Rook)).toMatch(/watching|lead|grievance|score/i);
+  });
+
+  it('summarizes anonymous first-run observation evidence', () => {
+    const summary = summarizeObservations([
+      { completedFirstAction: true, understoodGoal: true, noticedGadget: false, wantedReplay: true, secondsToFirstAction: 20 },
+      { completedFirstAction: true, understoodGoal: false, noticedGadget: true, wantedReplay: false, secondsToFirstAction: 40 },
+    ]);
+    expect(summary).toEqual({ count: 2, firstActionRate: 100, goalRate: 50, gadgetRate: 50, replayRate: 50, averageSeconds: 30 });
+  });
+
+  it('stores only aggregate gadget balance samples', () => {
+    const values = new Map();
+    const storage = { getItem: (key) => values.get(key) || null, setItem: (key, value) => values.set(key, value) };
+    recordLocalBalanceSample({ gadgetId: 'precision-kit', activated: true, won: true, rounds: 6, mode: 'vault-run', bargains: ['hotwire'], bargainOutcomes: [{ id: 'hotwire', success: true }] }, storage);
+    const telemetry = readBalanceTelemetry(storage);
+    expect(telemetry.samples).toBe(1);
+    expect(telemetry.gadgets['precision-kit']).toEqual({ plays: 1, wins: 1, activations: 1, rounds: 6 });
+    expect(telemetry.bargains.hotwire).toBe(1);
+    expect(telemetry.bargainWins.hotwire).toBe(1);
   });
 });

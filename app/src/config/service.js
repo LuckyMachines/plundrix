@@ -2,12 +2,12 @@ export const AGENT_SERVICE_URL =
   import.meta.env.VITE_AGENT_SERVICE_URL || (import.meta.env.PROD ? window.location.origin : '');
 export const AGENT_SERVICE_CONFIGURED = Boolean(AGENT_SERVICE_URL);
 
-export async function fetchAgentService(path) {
+export async function fetchAgentService(path, options = {}) {
   if (!AGENT_SERVICE_URL) {
     throw new Error('Agent service not configured');
   }
 
-  const response = await fetch(`${AGENT_SERVICE_URL}${path}`);
+  const response = await fetch(`${AGENT_SERVICE_URL}${path}`, options);
   const payload = await response.json();
 
   if (!response.ok) {

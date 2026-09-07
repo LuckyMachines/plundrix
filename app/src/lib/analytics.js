@@ -1,4 +1,7 @@
-const ALLOWED_PROPERTIES = new Set(['mode', 'action', 'result', 'surface', 'state', 'roundBucket']);
+const ALLOWED_PROPERTIES = new Set([
+  'mode', 'action', 'result', 'surface', 'state', 'roundBucket', 'stage', 'gadget',
+  'bargain', 'weekly', 'outcome', 'rival', 'source', 'chassis', 'rarity', 'protocol',
+]);
 
 function safeProperties(properties = {}) {
   return Object.fromEntries(

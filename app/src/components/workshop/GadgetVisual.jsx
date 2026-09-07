@@ -21,7 +21,7 @@ function CalibrationGlyph({ glyph }) {
   );
 }
 
-export default function GadgetVisual({ gadget, compact = false, className = '' }) {
+export default function GadgetVisual({ gadget, compact = false, className = '', masteryLevel = 0 }) {
   if (!gadget) return null;
   const style = {
     '--gadget-finish': gadget.finishColor,
@@ -31,7 +31,7 @@ export default function GadgetVisual({ gadget, compact = false, className = '' }
 
   return (
     <div
-      className={`gadget-visual gadget-visual--${gadget.finishPattern} gadget-visual--${gadget.rarity} ${compact ? 'gadget-visual--compact' : ''} ${className}`}
+      className={`gadget-visual gadget-visual--${gadget.finishPattern} gadget-visual--${gadget.rarity} ${masteryLevel > 1 ? 'gadget-visual--mastered' : ''} ${compact ? 'gadget-visual--compact' : ''} ${className}`}
       style={style}
       role="img"
       aria-label={`${gadget.finishLabel} ${gadget.chassisLabel} with ${gadget.calibrationModule}`}
@@ -45,6 +45,7 @@ export default function GadgetVisual({ gadget, compact = false, className = '' }
       </div>
       <div className="gadget-visual__rivets" aria-hidden="true"><i /><i /><i /></div>
       {gadget.isHero && <span className="gadget-visual__hero" aria-hidden="true">SIGNATURE</span>}
+      {masteryLevel > 1 && <span className="gadget-visual__mastery" aria-hidden="true">M{masteryLevel}</span>}
     </div>
   );
 }

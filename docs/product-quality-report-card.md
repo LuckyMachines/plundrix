@@ -417,3 +417,26 @@ Overall grade: **A for the implemented workshop system; competitive balance evid
 - Observe competitive sessions across all 10 signatures and tune strengths from real pick, win, and consumption rates.
 - Preserve at least 500 bytes of production game-contract runtime headroom as future rules evolve.
 - Validate authored-build recognition, crafting comprehension, and reclaim confidence with first-time players.
+
+## v0.19.0 - Mischievous retention loop
+
+Date: 2026-09-06
+
+Overall grade: **A for the implemented and automated retention loop; real-player and durable public-season evidence remain open.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Repeatable game loop | A+ | Vault Run carries one equipped gadget through three escalating vaults with two lives, route choices, stage scoring, carried tools, run persistence, and a distinct final briefing. |
+| Decisions and mischief | A | Three route bargains and three round gambits expose exact costs and payoffs across odds, tools, locks, heat, score, and salvage. Observed balance data is still required before tuning can be called final. |
+| Signature feedback | A | All ten chassis now emit explicit activation events with distinct imagery, copy, color, motion, audio, haptics, and reduced-motion behavior. |
+| Rival continuity | A | Rook, Mara, and Vesper persist encounters, wins, losses, sabotage, theft, grudges, and deterministic contextual taunts across local operations. Human response to the personalities remains unmeasured. |
+| Workshop progression | A | Chassis mastery adds XP, four titles, a visible maker mark, progress, activations, wins, and run counts without altering hidden match odds. |
+| Weekly competition | A- | The ISO-week seed, modifiers, share URL, validated score endpoint, rate limit, sorted board, and local fallback work. The service-backed beta board is process-memory durable and self-reported, not yet database-backed or cryptographically verified. |
+| Evidence and telemetry | A | Privacy-safe aggregate gadget/run telemetry and a local anonymous first-run observation recorder are implemented. No participant outcomes are invented; real observations remain at zero until sessions occur. |
+| Technical reliability | A+ | 92 JavaScript integration tests, 12 agent-service tests, 52 Solidity tests, 5 tournament tests, the production build, SEO/cohesion gates, and 35 active browser journeys pass. Five visual captures and a side-by-side reference comparison were inspected. |
+
+### Stricter A+ bar
+
+- Observe at least four first-time players through setup, first action, gadget recognition, result comprehension, and replay intent using the new recorder.
+- Gather enough privacy-safe samples to evaluate all ten gadget activation and win rates plus every bargain's selection and outcome rate.
+- Replace the session-memory weekly board with durable storage and signed or server-replayed score verification before presenting it as a competitive season.

@@ -34,6 +34,9 @@ The service is also the current indexing layer for:
 
 ## Endpoints
 
+- `GET /api/weekly-vault` returns the current deterministic weekly Vault Run challenge and beta scoreboard.
+- `POST /api/weekly-vault/scores` accepts bounded, self-reported completed-run scores. The beta board is held in service memory and resets on restart.
+
 - `GET /health`
 - `GET /api/games?limit=20&offset=0`
 - `GET /api/competition/overview`

@@ -8,6 +8,7 @@ The repo currently ships:
 - an upgradeable onchain workshop with 10 gameplay-distinct gadgets and 1,200 stable visual configurations
 - a React app for local play and Sepolia staging
 - instant Blitz, Classic, and Tactical agent matches at `/play`
+- a persistent three-stage practice roguelite with risky routes, rival grudges, mastery, and weekly seeds at `/vault-run`
 - a 32-second real-capture gameplay trailer at `/trailer`
 - an agent/competition service for recommendations, profiles, sessions, badges, and ladders
 - KMS-backed deploy and autoloop tooling
@@ -31,6 +32,7 @@ Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
 The latest read-only chain and provenance audit is in [docs/sepolia-readiness-audit.md](docs/sepolia-readiness-audit.md).
 The living interface reference and review workflow are documented in [docs/design-system.md](docs/design-system.md).
 The manifest-driven art direction, generation, delivery, and review workflow is documented in [docs/art-pipeline.md](docs/art-pipeline.md).
+The current implementation grade and remaining human-evidence bar are documented in [docs/product-quality-report-card.md](docs/product-quality-report-card.md).
 
 ## Game Summary
 

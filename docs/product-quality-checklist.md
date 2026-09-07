@@ -207,3 +207,15 @@
 - [x] Capture and inspect desktop, mobile, builder, design-system, atlas, and before/after visual evidence.
 - [ ] Balance the 10 signature strengths with observed competitive play and telemetry.
 - [x] Increase production game-contract runtime headroom from 15 bytes to 666 bytes by moving roster orchestration into the Workshop and using a size-oriented optimizer profile.
+
+## 16. v0.19 mischievous retention loop
+
+- [x] Add a three-stage Vault Run with branching bargains, escalating vault conditions, persistence, and a final score.
+- [x] Give all 10 gadgets unmistakable activation copy, color, motion, and audio cues.
+- [x] Persist rival grudges, wins, losses, thefts, and contextual taunts across local operations.
+- [x] Add chassis mastery, cosmetic titles, inscriptions, and usage progress to the Workshop.
+- [x] Add push-your-luck bargains that trade safety, tools, salvage, heat, and score.
+- [x] Add a deterministic weekly vault with shareable challenge URLs and a service-backed score board with local fallback.
+- [x] Capture privacy-safe gadget, bargain, run-stage, rivalry, and completion telemetry.
+- [x] Add a structured first-time-player observation recorder without inventing participant evidence.
+- [x] Add pure-logic, service, browser, accessibility, responsive, build, and visual evidence coverage.

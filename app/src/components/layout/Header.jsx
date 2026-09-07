@@ -6,8 +6,8 @@ import AccessibilityToggle from './AccessibilityToggle';
 const NAV_ITEMS = [
   { to: '/', label: 'Hub' },
   { to: '/play', label: 'Play now' },
+  { to: '/vault-run', label: 'Vault run' },
   { to: '/workshop', label: 'Workshop' },
-  { to: '/trailer', label: 'Trailer' },
   { to: '/replays', label: 'Replays' },
   { to: '/sessions', label: 'Results' },
 ];

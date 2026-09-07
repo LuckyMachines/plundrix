@@ -19,6 +19,7 @@ import {
   craftGadgetState,
   dismantleGadgetState,
   equipGadgetState,
+  getGadgetMastery,
   readInventory,
   toggleFavoriteGadgetState,
   writeInventory,
@@ -67,6 +68,8 @@ export default function WorkshopPage() {
   const selectedOwned = inventory.ownedIds.includes(selected.id);
   const selectedCraftable = canCraftGadget(inventory, selected);
   const transactionPending = Boolean(workshop.pendingAction) || (onchainMode && !onchainReady);
+  const selectedMastery = getGadgetMastery(localInventory, selected.chassisId);
+  const equippedMastery = equipped ? getGadgetMastery(localInventory, equipped.chassisId) : null;
   const setters = { setChassis, setFinish, setCalibration };
 
   const families = useMemo(() => GADGET_CHASSIS.filter((chassis) => (
@@ -199,8 +202,9 @@ export default function WorkshopPage() {
           <article className="border border-tungsten/45 bg-vault-dark/80 p-4">
             <p className="label text-tungsten">Equipped configuration</p>
             {equipped ? <>
-              <GadgetVisual gadget={equipped} className="mt-3 min-h-[210px]" />
+              <GadgetVisual gadget={equipped} masteryLevel={equippedMastery.level} className="mt-3 min-h-[210px]" />
               <div className="mt-4 flex items-start justify-between gap-3"><div><h2 className="font-display text-2xl uppercase text-vault-text">{equipped.name}</h2><p className="mt-1 text-sm text-vault-text-dim">{equipped.effectName}: {equipped.protocolLabel}</p></div><span className="font-mono text-xs text-vault-text-dim">{equipped.serial}</span></div>
+              <div className="mt-4 border-t border-vault-border pt-4"><div className="flex items-center justify-between gap-3"><p className="font-mono text-[9px] uppercase tracking-[.14em] text-oxide-green">Device mastery {equippedMastery.level} / {equippedMastery.title}</p><span className="font-mono text-[9px] text-vault-text-dim">{equippedMastery.xp} XP</span></div><div className="mt-2 h-1.5 bg-vault-surface"><div className="h-full bg-oxide-green" style={{ width: `${equippedMastery.progress}%` }} /></div></div>
             </> : <div className="grid min-h-[250px] place-content-center text-center"><h2 className="font-display text-3xl uppercase text-vault-text">No build equipped</h2><p className="mt-3 text-sm text-vault-text-dim">Choose one below.</p></div>}
           </article>
         </div>
@@ -252,12 +256,13 @@ export default function WorkshopPage() {
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(320px,0.8fr)_minmax(0,1.2fr)]">
           <div>
-            <GadgetVisual gadget={selected} className="min-h-[360px]" />
+            <GadgetVisual gadget={selected} masteryLevel={selectedMastery.level} className="min-h-[360px]" />
             <div className="border border-t-0 border-vault-border bg-vault-dark/55 p-5">
               <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-mono text-xs uppercase text-oxide-green">{selected.protocolFamilyLabel} family / {selected.role}</p><h3 className="mt-2 font-display text-4xl uppercase leading-none text-vault-text">{selected.name}</h3></div>{selected.isHero && <span className="border border-tungsten/50 px-2 py-1 font-mono text-xs uppercase text-tungsten">Signature build</span>}</div>
               <p className="mt-4 text-sm leading-6 text-vault-text-dim">{selected.lore}</p>
               <div className="mt-5 border-l-2 border-oxide-green bg-oxide-green/5 p-4"><p className="font-mono text-xs uppercase text-oxide-green">Gameplay / {selected.effectName}</p><p className="mt-2 text-vault-text">{selected.protocolLabel}</p><p className="mt-2 font-mono text-xs uppercase text-vault-text-dim">Triggers: {selected.effectTrigger}</p></div>
               <div className="mt-3 border-l-2 border-blueprint bg-blueprint/5 p-4"><p className="font-mono text-xs uppercase text-[#79AEE9]">Appearance only</p><p className="mt-2 text-sm text-vault-text-dim">{selected.finishLabel} changes material treatment. {selected.calibrationLabel} adds the visible {selected.calibrationModule.toLowerCase()}. Neither changes hidden match math.</p></div>
+              <div className="mt-3 border-l-2 border-tungsten bg-tungsten/5 p-4"><div className="flex justify-between gap-3"><p className="font-mono text-xs uppercase text-tungsten">Device mastery {selectedMastery.level} / {selectedMastery.title}</p><span className="font-mono text-xs text-vault-text-dim">{selectedMastery.xp} XP</span></div><div className="mt-3 h-1.5 bg-vault-dark"><div className="h-full bg-tungsten" style={{ width: `${selectedMastery.progress}%` }} /></div><p className="mt-3 text-xs text-vault-text-dim">{selectedMastery.activations} signature activations / {selectedMastery.wins} wins / {selectedMastery.runs} recorded runs. Device-local mastery changes the maker mark, never the odds.</p></div>
             </div>
           </div>
 

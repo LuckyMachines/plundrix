@@ -36,6 +36,12 @@ export const PRODUCT_LOOP = Object.freeze([
     summary: 'Turn match salvage into a personal gadget.',
   },
   {
+    id: 'run',
+    label: 'Run',
+    route: '/vault-run',
+    summary: 'Carry one gadget through three escalating vaults.',
+  },
+  {
     id: 'replay',
     label: 'Replay',
     route: '/replays',
@@ -80,6 +86,18 @@ export const ROUTE_META = Object.freeze({
     description: 'Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup or wallet.',
     image: '/images/og/plundrix-play.jpg',
     primaryCta: 'Play',
+    nextRoutes: ['/workshop', '/replays'],
+  },
+  '/vault-run': {
+    label: 'Vault Run',
+    navGroup: 'Play',
+    routeClass: 'game',
+    loopStep: 'run',
+    purpose: 'Take one gadget through three escalating practice vaults.',
+    title: 'Vault Run - Three Vault Roguelite | Plundrix',
+    description: 'Choose risky routes, outwit persistent rivals, and carry one workshop gadget through a three-stage Plundrix run.',
+    image: '/images/victory-breach.webp',
+    primaryCta: 'Run',
     nextRoutes: ['/workshop', '/replays'],
   },
   '/workshop': {

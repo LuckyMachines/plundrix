@@ -229,14 +229,15 @@ function normalizeActionEntry(entry) {
     return null;
   }
   if (typeof entry === 'number') {
-    return { action: entry, sabotageTarget: null };
+    return { action: entry, sabotageTarget: null, bargain: null };
   }
   if (typeof entry === 'string') {
-    return { action: Number(entry), sabotageTarget: null };
+    return { action: Number(entry), sabotageTarget: null, bargain: null };
   }
   return {
     action: Number(entry.action),
     sabotageTarget: entry.sabotageTarget || null,
+    bargain: entry.bargain || null,
   };
 }
 
@@ -519,6 +520,8 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       let success = false;
       let reason = SIM_OUTCOME_REASON.PICK_FAILED_ROLL;
       let gadgetBonus = 0;
+      let bargainBonus = 0;
+      const baseChance = getPickChance(player, next.rules);
       const signature = player.gadgetReady ? getGadgetSignature(player.gadget) : null;
 
       if (player.stunned) {
@@ -527,13 +530,42 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         if (signature?.id === 'precision-kit') gadgetBonus = 10;
         if (signature?.id === 'torque-driver' && player.tools > 0) gadgetBonus = 18;
         if (signature?.id === 'quickset-clamp' && player.locksCracked === 0) gadgetBonus = 14;
-        if (gadgetBonus) player.gadgetReady = false;
+        if (pending.bargain === 'hotwire' && player.tools > 0) {
+          bargainBonus = 20;
+          player.tools -= 1;
+          emit('BargainResolved', {
+            actor: player.id,
+            bargain: pending.bargain,
+            message: `${player.name} burned a tool to hotwire the lock.`,
+          });
+        }
+        if (pending.bargain === 'double-or-nothing') {
+          bargainBonus = -18;
+          emit('BargainResolved', {
+            actor: player.id,
+            bargain: pending.bargain,
+            message: `${player.name} wagered control for a double breach.`,
+          });
+        }
+        if (gadgetBonus) {
+          player.gadgetReady = false;
+          emit('GadgetActivated', {
+            actor: player.id,
+            gadget: signature.id,
+            effectName: signature.effectName,
+            action: SIM_ACTION.PICK,
+            message: `${player.name} triggered ${signature.effectName}.`,
+          });
+        }
       }
-      const chance = Math.min(next.rules.pickChanceCap, getPickChance(player, next.rules) + gadgetBonus);
+      const chance = Math.max(5, Math.min(next.rules.pickChanceCap, baseChance + gadgetBonus + bargainBonus));
       if (!player.stunned && roll < chance) {
         success = true;
         reason = SIM_OUTCOME_REASON.PICK_SUCCESS;
-        player.locksCracked += 1;
+        player.locksCracked = Math.min(
+          next.rules.totalLocks,
+          player.locksCracked + (pending.bargain === 'double-or-nothing' ? 2 : 1),
+        );
         emit('LockCracked', {
           actor: player.id,
           locksCracked: player.locksCracked,
@@ -560,6 +592,15 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       let baseChance = getSearchChance(player, next.rules);
       let gadgetBonus = 0;
       let toolsFound = 1;
+      if (pending.bargain === 'deep-dive') {
+        baseChance -= 15;
+        toolsFound += 1;
+        emit('BargainResolved', {
+          actor: player.id,
+          bargain: pending.bargain,
+          message: `${player.name} searched the dangerous lower channel.`,
+        });
+      }
       if (signature?.id === 'signal-scanner') gadgetBonus = 20;
       if (signature?.id === 'echo-coil' && round >= 3) gadgetBonus = 26;
       if (signature?.id === 'cache-siphon' && player.tools < next.rules.maxTools) {
@@ -571,7 +612,16 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         gadgetBonus = 10;
       }
       const chance = Math.min(95, baseChance + gadgetBonus);
-      if (gadgetBonus) player.gadgetReady = false;
+      if (gadgetBonus) {
+        player.gadgetReady = false;
+        emit('GadgetActivated', {
+          actor: player.id,
+          gadget: signature.id,
+          effectName: signature.effectName,
+          action: SIM_ACTION.SEARCH,
+          message: `${player.name} triggered ${signature.effectName}.`,
+        });
+      }
 
       if (roll < chance) {
         if (player.tools >= next.rules.maxTools) {
@@ -655,6 +705,14 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       if (targetSignature.id === 'counterweight' && target.locksCracked < player.locksCracked) {
         target.tools = Math.min(next.rules.maxTools, target.tools + 1);
       }
+      emit('GadgetActivated', {
+        actor: target.id,
+        target: player.id,
+        gadget: targetSignature.id,
+        effectName: targetSignature.effectName,
+        action: SIM_ACTION.SABOTAGE,
+        message: `${target.name} triggered ${targetSignature.effectName}.`,
+      });
       emit('ActionOutcome', {
         actor: player.id,
         target: target.id,

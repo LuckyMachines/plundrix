@@ -1,5 +1,6 @@
 import {
   CRAFTING_MATERIALS,
+  GADGET_CHASSIS_BY_ID,
   GADGETS_BY_ID,
   STARTER_GADGET_IDS,
   getGadgetById,
@@ -7,13 +8,20 @@ import {
 
 export const INVENTORY_STORAGE_KEY = 'plundrix-workshop-v1';
 
+export const MASTERY_RANKS = Object.freeze([
+  { level: 4, threshold: 600, title: 'Vault Virtuoso' },
+  { level: 3, threshold: 300, title: 'Tricksmith' },
+  { level: 2, threshold: 120, title: 'Field Tinkerer' },
+  { level: 1, threshold: 0, title: 'Bench Initiate' },
+]);
+
 function defaultMaterials() {
   return Object.fromEntries(CRAFTING_MATERIALS.map((material) => [material.id, material.start]));
 }
 
 export function createDefaultInventory() {
   return {
-    version: 2,
+    version: 3,
     ownedIds: [...STARTER_GADGET_IDS],
     equippedId: STARTER_GADGET_IDS[0],
     favoriteIds: [],
@@ -21,6 +29,7 @@ export function createDefaultInventory() {
     craftedCount: 0,
     claimedMatches: [],
     recentDrops: [],
+    mastery: {},
   };
 }
 
@@ -35,8 +44,16 @@ export function normalizeInventory(value) {
     const stored = Number(value.materials?.[material.id]);
     return [material.id, Number.isFinite(stored) ? Math.max(0, Math.floor(stored)) : material.start];
   }));
+  const mastery = Object.fromEntries(Object.entries(value.mastery || {})
+    .filter(([id]) => GADGET_CHASSIS_BY_ID[id])
+    .map(([id, record]) => [id, {
+      xp: Math.max(0, Math.floor(Number(record?.xp) || 0)),
+      activations: Math.max(0, Math.floor(Number(record?.activations) || 0)),
+      wins: Math.max(0, Math.floor(Number(record?.wins) || 0)),
+      runs: Math.max(0, Math.floor(Number(record?.runs) || 0)),
+    }]));
   return {
-    version: 2,
+    version: 3,
     ownedIds,
     equippedId: ownedIds.includes(value.equippedId) ? value.equippedId : fallback.equippedId,
     favoriteIds: [...new Set(Array.isArray(value.favoriteIds) ? value.favoriteIds.filter((id) => GADGETS_BY_ID[id]) : [])].slice(-100),
@@ -44,6 +61,7 @@ export function normalizeInventory(value) {
     craftedCount: Math.max(0, Math.floor(Number(value.craftedCount) || 0)),
     claimedMatches: Array.isArray(value.claimedMatches) ? [...new Set(value.claimedMatches.filter(Boolean))].slice(-100) : [],
     recentDrops: Array.isArray(value.recentDrops) ? value.recentDrops.slice(-8) : [],
+    mastery,
   };
 }
 
@@ -135,14 +153,15 @@ function hashString(value) {
   return hash >>> 0;
 }
 
-export function grantMatchSalvageState(state, { matchId, won = false, rounds = 1 } = {}) {
+export function grantMatchSalvageState(state, { matchId, won = false, rounds = 1, rewardMultiplier = 1 } = {}) {
   const current = normalizeInventory(state);
   if (!matchId || current.claimedMatches.includes(matchId)) return { awarded: false, next: current, drops: [] };
   const hash = hashString(`${matchId}:${rounds}:${won}`);
   const first = CRAFTING_MATERIALS[hash % CRAFTING_MATERIALS.length];
   const second = CRAFTING_MATERIALS[(hash + Math.max(1, rounds)) % CRAFTING_MATERIALS.length];
-  const rewards = new Map([[first.id, won ? 5 : 3]]);
-  rewards.set(second.id, (rewards.get(second.id) || 0) + (won ? 3 : 2));
+  const multiplier = Math.max(0.5, Math.min(2, Number(rewardMultiplier) || 1));
+  const rewards = new Map([[first.id, Math.max(1, Math.round((won ? 5 : 3) * multiplier))]]);
+  rewards.set(second.id, (rewards.get(second.id) || 0) + Math.max(1, Math.round((won ? 3 : 2) * multiplier)));
   const materials = { ...current.materials };
   const drops = [...rewards].map(([materialId, amount]) => {
     materials[materialId] = (materials[materialId] || 0) + amount;
@@ -159,4 +178,40 @@ export function grantMatchSalvageState(state, { matchId, won = false, rounds = 1
       recentDrops: [...current.recentDrops, record].slice(-8),
     },
   };
+}
+
+export function getGadgetMastery(state, gadgetId) {
+  const record = normalizeInventory(state).mastery[gadgetId] || {
+    xp: 0,
+    activations: 0,
+    wins: 0,
+    runs: 0,
+  };
+  const rank = MASTERY_RANKS.find((candidate) => record.xp >= candidate.threshold) || MASTERY_RANKS.at(-1);
+  const nextRank = [...MASTERY_RANKS].reverse().find((candidate) => candidate.threshold > record.xp) || null;
+  const progress = nextRank
+    ? Math.round(((record.xp - rank.threshold) / (nextRank.threshold - rank.threshold)) * 100)
+    : 100;
+  return { ...record, ...rank, nextRank, progress: Math.max(0, Math.min(100, progress)) };
+}
+
+export function grantGadgetMasteryState(
+  state,
+  { gadgetId, won = false, activated = false, runCompleted = false } = {},
+) {
+  const current = normalizeInventory(state);
+  if (!GADGET_CHASSIS_BY_ID[gadgetId]) return { awarded: false, xp: 0, next: current };
+  const previous = getGadgetMastery(current, gadgetId);
+  const activationCount = Math.max(0, Math.floor(Number(activated) || 0));
+  const xp = 20 + activationCount * 35 + (won ? 65 : 0) + (runCompleted ? 45 : 0);
+  const mastery = {
+    ...current.mastery,
+    [gadgetId]: {
+      xp: previous.xp + xp,
+      activations: previous.activations + activationCount,
+      wins: previous.wins + (won ? 1 : 0),
+      runs: previous.runs + 1,
+    },
+  };
+  return { awarded: true, xp, next: { ...current, mastery } };
 }

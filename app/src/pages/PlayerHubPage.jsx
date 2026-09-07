@@ -22,11 +22,11 @@ export default function PlayerHubPage() {
               Choose your breach.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-vault-text-dim">
-              Start immediately against three agents, or connect a wallet and join a live table on Sepolia.
+              Start immediately against three agents, carry one gadget through a Vault Run, or connect a wallet and join a live table on Sepolia.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-4 lg:grid-cols-2">
+          <div className="mt-10 grid gap-4 lg:grid-cols-3">
             <article className="relative min-h-[340px] overflow-hidden border border-tungsten/50 bg-vault-dark p-6 sm:p-8">
               <img src="/images/plundrix-instant-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-40" />
               <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/35" />
@@ -39,6 +39,17 @@ export default function PlayerHubPage() {
               <Link to="/play" className="mt-auto inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-vault-dark">
                 Start instant match -&gt;
               </Link>
+              </div>
+            </article>
+
+            <article className="relative min-h-[340px] overflow-hidden border border-oxide-green/45 bg-vault-dark p-6 sm:p-8">
+              <img src="/images/victory-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-35" />
+              <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/30" />
+              <div className="relative flex h-full flex-col items-start">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">Persistent practice</p>
+                <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Risk a vault run</h2>
+                <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">Carry one gadget through three escalating vaults. Choose crooked routes, build rival grudges, and chase the weekly seed.</p>
+                <Link to="/vault-run" className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/60 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-oxide-green">Start vault run -&gt;</Link>
               </div>
             </article>
 

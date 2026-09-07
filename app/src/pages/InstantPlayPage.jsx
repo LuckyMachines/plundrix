@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
+import SignatureMoment from '../components/game/SignatureMoment';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
 import {
@@ -11,7 +12,9 @@ import {
 } from '../data/gadgetInventory';
 import { trackProductEvent } from '../lib/analytics';
 import { copyText } from '../lib/clipboard';
-import { grantMatchSalvageState, readInventory, writeInventory } from '../lib/inventoryStore';
+import { getGadgetMastery, grantGadgetMasteryState, grantMatchSalvageState, readInventory, writeInventory } from '../lib/inventoryStore';
+import { recordLocalBalanceSample } from '../lib/gadgetTelemetry';
+import { readChronicle, recordRivalryMatch, rivalTaunt, writeChronicle } from '../lib/playerChronicle';
 import {
   SIM_ACTION,
   SIM_GADGETS,
@@ -182,6 +185,7 @@ export default function InstantPlayPage() {
   const [target, setTarget] = useState(restoredMatch?.target || 'player-2');
   const [shareStatus, setShareStatus] = useState(restoredMatch ? 'Operation restored on this device.' : '');
   const [salvageReward, setSalvageReward] = useState(null);
+  const [chronicle, setChronicle] = useState(readChronicle);
   const practiceBlueprint = useMemo(() => (
     gadget === equippedBlueprint.chassisId
       ? equippedBlueprint
@@ -197,6 +201,10 @@ export default function InstantPlayPage() {
   const lastRound = state.roundHistory.at(-1);
   const latestOutcomes = useMemo(
     () => (lastRound?.events || []).filter((event) => event.type === 'ActionOutcome'),
+    [lastRound],
+  );
+  const latestSignature = useMemo(
+    () => [...(lastRound?.events || [])].reverse().find((event) => event.type === 'GadgetActivated'),
     [lastRound],
   );
   const challengeTarget = Number(params.get('target')) || null;
@@ -224,15 +232,34 @@ export default function InstantPlayPage() {
   useEffect(() => {
     if (state.state !== 'COMPLETE' || recordedGame.current === state.gameId) return;
     recordedGame.current = state.gameId;
-    const salvage = grantMatchSalvageState(readInventory(), {
+    let nextInventory = readInventory();
+    const salvage = grantMatchSalvageState(nextInventory, {
       matchId: state.gameId,
       won: state.winner === 'player-1',
       rounds: state.currentRound,
     });
+    nextInventory = salvage.next;
+    if (mode === 'tactical') {
+      nextInventory = grantGadgetMasteryState(nextInventory, {
+        gadgetId: gadget,
+        won: state.winner === 'player-1',
+        activated: state.players[0].gadgetReady === false,
+      }).next;
+    }
+    writeInventory(nextInventory);
     if (salvage.awarded) {
-      writeInventory(salvage.next);
       setSalvageReward(salvage.drops);
     }
+    const nextChronicle = writeChronicle(recordRivalryMatch(readChronicle(), state));
+    setChronicle(nextChronicle);
+    trackProductEvent('Rivalry Updated', { rival: state.winner === 'player-1' ? 'table' : (winner?.name || 'rival').toLowerCase(), outcome: state.winner === 'player-1' ? 'escaped' : 'beaten' });
+    recordLocalBalanceSample({
+      gadgetId: mode === 'tactical' ? gadget : 'none',
+      activated: mode === 'tactical' && state.players[0].gadgetReady === false,
+      won: state.winner === 'player-1',
+      rounds: state.currentRound,
+      mode,
+    });
     setProfile((current) => {
       const won = state.winner === 'player-1';
       const next = {
@@ -438,6 +465,8 @@ export default function InstantPlayPage() {
               {isResolving && <p className="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-tungsten">Actions sealed. Revealing...</p>}
             </div>
 
+            {latestSignature && <div className="border-b border-vault-border p-4"><SignatureMoment event={latestSignature} actorName={state.players.find((candidate) => candidate.id === latestSignature.actor)?.name} reducedMotion={reducedMotion} soundEnabled={soundEnabled} /></div>}
+
             <div className="flex min-w-0 snap-x gap-px overflow-x-auto bg-vault-border" role="region" aria-label="Players at this table" tabIndex={0}>
               {state.players.map((candidate) => (
                 <article key={candidate.id} className={`min-w-[220px] flex-1 snap-start bg-vault-surface p-4 ${candidate.id === 'player-1' ? 'ring-1 ring-inset ring-tungsten/45' : ''}`}>
@@ -453,6 +482,7 @@ export default function InstantPlayPage() {
                   </div>
                   <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-vault-text-dim">{candidate.tools} tools {candidate.stunned ? '/ stunned' : ''}</p>
                   {RIVAL_PERSONAS[candidate.name] && <p className="mt-2 text-xs leading-5 text-vault-text-dim">{RIVAL_PERSONAS[candidate.name]}</p>}
+                  {chronicle.rivals[candidate.name] && <><p className="mt-2 font-mono text-[8px] uppercase tracking-[.12em] text-signal-red">Grudge {'X'.repeat(chronicle.rivals[candidate.name].grudge)}{'-'.repeat(5 - chronicle.rivals[candidate.name].grudge)} / record {chronicle.rivals[candidate.name].playerWins}-{chronicle.rivals[candidate.name].rivalWins}</p><p className="mt-1 text-xs italic leading-5 text-vault-text-dim">"{rivalTaunt(candidate.name, chronicle.rivals[candidate.name])}"</p></>}
                   {candidate.gadget && <p className="mt-1 font-mono text-[9px] uppercase text-oxide-green">{candidate.gadget.replace('-', ' ')} {candidate.gadgetReady ? 'ready' : 'spent'}</p>}
                 </article>
               ))}
@@ -512,6 +542,7 @@ export default function InstantPlayPage() {
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-tungsten">Final briefing</p>
                 <h2 className="mt-3 font-display text-5xl uppercase leading-[0.92] text-vault-text">{winner?.name} breached the vault</h2>
                 <p className="mt-4 max-w-xl leading-6 text-vault-text-dim">Completed in {state.currentRound} rounds. {state.winner === 'player-1' ? `You earned 125 XP and defended your ${rank} rank.` : `${winner?.name} stole the final opening. You earned 50 XP and new intel for the rematch.`}</p>
+                <p className="mt-3 font-mono text-[10px] uppercase tracking-[.14em] text-signal-red">Rivalry chronicle updated. They will remember this.</p>
                 {salvageReward?.length > 0 && <div className="mt-5 border border-oxide-green/45 bg-oxide-green/10 p-4"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-oxide-green">Workshop salvage recovered</p><div className="mt-3 flex flex-wrap gap-2">{salvageReward.map(({ materialId, amount }) => { const material = CRAFTING_MATERIALS.find((item) => item.id === materialId); return <span key={materialId} className="inline-flex items-center gap-2 border border-vault-border bg-vault-dark/70 px-3 py-2 font-mono text-xs uppercase text-vault-text"><img src={material?.image} alt="" className="h-7 w-7 object-contain" />+{amount} {material?.label}</span>; })}</div></div>}
                 {challengeTarget && <p className={`mt-3 font-mono text-xs uppercase tracking-[0.16em] ${state.currentRound < challengeTarget && state.winner === 'player-1' ? 'text-oxide-green' : 'text-tungsten'}`}>{state.currentRound < challengeTarget && state.winner === 'player-1' ? `Challenge beaten by ${challengeTarget - state.currentRound} rounds` : `Challenge target: under ${challengeTarget} rounds`}</p>}
               </div>
@@ -563,7 +594,7 @@ export default function InstantPlayPage() {
 
           {mode === 'tactical' && <section className="border border-vault-border bg-vault-surface p-5">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-tungsten">Workshop loadout</p>
-            <div className="mt-3 grid grid-cols-[78px_minmax(0,1fr)] items-center gap-3"><GadgetVisual gadget={practiceBlueprint} compact /><div><p className="font-display text-xl uppercase text-vault-text">{practiceBlueprint.name}</p><p className="mt-1 text-xs leading-5 text-vault-text-dim">{practiceBlueprint.effectName} / {practiceBlueprint.protocolLabel}</p></div></div>
+            <div className="mt-3 grid grid-cols-[78px_minmax(0,1fr)] items-center gap-3"><GadgetVisual gadget={practiceBlueprint} compact masteryLevel={getGadgetMastery(readInventory(), gadget).level} /><div><p className="font-display text-xl uppercase text-vault-text">{practiceBlueprint.name}</p><p className="mt-1 text-xs leading-5 text-vault-text-dim">{practiceBlueprint.effectName} / {practiceBlueprint.protocolLabel}</p></div></div>
           </section>}
 
           {state.state === 'COMPLETE' && <section className="border border-vault-border bg-vault-surface p-5">

@@ -15,6 +15,7 @@ import {
 } from './contract.mjs';
 import { buildAvailableActions, recommendAction } from './strategy.mjs';
 import { getSessionRelayStatus, relaySessionAction } from './session-relay.mjs';
+import { getWeeklyVaultBoard, submitWeeklyVaultScore } from './weekly-challenge.mjs';
 
 validateAgentConfig();
 
@@ -208,6 +209,18 @@ const server = createServer(async (req, res) => {
       return;
     }
 
+    if (method === 'GET' && path === '/api/weekly-vault') {
+      writeJson(res, 200, getWeeklyVaultBoard());
+      return;
+    }
+
+    if (method === 'POST' && path === '/api/weekly-vault/scores') {
+      enforceRelayRateLimit(req);
+      const body = await readBody(req);
+      writeJson(res, 201, submitWeeklyVaultScore(body));
+      return;
+    }
+
     if (method === 'POST' && path === '/api/session-actions') {
       enforceRelayRateLimit(req);
       const body = await readBody(req);
@@ -220,6 +233,8 @@ const server = createServer(async (req, res) => {
       routes: [
         'GET /health',
         'GET /api/games',
+        'GET /api/weekly-vault',
+        'POST /api/weekly-vault/scores',
         'GET /api/competition/overview',
         'GET /api/competition/leaderboard',
         'GET /api/competition/agent-ladder',
