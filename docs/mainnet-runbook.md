@@ -161,7 +161,7 @@ Note: the autoloop worker only resolves STAKES games. FREE games use default mov
 For an existing game proxy adopting the workshop:
 
 1. Upgrade the game proxy with `script/UpgradePlundrix.s.sol` so `configureWorkshop` exists.
-2. Set `PLUNDRIX_ADDRESS` to that game proxy and run `script/DeployWorkshop.s.sol` from a `GAME_MASTER_ROLE` signer.
+2. Set `PLUNDRIX_ADDRESS` to that game proxy and run `npm run deploy:workshop:kms` from the KMS-backed `GAME_MASTER_ROLE` signer. The helper is testnet-only and verifies both links after configuration. The Foundry `script/DeployWorkshop.s.sol` path remains available for explicitly managed private-key deployments.
 3. Verify both directions: `game.workshop() == workshopProxy` and `workshop.game() == gameProxy`.
 4. Set `VITE_WORKSHOP_ADDRESS`, sync both ABIs, and run one complete no-stakes smoke match.
 
