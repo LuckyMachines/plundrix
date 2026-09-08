@@ -1,0 +1,13 @@
+Use case: ui-mockup
+Asset type: high-fidelity desktop game interface art-direction study
+Primary request: Redesign the Plundrix strategy game's active-round screen as "The Impossible Blueprint," a living architectural plan for cracking a fantastical vault, combining strategic clarity with dimensional paper-engineering wonder.
+Scene/backdrop: a straight-on full browser viewport where midnight-blue drafting vellum floats in shallow layers over a shadowy worktable; cyan construction lines, coral grease-pencil marks, translucent overlays, fold-out tabs, and a subtle cutaway vault diorama create real depth.
+Subject: preserve a practical game layout: slim top navigation, prominent five-lock vault progress at upper center, four rival-agent panels across the middle, three large action choices along the bottom, and a compact current-plan and gadget rail on the right. Make the central vault plan feel alive, with routes, pins, and moving-paper-mechanism cues, while controls remain clearly usable.
+Style/medium: shippable premium web game UI mockup; editorial architectural drawing meets elegant tabletop strategy game; crisp vector-like linework over tactile paper layers; intelligent, wondrous, and sly.
+Composition/framing: 3:2 landscape, straight-on desktop viewport, purposeful diagonal route through an otherwise disciplined grid, strong focal depth around the five-lock vault plan, restrained dimensional shadows.
+Lighting/mood: cool moonlit drafting surface with warm edge light, alert but not harsh, the pleasure of solving an impossible mechanism.
+Color palette: midnight indigo, blueprint cyan, warm vellum, coral-red annotations, brass pinpoints, off-white type.
+Materials/textures: translucent vellum, graphite, cyanotype ink, brass pins, thread routes, folded paper edges, faint eraser marks.
+Text (verbatim): "PLUNDRIX", "ROUND 1", "PICK", "SEARCH", "SABOTAGE". Render only these words, spelled exactly once each; use clean diagram symbols or abstract bars everywhere body copy would normally appear.
+Constraints: preserve production-grade usability, obvious clickable states, accessible contrast, and the active-round information architecture; depth must clarify state and route, not obscure controls; no people; no watermark.
+Avoid: generic hologram HUD, Tron neon, purple-blue SaaS cards, flat rectangles, fantasy map cliches, illegible microtext, random letters, extra words.

@@ -1,0 +1,13 @@
+Use case: ui-mockup
+Asset type: high-fidelity desktop game interface art-direction study
+Primary request: Redesign the Plundrix strategy game's active-round screen as "Cut-Paper Caper," a kinetic editorial crime comic that makes every choice feel cheeky, dramatic, and fun without sacrificing strategy-game clarity.
+Scene/backdrop: a straight-on full browser viewport assembled from layered cut-paper panels, angular shadows, halftone fields, torn dossier edges, taped photos represented only as abstract silhouettes, arrows, stamps, and oversized graphic symbols.
+Subject: preserve a practical game layout: slim top navigation, prominent five-lock vault progress at upper center, four rival-agent panels across the middle, three large action choices along the bottom, and a compact current-plan and gadget rail on the right. Give PICK, SEARCH, and SABOTAGE distinct shapes and visual personalities; make the vault progress land like the central comic-panel reveal.
+Style/medium: shippable web game UI mockup; premium editorial collage and screen-printed crime comic; bold shapes, controlled halftone, handmade edges, expressive hierarchy, mischievous rather than childish.
+Composition/framing: 3:2 landscape, straight-on desktop viewport, disciplined grid disrupted by one or two strong diagonals, chunky touch-friendly controls, dramatic scale changes, clear visual path.
+Lighting/mood: graphic paper shadows with spotlight-like contrast, buoyant tension, clever slapstick menace, high energy.
+Color palette: deep aubergine, inky black, warm off-white, saturated coral, acid mint, and sunflower yellow used sparingly.
+Materials/textures: torn paper fibers, screen-print grain, masking tape, rubber stamps, halftone shadows, die-cut holes, layered card stock.
+Text (verbatim): "PLUNDRIX", "ROUND 1", "PICK", "SEARCH", "SABOTAGE". Render only these words, spelled exactly once each; use abstract bars, symbols, or shapes everywhere body copy would normally appear.
+Constraints: preserve production-grade usability, obvious clickable states, accessible contrast, and the active-round information architecture; energetic but coherent; no realistic people; no watermark.
+Avoid: superhero IP imitation, childish cartoon UI, generic cyberpunk, flat SaaS dashboard, rainbow overload, illegible microtext, random letters, extra words.

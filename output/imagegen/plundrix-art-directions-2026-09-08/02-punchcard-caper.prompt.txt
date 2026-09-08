@@ -1,0 +1,13 @@
+Use case: ui-mockup
+Asset type: high-fidelity desktop game interface art-direction study
+Primary request: Redesign the Plundrix strategy game's active-round screen as "Punchcard Caper," a joyful 1970s space-age mainframe used by clever thieves, full of satisfying controls and dry visual humor.
+Scene/backdrop: a straight-on full browser viewport built like a compact cream-and-navy command console, with punched-card strips, chunky labeled keycaps, rotary switches, perforated paper edges, small oscilloscope windows, and playful mechanical indicators.
+Subject: preserve a practical game layout: slim top navigation, prominent five-lock vault progress at upper center, four rival-agent panels across the middle, three large action choices along the bottom, and a compact current-plan and gadget rail on the right. Turn the five locks into chunky physical counters and make each action feel like a satisfying console control.
+Style/medium: shippable web game UI mockup; Swiss information design colliding with warm retro industrial electronics; crisp screen-printed shapes, strong silhouette, characterful imperfection, witty and inviting rather than nostalgic parody.
+Composition/framing: 3:2 landscape, straight-on desktop viewport, modular rhythm with a few playful offsets, large tactile targets, clear scan path from vault to rivals to actions.
+Lighting/mood: warm workbench light, optimistic tension, mischievous caper energy, visibly tactile without photoreal clutter.
+Color palette: warm bone, ink navy, signal orange, avocado green, black, and a sparing cherry-red alarm accent.
+Materials/textures: powder-coated metal, Bakelite buttons, paper tape, rubber stamps, enamel labels, soft screen-print grain.
+Text (verbatim): "PLUNDRIX", "ROUND 1", "PICK", "SEARCH", "SABOTAGE". Render only these words, spelled exactly once each; use simple abstract bars, dots, or symbols everywhere body copy would normally appear.
+Constraints: preserve production-grade usability, obvious clickable states, accessible contrast, and the active-round information architecture; make it feel lively through rhythm, controls, and micro-detail; no people; no watermark.
+Avoid: generic sci-fi HUD, neon cyberpunk, beige corporate dashboard, pure nostalgia pastiche, skeuomorphic overload, illegible microtext, random letters, extra words.

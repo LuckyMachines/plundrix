@@ -1,0 +1,13 @@
+Use case: ui-mockup
+Asset type: high-fidelity desktop game interface art-direction study
+Primary request: Redesign the Plundrix strategy game's active-round screen as "The Brass Dossier," a tactile, cinematic heist-planning table with unmistakable material depth and sly personality.
+Scene/backdrop: a nearly black operations room seen as a straight-on full browser viewport, with the interface assembled from overlapping charcoal leather trays, smoke-gray glass, inked paper dossiers, machined brass rails, red wax seals, and tiny emerald status lamps.
+Subject: preserve a practical game layout: slim top navigation, prominent five-lock vault progress at upper center, four rival-agent panels across the middle, three large action choices along the bottom, and a compact current-plan and gadget rail on the right. Make the vault mechanism a memorable visual anchor. Cards must still feel clickable and information-dense, not like fantasy concept art.
+Style/medium: shippable premium web game UI mockup; graphic product design with cinematic light; restrained analog-industrial tactility; sharp readable forms; sophisticated but mischievous.
+Composition/framing: 3:2 landscape, straight-on desktop viewport, strong asymmetric hierarchy, layered panels with controlled overlaps, generous breathing room around the main vault, clear primary action emphasis.
+Lighting/mood: low-key museum lighting, warm grazing highlights on brass, faint pool of green instrument light, quiet tension before a clever robbery.
+Color palette: soot black, charcoal, old paper, tarnished brass, emerald signal green, a tiny amount of vermilion for danger.
+Materials/textures: oxidized brass, blackened steel, worn leather edges, translucent smoky glass, paper fibers, embossed stamps, subtle fingerprints and scratches.
+Text (verbatim): "PLUNDRIX", "ROUND 1", "PICK", "SEARCH", "SABOTAGE". Render only these words, spelled exactly once each; use simple abstract bars or symbols everywhere body copy would normally appear.
+Constraints: preserve production-grade usability, obvious clickable states, accessible contrast, and the active-round information architecture; use visual depth through real material hierarchy and light, not decorative clutter; no people; no watermark.
+Avoid: generic neon cyberpunk, purple-blue SaaS dashboard gradients, flat rectangles on black, casino slot-machine excess, fantasy runes, steampunk clutter, illegible microtext, random letters, extra words.
