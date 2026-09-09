@@ -181,18 +181,26 @@ const registerPlayer = (gameId, value) => {
     });
   };
 
-  const resolveRound = (gameId) => {
+  const resolveRound = async (gameId) => {
     ensureConfigured();
     const parsedGameId = toGameId(gameId);
     if (parsedGameId === null) {
       throw new Error('Invalid game ID');
     }
-    return writeContractAsync({
+    const request = {
       address: PLUNDRIX_ADDRESS,
       abi: PLUNDRIX_ABI,
       functionName: 'resolveRound',
       args: [parsedGameId],
-    });
+    };
+    if (publicClient && address) {
+      const estimatedGas = await publicClient.estimateContractGas({
+        ...request,
+        account: address,
+      });
+      request.gas = (estimatedGas * 15000n + 9999n) / 10000n;
+    }
+    return writeContractAsync(request);
   };
 
   const withdraw = () => {

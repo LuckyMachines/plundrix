@@ -17,15 +17,15 @@ The repo currently ships:
 
 - Sepolia staging is live
 - current Sepolia proxy: `0x1ff715d46470b4024d88a12838e08a60855f0ae2`
-- current Sepolia implementation: `0x238345d04cb4b6f2d46ba0218d32b6a086be1963`
+- current Sepolia implementation: `0x50a562176eef29aa45722edabaebfe27bcc906c5`
 - current Sepolia workshop proxy: `0x74cabd34b2e29a914025ceb598df4e3652c418f5`
 - current Sepolia workshop implementation: `0x4df49b5d262b78416dde598f3a4df2103a3260cd`
-- the previously deployed game implementation remains publicly verified; publication of the new game and workshop implementation sources is pending
+- the current game implementation is publicly verified through Sourcify, Blockscout, and Routescan; workshop source publication remains pending
 - staging proxy is currently unpaused
 - autoloop is enabled on Sepolia
 - external entropy is required on Sepolia
 - the 2% fee config exists onchain and is enabled on Sepolia for testing only
-- guarded FREE operation `1` completed on Sepolia in nine rounds with two HSM-backed players
+- guarded post-upgrade FREE operation `117` completed on Sepolia in eight rounds with two HSM-backed players
 - mainnet is not live yet
 - planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
 - session actions, paced games, the new balance rules, and the workshop linkage are deployed on Sepolia
@@ -33,6 +33,7 @@ The repo currently ships:
 Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
 The latest read-only chain and provenance audit is in [docs/sepolia-readiness-audit.md](docs/sepolia-readiness-audit.md).
 The 2026-09-06 game upgrade and workshop deployment record is in [docs/sepolia-workshop-deployment.md](docs/sepolia-workshop-deployment.md).
+The 2026-09-08 table-pressure upgrade and live operation proof are in [docs/sepolia-table-pressure-upgrade.md](docs/sepolia-table-pressure-upgrade.md).
 The living interface reference and review workflow are documented in [docs/design-system.md](docs/design-system.md).
 The manifest-driven art direction, generation, delivery, and review workflow is documented in [docs/art-pipeline.md](docs/art-pipeline.md).
 The current implementation grade and remaining human-evidence bar are documented in [docs/product-quality-report-card.md](docs/product-quality-report-card.md).
@@ -42,7 +43,7 @@ The current implementation grade and remaining human-evidence bar are documented
 - players: `2-4`
 - objective: crack all `5` locks first
 - actions per round:
-  - `PICK`: attempt to crack one lock
+  - `PICK`: attempt to crack one lock; table pressure can turn it into a two-lock breach
   - `SEARCH`: find tools that improve future picks
   - `SABOTAGE`: stun a rival and steal one tool if they have one
 - round model: simultaneous submission, then onchain resolution
@@ -258,7 +259,7 @@ The completed operation `1` proof is rendered from the production frontend at de
 
 | Action | Effect | Success |
 | --- | --- | --- |
-| `PICK` | Attempt to crack a lock | `40%` base + `15%` per tool, max `95%`; auto-fails if stunned |
+| `PICK` | Attempt to crack a lock; crack two when at least two locks behind, or while trailing after the leader reaches three | `40%` base + `15%` per tool + `6%` per lock behind (max `18%` pressure), total max `95%`; auto-fails if stunned |
 | `SEARCH` | Look for tools | `60%`; `30%` if stunned |
 | `SABOTAGE` | Stun a rival and steal one tool if available | always succeeds |
 
@@ -274,7 +275,7 @@ The completed operation `1` proof is rendered from the production frontend at de
 
 ### Win Condition
 
-First player to crack all five locks wins immediately.
+First player to crack all five locks wins immediately. Pick chance is evaluated from the pre-resolution table snapshot, so player order cannot change table-pressure bonuses inside a round.
 
 ## Contract Surface
 

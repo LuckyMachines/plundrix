@@ -143,24 +143,51 @@ async function deploy() {
 }
 
 async function exec(walletIndex, functionName, args = []) {
-  const hash = await wallets[walletIndex].writeContract({
+  const gas = await publicClient.estimateContractGas({
+    account: wallets[walletIndex].account,
     address: contractAddress,
     abi,
     functionName,
     args,
   });
-  return publicClient.waitForTransactionReceipt({ hash });
+  const hash = await wallets[walletIndex].writeContract({
+    address: contractAddress,
+    abi,
+    functionName,
+    args,
+    // Resolution gas varies with the random outcome (writes and emitted events).
+    // Buffer the estimate so a different mined-block outcome cannot make tests flaky.
+    gas: gas * 2n,
+  });
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  if (receipt.status !== 'success') {
+    throw new Error(`Transaction reverted: ${functionName} (${hash})`);
+  }
+  return receipt;
 }
 
 async function execWithValue(walletIndex, functionName, args = [], value = 0n) {
-  const hash = await wallets[walletIndex].writeContract({
+  const gas = await publicClient.estimateContractGas({
+    account: wallets[walletIndex].account,
     address: contractAddress,
     abi,
     functionName,
     args,
     value,
   });
-  return publicClient.waitForTransactionReceipt({ hash });
+  const hash = await wallets[walletIndex].writeContract({
+    address: contractAddress,
+    abi,
+    functionName,
+    args,
+    value,
+    gas: gas * 2n,
+  });
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  if (receipt.status !== 'success') {
+    throw new Error(`Transaction reverted: ${functionName} (${hash})`);
+  }
+  return receipt;
 }
 
 async function read(functionName, args = []) {

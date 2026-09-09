@@ -65,7 +65,7 @@
 - [x] Add opt-in background-tab round notifications without exposing analytics.
 - [x] Produce and integrate a 32-second trailer from real gameplay captures and existing Plundrix art.
 - [x] Keep next-contract session and pacing features disabled until the upgraded implementation and relay are deployed.
-- [ ] Deploy and publicly verify the upgraded implementation on Sepolia.
+- [x] Deploy and publicly verify the upgraded implementation on Sepolia - implementation `0x50a5...06c5`, exact Sourcify match, Blockscout and Routescan verified, operation `117` completed.
 - [ ] Configure and fund the bounded session-action relay, then enable the two frontend feature flags.
 - [ ] Validate the new Leader Hunter and anti-stun-lock rules in a separately versioned tournament run.
 

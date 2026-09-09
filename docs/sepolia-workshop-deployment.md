@@ -1,5 +1,7 @@
 # Sepolia Game Upgrade and Workshop Deployment
 
+> Historical deployment record. The game proxy was upgraded again on 2026-09-08. See [sepolia-table-pressure-upgrade.md](sepolia-table-pressure-upgrade.md) for the current implementation and proof.
+
 Deployment date: 2026-09-06 PDT / 2026-09-07 UTC
 
 Network: Ethereum Sepolia (`11155111`)

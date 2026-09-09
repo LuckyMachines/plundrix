@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-09-09T04:41:45.030Z",
+  "network": "sepolia",
+  "chainId": 11155111,
+  "proxyAddress": "0x1FF715D46470B4024D88A12838e08A60855f0AE2",
+  "previousImplementation": "0x238345D04Cb4B6F2D46ba0218D32b6A086BE1963",
+  "implementationAddress": "0x50a562176EEf29aa45722eDabaEbfE27BCC906c5",
+  "artifactRuntimeBytes": 24194,
+  "signerAddress": "0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79",
+  "sourceCommit": "7147d03675509c3c4bff6d24c8e97e7e23d980e8",
+  "sourceSha256": "4e7ec8796c3b56e92c0be5fa02576beab683f28fccdd2183cb6df5b8fcb229ef",
+  "creationBytecodeSha256": "5e37707debdbb5e5d9c14d28d70ec239f7923a12645e6a468b4bdd76486d9527",
+  "runtimeBytecodeSha256": "1983c60cce72e523112018faad4a8a07f78b2e9d355b8cd841b77ed63eeeaa1e",
+  "balances": {
+    "beforeEth": "2.427638427777584823",
+    "afterEth": "2.421870490045356895"
+  },
+  "transactions": {
+    "implementation": {
+      "hash": "0x554392ec552ee01bb8969661a5436ce613c7d038a12bfcf83cfcb3cf900e2951",
+      "blockNumber": "11665686"
+    },
+    "upgrade": {
+      "hash": "0xa39edb10936837ff1312ce3345ac4b460b3aad4d158301feff6753ac59c2de24",
+      "blockNumber": "11665687"
+    }
+  },
+  "preservedState": {
+    "totalGames": "116",
+    "paused": false,
+    "automation": {
+      "enabled": true,
+      "delaySeconds": "300",
+      "externalEntropyRequired": true
+    },
+    "workshop": "0x74CAbD34B2E29A914025CeB598DF4e3652C418F5",
+    "fees": {
+      "enabled": true,
+      "basisPoints": "200",
+      "recipient": "0xf0F917ccBB18A73DEE95e9911ae0CcF97d683F79"
+    }
+  },
+  "rollbackImplementation": "0x238345D04Cb4B6F2D46ba0218D32b6A086BE1963"
+}
