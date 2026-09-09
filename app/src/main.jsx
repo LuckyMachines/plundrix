@@ -6,6 +6,7 @@ import { AccessibilityProvider } from './context/AccessibilityContext';
 import { ToastProvider } from './context/ToastContext';
 import AppErrorBoundary from './components/shared/AppErrorBoundary';
 import './index.css';
+import './styles/caper.css';
 
 const DataProvider = lazy(() => import('./components/shared/DataProvider'));
 const Web3Provider = lazy(() => import('./components/wallet/Web3Provider'));

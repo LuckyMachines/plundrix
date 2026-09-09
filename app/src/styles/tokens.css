@@ -1,0 +1,100 @@
+@theme {
+  --color-vault-dark: #0a0a0f;
+  --color-vault-surface: #14141f;
+  --color-vault-panel: #1a1a2e;
+  --color-vault-border: #2a2a3e;
+  --color-vault-text: #c8c8d4;
+  --color-vault-text-dim: #8b8a9e;
+
+  --color-tungsten: #c4956a;
+  --color-tungsten-bright: #e8b078;
+
+  --color-signal-red: #f06a6a;
+  --color-signal-red-dim: #dc6060;
+
+  --color-oxide-green: #40a080;
+  --color-oxide-green-dim: #2a7058;
+
+  --color-blueprint: #3a7cc4;
+  --color-blueprint-dim: #1e4a7a;
+
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-body: "Barlow", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Readability-forward primitive scale. Semantic roles live in typography.css. */
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1rem;
+  --text-xs: 0.875rem;
+  --text-xs--line-height: 1.25rem;
+  --text-sm: 1rem;
+  --text-sm--line-height: 1.5rem;
+  --text-base: 1.125rem;
+  --text-base--line-height: 1.75rem;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 2rem;
+
+  --tracking-display: -0.025em;
+  --tracking-heading: 0.06em;
+  --tracking-interface: 0.1em;
+  --tracking-label: 0.14em;
+  --tracking-brand: 0.18em;
+  --tracking-beacon: 0.22em;
+
+  --leading-display: 0.88;
+  --leading-heading: 1;
+  --leading-copy: 1.55;
+  --leading-interface: 1.25;
+}
+
+:root {
+  --root-font-size: 16px;
+  --readable-root-size: 20px;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --radius-control: 0.25rem;
+  --radius-panel: 0.5rem;
+  --motion-instant: 80ms;
+  --motion-quick: 180ms;
+  --motion-reveal: 520ms;
+
+  /* Caper surface system: four maintainable depth planes. */
+  --caper-work-surface: #09131d;
+  --caper-information-plane: #102638;
+  --caper-control-plane: #173249;
+  --caper-dramatic-overlay: #241b24;
+  --caper-blueprint-line: rgba(94, 178, 197, 0.18);
+  --caper-blueprint-bright: #66c4d2;
+  --caper-paper: #d8ccb3;
+  --caper-brass: #b8894f;
+  --caper-coral: #e46d53;
+  --caper-search: #79a875;
+  --caper-shadow-low: 0 8px 18px rgba(0, 0, 0, 0.24);
+  --caper-shadow-mid: 0 14px 32px rgba(0, 0, 0, 0.34);
+  --caper-shadow-high: 0 22px 54px rgba(0, 0, 0, 0.46);
+
+  --type-hero-size: clamp(3.25rem, 8vw, 7rem);
+  --type-page-size: clamp(2.25rem, 5vw, 4.5rem);
+  --type-section-size: clamp(1.65rem, 3vw, 2.35rem);
+  --type-card-size: clamp(1.2rem, 2vw, 1.5rem);
+  --measure-prose: 68ch;
+  --measure-compact: 46ch;
+  --measure-wide: 82ch;
+
+  --layout-content: 80rem;
+  --layout-wide: 96rem;
+  --layout-gutter: clamp(1rem, 3vw, 2rem);
+  --layout-section-gap: clamp(1.5rem, 4vw, 3rem);
+  --layout-card-gap: clamp(0.75rem, 2vw, 1.25rem);
+  --layout-card-padding: clamp(0.9rem, 2vw, 1.35rem);
+  --layout-sidebar: 20rem;
+  --layout-action: 35rem;
+  --target-min: 44px;
+}

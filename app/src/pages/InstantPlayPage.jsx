@@ -2,6 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
 import SignatureMoment from '../components/game/SignatureMoment';
+import DecisionPlate from '../components/gameplay/DecisionPlate';
+import { CrewReadinessRail, MissionStatusPanel, OperationFile } from '../components/gameplay/HeistConsolePanels';
+import VaultMechanism from '../components/gameplay/VaultMechanism';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
 import {
@@ -10,11 +13,13 @@ import {
   getGadgetById,
   getGadgetConfiguration,
 } from '../data/gadgetInventory';
-import { trackProductEvent } from '../lib/analytics';
+import { latencyBucket, trackProductEvent } from '../lib/analytics';
 import { copyText } from '../lib/clipboard';
 import { getGadgetMastery, grantGadgetMasteryState, grantMatchSalvageState, readInventory, writeInventory } from '../lib/inventoryStore';
 import { recordLocalBalanceSample } from '../lib/gadgetTelemetry';
-import { readChronicle, recordRivalryMatch, rivalTaunt, writeChronicle } from '../lib/playerChronicle';
+import { readChronicle, recordRivalryMatch, writeChronicle } from '../lib/playerChronicle';
+import { INSTANT_PROFILE_KEY, markProfilePlayed, playerCohort, readLocalProfile } from '../lib/playerCareer';
+import { buildReplayFromSimulation, saveReplayToLibrary } from '../lib/replayDirector';
 import {
   SIM_ACTION,
   SIM_GADGETS,
@@ -22,6 +27,7 @@ import {
   createInitialSimulation,
   getPickChance,
   getSearchChance,
+  getTablePressure,
   resolveSimulationRound,
 } from '../lib/plundrixEngine';
 
@@ -45,22 +51,17 @@ const MODES = {
 
 const RIVALS = ['Rook', 'Mara', 'Vesper'];
 const STRATEGIES = ['human', 'leader-hunter', 'tool-hoarder', 'saboteur'];
-const PROFILE_KEY = 'plundrix-instant-profile-v1';
+const PROFILE_KEY = INSTANT_PROFILE_KEY;
 const MATCH_KEY = 'plundrix-instant-match-v1';
-const RIVAL_PERSONAS = {
-  Rook: 'The closer - attacks the vault whenever the odds turn favorable.',
-  Mara: 'The scavenger - stockpiles tools before making a decisive run.',
-  Vesper: 'The disruptor - hunts leaders and turns their plans against them.',
-};
-const RIVAL_ART = {
-  Rook: '/images/parts/rook-device.webp',
-  Mara: '/images/parts/mara-device.webp',
-  Vesper: '/images/parts/vesper-device.webp',
-};
 const ACTION_ART = {
   [SIM_ACTION.PICK]: '/images/parts/pick-tool.webp',
   [SIM_ACTION.SEARCH]: '/images/parts/search-kit.webp',
   [SIM_ACTION.SABOTAGE]: '/images/parts/sabotage-cable.webp',
+};
+const ACTION_LABELS = {
+  [SIM_ACTION.PICK]: 'Pick',
+  [SIM_ACTION.SEARCH]: 'Search',
+  [SIM_ACTION.SABOTAGE]: 'Sabotage',
 };
 
 const RANKS = [
@@ -94,13 +95,7 @@ function playAudioCue(type) {
   window.setTimeout(() => context.close(), 700);
 }
 
-function readProfile() {
-  try {
-    return JSON.parse(localStorage.getItem(PROFILE_KEY)) || { name: 'Operator', games: 0, wins: 0, xp: 0, streak: 0 };
-  } catch {
-    return { name: 'Operator', games: 0, wins: 0, xp: 0, streak: 0 };
-  }
-}
+const readProfile = readLocalProfile;
 
 function readSavedMatch() {
   try {
@@ -139,11 +134,14 @@ function actionPreview(state, action, target) {
   const player = state.players[0];
   const signature = player.gadgetReady ? GADGET_CHASSIS_BY_ID[player.gadget] : null;
   if (action === SIM_ACTION.PICK) {
+    const pressure = getTablePressure(player, state, state.rules);
     let bonus = 0;
     if (signature?.id === 'precision-kit') bonus = 10;
     if (signature?.id === 'torque-driver' && player.tools > 0) bonus = 18;
     if (signature?.id === 'quickset-clamp' && player.locksCracked === 0) bonus = 14;
-    return `${Math.min(95, getPickChance(player, state.rules) + bonus)}% chance to crack lock ${player.locksCracked + 1}.`;
+    const reward = pressure.locksOnSuccess > 1 ? 'two locks' : `lock ${player.locksCracked + 1}`;
+    const pressureNote = pressure.pickBonus > 0 ? ` Table pressure adds ${pressure.pickBonus} points.` : '';
+    return `${Math.min(95, getPickChance(player, state.rules, state) + bonus)}% chance to crack ${reward}.${pressureNote}`;
   }
   if (action === SIM_ACTION.SEARCH) {
     let baseChance = getSearchChance(player, state.rules);
@@ -185,17 +183,32 @@ export default function InstantPlayPage() {
   const [target, setTarget] = useState(restoredMatch?.target || 'player-2');
   const [shareStatus, setShareStatus] = useState(restoredMatch ? 'Operation restored on this device.' : '');
   const [salvageReward, setSalvageReward] = useState(null);
-  const [chronicle, setChronicle] = useState(readChronicle);
+  const [savedReplay, setSavedReplay] = useState(null);
+  const [, setChronicle] = useState(readChronicle);
   const practiceBlueprint = useMemo(() => (
     gadget === equippedBlueprint.chassisId
       ? equippedBlueprint
       : getGadgetConfiguration(gadget, 'brassbound', 'steady')
   ), [equippedBlueprint, gadget]);
   const [isResolving, setIsResolving] = useState(false);
+  const [intelOpen, setIntelOpen] = useState(false);
   const recordedGame = useRef(null);
   const resolveTimer = useRef(null);
+  const matchStartedAt = useRef(restoredMatch?.startedAt ? Date.parse(restoredMatch.startedAt) : null);
+  const firstActionTracked = useRef(Boolean(restoredMatch?.state?.roundHistory?.length));
 
   const player = state.players[0];
+  const leader = state.players.reduce((current, candidate) => (
+    candidate.locksCracked > current.locksCracked ? candidate : current
+  ), state.players[0]);
+  const threatPercent = Math.min(96, 18 + ((state.currentRound - 1) * 9) + (leader.locksCracked * 15));
+  const threatLabel = threatPercent >= 70 ? 'High' : threatPercent >= 38 ? 'Moderate' : 'Low';
+  const operationObjectives = [
+    { label: 'Collect intel', complete: player.tools > 0 },
+    { label: 'Reach the vault', complete: player.locksCracked > 0 },
+    { label: 'Extract safely', complete: false },
+  ];
+  const tablePressure = getTablePressure(player, state, state.rules);
   const winner = state.players.find((candidate) => candidate.id === state.winner);
   const preview = actionPreview(state, selectedAction, target);
   const lastRound = state.roundHistory.at(-1);
@@ -213,6 +226,15 @@ export default function InstantPlayPage() {
   useEffect(() => () => window.clearTimeout(resolveTimer.current), []);
 
   useEffect(() => {
+    if (!intelOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setIntelOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [intelOpen]);
+
+  useEffect(() => {
     if (!started || state.state !== 'ACTIVE') {
       localStorage.removeItem(MATCH_KEY);
       return;
@@ -223,6 +245,7 @@ export default function InstantPlayPage() {
       mode,
       gadget,
       seed,
+      startedAt: matchStartedAt.current ? new Date(matchStartedAt.current).toISOString() : null,
       state,
       selectedAction,
       target,
@@ -233,10 +256,16 @@ export default function InstantPlayPage() {
     if (state.state !== 'COMPLETE' || recordedGame.current === state.gameId) return;
     recordedGame.current = state.gameId;
     let nextInventory = readInventory();
+    const actionMix = state.roundHistory.reduce((counts, round) => {
+      const outcome = round.events.find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1');
+      if (outcome) counts[outcome.action] = (counts[outcome.action] || 0) + 1;
+      return counts;
+    }, {});
     const salvage = grantMatchSalvageState(nextInventory, {
       matchId: state.gameId,
       won: state.winner === 'player-1',
       rounds: state.currentRound,
+      actionMix,
     });
     nextInventory = salvage.next;
     if (mode === 'tactical') {
@@ -252,6 +281,12 @@ export default function InstantPlayPage() {
     }
     const nextChronicle = writeChronicle(recordRivalryMatch(readChronicle(), state));
     setChronicle(nextChronicle);
+    const replay = buildReplayFromSimulation(state, {
+      sourceType: 'player operation',
+      strategies: STRATEGIES,
+    });
+    saveReplayToLibrary(replay);
+    setSavedReplay(replay);
     trackProductEvent('Rivalry Updated', { rival: state.winner === 'player-1' ? 'table' : (winner?.name || 'rival').toLowerCase(), outcome: state.winner === 'player-1' ? 'escaped' : 'beaten' });
     recordLocalBalanceSample({
       gadgetId: mode === 'tactical' ? gadget : 'none',
@@ -275,14 +310,23 @@ export default function InstantPlayPage() {
   }, [state]);
 
   const begin = (nextSeed = seed) => {
+    const isRematch = started && state.state === 'COMPLETE';
+    const playedAt = new Date().toISOString();
+    const cohort = playerCohort(profile, playedAt);
+    const activeProfile = markProfilePlayed(profile, playedAt);
     localStorage.removeItem(MATCH_KEY);
+    setSavedReplay(null);
     setSeed(nextSeed);
     setState(createMatch({ mode, gadget, seed: nextSeed, name: profile.name }));
     setSelectedAction(SIM_ACTION.PICK);
     setStarted(true);
     setShareStatus('');
     setSalvageReward(null);
-    trackProductEvent('Instant Match Started', { mode });
+    matchStartedAt.current = Date.now();
+    firstActionTracked.current = false;
+    setProfile(activeProfile);
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(activeProfile));
+    trackProductEvent(isRematch ? 'Instant Rematch Started' : 'Instant Match Started', { mode, cohort });
   };
 
   const abandon = () => {
@@ -295,6 +339,15 @@ export default function InstantPlayPage() {
 
   const resolve = (spectate = false) => {
     if (isResolving) return;
+    if (!spectate && !firstActionTracked.current) {
+      firstActionTracked.current = true;
+      trackProductEvent('First Meaningful Action', {
+        mode,
+        action: selectedAction,
+        cohort: playerCohort(profile),
+        latency: matchStartedAt.current ? latencyBucket(Date.now() - matchStartedAt.current) : 'restored',
+      });
+    }
     const map = buildStrategyActionMap(state, STRATEGIES, {
       aggression: 60,
       searchGreed: 45,
@@ -359,10 +412,10 @@ export default function InstantPlayPage() {
           image="/images/og/plundrix-play.jpg"
           imageAlt="Plundrix instant play - Your table is ready. No wallet required."
         />
-        <section className="overflow-hidden border border-vault-border bg-vault-surface lg:grid lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="p-6 sm:p-9 lg:p-12">
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">Instant operation</p>
-            <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-[0.9] text-vault-text sm:text-7xl">Your table is ready.</h1>
+        <section className="instant-setup-shell overflow-hidden border border-vault-border bg-vault-surface lg:grid lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="instant-setup-copy p-6 sm:p-9 lg:p-12">
+            <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">Instant operation</p>
+            <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-display text-vault-text sm:text-7xl">Your table is ready.</h1>
             <p className="mt-6 max-w-xl text-lg leading-8 text-vault-text-dim">Play immediately against three distinct agents. Learn the pressure loop here, then take the same instincts onchain.</p>
 
             {challengeTarget && (
@@ -371,43 +424,45 @@ export default function InstantPlayPage() {
               </div>
             )}
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="instant-mode-grid mt-8 grid gap-3 sm:grid-cols-3">
               {Object.entries(MODES).map(([id, item]) => (
-                <button key={id} type="button" aria-pressed={mode === id} onClick={() => setMode(id)} className={`min-h-[104px] border p-4 text-left sm:min-h-[132px] ${mode === id ? 'border-tungsten bg-tungsten/10' : 'border-vault-border bg-vault-dark/35'}`}>
+                <button key={id} type="button" aria-pressed={mode === id} onClick={() => setMode(id)} className={`instant-mode-card min-h-[104px] border p-4 text-left sm:min-h-[132px] ${mode === id ? 'border-tungsten bg-tungsten/10' : 'border-vault-border bg-vault-dark/35'}`}>
                   <span className="font-display text-2xl uppercase text-vault-text">{item.label}</span>
                   <span className="mt-3 block text-sm leading-5 text-vault-text-dim">{item.description}</span>
                 </button>
               ))}
             </div>
 
+            <button type="button" onClick={() => begin()} className="mt-5 inline-flex min-h-[54px] w-full items-center justify-center bg-tungsten-bright px-7 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark sm:hidden">Breach the vault -&gt;</button>
+
             {mode === 'tactical' && (
               <div className="mt-6 border border-tungsten/35 bg-tungsten/5 p-3">
                 <div className="grid grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-3">
                   <GadgetVisual gadget={practiceBlueprint} compact className="min-h-20" />
                   <div className="min-w-0">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-tungsten">Workshop loadout / {practiceBlueprint.protocolFamilyLabel}</p>
+                    <p className="font-mono text-micro uppercase tracking-label text-tungsten">Workshop loadout / {practiceBlueprint.protocolFamilyLabel}</p>
                     <p className="mt-1 truncate font-display text-xl uppercase text-vault-text">{practiceBlueprint.name}</p>
                     <p className="mt-1 text-xs leading-5 text-vault-text-dim"><strong className="text-vault-text">{practiceBlueprint.effectName}:</strong> {practiceBlueprint.protocolLabel}</p>
                   </div>
-                  <Link to="/workshop" className="hidden min-h-[44px] items-center border border-vault-border px-3 font-mono text-[9px] uppercase text-vault-text-dim sm:inline-flex">Change build</Link>
+                  <Link to="/workshop" className="hidden min-h-[44px] items-center border border-vault-border px-3 font-mono text-micro uppercase text-vault-text-dim sm:inline-flex">Change build</Link>
                 </div>
-                <p className="mt-3 border-t border-vault-border pt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-oxide-green">One build, one visible signature, one use per operation.</p>
+                <p className="mt-3 border-t border-vault-border pt-3 font-mono text-micro uppercase tracking-interface text-oxide-green">One build, one visible signature, one use per operation.</p>
               </div>
             )}
 
-            <button type="button" onClick={() => begin()} className="mt-6 inline-flex min-h-[54px] w-full items-center justify-center bg-tungsten-bright px-7 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-vault-dark sm:w-auto">Breach the vault -&gt;</button>
+            <button type="button" onClick={() => begin()} className="mt-6 hidden min-h-[54px] items-center justify-center bg-tungsten-bright px-7 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark sm:inline-flex">Breach the vault -&gt;</button>
 
             <p className="mt-6 max-w-xl text-sm leading-6 text-vault-text-dim">
-              Tools stay with you and add 15% to future Pick odds, up to 95%. Sabotage stuns a rival for one round, but the same rival cannot be chain-stunned. If players breach together, a seeded tiebreak decides the winner.
+              Tools add 15 points to future Pick odds, up to 95%. Falling behind adds 6 points per lock, up to 18. A deep gap - or any gap after the leader reaches three locks - turns a successful Pick into a double breach. Sabotage cannot chain-stun the same rival.
             </p>
             <details className="mt-4 max-w-xl rounded border border-vault-border bg-vault-dark/35 p-3">
-              <summary className="cursor-pointer font-mono text-xs uppercase tracking-[0.12em] text-vault-text-dim">
+              <summary className="cursor-pointer font-mono text-xs uppercase tracking-interface text-vault-text-dim">
                 Practice and live rules
               </summary>
               <p className="mt-3 text-sm leading-6 text-vault-text-dim">
                 Instant Play is a local practice ruleset. Pick, Search, Sabotage, tools, and simultaneous
                 reveals match the live game's core loop; gadgets and anti-chain-stun protection are practice
-                features and may differ from the current Sepolia contract.
+                features. Table pressure is included in the next audited Sepolia contract release and may differ until that upgrade is deployed.
               </p>
             </details>
           </div>
@@ -416,7 +471,7 @@ export default function InstantPlayPage() {
             <img src="/images/plundrix-instant-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-vault-dark via-vault-dark/45 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-tungsten">Operator record</p>
+              <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Operator record</p>
               <div className="mt-3 grid grid-cols-3 gap-px bg-vault-border">
                 <Stat label="Games" value={profile.games} />
                 <Stat label="Wins" value={profile.wins} />
@@ -430,7 +485,7 @@ export default function InstantPlayPage() {
   }
 
   return (
-    <div className="instant-play-active mx-auto max-w-7xl px-4 py-6 sm:px-6">
+    <div className="caper-operation caper-workbench instant-play-active mx-auto max-w-7xl px-4 py-6 sm:px-6" data-match-state={state.state.toLowerCase()}>
       <Seo
         title={`${MODES[mode].label} Operation - Plundrix`}
         description="Play a fast tactical Plundrix vault race against three labeled agents."
@@ -438,82 +493,144 @@ export default function InstantPlayPage() {
         image="/images/og/plundrix-play.jpg"
         imageAlt="Plundrix instant play - Your table is ready. No wallet required."
       />
-      <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="min-w-0 space-y-5">
-          <section className={`border border-vault-border bg-vault-surface ${isResolving ? 'instant-resolving' : ''}`} aria-live="polite">
-            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-vault-border px-5 py-4">
+      {state.state === 'ACTIVE' && (
+        <div className="instant-mobile-command" role="region" aria-label="Selected action command">
+          <a href="#instant-actions" className="instant-mobile-command__selection">
+            <span>Selected action</span>
+            <strong>{ACTION_LABELS[selectedAction]} / change</strong>
+          </a>
+          <button
+            type="button"
+            disabled={isResolving}
+            onClick={() => resolve(false)}
+            aria-label={`Commit ${ACTION_LABELS[selectedAction]}`}
+            className="instant-mobile-command__commit"
+          >
+            {isResolving ? 'Revealing...' : `Commit ${ACTION_LABELS[selectedAction]}`}
+          </button>
+          <button
+            type="button"
+            disabled={isResolving}
+            onClick={() => resolve(true)}
+            title="The game chooses a recommended move for you this round."
+            aria-label="Auto-play this round"
+            className="instant-mobile-command__auto"
+          >
+            Auto
+          </button>
+        </div>
+      )}
+      <div className="instant-operation-layout grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="instant-primary-column min-w-0 space-y-5">
+          {state.state === 'ACTIVE' && latestOutcomes.length > 0 && <ResolutionSummary outcomes={latestOutcomes} />}
+
+          {state.state === 'ACTIVE' && (
+          <section className={`instant-round-board instant-heist-console caper-layer ${isResolving ? 'instant-resolving' : ''}`} aria-live="polite">
+            <header className="instant-round-header flex flex-wrap items-center justify-between gap-3 border-b border-vault-border px-5 py-4">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">{MODES[mode].label} / instant session</p>
-                <h1 className="mt-1 font-display text-3xl uppercase text-vault-text">Round {state.currentRound}</h1>
+                <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Active operation / R{state.currentRound} / {state.rules.totalLocks - player.locksCracked} locks / {threatPercent}% heat</p>
+                <p className="mt-1 font-display text-2xl uppercase text-vault-text">Nightfall vault</p>
               </div>
-              <div className="flex flex-wrap justify-end gap-2">
+              <dl className="instant-operation-metrics" aria-label="Live operation status">
+                <div><dt>Operator</dt><dd>{profile.name}</dd></div>
+                <div><dt>Clearance</dt><dd>{rank}</dd></div>
+                <div><dt>Tools</dt><dd>{player.tools}/{state.rules.maxTools}</dd></div>
+              </dl>
+              <div className="instant-round-controls flex flex-wrap justify-end gap-2">
+                <button type="button" onClick={() => setIntelOpen(true)} aria-expanded={intelOpen} aria-controls="instant-intel-rail" className="instant-intel-toggle min-h-[44px] border border-blueprint/45 px-3 font-mono text-xs uppercase text-blueprint">Intel</button>
                 <button type="button" onClick={toggleAudio} aria-pressed={soundEnabled} className="min-h-[44px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text-dim">{soundEnabled ? 'Sound on' : 'Sound off'}</button>
-                <button type="button" onClick={share} className="min-h-[44px] border border-tungsten/45 px-3 font-mono text-[10px] uppercase text-tungsten">Share challenge</button>
-                <button type="button" onClick={abandon} className="min-h-[44px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text-dim">Exit match</button>
+                <button type="button" onClick={share} className="min-h-[44px] border border-tungsten/45 px-3 font-mono text-micro uppercase text-tungsten"><span className="sm:hidden">Share</span><span className="hidden sm:inline">Share challenge</span></button>
+                <button type="button" onClick={abandon} className="min-h-[44px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text-dim"><span className="sm:hidden">Exit</span><span className="hidden sm:inline">Exit match</span></button>
               </div>
             </header>
             {shareStatus && <p className="border-b border-vault-border bg-oxide-green/5 px-5 py-2 font-mono text-xs text-oxide-green" role="status">{shareStatus}</p>}
 
-            <div className="instant-vault-core relative overflow-hidden border-b border-vault-border px-5 py-7 text-center">
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-tungsten">Your vault</p>
-              <div className="mx-auto mt-4 flex max-w-md justify-center gap-3" role="img" aria-label={`${player.locksCracked} of ${state.rules.totalLocks} locks cracked`}>
-                {Array.from({ length: state.rules.totalLocks }, (_, index) => (
-                  <span key={index} className={`instant-lock grid h-12 w-12 place-items-center rounded-full border-2 font-display text-xl ${index < player.locksCracked ? 'instant-lock-cracked border-tungsten bg-tungsten/20 text-tungsten-bright' : 'border-vault-border bg-vault-dark text-vault-text-dim'}`}>{index < player.locksCracked ? 'X' : index + 1}</span>
-                ))}
+            <div className="instant-heist-grid">
+              <div className="instant-heist-left">
+                <MissionStatusPanel
+                  round={state.currentRound}
+                  modeLabel={MODES[mode].label}
+                  objectives={operationObjectives}
+                  threatPercent={threatPercent}
+                  threatLabel={threatLabel}
+                />
+                <CrewReadinessRail players={state.players} totalLocks={state.rules.totalLocks} />
               </div>
-              <p className="mt-4 text-sm text-vault-text-dim">Crack {state.rules.totalLocks - player.locksCracked} more {state.rules.totalLocks - player.locksCracked === 1 ? 'lock' : 'locks'} before the table.</p>
-              {isResolving && <p className="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-tungsten">Actions sealed. Revealing...</p>}
+
+              <div className="instant-vault-column">
+                <VaultMechanism
+                  cracked={player.locksCracked}
+                  total={state.rules.totalLocks}
+                  resolving={isResolving}
+                  selectedAction={ACTION_LABELS[selectedAction].toLowerCase()}
+                  label="Nightfall vault / live route"
+                />
+                <section className="instant-tool-rack" aria-label="Tools and gadgets">
+                  <div className="instant-tool-rack__heading"><span>Tools &amp; gadgets</span><strong>{player.tools} carried</strong></div>
+                  <div className="instant-tool-rack__items">
+                    <span data-active={player.gadgetReady} title={`Equipped gadget: ${practiceBlueprint.name}`}>
+                      <img src={practiceBlueprint.image} alt="" width="96" height="96" />
+                    </span>
+                    {Array.from({ length: 4 }, (_, index) => (
+                      index < player.tools
+                        ? <span key={index} data-active="true" title="Carried lock tool"><img src="/images/parts/lock-module.webp" alt="" width="96" height="96" /></span>
+                        : <span key={index} className="instant-tool-rack__empty" aria-label="Empty tool slot">+</span>
+                    ))}
+                  </div>
+                </section>
+              </div>
+
+              <OperationFile
+                player={player}
+                leader={leader}
+                totalLocks={state.rules.totalLocks}
+                selectedActionLabel={ACTION_LABELS[selectedAction]}
+                materials={CRAFTING_MATERIALS}
+                round={state.currentRound}
+              />
             </div>
 
             {latestSignature && <div className="border-b border-vault-border p-4"><SignatureMoment event={latestSignature} actorName={state.players.find((candidate) => candidate.id === latestSignature.actor)?.name} reducedMotion={reducedMotion} soundEnabled={soundEnabled} /></div>}
-
-            <div className="flex min-w-0 snap-x gap-px overflow-x-auto bg-vault-border" role="region" aria-label="Players at this table" tabIndex={0}>
-              {state.players.map((candidate) => (
-                <article key={candidate.id} className={`min-w-[220px] flex-1 snap-start bg-vault-surface p-4 ${candidate.id === 'player-1' ? 'ring-1 ring-inset ring-tungsten/45' : ''}`}>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="flex min-w-0 items-center gap-2">
-                      {RIVAL_ART[candidate.name] && <img src={RIVAL_ART[candidate.name]} alt="" width="384" height="384" className="h-14 w-14 shrink-0 object-contain drop-shadow-[0_6px_10px_rgba(0,0,0,0.5)]" />}
-                      <span className="font-display text-xl uppercase text-vault-text">{candidate.name}</span>
-                    </span>
-                    <span className={`h-2 w-2 rounded-full ${candidate.stunned ? 'bg-signal-red' : 'bg-oxide-green'}`} />
-                  </div>
-                  <div className="mt-3 flex gap-1" role="img" aria-label={`${candidate.locksCracked} of ${state.rules.totalLocks} locks`}>
-                    {Array.from({ length: state.rules.totalLocks }, (_, index) => <span key={index} className={`h-3 flex-1 border ${index < candidate.locksCracked ? 'border-tungsten bg-tungsten/40' : 'border-vault-border bg-vault-dark'}`} />)}
-                  </div>
-                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-vault-text-dim">{candidate.tools} tools {candidate.stunned ? '/ stunned' : ''}</p>
-                  {RIVAL_PERSONAS[candidate.name] && <p className="mt-2 text-xs leading-5 text-vault-text-dim">{RIVAL_PERSONAS[candidate.name]}</p>}
-                  {chronicle.rivals[candidate.name] && <><p className="mt-2 font-mono text-[8px] uppercase tracking-[.12em] text-signal-red">Grudge {'X'.repeat(chronicle.rivals[candidate.name].grudge)}{'-'.repeat(5 - chronicle.rivals[candidate.name].grudge)} / record {chronicle.rivals[candidate.name].playerWins}-{chronicle.rivals[candidate.name].rivalWins}</p><p className="mt-1 text-xs italic leading-5 text-vault-text-dim">"{rivalTaunt(candidate.name, chronicle.rivals[candidate.name])}"</p></>}
-                  {candidate.gadget && <p className="mt-1 font-mono text-[9px] uppercase text-oxide-green">{candidate.gadget.replace('-', ' ')} {candidate.gadgetReady ? 'ready' : 'spent'}</p>}
-                </article>
-              ))}
-            </div>
           </section>
+          )}
 
           {state.state === 'ACTIVE' ? (
-            <section className="border border-vault-border bg-vault-surface p-5 sm:p-7">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-tungsten">Commit one concealed action</p>
+            <section id="instant-actions" className="instant-decision-board caper-layer caper-layer-control p-5 sm:p-7" aria-labelledby="instant-actions-heading">
+              <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Choose one concealed action</p>
+              <h2 id="instant-actions-heading" className="instant-decision-heading">Make the next move.</h2>
               {state.roundHistory.length === 0 && (
-                <p className="mt-3 border-l-2 border-oxide-green bg-oxide-green/10 px-4 py-3 text-sm leading-6 text-vault-text">
-                  First move: Pick races now, Search builds permanent Pick odds, and Sabotage costs a rival their next turn. Everyone reveals together.
+                <p className="instant-first-move mt-3 border-l-2 border-oxide-green bg-oxide-green/10 px-4 py-3 text-sm leading-6 text-vault-text">
+                  Pick races now. Search improves future Pick odds. Sabotage costs a rival their next turn. Everyone reveals together.
                 </p>
               )}
-              <div className="mt-4 grid gap-3 md:grid-cols-3">
-                {[
-                  [SIM_ACTION.PICK, 'Pick', `${getPickChance(player, state.rules)}% base`, 'Attack the next lock.'],
-                  [SIM_ACTION.SEARCH, 'Search', `${getSearchChance(player, state.rules)}% base`, 'Build future Pick odds.'],
-                  [SIM_ACTION.SABOTAGE, 'Sabotage', 'One-round stun', 'Stop a rival and steal one tool when available.'],
-                ].map(([id, label, metric, detail]) => (
-                  <button key={id} type="button" aria-pressed={selectedAction === id} onClick={() => setSelectedAction(id)} className={`min-h-[118px] border p-4 text-left ${selectedAction === id ? 'border-tungsten bg-tungsten/10' : 'border-vault-border bg-vault-dark/35'}`}>
-                    <span className="flex items-start justify-between gap-3">
-                      <span>
-                        <span className="font-display text-3xl uppercase text-vault-text">{label}</span>
-                        <span className="mt-2 block font-mono text-[10px] uppercase text-oxide-green">{metric}</span>
-                      </span>
-                      <img src={ACTION_ART[id]} alt="" width="512" height="512" className="h-14 w-14 shrink-0 object-contain drop-shadow-[0_6px_10px_rgba(0,0,0,0.5)]" />
-                    </span>
-                    <span className="mt-3 block text-sm text-vault-text-dim">{detail}</span>
-                  </button>
-                ))}
+              <div className="instant-action-row">
+                <div className="instant-action-options mt-4 grid gap-3 md:grid-cols-3">
+                  {[
+                    [SIM_ACTION.PICK, 'Pick', `${getPickChance(player, state.rules, state)}% / ${tablePressure.locksOnSuccess} ${tablePressure.locksOnSuccess === 1 ? 'lock' : 'locks'}`, tablePressure.pickBonus ? `Table pressure adds ${tablePressure.pickBonus} points.` : 'Attack the next lock.'],
+                    [SIM_ACTION.SEARCH, 'Search', `${getSearchChance(player, state.rules)}% base`, 'Build future Pick odds.'],
+                    [SIM_ACTION.SABOTAGE, 'Sabotage', 'One-round stun', 'Stop a rival and steal one tool when available.'],
+                  ].map(([id, label, metric, detail], index) => (
+                    <DecisionPlate
+                      key={id}
+                      action={id}
+                      identity={label.toLowerCase()}
+                      label={label}
+                      metric={metric}
+                      detail={detail}
+                      image={ACTION_ART[id]}
+                      index={index}
+                      selected={selectedAction === id}
+                      committed={isResolving && selectedAction === id}
+                      disabled={isResolving}
+                      onSelect={() => setSelectedAction(id)}
+                    />
+                  ))}
+                </div>
+
+                <div className="instant-action-commit">
+                  <button type="button" disabled={isResolving} onClick={() => resolve(false)} aria-label="Commit and reveal" className="min-h-[52px] flex-1 bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark disabled:cursor-wait disabled:opacity-60">{isResolving ? 'Revealing...' : 'Confirm move'}</button>
+                  <button type="button" disabled={isResolving} onClick={() => resolve(true)} title="The game chooses a recommended move for you this round." aria-label="Auto-play this round" className="min-h-[52px] border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text-dim disabled:opacity-50"><span className="hidden sm:inline">Auto-play this round</span><span className="sm:hidden">Auto</span></button>
+                </div>
               </div>
 
               {selectedAction === SIM_ACTION.SABOTAGE && (
@@ -524,13 +641,8 @@ export default function InstantPlayPage() {
                 </div>
               )}
 
-              <div className="instant-action-commit -mx-5 mt-5 grid grid-cols-[minmax(0,1fr)_auto] gap-2 border-t border-vault-border bg-vault-surface/95 px-5 py-4 backdrop-blur sm:mx-0 sm:flex sm:flex-wrap sm:gap-3 sm:border-0 sm:bg-transparent sm:p-0">
-                <button type="button" disabled={isResolving} onClick={() => resolve(false)} className="min-h-[52px] flex-1 bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-vault-dark disabled:cursor-wait disabled:opacity-60">{isResolving ? 'Revealing...' : 'Commit and reveal'}</button>
-                <button type="button" disabled={isResolving} onClick={() => resolve(true)} title="The game chooses a recommended move for you this round." aria-label="Auto-play this round" className="min-h-[52px] border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim disabled:opacity-50"><span className="hidden sm:inline">Auto-play this round</span><span className="sm:hidden">Auto</span></button>
-              </div>
-
               <div className="mt-5 border-l-2 border-tungsten bg-vault-dark/50 p-4" aria-live="polite">
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten">Tactical preview</p>
+                <p className="font-mono text-micro uppercase tracking-label text-tungsten">Tactical preview</p>
                 <p className="mt-2 text-sm leading-6 text-vault-text">{preview}</p>
               </div>
             </section>
@@ -539,35 +651,39 @@ export default function InstantPlayPage() {
               <img src="/images/victory-breach.webp" alt="" width="1024" height="420" className="absolute inset-0 h-full w-full object-cover object-center" />
               <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/20" />
               <div className="relative z-10 max-w-2xl">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-tungsten">Final briefing</p>
-                <h2 className="mt-3 font-display text-5xl uppercase leading-[0.92] text-vault-text">{winner?.name} breached the vault</h2>
+                <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Final briefing</p>
+                <h2 className="mt-3 font-display text-5xl uppercase leading-display text-vault-text">{winner?.name} breached the vault</h2>
                 <p className="mt-4 max-w-xl leading-6 text-vault-text-dim">Completed in {state.currentRound} rounds. {state.winner === 'player-1' ? `You earned 125 XP and defended your ${rank} rank.` : `${winner?.name} stole the final opening. You earned 50 XP and new intel for the rematch.`}</p>
-                <p className="mt-3 font-mono text-[10px] uppercase tracking-[.14em] text-signal-red">Rivalry chronicle updated. They will remember this.</p>
-                {salvageReward?.length > 0 && <div className="mt-5 border border-oxide-green/45 bg-oxide-green/10 p-4"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-oxide-green">Workshop salvage recovered</p><div className="mt-3 flex flex-wrap gap-2">{salvageReward.map(({ materialId, amount }) => { const material = CRAFTING_MATERIALS.find((item) => item.id === materialId); return <span key={materialId} className="inline-flex items-center gap-2 border border-vault-border bg-vault-dark/70 px-3 py-2 font-mono text-xs uppercase text-vault-text"><img src={material?.image} alt="" className="h-7 w-7 object-contain" />+{amount} {material?.label}</span>; })}</div></div>}
-                {challengeTarget && <p className={`mt-3 font-mono text-xs uppercase tracking-[0.16em] ${state.currentRound < challengeTarget && state.winner === 'player-1' ? 'text-oxide-green' : 'text-tungsten'}`}>{state.currentRound < challengeTarget && state.winner === 'player-1' ? `Challenge beaten by ${challengeTarget - state.currentRound} rounds` : `Challenge target: under ${challengeTarget} rounds`}</p>}
+                <p className="mt-3 font-mono text-micro uppercase tracking-label text-signal-red">Rivalry chronicle updated. They will remember this.</p>
+                {salvageReward?.length > 0 && <div className="mt-5 border border-oxide-green/45 bg-oxide-green/10 p-4"><p className="font-mono text-micro uppercase tracking-label text-oxide-green">Workshop salvage recovered</p><div className="mt-3 flex flex-wrap gap-2">{salvageReward.map(({ materialId, amount, reason }) => { const material = CRAFTING_MATERIALS.find((item) => item.id === materialId); return <span key={materialId} title={reason} className="inline-flex items-center gap-2 border border-vault-border bg-vault-dark/70 px-3 py-2 font-mono text-xs uppercase text-vault-text"><img src={material?.image} alt="" className="h-7 w-7 object-contain" />+{amount} {material?.label}</span>; })}</div><p className="mt-3 text-xs text-vault-text-dim">{salvageReward[0]?.reason} Choose actions and Vault Run routes to pursue different materials.</p></div>}
+                {challengeTarget && <p className={`mt-3 font-mono text-xs uppercase tracking-label ${state.currentRound < challengeTarget && state.winner === 'player-1' ? 'text-oxide-green' : 'text-tungsten'}`}>{state.currentRound < challengeTarget && state.winner === 'player-1' ? `Challenge beaten by ${challengeTarget - state.currentRound} rounds` : `Challenge target: under ${challengeTarget} rounds`}</p>}
               </div>
               <div className="relative z-10 mt-7 flex flex-wrap gap-3">
                 <button type="button" onClick={() => begin(`rematch-${Date.now()}`)} className="min-h-[50px] bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase text-vault-dark">Instant rematch</button>
-                <button type="button" onClick={share} className="min-h-[50px] border border-tungsten/45 px-5 font-mono text-xs uppercase text-tungsten">Share score challenge</button>
-                <Link to="/replays" className="inline-flex min-h-[50px] items-center border border-vault-border px-5 font-mono text-xs uppercase text-vault-text">Watch replays</Link>
-                <Link to="/workshop" className="inline-flex min-h-[50px] items-center border border-oxide-green/45 px-5 font-mono text-xs uppercase text-oxide-green">Visit workshop</Link>
+                {savedReplay && <Link to={`/replay/${savedReplay.id}`} onClick={() => trackProductEvent('Post Match Continued', { destination: 'own-replay' })} className="inline-flex min-h-[50px] items-center border border-oxide-green/45 px-5 font-mono text-xs uppercase text-oxide-green">Replay this operation</Link>}
+                <details className="min-w-[180px] border border-vault-border bg-vault-dark/70">
+                  <summary className="grid min-h-[50px] cursor-pointer place-items-center px-5 font-mono text-xs uppercase text-vault-text">More options</summary>
+                  <div className="grid gap-1 border-t border-vault-border p-2">
+                    <button type="button" onClick={share} className="min-h-[44px] px-3 text-left font-mono text-xs uppercase text-tungsten">Share score challenge</button>
+                    <Link to="/career" onClick={() => trackProductEvent('Post Match Continued', { destination: 'career' })} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-vault-text">View career</Link>
+                    <Link to="/replays" onClick={() => trackProductEvent('Post Match Continued', { destination: 'replay-gallery' })} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-vault-text">Watch replays</Link>
+                    <Link to="/workshop" onClick={() => trackProductEvent('Post Match Continued', { destination: 'workshop' })} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-oxide-green">Visit workshop</Link>
+                  </div>
+                </details>
               </div>
             </section>
           )}
 
-          {latestOutcomes.length > 0 && (
-            <section className="border border-vault-border bg-vault-surface p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-text-dim">Last resolution</p>
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                {latestOutcomes.map((event) => <p key={event.id} className="border border-vault-border bg-vault-dark/50 px-3 py-2 text-sm text-vault-text">{event.message}</p>)}
-              </div>
-            </section>
-          )}
         </div>
 
-        <aside className="min-w-0 space-y-4">
-          {state.roundHistory.length > 1 && <section className="border border-vault-border bg-vault-surface p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">First-operation guide</p>
+        {intelOpen && <button type="button" className="instant-intel-backdrop" aria-label="Close table intel" onClick={() => setIntelOpen(false)} />}
+        <aside id="instant-intel-rail" className={`instant-intel-rail min-w-0 space-y-4 ${intelOpen ? 'is-open' : ''}`} aria-label="Table intel">
+          <div className="instant-intel-drawer-header">
+            <p className="font-mono text-xs uppercase tracking-label text-tungsten">Table intel</p>
+            <button type="button" onClick={() => setIntelOpen(false)} className="instant-intel-close min-h-[44px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text">Close</button>
+          </div>
+          {state.state === 'ACTIVE' && state.roundHistory.length > 1 && <section className="border border-vault-border bg-vault-surface p-5">
+            <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">First-operation guide</p>
             <ol className="mt-4 space-y-3">
               {[
                 ['Choose', state.roundHistory.length > 0, 'Read the odds and commit one move.'],
@@ -576,7 +692,7 @@ export default function InstantPlayPage() {
                 ['Breach', state.state === 'COMPLETE', 'Crack the final lock first.'],
               ].map(([label, done, detail], index) => (
                 <li key={label} className="flex gap-3">
-                  <span className={`grid h-7 w-7 shrink-0 place-items-center border font-mono text-[10px] ${done ? 'border-oxide-green bg-oxide-green/10 text-oxide-green' : 'border-vault-border text-vault-text-dim'}`}>{done ? 'OK' : index + 1}</span>
+                  <span className={`grid h-7 w-7 shrink-0 place-items-center border font-mono text-micro ${done ? 'border-oxide-green bg-oxide-green/10 text-oxide-green' : 'border-vault-border text-vault-text-dim'}`}>{done ? 'OK' : index + 1}</span>
                   <div><p className="font-display uppercase text-vault-text">{label}</p><p className="mt-1 text-xs leading-5 text-vault-text-dim">{detail}</p></div>
                 </li>
               ))}
@@ -585,7 +701,7 @@ export default function InstantPlayPage() {
 
           {state.state === 'ACTIVE' && (
           <section className="border border-vault-border bg-vault-surface p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-tungsten">Current plan</p>
+            <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Current plan</p>
             <p className="mt-2 font-display text-2xl uppercase text-vault-text">{selectedAction}</p>
             <p className="mt-3 text-sm leading-6 text-vault-text-dim">{preview}</p>
             <p className="mt-4 border-t border-vault-border pt-3 font-mono text-xs text-oxide-green">Progress saves automatically on this device.</p>
@@ -593,15 +709,15 @@ export default function InstantPlayPage() {
           )}
 
           {mode === 'tactical' && <section className="border border-vault-border bg-vault-surface p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-tungsten">Workshop loadout</p>
+            <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Workshop loadout</p>
             <div className="mt-3 grid grid-cols-[78px_minmax(0,1fr)] items-center gap-3"><GadgetVisual gadget={practiceBlueprint} compact masteryLevel={getGadgetMastery(readInventory(), gadget).level} /><div><p className="font-display text-xl uppercase text-vault-text">{practiceBlueprint.name}</p><p className="mt-1 text-xs leading-5 text-vault-text-dim">{practiceBlueprint.effectName} / {practiceBlueprint.protocolLabel}</p></div></div>
           </section>}
 
           {state.state === 'COMPLETE' && <section className="border border-vault-border bg-vault-surface p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-tungsten">Season identity</p>
+            <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Season identity</p>
             <p className="mt-2 font-display text-2xl uppercase text-tungsten-bright">{rank}</p>
             <label className="mt-4 grid gap-2">
-              <span className="font-mono text-[10px] uppercase text-vault-text-dim">Operator name</span>
+              <span className="font-mono text-micro uppercase text-vault-text-dim">Operator name</span>
               <input value={profile.name} onChange={(event) => setProfile((current) => ({ ...current, name: event.target.value.slice(0, 20) }))} onBlur={() => localStorage.setItem(PROFILE_KEY, JSON.stringify(profile))} className="min-h-[44px] border border-vault-border bg-vault-dark px-3 text-vault-text" />
             </label>
             <div className="mt-4 grid grid-cols-2 gap-2">
@@ -611,15 +727,15 @@ export default function InstantPlayPage() {
               <Stat label="Games" value={profile.games} />
             </div>
             <div className="mt-3 h-2 bg-vault-dark"><div className="h-2 bg-oxide-green" style={{ width: `${(profile.xp % 500) / 5}%` }} /></div>
-            <p className="mt-2 font-mono text-[9px] uppercase text-vault-text-dim">Level {Math.floor(profile.xp / 500) + 1} / next rank in {500 - (profile.xp % 500)} XP</p>
+            <p className="mt-2 font-mono text-micro uppercase text-vault-text-dim">Level {Math.floor(profile.xp / 500) + 1} / next rank in {500 - (profile.xp % 500)} XP</p>
           </section>}
 
           {state.state === 'COMPLETE' && <section className="border border-vault-border bg-vault-surface p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-tungsten">Next operation</p>
+            <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Next operation</p>
             <div className="mt-3 grid gap-2">
-              <Link to="/#live-operations" className="min-h-[44px] border border-tungsten/45 px-3 py-3 font-mono text-[10px] uppercase text-tungsten">Take it onchain</Link>
-              <Link to="/trailer" className="min-h-[44px] border border-vault-border px-3 py-3 font-mono text-[10px] uppercase text-vault-text">Watch gameplay trailer</Link>
-              <Link to="/sessions" className="min-h-[44px] border border-vault-border px-3 py-3 font-mono text-[10px] uppercase text-vault-text">Spectate live sessions</Link>
+              <Link to="/#live-operations" className="min-h-[44px] border border-tungsten/45 px-3 py-3 font-mono text-micro uppercase text-tungsten">Take it onchain</Link>
+              <Link to="/trailer" className="min-h-[44px] border border-vault-border px-3 py-3 font-mono text-micro uppercase text-vault-text">Watch gameplay trailer</Link>
+              <Link to="/sessions" className="min-h-[44px] border border-vault-border px-3 py-3 font-mono text-micro uppercase text-vault-text">Spectate live sessions</Link>
             </div>
           </section>}
         </aside>
@@ -631,8 +747,23 @@ export default function InstantPlayPage() {
 function Stat({ label, value }) {
   return (
     <div className="bg-vault-dark/75 p-3">
-      <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-vault-text-dim">{label}</p>
+      <p className="font-mono text-micro uppercase tracking-label text-vault-text-dim">{label}</p>
       <p className="mt-1 font-display text-2xl text-vault-text">{value}</p>
     </div>
+  );
+}
+
+function ResolutionSummary({ outcomes }) {
+  const playerOutcome = outcomes.find((event) => event.actor === 'player-1') || outcomes[0];
+  const successful = Boolean(playerOutcome?.success);
+  return (
+    <section className={`instant-resolution-summary border-l-2 p-4 ${successful ? 'border-oxide-green bg-oxide-green/10' : 'border-signal-red bg-signal-red/5'}`} aria-labelledby="instant-resolution-heading">
+      <p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Last resolution</p>
+      <h2 id="instant-resolution-heading" className="mt-2 font-display text-3xl uppercase text-vault-text">{successful ? 'Your move landed.' : 'The vault held.'}</h2>
+      <p className={`mt-1 text-sm ${successful ? 'text-oxide-green' : 'text-signal-red'}`}>{playerOutcome?.message}</p>
+      <div className="mt-3 grid gap-2 sm:grid-cols-3">
+        {outcomes.filter((event) => event !== playerOutcome).map((event) => <p key={event.id} className="border-t border-vault-border pt-2 text-xs text-vault-text-dim">{event.message}</p>)}
+      </div>
+    </section>
   );
 }

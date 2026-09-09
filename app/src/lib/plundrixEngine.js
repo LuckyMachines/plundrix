@@ -11,6 +11,9 @@ export const SIM_DEFAULT_RULES = Object.freeze({
   pickBaseChance: 40,
   pickToolBonus: 15,
   pickChanceCap: 95,
+  catchUpBonusPerLock: 6,
+  catchUpBonusCap: 18,
+  catchUpDoublePickGap: 2,
   searchChance: 60,
   stunnedSearchChance: 30,
   sabotageCooldownRounds: 1,
@@ -124,7 +127,7 @@ export const SIM_SCENARIOS = Object.freeze([
       mode: 'asymmetric-comeback',
       leaderPlayerId: 'player-2',
       comebackPlayerIds: ['player-1', 'player-3', 'player-4'],
-      minHealthyRounds: 6,
+      minHealthyRounds: 3,
       maxHealthyRounds: 28,
     },
     description: 'A leader, a trailing player with tools, and a stunned contender.',
@@ -296,6 +299,24 @@ export function normalizeRuleset(rules = {}) {
       SIM_DEFAULT_RULES.pickToolBonus,
     ),
     pickChanceCap: clampNumber(rules.pickChanceCap, 5, 99, SIM_DEFAULT_RULES.pickChanceCap),
+    catchUpBonusPerLock: clampNumber(
+      rules.catchUpBonusPerLock,
+      0,
+      20,
+      SIM_DEFAULT_RULES.catchUpBonusPerLock,
+    ),
+    catchUpBonusCap: clampNumber(
+      rules.catchUpBonusCap,
+      0,
+      40,
+      SIM_DEFAULT_RULES.catchUpBonusCap,
+    ),
+    catchUpDoublePickGap: clampNumber(
+      rules.catchUpDoublePickGap,
+      1,
+      9,
+      SIM_DEFAULT_RULES.catchUpDoublePickGap,
+    ),
     searchChance: clampNumber(rules.searchChance, 5, 95, SIM_DEFAULT_RULES.searchChance),
     stunnedSearchChance: clampNumber(
       rules.stunnedSearchChance,
@@ -434,14 +455,28 @@ export function createInitialSimulation(options = {}) {
   };
 }
 
-export function getPickChance(player, rules = SIM_DEFAULT_RULES) {
+export function getTablePressure(player, state = null, rules = SIM_DEFAULT_RULES) {
+  const normalized = normalizeRuleset(rules);
+  const leaderLocks = state?.players?.length
+    ? Math.max(...state.players.map((candidate) => candidate.locksCracked))
+    : player.locksCracked;
+  const gap = Math.max(0, leaderLocks - player.locksCracked);
+  return {
+    gap,
+    pickBonus: Math.min(normalized.catchUpBonusCap, gap * normalized.catchUpBonusPerLock),
+    locksOnSuccess: gap >= normalized.catchUpDoublePickGap || (gap > 0 && leaderLocks >= 3) ? 2 : 1,
+  };
+}
+
+export function getPickChance(player, rules = SIM_DEFAULT_RULES, state = null) {
   const normalized = normalizeRuleset(rules);
   if (player.stunned) {
     return 0;
   }
+  const pressure = getTablePressure(player, state, normalized);
   return Math.min(
     normalized.pickChanceCap,
-    normalized.pickBaseChance + player.tools * normalized.pickToolBonus,
+    normalized.pickBaseChance + player.tools * normalized.pickToolBonus + pressure.pickBonus,
   );
 }
 
@@ -521,7 +556,7 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       let reason = SIM_OUTCOME_REASON.PICK_FAILED_ROLL;
       let gadgetBonus = 0;
       let bargainBonus = 0;
-      const baseChance = getPickChance(player, next.rules);
+      const baseChance = getPickChance(player, next.rules, { ...next, players: beforePlayers });
       const signature = player.gadgetReady ? getGadgetSignature(player.gadget) : null;
 
       if (player.stunned) {
@@ -562,10 +597,23 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       if (!player.stunned && roll < chance) {
         success = true;
         reason = SIM_OUTCOME_REASON.PICK_SUCCESS;
+        const playerBefore = beforePlayers.find((candidate) => candidate.id === player.id) || player;
+        const pressure = getTablePressure(playerBefore, { ...next, players: beforePlayers }, next.rules);
+        const catchUpBurst = pressure.locksOnSuccess > 1;
+        const locksGained = pending.bargain === 'double-or-nothing'
+          ? 2
+          : pressure.locksOnSuccess;
         player.locksCracked = Math.min(
           next.rules.totalLocks,
-          player.locksCracked + (pending.bargain === 'double-or-nothing' ? 2 : 1),
+          player.locksCracked + locksGained,
         );
+        if (catchUpBurst && pending.bargain !== 'double-or-nothing') {
+          emit('PressureBreach', {
+            actor: player.id,
+            locksGained,
+            message: `${player.name} converted table pressure into a double breach.`,
+          });
+        }
         emit('LockCracked', {
           actor: player.id,
           locksCracked: player.locksCracked,

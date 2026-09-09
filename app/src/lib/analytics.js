@@ -1,6 +1,9 @@
+export const PRODUCT_EVENT_SCHEMA_VERSION = 2;
+
 const ALLOWED_PROPERTIES = new Set([
   'mode', 'action', 'result', 'surface', 'state', 'roundBucket', 'stage', 'gadget',
   'bargain', 'weekly', 'outcome', 'rival', 'source', 'chassis', 'rarity', 'protocol',
+  'schema', 'release', 'ruleset', 'experiment', 'variant', 'cohort', 'latency', 'destination',
 ]);
 
 function safeProperties(properties = {}) {
@@ -13,13 +16,29 @@ function safeProperties(properties = {}) {
 
 export function trackProductEvent(name, properties = {}) {
   if (typeof window === 'undefined') return;
-  const props = safeProperties(properties);
+  const params = new URLSearchParams(window.location.search);
+  const props = safeProperties({
+    schema: PRODUCT_EVENT_SCHEMA_VERSION,
+    release: import.meta.env?.VITE_RELEASE_ID || 'unversioned',
+    ruleset: import.meta.env?.VITE_RULESET_ID || 'default',
+    experiment: params.get('experiment') || undefined,
+    variant: params.get('variant') || undefined,
+    ...properties,
+  });
   window.dispatchEvent(new CustomEvent('plundrix:analytics', { detail: { name, props } }));
   if (!import.meta.env.PROD) return;
   window.plausible = window.plausible || function plausible(...args) {
     (window.plausible.q = window.plausible.q || []).push(args);
   };
   window.plausible(name, { props });
+}
+
+export function latencyBucket(milliseconds) {
+  const seconds = Math.max(0, Number(milliseconds) || 0) / 1000;
+  if (seconds <= 30) return '0-30s';
+  if (seconds <= 60) return '31-60s';
+  if (seconds <= 120) return '61-120s';
+  return '121s+';
 }
 
 export function analyticsRoute(pathname) {
