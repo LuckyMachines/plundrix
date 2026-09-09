@@ -1,0 +1,11 @@
+{
+  "model": "depth-anything/Depth-Anything-V2-Small-hf",
+  "interpretation": "Per-image relative depth only; warm/bright is relatively near and cool/dark is relatively far. Not metric distance.",
+  "reference": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\output\\imagegen\\plundrix-art-directions-2026-09-09\\09-heist-desk-hub.png",
+  "actual": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\player-hub-desktop.png",
+  "outputs": [
+    "reference-grayscale.png",
+    "actual-grayscale.png",
+    "reference-vs-actual-depth.png"
+  ]
+}
