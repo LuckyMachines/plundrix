@@ -24,6 +24,16 @@ contract PlundrixGameHarness is PlundrixGame {
     ) external view returns (uint256) {
         return _randomWord(gameId, round, seed) % finalistCount;
     }
+
+    function resolvePickForTest(
+        uint256 gameId,
+        uint256 playerIndex,
+        uint256 roll,
+        uint256 leaderLocks
+    ) external returns (bool, OutcomeReason) {
+        return _resolvePick(gameId, _players[gameId][playerIndex], roll, leaderLocks);
+    }
+
 }
 
 contract PlundrixGameTest is Test {
@@ -250,6 +260,28 @@ contract PlundrixGameTest is Test {
         (PlundrixGame.GameState state, , , , address winner) = game.getGameInfo(gameId);
         assertEq(uint8(state), uint8(PlundrixGame.GameState.COMPLETE));
         assertTrue(winner == player1 || winner == player2, "winner was not a finalist");
+    }
+
+    function test_deepTrailingPickCracksTwoLocks() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+        PlundrixGameHarness harness = PlundrixGameHarness(address(game));
+        harness.setLocks(gameId, 2, 2);
+        (bool success, PlundrixGame.OutcomeReason reason) = harness.resolvePickForTest(gameId, 1, 51, 2);
+        (uint256 locksCracked, , , , ) = game.getPlayerState(gameId, player1);
+        assertTrue(success);
+        assertEq(uint8(reason), uint8(PlundrixGame.OutcomeReason.PICK_SUCCESS));
+        assertEq(locksCracked, 2, "table pressure should crack two locks");
+    }
+
+    function test_lateTrailingPickCracksTwoLocks() external {
+        uint256 gameId = _createActiveTwoPlayerGame();
+        PlundrixGameHarness harness = PlundrixGameHarness(address(game));
+        harness.setLocks(gameId, 1, 2);
+        harness.setLocks(gameId, 2, 3);
+        (bool success, ) = harness.resolvePickForTest(gameId, 1, 0, 3);
+        (uint256 locksCracked, , , , ) = game.getPlayerState(gameId, player1);
+        assertTrue(success);
+        assertEq(locksCracked, 4, "late table pressure should crack two locks");
     }
 
     function test_sabotageCannotStunLockSameTarget() external {

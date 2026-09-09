@@ -2,8 +2,10 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const implementation = (process.env.SEPOLIA_IMPLEMENTATION_ADDRESS
-  || '0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F').toLowerCase();
+const proxy = (process.env.SEPOLIA_PROXY_ADDRESS
+  || process.env.VITE_CONTRACT_ADDRESS
+  || '0x1FF715D46470B4024D88A12838e08A60855f0AE2').toLowerCase();
+const implementationOverride = process.env.SEPOLIA_IMPLEMENTATION_ADDRESS;
 const rpcUrl = process.env.SEPOLIA_RPC_URL
   || process.env.VITE_RPC_URL
   || 'https://ethereum-sepolia-rpc.publicnode.com';
@@ -13,6 +15,7 @@ const blockscoutBaseUrl = process.env.BLOCKSCOUT_BASE_URL
   || 'https://eth-sepolia.blockscout.com';
 const routescanApiUrl = process.env.ROUTESCAN_API_URL
   || 'https://api.routescan.io/v2/network/testnet/evm/11155111/etherscan/api';
+const implementationSlot = '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc';
 
 function fail(message) {
   throw new Error(`Sepolia provenance check failed: ${message}`);
@@ -26,24 +29,31 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
+async function rpc(method, params) {
+  const response = await fetch(rpcUrl, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+  });
+  if (!response.ok) fail(`RPC returned HTTP ${response.status}`);
+  const payload = await response.json();
+  if (payload.error) fail(`RPC error ${JSON.stringify(payload.error)}`);
+  return payload.result;
+}
+
 const artifact = JSON.parse(await readFile(artifactPath, 'utf8'));
 const compiled = normalizeHex(artifact.deployedBytecode?.object || '');
 if (!compiled) fail(`no deployed bytecode in ${artifactPath}`);
 
-const response = await fetch(rpcUrl, {
-  method: 'POST',
-  headers: { 'content-type': 'application/json' },
-  body: JSON.stringify({
-    jsonrpc: '2.0',
-    id: 1,
-    method: 'eth_getCode',
-    params: [implementation, 'latest'],
-  }),
-});
-if (!response.ok) fail(`RPC returned HTTP ${response.status}`);
-const payload = await response.json();
-if (payload.error) fail(`RPC error ${JSON.stringify(payload.error)}`);
-const deployed = normalizeHex(payload.result || '');
+const slotValue = implementationOverride
+  ? null
+  : await rpc('eth_getStorageAt', [proxy, implementationSlot, 'latest']);
+const implementation = (implementationOverride
+  || `0x${normalizeHex(slotValue || '').slice(-40)}`).toLowerCase();
+if (!/^0x[a-f0-9]{40}$/.test(implementation) || /^0x0{40}$/.test(implementation)) {
+  fail(`invalid implementation address resolved from proxy ${proxy}`);
+}
+const deployed = normalizeHex(await rpc('eth_getCode', [implementation, 'latest']) || '');
 if (!deployed) fail(`no code at ${implementation}`);
 if (compiled.length !== deployed.length) {
   fail(`runtime length differs (compiled=${compiled.length / 2}, deployed=${deployed.length / 2} bytes)`);
@@ -116,6 +126,7 @@ if (routescanRecord.ContractName !== 'PlundrixGame'
 
 console.log(JSON.stringify({
   status: 'verified',
+  proxy,
   implementation,
   compiler: artifact.metadata?.compiler?.version,
   runtimeBytes: deployed.length / 2,

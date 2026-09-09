@@ -65,6 +65,9 @@ contract PlundrixGame is
     uint256 public constant MAX_AUTO_RESOLVE_DELAY = 1 days;
     uint256 public constant FEE_BPS = 200;
     uint256 public constant BASIS_POINTS_DENOMINATOR = 10_000;
+    uint256 private constant CATCH_UP_BONUS_PER_LOCK = 6;
+    uint256 private constant CATCH_UP_BONUS_CAP = 18;
+    uint256 private constant CATCH_UP_DOUBLE_PICK_GAP = 2;
     bytes32 public constant SESSION_ACTION_TYPEHASH = keccak256(
         "SessionAction(uint256 gameID,address player,uint8 action,address sabotageTarget,uint256 nonce,uint256 deadline)"
     );
@@ -767,6 +770,10 @@ contract PlundrixGame is
         }
 
         // Phase 1: Resolve PICK and SEARCH (affected by current stun state)
+        uint256 leaderLocks = _leaderLocks(
+            gameID,
+            game.playerCount
+        );
         for (uint256 i = 1; i <= game.playerCount; i++) {
             PlayerState storage player = _players[gameID][i];
             PendingAction storage pending = _pendingActions[gameID][
@@ -805,7 +812,8 @@ contract PlundrixGame is
                 (bool success, OutcomeReason reason) = _resolvePick(
                     gameID,
                     player,
-                    rand
+                    rand,
+                    leaderLocks
                 );
                 emit ActionOutcome(
                     gameID,
@@ -924,7 +932,8 @@ contract PlundrixGame is
     function _resolvePick(
         uint256 gameID,
         PlayerState storage player,
-        uint256 rand
+        uint256 rand,
+        uint256 leaderLocks
     ) internal returns (bool success, OutcomeReason reason) {
         // Stunned players auto-fail picks
         if (player.stunned) {
@@ -941,12 +950,24 @@ contract PlundrixGame is
         );
         uint256 gadgetBonus = gadgetStrength;
         uint256 chance = 40 + (player.tools * 15) + gadgetBonus;
+        uint256 gap = leaderLocks > player.locksCracked
+            ? leaderLocks - player.locksCracked
+            : 0;
+        if (gap > 0) {
+            uint256 pressureBonus = gap * CATCH_UP_BONUS_PER_LOCK;
+            chance += pressureBonus > CATCH_UP_BONUS_CAP
+                ? CATCH_UP_BONUS_CAP
+                : pressureBonus;
+        }
         if (chance > 95) {
             chance = 95;
         }
 
         if (rand < chance) {
-            player.locksCracked++;
+            player.locksCracked += gap >= CATCH_UP_DOUBLE_PICK_GAP || (gap > 0 && leaderLocks >= 3) ? 2 : 1;
+            if (player.locksCracked > TOTAL_LOCKS) {
+                player.locksCracked = TOTAL_LOCKS;
+            }
             emit LockCracked(
                 gameID,
                 player.addr,
@@ -957,6 +978,18 @@ contract PlundrixGame is
         }
 
         return (false, OutcomeReason.PICK_FAILED_ROLL);
+    }
+
+    function _leaderLocks(
+        uint256 gameID,
+        uint256 playerCount
+    ) internal view returns (uint256 leaderLocks) {
+        for (uint256 i = 1; i <= playerCount; i++) {
+            uint256 locks = _players[gameID][i].locksCracked;
+            if (locks > leaderLocks) {
+                leaderLocks = locks;
+            }
+        }
     }
 
     function _resolveSearch(
