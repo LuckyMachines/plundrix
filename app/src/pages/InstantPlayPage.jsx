@@ -574,7 +574,7 @@ export default function InstantPlayPage() {
                     {Array.from({ length: 4 }, (_, index) => (
                       index < player.tools
                         ? <span key={index} data-active="true" title="Carried lock tool"><img src="/images/parts/lock-module.webp" alt="" width="96" height="96" /></span>
-                        : <span key={index} className="instant-tool-rack__empty" aria-label="Empty tool slot">+</span>
+                        : <span key={index} className="instant-tool-rack__empty" data-slot={`0${index + 1}`} role="img" aria-label={`Empty tool slot ${index + 1}`} />
                     ))}
                   </div>
                 </section>

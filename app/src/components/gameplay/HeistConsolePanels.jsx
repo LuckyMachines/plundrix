@@ -38,10 +38,17 @@ export function MissionStatusPanel({ round, modeLabel, objectives, threatPercent
 
       <div className="instant-threat-gauge">
         <div className="instant-threat-gauge__heading"><span>Threat level</span><strong>{threatLabel}</strong></div>
-        <div className="instant-threat-gauge__track" role="progressbar" aria-label="Threat level" aria-valuemin="0" aria-valuemax="100" aria-valuenow={threatPercent}>
-          <span style={{ width: `${threatPercent}%` }} />
+        <div className="instant-threat-gauge__body">
+          <div className="instant-threat-dial" style={{ '--threat-angle': `${threatPercent * 3.6}deg` }} aria-hidden="true">
+            <span>{threatPercent}</span>
+          </div>
+          <div className="instant-threat-gauge__readout">
+            <div className="instant-threat-gauge__track" role="progressbar" aria-label="Threat level" aria-valuemin="0" aria-valuemax="100" aria-valuenow={threatPercent}>
+              <span style={{ width: `${threatPercent}%` }} />
+            </div>
+            <p><span className="instant-threat-gauge__lamp" aria-hidden="true" /> Alert rising / {threatPercent}%</p>
+          </div>
         </div>
-        <p><span className="instant-threat-gauge__lamp" aria-hidden="true" /> Alert rising / {threatPercent}%</p>
       </div>
     </section>
   );
