@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-09-10T09:23:34.350Z",
+  "completedAt": "2026-09-10T09:26:00.533Z",
+  "buildSha": "c9925ba",
+  "mode": "compare",
+  "reason": null,
+  "surface": "all",
+  "status": "pass",
+  "playwrightExitCode": 0,
+  "compositionExitCode": 0
+}

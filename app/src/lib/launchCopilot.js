@@ -818,7 +818,7 @@ export function collectLaunchInputs(config = {}) {
   const files = config.files || {};
   const packageJson = config.packageJson || { scripts: {} };
   const simulatorBatch = config.simulatorBatch || runBatch({
-    games: config.heavy ? 12 : 3,
+    games: config.heavy ? 48 : 12,
     seed: config.seed || 'launch-copilot-smoke',
     scenarioId: config.scenarioId || 'new-player-table',
     maxRounds: 36,
@@ -832,7 +832,7 @@ export function collectLaunchInputs(config = {}) {
     scenario: config.ghostScenario || 'balanced-cast',
     seed: config.seed || 'launch-ghosts',
     budget: 'smoke',
-    games: config.heavy ? 6 : 3,
+    games: config.heavy ? 64 : 16,
     maxRounds: 36,
   });
   const mutationProof = config.mutationProof || buildMutationLaunchProof({

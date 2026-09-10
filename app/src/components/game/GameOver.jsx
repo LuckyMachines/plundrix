@@ -150,7 +150,7 @@ export default function GameOver({ gameId }) {
       <div className="border border-vault-border rounded bg-vault-panel overflow-hidden">
         {/* Top classification bar */}
         <div className="bg-vault-dark border-b border-vault-border px-4 py-2 flex items-center justify-between">
-          <span className="font-display text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+          <span className="font-display text-xs tracking-beacon text-vault-text-dim uppercase">
             Final Briefing
           </span>
           <span className="font-mono text-xs text-vault-text-dim">
@@ -171,13 +171,13 @@ export default function GameOver({ gameId }) {
           <div className="absolute inset-0 bg-gradient-to-t from-vault-dark/80 via-transparent to-vault-dark/20" />
 
           <div className="relative z-10 max-w-xl space-y-4">
-            <h2 className="text-2xl font-display font-bold tracking-[0.3em] text-tungsten-bright uppercase">
+            <h2 className="text-2xl font-display font-bold tracking-beacon text-tungsten-bright uppercase">
               Vault Breached
             </h2>
 
             {isCurrentUserWinner && (
               <div className="inline-block border-2 border-tungsten-bright/50 rounded px-5 py-1.5 rotate-[-2deg]">
-                <span className="font-display text-lg tracking-[0.4em] text-tungsten-bright uppercase font-bold">
+                <span className="font-display text-lg tracking-beacon text-tungsten-bright uppercase font-bold">
                   You Win
                 </span>
               </div>
@@ -217,7 +217,7 @@ export default function GameOver({ gameId }) {
       {/* Stats table */}
       <div className="border border-vault-border rounded bg-vault-panel overflow-hidden">
         <div className="bg-vault-dark border-b border-vault-border px-4 py-2">
-          <span className="font-display text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+          <span className="font-display text-xs tracking-beacon text-vault-text-dim uppercase">
             Player Report
           </span>
         </div>
@@ -258,7 +258,7 @@ export default function GameOver({ gameId }) {
       {isStakes && (
         <div className="border border-vault-border rounded bg-vault-panel overflow-hidden">
           <div className="bg-vault-dark border-b border-vault-border px-4 py-2">
-            <span className="font-display text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+            <span className="font-display text-xs tracking-beacon text-vault-text-dim uppercase">
               Prize Breakdown
             </span>
           </div>
@@ -306,10 +306,10 @@ export default function GameOver({ gameId }) {
       {salvageSettled && (
         <div className="flex flex-wrap items-center justify-between gap-4 border border-oxide-green/30 bg-oxide-green/5 px-5 py-4">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">Salvage secured</p>
+            <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Salvage secured</p>
             <p className="mt-1 text-sm text-vault-text-dim">Your onchain locker received {isCurrentUserWinner ? '8' : '5'} crafting units from this operation.</p>
           </div>
-          <Link to="/workshop" className="border border-oxide-green/40 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green hover:bg-oxide-green/10">Open workshop</Link>
+          <Link to="/workshop" className="border border-oxide-green/40 px-4 py-2 font-mono text-micro uppercase tracking-label text-oxide-green hover:bg-oxide-green/10">Open workshop</Link>
         </div>
       )}
 
@@ -339,7 +339,7 @@ export default function GameOver({ gameId }) {
       {/* Bottom classification */}
       <div className="flex items-center justify-center gap-2">
         <div className="h-px w-12 bg-vault-border" />
-        <span className="font-display text-xs tracking-[0.4em] text-vault-text-dim uppercase">
+        <span className="font-display text-xs tracking-beacon text-vault-text-dim uppercase">
           End of Report
         </span>
         <div className="h-px w-12 bg-vault-border" />

@@ -17,7 +17,7 @@ const STEPS = [
   {
     num: 4,
     title: 'Choose Action',
-    desc: 'Each round, select Pick, Search, or Sabotage. Consider your tools, stun status, and opponents\u2019 progress.',
+    desc: 'Each round, select Pick, Search, or Sabotage. Consider tools, stun status, opponents\u2019 progress, and any visible table-pressure bonus.',
   },
   {
     num: 5,
@@ -39,6 +39,7 @@ const STEPS = [
 const TIPS = [
   'Early rounds: Search for tools to build your success rate before picking.',
   'Sabotage the leader: If an opponent is one lock away from winning, stun them to buy time.',
+  'Use table pressure: Falling behind increases Pick odds; a deep gap or a leader at three locks turns your successful Pick into a double breach.',
   'Don\u2019t hoard tools: Once you have 3\u20134 tools your pick chance is strong \u2014 start cracking locks.',
   'Watch the timer: If an opponent doesn\u2019t submit, the round can still resolve after timeout.',
 ];
@@ -46,7 +47,7 @@ const TIPS = [
 export default function SectionHowTo() {
   return (
     <div className="font-mono text-xs text-vault-text leading-relaxed">
-      <h3 className="font-display tracking-[0.25em] text-tungsten uppercase text-xs mb-3
+      <h3 className="font-display tracking-beacon text-tungsten uppercase text-xs mb-3
                      border-b border-vault-border pb-1">
         Step-by-Step Tutorial
       </h3>
@@ -68,7 +69,7 @@ export default function SectionHowTo() {
         ))}
       </div>
 
-      <h3 className="font-display tracking-[0.25em] text-tungsten uppercase text-xs mb-2 mt-5
+      <h3 className="font-display tracking-beacon text-tungsten uppercase text-xs mb-2 mt-5
                      border-b border-vault-border pb-1">
         Strategy Notes
       </h3>

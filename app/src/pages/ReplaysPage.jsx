@@ -67,10 +67,10 @@ export default function ReplaysPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="replay-page max-w-7xl mx-auto px-4 sm:px-6 py-6">
       <PageIntro route="/replays" />
-      <ProductLoopRail activeStep="replay" compact />
-      <section className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
+      <div className="replay-loop"><ProductLoopRail activeStep="replay" compact /></div>
+      <section className="replay-filters rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="label">Replay filters</p>
@@ -85,7 +85,7 @@ export default function ReplaysPage() {
                 type="button"
                 onClick={() => setFilter(item)}
                 aria-pressed={filter === item}
-                className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.12em] ${
+                className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-interface ${
                   filter === item
                     ? 'border-tungsten bg-tungsten/10 text-tungsten'
                     : 'border-vault-border text-vault-text-dim hover:text-vault-text'
@@ -102,10 +102,10 @@ export default function ReplaysPage() {
         <EmptyState
           missing="No replays in this filter."
           why="Replays are the memory layer for Plundrix operations. Change the filter or generate a new practice match."
-          action={<button type="button" onClick={() => setFilter('all')} className="min-h-[44px] rounded border border-tungsten/55 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Show all replays</button>}
+          action={<button type="button" onClick={() => setFilter('all')} className="min-h-[44px] rounded border border-tungsten/55 px-4 font-mono text-xs uppercase tracking-label text-tungsten">Show all replays</button>}
         />
       ) : (
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <section className="replay-gallery grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {gallery.map((item) => {
           const replay = replays.find((entry) => entry.id === item.id);
           const gallerySeed = replayGallerySeeds.find((entry) => entry.id === replay?.gallerySeedId || entry.seed === replay?.seed);
@@ -129,7 +129,7 @@ export default function ReplaysPage() {
                   <h2 className="mt-2 font-display text-xl text-vault-text">{item.title}</h2>
                 </div>
                 {item.marketingProof && (
-                  <span className="rounded border border-oxide-green/40 bg-oxide-green/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-oxide-green">
+                  <span className="rounded border border-oxide-green/40 bg-oxide-green/10 px-2 py-1 font-mono text-micro uppercase tracking-interface text-oxide-green">
                     sample
                   </span>
                 )}
@@ -141,19 +141,19 @@ export default function ReplaysPage() {
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {item.tags.map((tag) => (
-                  <span key={tag} className="rounded border border-vault-border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-vault-text-dim">
+                  <span key={tag} className="rounded border border-vault-border px-2 py-1 font-mono text-micro uppercase tracking-interface text-vault-text-dim">
                     {tag}
                   </span>
                 ))}
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link to={`/replay/${item.id}${replay?.shareUrl.includes('?') ? replay.shareUrl.slice(replay.shareUrl.indexOf('?')) : ''}`} className="min-h-[44px] rounded border border-tungsten/55 px-4 py-3 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">
+                <Link to={`/replay/${item.id}${replay?.shareUrl.includes('?') ? replay.shareUrl.slice(replay.shareUrl.indexOf('?')) : ''}`} className="min-h-[44px] rounded border border-tungsten/55 px-4 py-3 font-mono text-xs uppercase tracking-label text-tungsten">
                   Open replay
                 </Link>
-                <button type="button" onClick={() => copyReplay(item.share)} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+                <button type="button" onClick={() => copyReplay(item.share)} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text">
                   Copy
                 </button>
-                <button type="button" onClick={() => replay && saveReplay(replay)} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+                <button type="button" onClick={() => replay && saveReplay(replay)} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text">
                   Save
                 </button>
               </div>
@@ -165,13 +165,13 @@ export default function ReplaysPage() {
       )}
 
       <details className="rounded border border-vault-border bg-vault-surface/75 p-4">
-        <summary className="min-h-[44px] cursor-pointer font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">Advanced replay tools</summary>
+        <summary className="min-h-[44px] cursor-pointer font-mono text-xs uppercase tracking-label text-vault-text-dim">Advanced replay tools</summary>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-vault-text-dim">Export your saved library or import replay JSON.</p>
-          <button type="button" onClick={exportLibrary} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text">Export library</button>
+          <button type="button" onClick={exportLibrary} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text">Export library</button>
         </div>
         <textarea value={importText} onChange={(event) => setImportText(event.target.value)} placeholder="Paste replay library JSON" aria-label="Replay library JSON" className="mt-3 min-h-[110px] w-full rounded border border-vault-border bg-vault-dark p-3 font-mono text-xs text-vault-text placeholder:text-vault-text-dim" />
-        <button type="button" onClick={importLibrary} disabled={!importText.trim()} className="mt-3 min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text disabled:opacity-40">Import library</button>
+        <button type="button" onClick={importLibrary} disabled={!importText.trim()} className="mt-3 min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text disabled:opacity-40">Import library</button>
       </details>
     </div>
   );

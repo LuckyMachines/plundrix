@@ -18,7 +18,7 @@ export default function HighlightRail({ highlights = [], activeRound, onJump }) 
                 : 'border-vault-border bg-vault-panel/55 hover:bg-vault-panel'
             }`}
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">
+            <span className="font-mono text-micro uppercase tracking-label text-oxide-green">
               {index + 1} / R{highlight.round}
             </span>
             <span className="mt-1 block text-sm text-vault-text">{highlight.replayLabel}</span>

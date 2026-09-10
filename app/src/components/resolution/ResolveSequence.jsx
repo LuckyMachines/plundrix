@@ -82,7 +82,7 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
       {/* Phase label */}
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-vault-border" />
-        <span className="font-display text-xs tracking-[0.25em] text-tungsten uppercase shrink-0">
+        <span className="font-display text-xs tracking-beacon text-tungsten uppercase shrink-0">
           {PHASE_LABELS[Math.min(phase, 3)]}
         </span>
         <div className="h-px flex-1 bg-vault-border" />
@@ -203,7 +203,7 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
           <button
             type="button"
             onClick={onComplete}
-            className="min-h-[44px] rounded border border-tungsten/45 bg-tungsten/10 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten transition hover:bg-tungsten/20"
+            className="min-h-[44px] rounded border border-tungsten/45 bg-tungsten/10 px-4 font-mono text-xs uppercase tracking-label text-tungsten transition hover:bg-tungsten/20"
           >
             Continue to next round
           </button>

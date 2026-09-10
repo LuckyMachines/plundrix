@@ -9,7 +9,7 @@ export default function RoundSummaryCard({ session }) {
   return (
     <div className="border border-vault-border rounded bg-vault-panel p-4">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-        <h3 className="font-display text-xs uppercase tracking-[0.3em] text-vault-text-dim">
+        <h3 className="font-display text-xs uppercase tracking-beacon text-vault-text-dim">
           Round Summary
         </h3>
         {summary.winner && (
@@ -31,7 +31,7 @@ export default function RoundSummaryCard({ session }) {
 function Metric({ label, value }) {
   return (
     <div className="rounded border border-vault-border bg-vault-dark/30 px-3 py-2">
-      <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+      <p className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
         {label}
       </p>
       <p className="font-mono text-lg text-vault-text tabular-nums">{value}</p>

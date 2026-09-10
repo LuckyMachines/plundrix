@@ -10,7 +10,7 @@ const TYPE_CLASSNAMES = {
 export default function TypePill({ type = 'unverified' }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-mono uppercase tracking-[0.18em] ${
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-micro font-mono uppercase tracking-brand ${
         TYPE_CLASSNAMES[type] || TYPE_CLASSNAMES.unverified
       }`}
     >

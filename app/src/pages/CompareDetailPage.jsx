@@ -30,7 +30,7 @@ export default function CompareDetailPage() {
         jsonLd={jsonLd}
       />
 
-      <nav className="mb-8 font-mono text-xs uppercase tracking-[0.16em] text-vault-text-dim">
+      <nav className="mb-8 font-mono text-xs uppercase tracking-label text-vault-text-dim">
         <Link to="/compare" className="hover:text-vault-text">Comparisons</Link>
         <span className="px-2">/</span>
         <span className="text-tungsten">{page.competitor}</span>
@@ -38,10 +38,10 @@ export default function CompareDetailPage() {
 
       <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-oxide-green">
+          <p className="font-mono text-xs uppercase tracking-beacon text-oxide-green">
             {page.eyebrow}
           </p>
-          <h1 className="mt-3 max-w-5xl font-display text-3xl font-semibold uppercase tracking-[0.16em] text-tungsten sm:text-5xl">
+          <h1 className="mt-3 max-w-5xl font-display text-3xl font-semibold uppercase tracking-label text-tungsten sm:text-5xl">
             {page.headline}
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-8 text-vault-text-dim">
@@ -50,13 +50,13 @@ export default function CompareDetailPage() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               to="/"
-              className="flex min-h-[44px] items-center rounded border border-tungsten/70 bg-tungsten/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-vault-text hover:bg-tungsten/15"
+              className="flex min-h-[44px] items-center rounded border border-tungsten/70 bg-tungsten/10 px-4 py-2 font-mono text-xs uppercase tracking-label text-vault-text hover:bg-tungsten/15"
             >
               Play Plundrix
             </Link>
             <Link
               to="/play"
-              className="flex min-h-[44px] items-center rounded border border-vault-border px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-vault-text-dim hover:border-tungsten/60 hover:text-vault-text"
+              className="flex min-h-[44px] items-center rounded border border-vault-border px-4 py-2 font-mono text-xs uppercase tracking-label text-vault-text-dim hover:border-tungsten/60 hover:text-vault-text"
             >
               Play instantly
             </Link>
@@ -64,7 +64,7 @@ export default function CompareDetailPage() {
         </div>
 
         <aside className="border border-vault-border bg-vault-surface p-5">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-vault-text-dim">
+          <p className="font-mono text-xs uppercase tracking-brand text-vault-text-dim">
             Quick fit
           </p>
           <dl className="mt-4 grid gap-4">
@@ -82,13 +82,13 @@ export default function CompareDetailPage() {
 
       <section className="mt-10 border border-vault-border bg-vault-surface">
         <div className="border-b border-vault-border px-5 py-4">
-          <h2 className="font-display text-xl font-semibold uppercase tracking-[0.16em] text-tungsten">
+          <h2 className="font-display text-xl font-semibold uppercase tracking-label text-tungsten">
             Side-by-side comparison
           </h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-left text-sm">
-            <thead className="bg-vault-dark/60 font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
+            <thead className="bg-vault-dark/60 font-mono text-xs uppercase tracking-label text-vault-text-dim">
               <tr>
                 <th className="px-5 py-3">Dimension</th>
                 <th className="px-5 py-3">{page.competitor}</th>
@@ -98,7 +98,7 @@ export default function CompareDetailPage() {
             <tbody>
               {page.compareRows.map(([dimension, competitor, plundrix]) => (
                 <tr key={dimension} className="border-t border-vault-border/70">
-                  <th className="px-5 py-4 align-top font-mono text-xs uppercase tracking-[0.12em] text-tungsten">
+                  <th className="px-5 py-4 align-top font-mono text-xs uppercase tracking-interface text-tungsten">
                     {dimension}
                   </th>
                   <td className="px-5 py-4 align-top leading-6 text-vault-text-dim">{competitor}</td>
@@ -112,7 +112,7 @@ export default function CompareDetailPage() {
 
       <section className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(320px,0.45fr)]">
         <div className="border border-vault-border bg-vault-surface p-5">
-          <h2 className="font-display text-xl font-semibold uppercase tracking-[0.16em] text-tungsten">
+          <h2 className="font-display text-xl font-semibold uppercase tracking-label text-tungsten">
             Why Plundrix is different
           </h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -125,7 +125,7 @@ export default function CompareDetailPage() {
         </div>
 
         <aside className="border border-vault-border bg-vault-surface p-5">
-          <h2 className="font-display text-lg font-semibold uppercase tracking-[0.16em] text-tungsten">
+          <h2 className="font-display text-lg font-semibold uppercase tracking-label text-tungsten">
             Sources
           </h2>
           <div className="mt-4 grid gap-2">
@@ -145,13 +145,13 @@ export default function CompareDetailPage() {
       </section>
 
       <section className="mt-10 border border-vault-border bg-vault-surface p-5">
-        <h2 className="font-display text-xl font-semibold uppercase tracking-[0.16em] text-tungsten">
+        <h2 className="font-display text-xl font-semibold uppercase tracking-label text-tungsten">
           FAQ
         </h2>
         <div className="mt-5 grid gap-4">
           {page.faq.map(([question, answer]) => (
             <details key={question} className="border border-vault-border bg-vault-dark/45 p-4">
-              <summary className="cursor-pointer font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+              <summary className="cursor-pointer font-mono text-xs uppercase tracking-label text-vault-text">
                 {question}
               </summary>
               <p className="mt-3 text-sm leading-6 text-vault-text-dim">{answer}</p>
@@ -161,7 +161,7 @@ export default function CompareDetailPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="font-display text-xl font-semibold uppercase tracking-[0.16em] text-tungsten">
+        <h2 className="font-display text-xl font-semibold uppercase tracking-label text-tungsten">
           Related comparisons
         </h2>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
@@ -171,10 +171,10 @@ export default function CompareDetailPage() {
               to={comparisonUrl(item.slug)}
               className="border border-vault-border bg-vault-surface p-4 transition-colors hover:border-tungsten/70"
             >
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-oxide-green">
+              <p className="font-mono text-micro uppercase tracking-label text-oxide-green">
                 {item.eyebrow}
               </p>
-              <h3 className="mt-2 font-display text-lg uppercase tracking-[0.12em] text-vault-text">
+              <h3 className="mt-2 font-display text-lg uppercase tracking-interface text-vault-text">
                 {item.title}
               </h3>
               <p className="mt-2 text-sm leading-6 text-vault-text-dim">{item.metaDescription}</p>
@@ -189,7 +189,7 @@ export default function CompareDetailPage() {
 function FitRow({ label, value }) {
   return (
     <div>
-      <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-vault-text-dim">{label}</dt>
+      <dt className="font-mono text-micro uppercase tracking-label text-vault-text-dim">{label}</dt>
       <dd className="mt-1 text-sm leading-6 text-vault-text">{value}</dd>
     </div>
   );
@@ -198,7 +198,7 @@ function FitRow({ label, value }) {
 function FitPanel({ title, items, muted = false }) {
   return (
     <section className="border border-vault-border bg-vault-surface p-5">
-      <h2 className="font-display text-lg font-semibold uppercase tracking-[0.16em] text-tungsten">
+      <h2 className="font-display text-lg font-semibold uppercase tracking-label text-tungsten">
         {title}
       </h2>
       <ul className="mt-4 grid gap-3">

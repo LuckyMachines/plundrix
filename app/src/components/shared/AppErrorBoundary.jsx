@@ -1,4 +1,5 @@
 import React from 'react';
+import { analyticsRoute, trackProductEvent } from '../../lib/analytics';
 
 export default class AppErrorBoundary extends React.Component {
   constructor(props) {
@@ -12,6 +13,7 @@ export default class AppErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('Plundrix interface error', error, errorInfo);
+    trackProductEvent('Client Error', { source: 'react-boundary', surface: analyticsRoute(window.location.pathname) });
   }
 
   render() {

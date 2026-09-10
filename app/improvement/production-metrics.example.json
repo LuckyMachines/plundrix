@@ -1,0 +1,25 @@
+{
+  "evidenceTier": "T4",
+  "production": true,
+  "source": "plausible-production",
+  "capturedAt": "2026-09-14T18:00:00.000Z",
+  "buildSha": "replace-with-deployed-git-sha",
+  "rulesetId": "replace-with-deployed-ruleset",
+  "metrics": [
+    {
+      "id": "first-operation-completion",
+      "value": 0,
+      "sampleSize": 0
+    },
+    {
+      "id": "returning-player-rate",
+      "value": 0,
+      "sampleSize": 0
+    },
+    {
+      "id": "client-error-rate",
+      "value": 0,
+      "sampleSize": 0
+    }
+  ]
+}

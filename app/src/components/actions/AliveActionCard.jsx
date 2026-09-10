@@ -11,6 +11,16 @@ export default function AliveActionCard({
   onIntentEnd,
   onInvalidIntent,
 }) {
+  const interactionState = disabled
+    ? 'disabled'
+    : stunned
+      ? 'unavailable'
+      : pressed
+        ? 'pressed'
+        : active
+          ? 'selected'
+          : 'ready';
+
   const handleIntentStart = () => {
     if (disabled) {
       onInvalidIntent?.(action);
@@ -34,6 +44,7 @@ export default function AliveActionCard({
         ${stunned ? 'alive-action-card-stunned' : ''}
       `}
       data-action={action}
+      data-state={interactionState}
       data-invalid={invalidCount}
       onMouseEnter={handleIntentStart}
       onMouseLeave={handleIntentEnd}
@@ -43,6 +54,7 @@ export default function AliveActionCard({
       onPointerUp={handleIntentEnd}
       onPointerCancel={handleIntentEnd}
     >
+      <span className="alive-action-state" aria-hidden="true">{interactionState}</span>
       {children}
     </div>
   );

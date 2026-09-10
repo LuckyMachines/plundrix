@@ -100,18 +100,20 @@ The production direction should keep its composition, color roles, and object hi
 - [x] Pick, Search, and Sabotage have distinct silhouettes and color roles.
 - [x] Relative depth separates planning, rival, action, and gadget planes.
 - [x] Visual direction feels authored and materially coherent.
-- [ ] All current production copy fits without shrinking below the type-system minimums.
-- [ ] Default, hover, focus, pressed, selected, committed, disabled, and unavailable states are captured.
-- [ ] Every concept control maps to an existing or deliberately approved game action.
-- [ ] Desktop, tablet, and mobile compositions preserve hierarchy without simple uniform scaling.
-- [ ] Grayscale, contrast, keyboard, reduced-motion, and text-scaling checks pass.
-- [ ] Asset count and rendering cost remain appropriate for a solo-maintained product.
+- [x] All current production copy fits without shrinking below the type-system minimums.
+- [x] Default, hover, focus, pressed, selected, committed, disabled, and unavailable states are captured.
+- [x] Every concept control maps to an existing or deliberately approved game action.
+- [x] Desktop, tablet, and mobile compositions preserve hierarchy without simple uniform scaling.
+- [x] Grayscale, contrast, keyboard, reduced-motion, and text-scaling checks pass.
+- [x] Asset count and rendering cost remain appropriate for a solo-maintained product.
 
 ## Verification record
 
 - [x] Inspected the synthesis and current comparison at original resolution.
 - [x] Generated and inspected relative-depth maps for both images.
 - [x] Verified both source images and evidence files decode successfully.
-- [ ] Captured responsive production implementation states; no implementation exists yet.
-- [ ] Verified interaction geometry and layout stability; the synthesis is a static reference.
-- [ ] Ran product build, localization, and accessibility gates; no product code changed in this review.
+- [x] Captured responsive production implementation states and approved the intentional baselines.
+- [x] Verified interaction geometry and layout stability through the canonical UI matrix.
+- [x] Ran production build, complete release, typography, accessibility, and color-vision gates.
+
+Implementation review and reproducible evidence: `../implementation/review.md`

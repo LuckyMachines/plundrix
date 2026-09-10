@@ -157,7 +157,7 @@ export default function MutationsPage() {
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {Object.entries(report.score.components).map(([key, value]) => (
               <div key={key} className="rounded border border-vault-border bg-vault-panel/55 px-3 py-2">
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">{key}</p>
+                <p className="font-mono text-micro uppercase tracking-label text-vault-text-dim">{key}</p>
                 <p className="mt-1 text-sm text-vault-text">{Number(value).toFixed(2)}</p>
               </div>
             ))}
@@ -223,7 +223,7 @@ export default function MutationsPage() {
         <p className="label">Mutation matrix</p>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[900px] text-left">
-            <thead className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+            <thead className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
               <tr>
                 <th className="py-2 pr-3">Preset</th>
                 <th className="py-2 pr-3">Score</th>
@@ -327,7 +327,7 @@ function Panel({ title, children }) {
 
 function MutationButton({ children, onClick }) {
   return (
-    <button type="button" onClick={onClick} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:bg-vault-panel">
+    <button type="button" onClick={onClick} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text hover:bg-vault-panel">
       {children}
     </button>
   );
@@ -336,7 +336,7 @@ function MutationButton({ children, onClick }) {
 function ProofRow({ label, value }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded border border-vault-border bg-vault-panel/55 px-3 py-2">
-      <span className="font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">{label}</span>
+      <span className="font-mono text-xs uppercase tracking-label text-vault-text-dim">{label}</span>
       <span>{value}</span>
     </div>
   );

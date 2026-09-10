@@ -25,6 +25,8 @@ export default function ActionPanel({
   stunned,
   actionSubmitted,
   tools,
+  locksCracked,
+  leaderLocks,
   players,
   currentAddress,
   session,
@@ -190,15 +192,15 @@ export default function ActionPanel({
   }, [pickDisabled, searchDisabled, sabotageDisabled, stunned, sabotageTargets, handlePick, handleSearch, handleSabotage, markInvalid]);
 
   return (
-    <div data-action-identity={actionIdentity.id} data-action-role={actionIdentity.role}>
+    <div className="action-panel" data-action-identity={actionIdentity.id} data-action-role={actionIdentity.role}>
       {!quiet && (
         <>
           <div className="flex items-center gap-3 mb-4">
-            <h3 className="text-xs tracking-[0.35em] text-vault-text-dim uppercase font-display">
+            <h3 className="text-xs tracking-beacon text-vault-text-dim uppercase font-display">
               Action Console
             </h3>
             {actionSubmitted && (
-              <span className="font-mono text-[11px] text-blueprint uppercase tracking-wider border border-blueprint/30 rounded px-2 py-0.5 bg-blueprint/5">
+              <span className="font-mono text-micro text-blueprint uppercase tracking-wider border border-blueprint/30 rounded px-2 py-0.5 bg-blueprint/5">
                 Submitted
               </span>
             )}
@@ -213,7 +215,7 @@ export default function ActionPanel({
           {sessionKeysEnabled && registered && (
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-vault-border bg-vault-dark/45 p-3">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">
+                <p className="font-mono text-micro uppercase tracking-label text-oxide-green">
                   {sessionActive ? 'Session actions active' : 'One-confirmation session'}
                 </p>
                 <p className="mt-1 text-xs text-vault-text-dim">
@@ -226,7 +228,7 @@ export default function ActionPanel({
                 type="button"
                 onClick={() => sessionActive ? revokeSession(gameId) : authorizeSession(gameId)}
                 disabled={isPending || isConfirming}
-                className="min-h-[44px] border border-oxide-green/40 px-3 font-mono text-[10px] uppercase tracking-[0.12em] text-oxide-green disabled:opacity-40"
+                className="min-h-[44px] border border-oxide-green/40 px-3 font-mono text-micro uppercase tracking-interface text-oxide-green disabled:opacity-40"
               >
                 {sessionActive ? 'Revoke session' : 'Enable session'}
               </button>
@@ -267,13 +269,14 @@ export default function ActionPanel({
         />
       )}
 
-      {/* 3-column action controls */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="action-control-grid grid gap-3">
         <PickControl
           onSubmit={handlePick}
           disabled={pickDisabled}
           stunned={stunned}
           tools={tools}
+          locksCracked={locksCracked}
+          leaderLocks={leaderLocks}
           active={activeIntent === 'pick'}
           pressed={pressedAction === 'pick'}
           invalidCount={invalidCount}
@@ -312,7 +315,7 @@ export default function ActionPanel({
       </div>
 
       <details className="mt-4 rounded border border-vault-border bg-vault-dark/35 p-3">
-        <summary className="min-h-[44px] cursor-pointer content-center font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
+        <summary className="min-h-[44px] cursor-pointer content-center font-mono text-xs uppercase tracking-label text-vault-text-dim">
           Show tactical presence
         </summary>
         <div className="mt-3">

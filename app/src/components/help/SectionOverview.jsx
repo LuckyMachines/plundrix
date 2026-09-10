@@ -2,7 +2,7 @@ import { TOTAL_LOCKS, MIN_GAME_PLAYERS, MAX_GAME_PLAYERS, ROUND_TIMEOUT } from '
 
 function SectionHeader({ children }) {
   return (
-    <h3 className="font-display tracking-[0.25em] text-tungsten uppercase text-xs mb-2 mt-5 first:mt-0
+    <h3 className="font-display tracking-beacon text-tungsten uppercase text-xs mb-2 mt-5 first:mt-0
                    border-b border-vault-border pb-1">
       {children}
     </h3>

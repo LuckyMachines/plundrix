@@ -13,6 +13,7 @@ const PlayerHubPage = lazy(() => import('./pages/PlayerHubPage'));
 const NetworkSwitchBanner = lazy(() => import('./components/wallet/NetworkSwitchBanner'));
 const InstantPlayPage = lazy(() => import('./pages/InstantPlayPage'));
 const VaultRunPage = lazy(() => import('./pages/VaultRunPage'));
+const CareerPage = lazy(() => import('./pages/CareerPage'));
 const WorkshopPage = lazy(() => import('./pages/WorkshopPage'));
 const TrailerPage = lazy(() => import('./pages/TrailerPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
@@ -76,6 +77,7 @@ export default function App({ web3Enabled = false }) {
             <Route path="/" element={<PlayerHubPage />} />
             <Route path="/play" element={<InstantPlayPage />} />
             <Route path="/vault-run" element={<VaultRunPage />} />
+            <Route path="/career" element={<CareerPage />} />
             <Route path="/workshop" element={<WorkshopPage />} />
             <Route path="/trailer" element={<TrailerPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />

@@ -9,7 +9,7 @@ export default function RoundConsole({ currentRound, roundStartTime, roundTimeou
     <div className="alive-round-console flex flex-col items-center gap-4" data-pressure={pressureStage}>
       {/* Round number */}
       <div className="text-center">
-        <span className="text-xs font-mono text-vault-text-dim uppercase tracking-[0.3em]">
+        <span className="text-xs font-mono text-vault-text-dim uppercase tracking-beacon">
           Round
         </span>
         <h2 className="text-4xl font-display font-bold tracking-wider text-vault-text leading-none">
@@ -23,7 +23,7 @@ export default function RoundConsole({ currentRound, roundStartTime, roundTimeou
       {/* Timeout dial */}
       <TimeoutDial roundStartTime={roundStartTime} timeout={roundTimeout} pressure={session?.pressure} />
 
-      <div className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+      <div className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
         <span className="text-vault-text">{session?.pressure?.label || 'Steady'}</span>
         {' '}pressure
       </div>

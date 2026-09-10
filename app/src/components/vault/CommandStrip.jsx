@@ -23,7 +23,7 @@ export default function CommandStrip({ session, onHelp }) {
             onClick={() => {
               if (key === 'help') onHelp?.();
             }}
-            className={`rounded border px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wider ${
+            className={`rounded border px-2.5 py-1.5 font-mono text-micro uppercase tracking-wider ${
               enabled
                 ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim hover:text-vault-text'
                 : 'border-vault-border bg-vault-dark/20 text-vault-text-dim/50 cursor-not-allowed'

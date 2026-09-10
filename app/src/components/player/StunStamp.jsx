@@ -11,7 +11,7 @@ export default function StunStamp({ visible }) {
         "
         style={{ backdropFilter: 'blur(1px)' }}
       >
-        <span className="font-mono text-sm font-bold text-signal-red uppercase tracking-[0.25em] leading-none">
+        <span className="font-mono text-sm font-bold text-signal-red uppercase tracking-beacon leading-none">
           Disoriented
         </span>
       </div>

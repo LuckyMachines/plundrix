@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { to: '/vault-run', label: 'Vault run' },
   { to: '/workshop', label: 'Workshop' },
   { to: '/replays', label: 'Replays' },
-  { to: '/sessions', label: 'Results' },
+  { to: '/career', label: 'Career' },
 ];
 const ConnectButton = lazy(() => import('../wallet/ConnectButton'));
 const NetworkBadge = lazy(() => import('../wallet/NetworkBadge'));
@@ -38,7 +38,7 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
               <path d="M16 5v8M16 19v8M5 16h8M19 16h8M8.2 8.2l5.6 5.6M18.2 18.2l5.6 5.6" />
             </svg>
           </span>
-          <span className="font-display text-lg font-bold uppercase tracking-[0.18em] text-vault-text sm:text-xl sm:tracking-[0.24em]">Plundrix</span>
+          <span className="font-display text-lg font-bold uppercase tracking-brand text-vault-text sm:text-xl sm:tracking-beacon">Plundrix</span>
         </Link>
 
         <nav className="ml-auto hidden items-center gap-1 min-[1600px]:flex" aria-label="Primary navigation">
@@ -47,7 +47,7 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
               key={item.to}
               to={item.to}
               aria-current={isActive(item.to) ? 'page' : undefined}
-              className={`relative flex min-h-[44px] items-center px-3 font-mono text-[10px] uppercase tracking-[0.14em] transition ${
+              className={`relative flex min-h-[44px] items-center px-3 font-mono text-micro uppercase tracking-label transition ${
                 isActive(item.to) ? 'text-tungsten' : 'text-vault-text-dim hover:text-vault-text'
               }`}
             >
@@ -62,7 +62,7 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
           <HelpButton onClick={onHelpClick} />
           {!walletOptional && <Suspense fallback={null}><NetworkBadge /></Suspense>}
           {!walletOptional && <Suspense fallback={null}><ConnectButton /></Suspense>}
-          {walletOptional && <Link to="/#live-operations" className="inline-flex min-h-[44px] items-center border border-vault-border px-3 font-mono text-xs uppercase tracking-[0.12em] text-vault-text-dim hover:text-tungsten">Live tables</Link>}
+          {walletOptional && <Link to="/#live-operations" className="inline-flex min-h-[44px] items-center border border-vault-border px-3 font-mono text-xs uppercase tracking-interface text-vault-text-dim hover:text-tungsten">Live tables</Link>}
         </div>
 
         <div className="ml-auto flex items-center gap-2 min-[1600px]:hidden">
@@ -92,12 +92,12 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
                 key={item.to}
                 to={item.to}
                 aria-current={isActive(item.to) ? 'page' : undefined}
-                className={`flex min-h-[58px] items-center justify-between border px-4 font-display text-2xl uppercase tracking-[0.08em] ${
+                className={`flex min-h-[58px] items-center justify-between border px-4 font-display text-2xl uppercase tracking-heading ${
                   isActive(item.to) ? 'border-tungsten/60 bg-tungsten/10 text-tungsten' : 'border-vault-border text-vault-text'
                 }`}
               >
                 {item.label}
-                <span className="font-mono text-[9px] text-vault-text-dim">0{index + 1}</span>
+                <span className="font-mono text-micro text-vault-text-dim">0{index + 1}</span>
               </Link>
             ))}
           </nav>
@@ -108,7 +108,7 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
             </div>
             {!walletOptional && <Suspense fallback={null}><NetworkBadge /></Suspense>}
           </div>
-          <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.16em] text-oxide-green">Sepolia beta live / free play</p>
+          <p className="mt-6 font-mono text-micro uppercase tracking-label text-oxide-green">Sepolia beta live / free play</p>
         </div>
       )}
     </header>

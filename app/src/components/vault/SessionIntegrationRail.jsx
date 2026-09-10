@@ -41,7 +41,7 @@ export default function SessionIntegrationRail({ session }) {
     <div className="alive-session-rail border border-vault-border rounded bg-vault-panel p-3">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+          <p className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
             State
           </p>
           <span className={`inline-flex mt-1 rounded border px-2 py-0.5 font-mono text-xs uppercase tracking-wider ${modeColor}`}>
@@ -50,7 +50,7 @@ export default function SessionIntegrationRail({ session }) {
         </div>
 
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+          <p className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
             Timer
           </p>
           <p className="font-mono text-sm text-vault-text tabular-nums mt-1">
@@ -59,7 +59,7 @@ export default function SessionIntegrationRail({ session }) {
         </div>
 
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+          <p className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
             Player
           </p>
           <p className="font-mono text-sm text-vault-text mt-1 capitalize">
@@ -68,7 +68,7 @@ export default function SessionIntegrationRail({ session }) {
         </div>
 
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+          <p className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
             Latest Cue
           </p>
           <p className="font-mono text-sm text-vault-text mt-1 truncate">

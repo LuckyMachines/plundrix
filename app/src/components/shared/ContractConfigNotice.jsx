@@ -5,7 +5,7 @@ export default function ContractConfigNotice() {
 
   return (
     <div className="border border-signal-red/40 bg-signal-red/8 rounded px-4 py-3">
-      <p className="font-mono text-[11px] text-signal-red tracking-wider uppercase">
+      <p className="font-mono text-micro text-signal-red tracking-wider uppercase">
         Contract Not Configured
       </p>
       <p className="font-mono text-xs text-vault-text-dim mt-1 leading-relaxed">

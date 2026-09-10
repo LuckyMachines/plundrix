@@ -1,0 +1,44 @@
+{
+  "surfaceId": "replay-gallery",
+  "label": "Replay gallery",
+  "priority": "P1",
+  "viewport": "desktop",
+  "dimensions": {
+    "width": 1440,
+    "height": 1000
+  },
+  "path": "/replays",
+  "reviewFocus": [
+    "story differentiation",
+    "proof over promise",
+    "inspect and share actions"
+  ],
+  "experimentIds": [],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 1440,
+    "scrollWidth": 1440,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  }
+}

@@ -14,14 +14,14 @@ export default function WinnerReveal({ winner, rounds, isCurrentUser }) {
       {/* Content */}
       <div className="relative z-10 space-y-4">
         {/* Heading */}
-        <h2 className="text-2xl font-display font-bold tracking-[0.3em] text-tungsten-bright uppercase">
+        <h2 className="text-2xl font-display font-bold tracking-beacon text-tungsten-bright uppercase">
           Vault Breached
         </h2>
 
         {/* Winner stamp */}
         {isCurrentUser && (
           <div className="inline-block border-2 border-tungsten-bright/50 rounded px-4 py-1 rotate-[-3deg]">
-            <span className="font-display text-lg tracking-[0.4em] text-tungsten-bright uppercase font-bold">
+            <span className="font-display text-lg tracking-beacon text-tungsten-bright uppercase font-bold">
               You Win
             </span>
           </div>

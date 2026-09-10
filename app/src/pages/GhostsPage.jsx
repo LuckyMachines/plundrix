@@ -146,7 +146,7 @@ export default function GhostsPage() {
                 className={`rounded border p-3 text-left ${index === selectedIndex ? 'border-tungsten bg-tungsten/10' : 'border-vault-border bg-vault-panel/55'}`}
               >
                 <p className="font-display text-lg text-vault-text">{ghost.name}</p>
-                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-vault-text-dim">{ghost.archetypeLabel}</p>
+                <p className="mt-1 text-xs uppercase tracking-label text-vault-text-dim">{ghost.archetypeLabel}</p>
                 <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-vault-text-dim">
                   <span>Agg {ghost.aggression}</span>
                   <span>Greed {ghost.greed}</span>
@@ -185,7 +185,7 @@ export default function GhostsPage() {
         <Panel title="Archetype health">
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[760px] text-left">
-              <thead className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+              <thead className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
                 <tr>
                   <th className="py-2 pr-3">Archetype</th>
                   <th className="py-2 pr-3">Health</th>
@@ -312,7 +312,7 @@ function GhostButton({ children, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:bg-vault-panel"
+      className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text hover:bg-vault-panel"
     >
       {children}
     </button>

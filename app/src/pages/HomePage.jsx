@@ -153,19 +153,19 @@ export default function HomePage() {
         <div className="mx-auto grid min-h-[720px] max-w-7xl lg:grid-cols-[0.92fr_1.08fr] lg:items-stretch">
           <div className="relative z-10 flex flex-col justify-center px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
             <div className="mb-7 flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-2 rounded-full border border-oxide-green/35 bg-oxide-green/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">
+              <span className="inline-flex items-center gap-2 rounded-full border border-oxide-green/35 bg-oxide-green/10 px-3 py-1.5 font-mono text-micro uppercase tracking-brand text-oxide-green">
                 <span className="h-1.5 w-1.5 rounded-full bg-oxide-green shadow-[0_0_12px_rgba(64,160,128,0.9)]" />
                 Instant play / no wallet
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-vault-text-dim">
+              <span className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">
                 Live multiplayer beta on Sepolia
               </span>
             </div>
 
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-tungsten">
+            <p className="font-mono text-xs uppercase tracking-beacon text-tungsten">
               The vault remembers every betrayal
             </p>
-            <h1 className="mt-5 max-w-3xl font-display text-[clamp(3.6rem,8vw,7.4rem)] font-bold uppercase leading-[0.82] tracking-[-0.035em] text-vault-text">
+            <h1 className="mt-5 max-w-3xl font-display type-hero font-bold uppercase leading-display tracking-display text-vault-text">
               Crack the vault.
               <span className="mt-2 block text-tungsten-bright">Break the table.</span>
             </h1>
@@ -177,20 +177,20 @@ export default function HomePage() {
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/play"
-                className="group inline-flex min-h-[52px] items-center justify-center gap-3 rounded-sm bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-vault-dark transition hover:bg-[#f2c18e]"
+                className="group inline-flex min-h-[52px] items-center justify-center gap-3 rounded-sm bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark transition hover:bg-[#f2c18e]"
               >
                 Play instantly
                 <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">-&gt;</span>
               </Link>
               <Link
                 to="/trailer"
-                className="inline-flex min-h-[52px] items-center justify-center rounded-sm border border-vault-text/25 bg-vault-dark/35 px-6 font-mono text-xs uppercase tracking-[0.16em] text-vault-text backdrop-blur-sm transition hover:border-tungsten/60 hover:text-tungsten-bright"
+                className="inline-flex min-h-[52px] items-center justify-center rounded-sm border border-vault-text/25 bg-vault-dark/35 px-6 font-mono text-xs uppercase tracking-label text-vault-text backdrop-blur-sm transition hover:border-tungsten/60 hover:text-tungsten-bright"
               >
                 Watch 32-sec gameplay
               </Link>
             </div>
 
-            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+            <p className="mt-4 font-mono text-micro uppercase tracking-label text-vault-text-dim">
               Start against 3 labeled agents / no signup / rematch instantly
             </p>
 
@@ -202,8 +202,8 @@ export default function HomePage() {
                 ['00', 'Signup'],
               ].map(([value, label]) => (
                 <div key={label} className="border-vault-border/70 px-3 py-4 first:pl-0 sm:border-r sm:last:border-r-0">
-                  <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-vault-text-dim">{label}</dt>
-                  <dd className="mt-1 font-display text-2xl font-semibold tracking-[0.08em] text-vault-text">{value}</dd>
+                  <dt className="font-mono text-micro uppercase tracking-label text-vault-text-dim">{label}</dt>
+                  <dd className="mt-1 font-display text-2xl font-semibold tracking-heading text-vault-text">{value}</dd>
                 </div>
               ))}
             </dl>
@@ -220,8 +220,8 @@ export default function HomePage() {
             <div className="absolute bottom-6 left-5 right-5 grid grid-cols-3 gap-2 sm:bottom-8 sm:left-8 sm:right-8">
               {ACTIONS.map((action) => (
                 <div key={action.id} className="border border-white/15 bg-vault-dark/75 p-3 backdrop-blur-md">
-                  <span className={`font-mono text-[9px] uppercase tracking-[0.16em] ${action.tone}`}>{action.number}</span>
-                  <span className="mt-1 block font-display text-lg uppercase tracking-[0.08em] text-white">{action.label}</span>
+                  <span className={`font-mono text-micro uppercase tracking-label ${action.tone}`}>{action.number}</span>
+                  <span className="mt-1 block font-display text-lg uppercase tracking-heading text-white">{action.label}</span>
                 </div>
               ))}
             </div>
@@ -243,10 +243,10 @@ export default function HomePage() {
               <article key={action.id} className="group bg-vault-surface p-6 transition-colors hover:bg-vault-panel sm:p-8">
                 <div className="flex items-start justify-between gap-5">
                   <ActionGlyph action={action.id} />
-                  <span className={`font-mono text-xs tracking-[0.2em] ${action.tone}`}>{action.number}</span>
+                  <span className={`font-mono text-xs tracking-brand ${action.tone}`}>{action.number}</span>
                 </div>
-                <p className={`mt-9 font-mono text-[10px] uppercase tracking-[0.2em] ${action.tone}`}>{action.kicker}</p>
-                <h3 className="mt-2 font-display text-4xl font-semibold uppercase tracking-[0.03em] text-vault-text">{action.label}</h3>
+                <p className={`mt-9 font-mono text-micro uppercase tracking-brand ${action.tone}`}>{action.kicker}</p>
+                <h3 className="mt-2 font-display text-4xl font-semibold uppercase tracking-display text-vault-text">{action.label}</h3>
                 <p className="mt-4 max-w-sm text-base leading-7 text-vault-text-dim">{action.description}</p>
               </article>
             ))}
@@ -263,7 +263,7 @@ export default function HomePage() {
                 title="Watch the turns that changed everything."
                 copy="Every generated match can become a replay: inspect the decisions, jump to the swing round, or run the same setup again."
               />
-              <Link to="/replays" className="font-mono text-xs uppercase tracking-[0.16em] text-tungsten hover:text-tungsten-bright">
+              <Link to="/replays" className="font-mono text-xs uppercase tracking-label text-tungsten hover:text-tungsten-bright">
                 Open replay gallery -&gt;
               </Link>
             </div>
@@ -283,15 +283,15 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,15,0.32)_0%,rgba(10,10,15,0.46)_36%,rgba(10,10,15,0.98)_100%)]" />
                   <div className="relative flex h-full flex-col">
                     <div className="flex items-center justify-between gap-4">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-tungsten">{replay.eyebrow}</span>
-                      <span className="font-mono text-[10px] tracking-[0.16em] text-vault-text-dim">0{index + 1}</span>
+                      <span className="font-mono text-micro uppercase tracking-brand text-tungsten">{replay.eyebrow}</span>
+                      <span className="font-mono text-micro tracking-label text-vault-text-dim">0{index + 1}</span>
                     </div>
                     <div className="mt-auto pt-24">
                       <h3 className="max-w-xs font-display text-3xl font-semibold uppercase leading-none text-white">{replay.title}</h3>
                       <p className="mt-4 max-w-sm text-base leading-6 text-white/75">{replay.detail}</p>
                     </div>
                     <div className="flex items-end justify-between gap-4 pt-6">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">{replay.stat}</span>
+                      <span className="font-mono text-micro uppercase tracking-label text-oxide-green">{replay.stat}</span>
                       <span className="font-mono text-xs text-vault-text transition-transform group-hover:translate-x-1">Play -&gt;</span>
                     </div>
                   </div>
@@ -317,7 +317,7 @@ export default function HomePage() {
             <QuickStartPanel />
             {data && (
               <details className="group border border-vault-border bg-vault-surface/65">
-                <summary className="flex min-h-[56px] cursor-pointer list-none items-center justify-between px-5 font-mono text-xs uppercase tracking-[0.16em] text-vault-text">
+                <summary className="flex min-h-[56px] cursor-pointer list-none items-center justify-between px-5 font-mono text-xs uppercase tracking-label text-vault-text">
                   Live standings and session feed
                   <span className="text-tungsten transition group-open:rotate-45">+</span>
                 </summary>
@@ -350,12 +350,12 @@ function TrailerPreview() {
     <section className="border-b border-vault-border/70 bg-vault-surface/45">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:px-10 lg:py-16">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">32-second trailer</p>
-          <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-[0.95] text-vault-text sm:text-5xl">See the pressure before you play.</h2>
+          <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">32-second trailer</p>
+          <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-heading text-vault-text sm:text-5xl">See the pressure before you play.</h2>
           <p className="mt-5 max-w-lg text-base leading-7 text-vault-text-dim">
             Watch four operators race from the opening move to the final lock, with every bluff and setback still visible.
           </p>
-          <Link to="/trailer" className="mt-7 inline-flex min-h-[48px] items-center border border-tungsten/45 px-5 font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten transition hover:border-tungsten hover:text-tungsten-bright">
+          <Link to="/trailer" className="mt-7 inline-flex min-h-[48px] items-center border border-tungsten/45 px-5 font-mono text-micro uppercase tracking-label text-tungsten transition hover:border-tungsten hover:text-tungsten-bright">
             Trailer and chapter guide -&gt;
           </Link>
         </div>
@@ -398,7 +398,7 @@ function TrustAndFaq() {
               ['Real proof', 'Funded Sepolia game completed'],
             ].map(([title, detail]) => (
               <div key={title} className="bg-vault-surface p-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-oxide-green">{title}</p>
+                <p className="font-mono text-micro uppercase tracking-label text-oxide-green">{title}</p>
                 <p className="mt-2 text-sm leading-6 text-vault-text-dim">{detail}</p>
               </div>
             ))}
@@ -407,19 +407,19 @@ function TrustAndFaq() {
             href="https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract"
             target="_blank"
             rel="noreferrer"
-            className="mt-6 inline-flex min-h-[44px] items-center font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten hover:text-tungsten-bright"
+            className="mt-6 inline-flex min-h-[44px] items-center font-mono text-micro uppercase tracking-label text-tungsten hover:text-tungsten-bright"
           >
             Inspect verified source -&gt;
           </a>
         </div>
 
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-tungsten">Before you enter</p>
-          <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-[0.95] text-vault-text sm:text-5xl">Straight answers.</h2>
+          <p className="font-mono text-micro uppercase tracking-beacon text-tungsten">Before you enter</p>
+          <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-heading text-vault-text sm:text-5xl">Straight answers.</h2>
           <div className="mt-8 divide-y divide-vault-border border-y border-vault-border">
             {FAQ.map(([question, answer], index) => (
               <details key={question} className="group py-1" open={index === 0 ? true : undefined}>
-                <summary className="flex min-h-[62px] cursor-pointer list-none items-center justify-between gap-5 py-3 font-display text-xl uppercase tracking-[0.04em] text-vault-text">
+                <summary className="flex min-h-[62px] cursor-pointer list-none items-center justify-between gap-5 py-3 font-display text-xl uppercase tracking-heading text-vault-text">
                   {question}
                   <span aria-hidden="true" className="font-mono text-tungsten transition group-open:rotate-45">+</span>
                 </summary>
@@ -428,8 +428,8 @@ function TrustAndFaq() {
             ))}
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to="/play" className="inline-flex min-h-[52px] items-center justify-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-vault-dark">Play instantly -&gt;</Link>
-            <a href="#live-operations" className="inline-flex min-h-[52px] items-center justify-center border border-vault-border px-6 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:border-tungsten/45">Open live tables</a>
+            <Link to="/play" className="inline-flex min-h-[52px] items-center justify-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">Play instantly -&gt;</Link>
+            <a href="#live-operations" className="inline-flex min-h-[52px] items-center justify-center border border-vault-border px-6 font-mono text-xs uppercase tracking-label text-vault-text hover:border-tungsten/45">Open live tables</a>
           </div>
         </div>
       </div>
@@ -444,8 +444,8 @@ function TurnDemo() {
     <section className="mx-auto max-w-7xl px-5 pb-20 sm:px-8 lg:px-10 lg:pb-28">
       <div className="overflow-hidden border border-vault-border bg-vault-surface lg:grid lg:grid-cols-[0.78fr_1.22fr]">
         <div className="border-b border-vault-border p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-10">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-oxide-green">No wallet needed</p>
-          <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-[0.95] text-vault-text sm:text-5xl">Make the call.</h2>
+          <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">No wallet needed</p>
+          <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-heading text-vault-text sm:text-5xl">Make the call.</h2>
           <p className="mt-5 max-w-md text-base leading-7 text-vault-text-dim">
             You have two locks open and one tool. Rook is ahead at four locks. What do you do?
           </p>
@@ -462,8 +462,8 @@ function TurnDemo() {
                     : 'border-vault-border bg-vault-dark/40 text-vault-text-dim hover:border-vault-text/25 hover:text-vault-text'
                 }`}
               >
-                <span className="font-display text-xl uppercase tracking-[0.08em]">{action.label}</span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em]">{action.kicker}</span>
+                <span className="font-display text-xl uppercase tracking-heading">{action.label}</span>
+                <span className="font-mono text-micro uppercase tracking-label">{action.kicker}</span>
               </button>
             ))}
           </div>
@@ -474,19 +474,19 @@ function TurnDemo() {
           <div className="relative">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-vault-border pb-4">
               <div>
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-vault-text-dim">Operation 041 / Round 6</p>
-                <p className="mt-1 font-display text-2xl uppercase tracking-[0.08em] text-vault-text">The Meridian Vault</p>
+                <p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Operation 041 / Round 6</p>
+                <p className="mt-1 font-display text-2xl uppercase tracking-heading text-vault-text">The Meridian Vault</p>
               </div>
-              <span className="border border-signal-red/35 bg-signal-red/10 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.14em] text-signal-red">High pressure</span>
+              <span className="border border-signal-red/35 bg-signal-red/10 px-3 py-1.5 font-mono text-micro uppercase tracking-label text-signal-red">High pressure</span>
             </div>
 
             <div className="mt-10">
               <div className="flex items-end justify-between gap-5">
                 <div>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-vault-text-dim">Your progress</p>
+                  <p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Your progress</p>
                   <p className="mt-2 font-display text-4xl text-vault-text">{selected.locks} / 5</p>
                 </div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">{selected.tools} tool{selected.tools === 1 ? '' : 's'} ready</p>
+                <p className="font-mono text-micro uppercase tracking-label text-oxide-green">{selected.tools} tool{selected.tools === 1 ? '' : 's'} ready</p>
               </div>
               <div className="mt-5 grid grid-cols-5 gap-2" role="img" aria-label={`${selected.locks} of 5 locks cracked`}>
                 {[0, 1, 2, 3, 4].map((lock) => (
@@ -510,18 +510,18 @@ function TurnDemo() {
               ].map(([name, progress, status]) => (
                 <div key={name} className="border border-vault-border bg-vault-surface/70 p-3">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-[9px] tracking-[0.16em] text-vault-text">{name}</span>
+                    <span className="font-mono text-micro tracking-label text-vault-text">{name}</span>
                     <span className={`h-1.5 w-1.5 rounded-full ${status === 'Stunned' ? 'bg-signal-red' : 'bg-oxide-green'}`} />
                   </div>
                   <p className="mt-3 font-display text-lg text-vault-text">{progress}</p>
-                  <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-vault-text-dim">{status}</p>
+                  <p className="mt-1 font-mono text-micro uppercase tracking-interface text-vault-text-dim">{status}</p>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="relative mt-8 border-l-2 border-tungsten bg-tungsten/8 p-4" aria-live="polite">
-            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-tungsten">If you {selected.label}</p>
+            <p className="font-mono text-micro uppercase tracking-brand text-tungsten">If you {selected.label}</p>
             <p className="mt-2 text-base leading-6 text-vault-text">{selected.result}</p>
           </div>
         </div>
@@ -533,8 +533,8 @@ function TurnDemo() {
 function SectionHeading({ eyebrow, title, copy }) {
   return (
     <div className="max-w-3xl">
-      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-tungsten">{eyebrow}</p>
-      <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-[0.95] tracking-[0.01em] text-vault-text sm:text-5xl lg:text-6xl">{title}</h2>
+      <p className="font-mono text-micro uppercase tracking-beacon text-tungsten">{eyebrow}</p>
+      <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-heading tracking-display text-vault-text sm:text-5xl lg:text-6xl">{title}</h2>
       <p className="mt-5 max-w-2xl text-base leading-7 text-vault-text-dim sm:text-lg">{copy}</p>
     </div>
   );
@@ -568,10 +568,10 @@ function ServiceNotice() {
   return (
     <div className="flex flex-col gap-2 border border-vault-border bg-vault-surface px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten">Season feed reconnecting</p>
+        <p className="font-mono text-micro uppercase tracking-label text-tungsten">Season feed reconnecting</p>
         <p className="mt-1 text-sm text-vault-text-dim">The game contract and practice table remain available.</p>
       </div>
-      <Link to="/simulator" className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">Play offline practice -&gt;</Link>
+      <Link to="/simulator" className="font-mono text-micro uppercase tracking-label text-oxide-green">Play offline practice -&gt;</Link>
     </div>
   );
 }

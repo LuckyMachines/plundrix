@@ -1,0 +1,44 @@
+{
+  "surfaceId": "live-active",
+  "label": "Live active operation",
+  "priority": "P0",
+  "viewport": "mobile",
+  "dimensions": {
+    "width": 390,
+    "height": 844
+  },
+  "path": "/game/2",
+  "reviewFocus": [
+    "decision hierarchy",
+    "on-chain state",
+    "table pressure"
+  ],
+  "experimentIds": [],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 390,
+    "scrollWidth": 390,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  }
+}

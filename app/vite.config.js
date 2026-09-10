@@ -17,6 +17,14 @@ export default defineConfig({
   server: {
     port: 5501,
     strictPort: true,
+    watch: {
+      ignored: [
+        '**/reports/**',
+        '**/test-results/**',
+        '**/playwright-report/**',
+        '**/tests/e2e/__screenshots__/**',
+      ],
+    },
   },
   preview: {
     port: 4501,

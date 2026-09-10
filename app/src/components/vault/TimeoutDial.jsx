@@ -110,7 +110,7 @@ export default function TimeoutDial({ roundStartTime, timeout = ROUND_TIMEOUT, p
           {mins}:{String(secs).padStart(2, '0')}
         </span>
         {displayedRemaining <= 0 && (
-          <span className="font-mono text-[8px] text-signal-red uppercase tracking-wider">
+          <span className="font-mono text-micro text-signal-red uppercase tracking-wider">
             Timeout
           </span>
         )}

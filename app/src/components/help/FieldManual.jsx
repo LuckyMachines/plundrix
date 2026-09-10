@@ -24,7 +24,7 @@ export default function FieldManual({ initialTab = 'overview' }) {
       {/* Header bar */}
       <div className="bg-vault-dark border-b border-vault-border px-5 py-4 rounded-t-lg">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-lg tracking-[0.25em] text-tungsten uppercase">
+          <h2 className="font-display text-lg tracking-beacon text-tungsten uppercase">
             Field Manual
           </h2>
           <span className="font-mono text-xs text-vault-text-dim tracking-wider uppercase">
@@ -42,7 +42,7 @@ export default function FieldManual({ initialTab = 'overview' }) {
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`
-                px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider
+                px-3 py-1.5 text-micro font-mono uppercase tracking-wider
                 border rounded transition-all duration-200
                 ${isActive
                   ? 'text-tungsten bg-tungsten/10 border-tungsten/40'

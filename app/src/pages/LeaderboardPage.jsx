@@ -37,7 +37,7 @@ export default function LeaderboardPage() {
               key={filter.value}
               onClick={() => setQueue(filter.value)}
               aria-pressed={queue === filter.value}
-              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
+              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-beacon ${
                 queue === filter.value
                   ? 'border-tungsten/50 bg-tungsten/10 text-tungsten'
                   : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/70'
@@ -70,7 +70,7 @@ export default function LeaderboardPage() {
       <PlaystyleStats profiles={summary.profiles} />
 
       <details className="rounded border border-vault-border bg-vault-surface p-4">
-        <summary className="cursor-pointer font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+        <summary className="cursor-pointer font-mono text-xs uppercase tracking-label text-vault-text">
           How standings work
         </summary>
         <p className="mt-4 max-w-4xl text-sm leading-6 text-vault-text-dim">
@@ -86,7 +86,7 @@ export default function LeaderboardPage() {
 function UnavailableState() {
   return (
     <section className="border border-tungsten/30 rounded bg-vault-surface p-8">
-      <p className="font-mono text-xs uppercase tracking-[0.22em] text-tungsten">
+      <p className="font-mono text-xs uppercase tracking-beacon text-tungsten">
         Live season standings are warming up
       </p>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-vault-text-dim">
@@ -105,7 +105,7 @@ function LoadingState({ label }) {
   return (
     <div className="border border-vault-border rounded bg-vault-surface p-10 flex items-center gap-3 justify-center">
       <Spinner size="w-5 h-5" />
-      <span className="font-mono text-xs uppercase tracking-[0.22em] text-vault-text-dim">
+      <span className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
         {label}
       </span>
     </div>
@@ -115,7 +115,7 @@ function LoadingState({ label }) {
 function ErrorState({ error }) {
   return (
     <div className="border border-signal-red/35 rounded bg-vault-surface p-8">
-      <p className="font-mono text-xs uppercase tracking-[0.22em] text-signal-red">
+      <p className="font-mono text-xs uppercase tracking-beacon text-signal-red">
         Failed to load leaderboard
       </p>
       <p className="font-mono text-xs text-vault-text-dim mt-3 break-all">

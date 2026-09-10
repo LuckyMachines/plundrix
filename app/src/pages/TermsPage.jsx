@@ -45,15 +45,15 @@ export default function TermsPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
       <header className="border-b border-vault-border pb-7">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-tungsten">Legal / Public beta</p>
-        <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-[0.08em] text-vault-text">Terms of Service</h1>
+        <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Legal / Public beta</p>
+        <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-heading text-vault-text">Terms of Service</h1>
         <p className="mt-3 font-mono text-xs uppercase tracking-wider text-vault-text-dim">Effective date: August 13, 2026</p>
       </header>
 
       <div className="divide-y divide-vault-border">
         {SECTIONS.map((section) => (
           <section key={section.title} className="py-7">
-            <h2 className="font-display text-xl font-semibold uppercase tracking-[0.08em] text-vault-text">{section.title}</h2>
+            <h2 className="font-display text-xl font-semibold uppercase tracking-heading text-vault-text">{section.title}</h2>
             <p className="mt-3 text-base leading-7 text-vault-text-dim">{section.body}</p>
           </section>
         ))}
@@ -63,7 +63,7 @@ export default function TermsPage() {
         href="https://github.com/LuckyMachines/plundrix"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten hover:bg-tungsten/10"
+        className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-label text-tungsten hover:bg-tungsten/10"
       >
         Plundrix on GitHub
       </a>

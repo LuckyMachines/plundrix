@@ -23,6 +23,15 @@ export const WORKSHOP_CONFIG_ERROR = IS_WORKSHOP_CONFIGURED
   : 'Missing or invalid VITE_WORKSHOP_ADDRESS in app/.env';
 export const SESSION_KEYS_ENABLED = import.meta.env.VITE_ENABLE_SESSION_KEYS === 'true';
 export const NEXT_RULES_ENABLED = import.meta.env.VITE_ENABLE_NEXT_RULES === 'true';
+export const TABLE_PRESSURE_ENABLED = import.meta.env.VITE_ENABLE_TABLE_PRESSURE === 'true';
 export const SESSION_RELAY_URL = (
   import.meta.env.VITE_SESSION_RELAY_URL || import.meta.env.VITE_AGENT_SERVICE_URL || ''
 ).replace(/\/$/, '');
+
+export const RUNTIME_CAPABILITIES = Object.freeze({
+  game: IS_CONTRACT_CONFIGURED,
+  workshop: IS_CONTRACT_CONFIGURED && IS_WORKSHOP_CONFIGURED,
+  pacedGames: IS_CONTRACT_CONFIGURED && NEXT_RULES_ENABLED,
+  tablePressure: IS_CONTRACT_CONFIGURED && TABLE_PRESSURE_ENABLED,
+  sessionActions: IS_CONTRACT_CONFIGURED && SESSION_KEYS_ENABLED && Boolean(SESSION_RELAY_URL),
+});

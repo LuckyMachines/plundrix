@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "path": "/design-system?stress=type-layout",
+  "viewports": {
+    "narrow": { "width": 320, "height": 800 },
+    "readable": { "width": 390, "height": 844, "readable": true },
+    "tablet": { "width": 768, "height": 1024 },
+    "desktop": { "width": 1440, "height": 1000 }
+  },
+  "rules": {
+    "minimumFontPixels": 12,
+    "maximumMeasureInEms": 42,
+    "requiredFonts": ["Barlow", "Barlow Condensed", "JetBrains Mono"]
+  }
+}

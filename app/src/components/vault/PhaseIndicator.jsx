@@ -28,7 +28,7 @@ export default function PhaseIndicator({ gameState, allSubmitted }) {
             <div
               aria-label={phase.accessibleLabel || phase.label}
               className={`
-                whitespace-nowrap px-1.5 py-1 text-[10px] font-mono uppercase tracking-normal sm:px-2 sm:text-xs sm:tracking-wider
+                whitespace-nowrap px-1.5 py-1 text-micro font-mono uppercase tracking-normal sm:px-2 sm:text-xs sm:tracking-wider
                 border transition-all duration-300
                 ${isActive
                   ? 'border-tungsten/60 bg-tungsten/15 text-tungsten-bright shadow-[0_0_8px_rgba(196,149,106,0.15)]'

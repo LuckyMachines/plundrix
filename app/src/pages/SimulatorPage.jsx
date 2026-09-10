@@ -476,7 +476,7 @@ export default function SimulatorPage() {
         <div className="rounded border border-vault-border bg-vault-surface/75 p-4 sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">
+              <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">
                 Gameplay simulator
               </p>
               <h1 className="mt-2 font-display text-2xl sm:text-3xl text-vault-text">
@@ -487,7 +487,7 @@ export default function SimulatorPage() {
                 before you bring the table live.
               </p>
             </div>
-            <div className="rounded border border-vault-border bg-vault-panel/70 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
+            <div className="rounded border border-vault-border bg-vault-panel/70 px-3 py-2 font-mono text-xs uppercase tracking-label text-vault-text-dim">
               Round {simState.currentRound}
             </div>
           </div>
@@ -557,7 +557,7 @@ export default function SimulatorPage() {
           </div>
 
           {replayLink && (
-            <p className="mt-3 break-all rounded border border-vault-border bg-vault-panel/55 px-3 py-2 font-mono text-[11px] text-vault-text-dim">
+            <p className="mt-3 break-all rounded border border-vault-border bg-vault-panel/55 px-3 py-2 font-mono text-micro text-vault-text-dim">
               {replayLink}
             </p>
           )}
@@ -591,7 +591,7 @@ export default function SimulatorPage() {
         <div className="rounded border border-vault-border bg-vault-surface/75 p-4">
           <div className="flex items-center justify-between gap-3">
             <p className="label">Player controls</p>
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+            <span className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
               Manual plus bot strategies
             </span>
           </div>
@@ -694,7 +694,7 @@ function LabButton({ children, onClick, disabled, tone = 'default' }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`min-h-[44px] rounded border px-4 font-mono text-xs uppercase tracking-[0.14em] disabled:opacity-40 ${tones[tone]}`}
+      className={`min-h-[44px] rounded border px-4 font-mono text-xs uppercase tracking-label disabled:opacity-40 ${tones[tone]}`}
     >
       {children}
     </button>
@@ -729,7 +729,7 @@ function TuningPanel({
       <div className="flex items-center justify-between gap-3">
         <p className="label">Rules and strategies</p>
         <span
-          className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${
+          className={`rounded border px-2 py-1 font-mono text-micro uppercase tracking-label ${
             parityPass
               ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
               : 'border-tungsten/45 bg-tungsten/10 text-tungsten'
@@ -783,7 +783,7 @@ function TuningPanel({
       <div className="mt-4 grid gap-2">
         {parityChecks.map((check) => (
           <div key={check.key} className="flex items-center justify-between rounded border border-vault-border bg-vault-panel/55 px-3 py-2">
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+            <span className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
               {check.key}
             </span>
             <span className={check.pass ? 'text-oxide-green' : 'text-tungsten'}>
@@ -834,12 +834,12 @@ function PlayerCard({
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="font-display text-xl text-vault-text">{player.name}</h2>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-vault-text-dim">
+          <p className="mt-1 font-mono text-micro uppercase tracking-label text-vault-text-dim">
             {player.address.slice(0, 6)}...{player.address.slice(-4)}
           </p>
         </div>
         <span
-          className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${
+          className={`rounded border px-2 py-1 font-mono text-micro uppercase tracking-label ${
             player.stunned
               ? 'border-alert-red/45 bg-alert-red/10 text-alert-red'
               : 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
@@ -850,7 +850,7 @@ function PlayerCard({
       </div>
 
       <div className="mt-4">
-        <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+        <div className="flex items-center justify-between font-mono text-micro uppercase tracking-label text-vault-text-dim">
           <span>Locks</span>
           <span>
             {player.locksCracked}/{rules.totalLocks}
@@ -941,7 +941,7 @@ function BatchPanel({ result, players, onExportJson, onExportCsv }) {
     <div className="rounded border border-vault-border bg-vault-surface/75 p-4">
       <div className="flex items-center justify-between gap-3">
         <p className="label">Batch scorecard</p>
-        <span className="font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+        <span className="font-mono text-xs uppercase tracking-label text-vault-text">
           Grade {result.scorecard.grade}
         </span>
       </div>
@@ -957,7 +957,7 @@ function BatchPanel({ result, players, onExportJson, onExportCsv }) {
           const wins = result.winCounts[player.id] || 0;
           return (
             <div key={player.id} className="rounded border border-vault-border bg-vault-panel/55 p-3">
-              <div className="flex items-center justify-between gap-3 font-mono text-xs uppercase tracking-[0.13em] text-vault-text">
+              <div className="flex items-center justify-between gap-3 font-mono text-xs uppercase tracking-label text-vault-text">
                 <span>{player.name}</span>
                 <span>{formatPercent(wins, result.games)}</span>
               </div>
@@ -1058,13 +1058,13 @@ function ReplayDirectorPanel({
             <h3 className="mt-2 font-display text-lg text-vault-text">{replay.title}</h3>
             <p className="mt-2 line-clamp-3 text-sm text-vault-text-dim">{replay.description}</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <a href={replay.shareUrl} className="min-h-[44px] rounded border border-tungsten/55 px-4 py-3 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">
+              <a href={replay.shareUrl} className="min-h-[44px] rounded border border-tungsten/55 px-4 py-3 font-mono text-xs uppercase tracking-label text-tungsten">
                 Open
               </a>
-              <button type="button" onClick={() => saveReplayToLibrary(replay)} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+              <button type="button" onClick={() => saveReplayToLibrary(replay)} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text">
                 Send to gallery
               </button>
-              <button type="button" onClick={() => downloadText(`${replay.id}.json`, exportReplayJson(replay), 'application/json')} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+              <button type="button" onClick={() => downloadText(`${replay.id}.json`, exportReplayJson(replay), 'application/json')} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text">
                 JSON
               </button>
             </div>
@@ -1222,7 +1222,7 @@ function BalanceAutopilotPanel({
                     key={key}
                     type="button"
                     onClick={() => toggleLock(key)}
-                    className={`rounded border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.12em] ${
+                    className={`rounded border px-3 py-2 font-mono text-micro uppercase tracking-interface ${
                       locked
                         ? 'border-tungsten/55 bg-tungsten/10 text-tungsten'
                         : 'border-vault-border text-vault-text-dim hover:text-vault-text'
@@ -1278,7 +1278,7 @@ function BalanceAutopilotPanel({
 
             <div className="mt-3 overflow-x-auto">
               <table className="w-full min-w-[760px] text-left">
-                <thead className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+                <thead className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
                   <tr>
                     <th className="py-2 pr-3">Rank</th>
                     <th className="py-2 pr-3">Candidate</th>
@@ -1343,7 +1343,7 @@ function BalanceAutopilotPanel({
                   Copy rules
                 </LabButton>
                 {Object.entries(selectedCandidate.replayLinks || {}).slice(0, 3).map(([scenario, href]) => (
-                  <a key={scenario} href={href} className="min-h-[44px] rounded border border-vault-border px-4 py-3 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:bg-vault-panel">
+                  <a key={scenario} href={href} className="min-h-[44px] rounded border border-vault-border px-4 py-3 font-mono text-xs uppercase tracking-label text-vault-text hover:bg-vault-panel">
                     {scenario}
                   </a>
                 ))}
@@ -1476,11 +1476,11 @@ function EventLog({ events }) {
         {events.map((event) => (
           <div key={event.id} className="rounded border border-vault-border bg-vault-panel/55 px-3 py-2">
             <div className="flex items-center justify-between gap-3">
-              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+              <span className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
                 R{event.round} {event.type}
               </span>
               {'roll' in event && (
-                <span className="font-mono text-[10px] text-vault-text-dim">
+                <span className="font-mono text-micro text-vault-text-dim">
                   {event.roll}/{event.chance}
                 </span>
               )}

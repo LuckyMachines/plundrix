@@ -1,0 +1,34 @@
+{
+  "name": "tablet",
+  "viewport": {
+    "width": 768,
+    "height": 1024
+  },
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 768,
+    "scrollWidth": 768,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  }
+}

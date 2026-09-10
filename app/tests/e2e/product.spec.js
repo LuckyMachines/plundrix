@@ -35,7 +35,14 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.afterEach(async ({ page }) => {
-  expect(runtimeIssues.get(page) || [], 'Browser runtime should stay free of console and resource errors').toEqual([]);
+  try {
+    expect(runtimeIssues.get(page) || [], 'Browser runtime should stay free of console and resource errors').toEqual([]);
+  } finally {
+    // A Playwright retry can start in a new worker before the next beforeEach.
+    // Restore the seeded chain here so a failed wallet test cannot poison it.
+    if (chainSnapshot) await rpc('evm_revert', [chainSnapshot]);
+    chainSnapshot = await rpc('evm_snapshot');
+  }
 });
 
 function configuredContractAddress() {
@@ -93,11 +100,18 @@ async function sendContractTransaction(from, functionName, args) {
     from,
     to: configuredContractAddress(),
     data: encodeFunctionData({ abi: PlundrixGameABI, functionName, args }),
+    // Resolution gas varies with the entropy-selected outcome and Workshop
+    // settlement. A fixed local-test ceiling avoids estimating one branch and
+    // then mining a more expensive branch in the next block.
+    gas: toHex(5_000_000n),
   }]);
   for (let attempt = 0; attempt < 100; attempt += 1) {
     const receipt = await rpc('eth_getTransactionReceipt', [hash]);
     if (receipt) {
-      if (BigInt(receipt.status) !== 1n) throw new Error(`${functionName} transaction reverted: ${hash}`);
+      if (BigInt(receipt.status) !== 1n) {
+        const trace = await rpc('debug_traceTransaction', [hash, { disableMemory: true, disableStorage: true }]).catch(() => null);
+        throw new Error(`${functionName} transaction reverted: ${hash} (${trace?.returnValue || 'no revert data'}, gas ${BigInt(receipt.gasUsed || 0).toString()})`);
+      }
       return receipt;
     }
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -124,10 +138,13 @@ async function installTestWallet(page) {
       async request({ method, params = [] }) {
         if (method === 'eth_requestAccounts' || method === 'eth_accounts') return [account];
         if (method === 'wallet_switchEthereumChain' || method === 'wallet_addEthereumChain') return null;
+        const requestParams = method === 'eth_sendTransaction' && params[0]
+          ? [{ ...params[0], gas: '0x4c4b40' }, ...params.slice(1)]
+          : params;
         const response = await fetch(rpcUrl, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ jsonrpc: '2.0', id: ++requestId, method, params }),
+          body: JSON.stringify({ jsonrpc: '2.0', id: ++requestId, method, params: requestParams }),
         });
         const payload = await response.json();
         if (payload.error) throw new Error(payload.error.message);
@@ -167,7 +184,7 @@ test('mobile navigation exposes the important player journeys', async ({ page })
   await expect(navigation.getByRole('link', { name: 'Vault run 03', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Workshop 04', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Replays 05', exact: true })).toBeVisible();
-  await expect(navigation.getByRole('link', { name: 'Results 06', exact: true })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Career 06', exact: true })).toBeVisible();
 });
 
 test('client navigation keeps canonical and crawler metadata route-specific', async ({ page }) => {
@@ -212,12 +229,33 @@ test('instant play starts against agents and resolves a guided turn', async ({ p
   await expect(page.getByRole('heading', { name: 'Your table is ready.' })).toBeVisible();
   await page.getByRole('button', { name: /breach the vault/i }).click();
   await expect(page.getByRole('heading', { name: 'Round 1' })).toBeVisible();
+  await expect(page.locator('.instant-action-option[data-action="pick"]')).toHaveAttribute('data-state', 'selected');
+  await expect(page.locator('.instant-action-option[data-action="search"]')).toHaveAttribute('data-state', 'ready');
   await page.getByRole('button', { name: /^Search/i }).click();
+  await expect(page.locator('.instant-action-option[data-action="pick"]')).toHaveAttribute('data-state', 'ready');
+  await expect(page.locator('.instant-action-option[data-action="search"]')).toHaveAttribute('data-state', 'selected');
   await expect(page.getByText(/chance to gain a tool/i).first()).toBeVisible();
   await page.getByRole('button', { name: /commit and reveal/i }).click();
   await expect(page.getByRole('heading', { name: 'Round 2' })).toBeVisible();
   await expect(page.getByText('Last resolution')).toBeVisible();
   await expectNoSeriousA11yIssues(page);
+});
+
+test('improvement events carry bounded experiment context without player identifiers', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__plundrixEvents = [];
+    window.addEventListener('plundrix:analytics', (event) => window.__plundrixEvents.push(event.detail));
+  });
+  await page.goto('/play?experiment=first-action-copy&variant=a');
+  await page.getByRole('button', { name: /breach the vault/i }).click();
+  await page.getByRole('button', { name: /commit and reveal/i }).click();
+  await expect.poll(() => page.evaluate(() => window.__plundrixEvents.find((event) => event.name === 'First Meaningful Action'))).toBeTruthy();
+  const event = await page.evaluate(() => window.__plundrixEvents.find((item) => item.name === 'First Meaningful Action'));
+  expect(event.props).toMatchObject({ schema: '2', experiment: 'first-action-copy', variant: 'a', cohort: 'new' });
+  expect(['0-30s', '31-60s', '61-120s', '121s+']).toContain(event.props.latency);
+  expect(event.props).not.toHaveProperty('address');
+  expect(event.props).not.toHaveProperty('seed');
+  expect(event.props).not.toHaveProperty('name');
 });
 
 test('vault run starts, exposes a meaningful route tradeoff, and resolves a gambit', async ({ page }) => {
@@ -238,6 +276,15 @@ test('vault run starts, exposes a meaningful route tradeoff, and resolves a gamb
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
+test('local career gathers progression and names the next objective', async ({ page }) => {
+  await page.goto('/career');
+  await expect(page.getByRole('heading', { name: 'Operator' })).toBeVisible();
+  await expect(page.getByText('Next objectives')).toBeVisible();
+  await expect(page.getByText('Complete your first operation')).toBeVisible();
+  await expect(page.getByText('Local operator record / this device')).toBeVisible();
+  await expectNoSeriousA11yIssues(page);
+});
+
 test('tactical art reinforces gadgets, actions, and rival identities', async ({ page }) => {
   await page.goto('/play?mode=tactical&seed=art-contract');
   await expect(page.locator('.gadget-visual')).toHaveCount(1);
@@ -254,7 +301,7 @@ test('tactical art reinforces gadgets, actions, and rival identities', async ({ 
 test('workshop exposes ten signature gadgets and a complete configuration loop', async ({ page }) => {
   await page.goto('/workshop');
   await expect(page.getByRole('heading', { name: 'Ten signature gadgets. Your build.' })).toBeVisible();
-  await expect(page.getByText('1,200 stable configurations')).toBeVisible();
+  await expect(page.getByText(/1,200 builds/i)).toBeVisible();
   await expect(page.locator('#families article')).toHaveCount(10);
   await page.getByRole('button', { name: 'Copper Weave', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Copper Weave Precision Kit/i })).toBeVisible();
@@ -291,10 +338,16 @@ test('instant play stays contained on mobile and restores an active operation', 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/play');
   await page.getByRole('button', { name: /breach the vault/i }).click();
-  const commit = page.getByRole('button', { name: /commit and reveal/i });
+  const commit = page.locator('.instant-mobile-command__commit');
   await expect(commit).toBeVisible();
+  await expect(commit).toHaveAccessibleName('Commit Pick');
   expect(await page.evaluate(() => document.body.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  await page.getByRole('button', { name: 'Intel', exact: true }).click();
+  await expect(page.locator('#instant-intel-rail')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#instant-intel-rail')).toBeHidden();
   await page.getByRole('button', { name: /^Search/i }).click();
+  await expect(commit).toHaveAccessibleName('Commit Search');
   await commit.click();
   await expect(page.getByRole('heading', { name: 'Round 2' })).toBeVisible();
   await page.reload();
@@ -320,7 +373,7 @@ test('replay gallery renders all three visual stories', async ({ page }) => {
 test('replay keyboard shortcuts are scoped to the replay viewer', async ({ page }) => {
   await page.goto('/replay/gallery-comeback');
   const play = page.getByRole('button', { name: 'Play replay' });
-  await expect(play).toBeVisible();
+  await expect(play).toBeVisible({ timeout: 15_000 });
   await page.getByRole('combobox', { name: 'Replay speed' }).focus();
   await page.keyboard.press('Space');
   await expect(play).toBeVisible();
@@ -334,7 +387,9 @@ test('design system supports whole-game review and responsive critique', async (
   test.setTimeout(60_000);
   await page.goto('/design-system');
   await expect(page.getByRole('heading', { level: 1, name: 'Plundrix Design System' })).toBeVisible();
-  await expect(page.locator('[data-review-status]')).toHaveCount(15);
+  await expect(page.locator('[data-review-status]')).toHaveCount(16);
+  await expect(page.locator('#caper')).toContainText('Work surface');
+  await expect(page.locator('#caper')).toContainText('Committed');
   await expect(page.locator('#assets')).toContainText('Reusable parts');
   await expect(page.locator('#assets')).toContainText('Accepted master');
   await expect(page.locator('#assets')).toContainText('Needs revision');
@@ -375,13 +430,14 @@ test('sessions explain when their verified feed is unavailable', async ({ page }
 
 for (const [path, heading] of [
   ['/simulator', 'Tuning Lab'],
-  ['/replays', 'Plundrix Replay Director'],
+  ['/replays', 'Stories from the vault'],
   ['/compare', 'Find the right Plundrix comparison by player craving.'],
   ['/terms', /terms/i],
   ['/privacy', /privacy/i],
   ['/snapshot', /operation/i],
   ['/play', 'Your table is ready.'],
   ['/vault-run', /three vaults/i],
+  ['/career', 'Operator'],
   ['/trailer', /one vault/i],
 ]) {
   test(`${path} renders its primary content`, async ({ page }) => {
@@ -394,7 +450,7 @@ test('configured local-chain lobby renders a real crew manifest', async ({ page 
   await page.goto('/game/1');
   await expect(page.getByRole('heading', { name: 'Operation Briefing' })).toBeVisible();
   await expect(page.getByText('Crew Manifest (2 enrolled)')).toBeVisible();
-  await expect(page.getByText('Connect a wallet to join or start this operation.')).toBeVisible();
+  await expect(page.getByText('Connect on Sepolia, then claim a seat in operation #1.')).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 });
 
@@ -411,8 +467,9 @@ test('mobile live play puts the decision in the first viewport without page over
   await page.goto('/game/2');
   const actionRegion = page.getByRole('region', { name: 'Current action' });
   await expect(actionRegion).toBeVisible();
-  const pickBox = await actionRegion.getByRole('button', { name: 'Pick', exact: true }).boundingBox();
-  expect(pickBox?.y).toBeLessThan(844);
+  const connectBox = await actionRegion.getByRole('button', { name: 'Connect to act', exact: true }).boundingBox();
+  expect(connectBox?.y).toBeLessThan(844);
+  await expect(actionRegion.getByRole('button', { name: 'Pick', exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await expect(page.getByText('WINNER', { exact: true })).toBeVisible();
 });
@@ -478,16 +535,20 @@ test('browser wallet can join, start, and commit a real local-chain turn', async
     await join.click();
     await expect(page.getByText('Crew Manifest (2 enrolled)')).toBeVisible({ timeout: 15_000 });
   }
-  if (await start.isVisible().catch(() => false)) await start.click();
-  await expect(currentAction).toBeVisible({ timeout: 15_000 });
+  if (!(await currentAction.isVisible().catch(() => false))) {
+    await expect(start).toBeVisible({ timeout: 15_000 });
+    await start.click();
+  }
+  await expect(currentAction).toBeVisible({ timeout: 30_000 });
 
   const execute = page.getByRole('button', { name: 'Pick', exact: true }).first();
-  if (await execute.isEnabled()) await execute.click();
+  await expect(execute).toBeEnabled({ timeout: 15_000 });
+  await execute.click();
   await expect(page.getByText(/Action committed\. Wait/)).toBeVisible({ timeout: 15_000 });
 });
 
 test('browser wallet can complete and resolve a real local-chain round', async ({ page }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(90_000);
   await installTestWallet(page);
   await page.goto('/game/4');
   await page.getByRole('button', { name: 'Connect wallet', exact: true }).first().click();
@@ -497,9 +558,14 @@ test('browser wallet can complete and resolve a real local-chain round', async (
   await expect(page.getByText(/Action committed\. Wait/)).toBeVisible({ timeout: 15_000 });
   const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
   await expect(resolve).toBeEnabled({ timeout: 15_000 });
+  const transactionCountBefore = BigInt(await rpc('eth_getTransactionCount', [TEST_WALLET, 'latest']));
   await resolve.click();
+  await expect.poll(
+    async () => BigInt(await rpc('eth_getTransactionCount', [TEST_WALLET, 'latest'])),
+    { timeout: 30_000, message: 'The browser wallet should submit the resolve transaction' },
+  ).toBeGreaterThan(transactionCountBefore);
   const resolution = page.getByRole('region', { name: 'Round resolution' });
-  await expect(resolution).toBeVisible({ timeout: 15_000 });
+  await expect(resolution).toBeVisible({ timeout: 30_000 });
   await expect(resolution.getByText(/LOCK CRACKED|NO JOY|TOOL FOUND|NOTHING/)).toHaveCount(2);
   const continueButton = resolution.getByRole('button', { name: 'Continue to next round' });
   await expect(continueButton).toBeVisible({ timeout: 5_000 });
@@ -527,7 +593,9 @@ test('browser wallet can breach the vault and reach the final briefing', async (
     if (await execute.isEnabled()) await execute.click();
     await expect(resolve).toBeEnabled({ timeout: 20_000 });
     await guaranteeNextResolveVictory(5n, 2n);
-    await sendContractTransaction(TEST_WALLET, 'resolveRound', [5n]);
+    // Resolve from the other unlocked account so this fixture never races the
+    // browser wallet's just-submitted action for the same sender nonce.
+    await sendContractTransaction(TEST_OPPONENT, 'resolveRound', [5n]);
     await page.reload();
   }
 

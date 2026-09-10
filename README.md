@@ -37,6 +37,9 @@ The 2026-09-08 table-pressure upgrade and live operation proof are in [docs/sepo
 The living interface reference and review workflow are documented in [docs/design-system.md](docs/design-system.md).
 The manifest-driven art direction, generation, delivery, and review workflow is documented in [docs/art-pipeline.md](docs/art-pipeline.md).
 The current implementation grade and remaining human-evidence bar are documented in [docs/product-quality-report-card.md](docs/product-quality-report-card.md).
+The one-person improvement loop, evidence tiers, scorecard, and weekly ritual are documented in [docs/improvement-system.md](docs/improvement-system.md).
+
+The solo UI review loop, canonical desktop/mobile state matrix, visual baselines, contact sheet, and approval policy are documented in [docs/ui-improvement-system.md](docs/ui-improvement-system.md). Run `npm run ui:review`; change approved references only with `npm run ui:approve -- --reason "..."`.
 
 ## Game Summary
 
@@ -132,6 +135,16 @@ npm run test:js
 npm test
 ```
 
+## Solo Improvement Loop
+
+Run the single decision-oriented snapshot from the repository root:
+
+```bash
+npm run improve
+```
+
+Use `npm run improve:verify` before merging and `npm run improve:release` before a release candidate. The system enforces one active experiment, refuses unverified human or production evidence, and writes the next action to `app/reports/improvement/latest.md`.
+
 ## Deployment
 
 ### Local
@@ -197,6 +210,7 @@ VITE_AGENT_SERVICE_URL
 VITE_FOUNDRY_RPC_URL
 VITE_ENABLE_FOUNDRY
 VITE_ENABLE_NEXT_RULES
+VITE_ENABLE_TABLE_PRESSURE # enable only after deploying the matching game implementation
 VITE_ENABLE_SESSION_KEYS
 VITE_SESSION_RELAY_URL
 VITE_ENABLE_INTERNAL_TOOLS # development-only tools; leave false for public builds

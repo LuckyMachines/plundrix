@@ -82,4 +82,10 @@ export function rivalTaunt(name, record = blankRival()) {
   return `${name} insists the score is merely suspicious.`;
 }
 
+export function rivalDirective(name, record = blankRival()) {
+  if (record.grudge >= 4) return { active: true, label: `${name}'s vendetta`, detail: `${name} will target you on round two. Beat them for +200 revenge score.` };
+  if (record.grudge >= 3) return { active: true, label: `${name}'s grudge`, detail: `${name} will target you on round two. Beat them for +200 revenge score.` };
+  return { active: false, label: 'No active vendetta', detail: `${name} is playing the vault, not your history.` };
+}
+
 export { CHRONICLE_STORAGE_KEY, RIVALS as RIVAL_NAMES };

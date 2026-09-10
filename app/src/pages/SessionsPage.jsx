@@ -44,7 +44,7 @@ export default function SessionsPage() {
               key={value}
               onClick={() => setState(value)}
               aria-pressed={state === value}
-              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
+              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-beacon ${
                 state === value
                   ? 'border-tungsten/50 bg-tungsten/10 text-tungsten'
                   : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/70'
@@ -61,7 +61,7 @@ export default function SessionsPage() {
               key={value}
               onClick={() => setQueue(value)}
               aria-pressed={queue === value}
-              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] ${
+              className={`min-h-[44px] rounded border px-3 py-2 font-mono text-xs uppercase tracking-beacon ${
                 queue === value
                   ? 'border-oxide-green/50 bg-oxide-green/10 text-oxide-green'
                   : 'border-vault-border text-vault-text-dim hover:bg-vault-panel/70'
@@ -86,7 +86,7 @@ export default function SessionsPage() {
           ))}
         </div>
       ) : (
-        <div className="border border-vault-border rounded bg-vault-surface p-8 text-center font-mono text-xs uppercase tracking-[0.22em] text-vault-text-dim">
+        <div className="border border-vault-border rounded bg-vault-surface p-8 text-center font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
           No sessions match this filter yet.
         </div>
       )}
@@ -97,7 +97,7 @@ export default function SessionsPage() {
 function UnavailableState() {
   return (
     <section className="rounded border border-tungsten/30 bg-vault-surface p-8">
-      <p className="font-mono text-xs uppercase tracking-[0.22em] text-tungsten">Live session feed is warming up</p>
+      <p className="font-mono text-xs uppercase tracking-beacon text-tungsten">Live session feed is warming up</p>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-vault-text-dim">
         The verified operation index is not connected in this environment. You can still play a full
         local match, enter a live operation directly, or browse saved replays.
@@ -114,7 +114,7 @@ function LoadingState() {
   return (
     <div className="border border-vault-border rounded bg-vault-surface p-10 flex items-center gap-3 justify-center">
       <Spinner size="w-5 h-5" />
-      <span className="font-mono text-xs uppercase tracking-[0.22em] text-vault-text-dim">
+      <span className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
         Scanning sessions...
       </span>
     </div>
@@ -124,7 +124,7 @@ function LoadingState() {
 function ErrorState({ error }) {
   return (
     <div className="border border-signal-red/35 rounded bg-vault-surface p-8">
-      <p className="font-mono text-xs uppercase tracking-[0.22em] text-signal-red">
+      <p className="font-mono text-xs uppercase tracking-beacon text-signal-red">
         Failed to load sessions
       </p>
       <p className="font-mono text-xs text-vault-text-dim mt-3 break-all">

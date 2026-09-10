@@ -9,7 +9,7 @@ function truncateAddress(address) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
-export default function ConnectButton() {
+export default function ConnectButton({ surface = 'header', label = 'Connect', className = '' }) {
   const toast = useToast();
   const { address, isConnected } = useAccount();
   const { connect, error, isPending } = useConnect();
@@ -26,16 +26,16 @@ export default function ConnectButton() {
     return (
       <button
         onClick={() => {
-          trackProductEvent('Wallet Disconnected', { surface: 'header' });
+          trackProductEvent('Wallet Disconnected', { surface });
           disconnect();
         }}
-        className="
+        className={`
           border border-vault-border bg-vault-panel
           hover:bg-vault-surface hover:border-tungsten/40
           text-vault-text font-mono text-xs tracking-wider
           px-4 py-2 rounded
-          transition-colors duration-150 cursor-pointer
-        "
+          transition-colors duration-150 cursor-pointer ${className}
+        `}
       >
         {truncateAddress(address)}
       </button>
@@ -44,21 +44,21 @@ export default function ConnectButton() {
 
   return (
     <button
-      aria-label="Connect wallet"
+      aria-label={label === 'Connect' ? 'Connect wallet' : label}
       onClick={() => {
-        trackProductEvent('Wallet Connect Started', { surface: 'header' });
+        trackProductEvent('Wallet Connect Started', { surface });
         connect({ connector: injected() });
       }}
       disabled={isPending}
-      className="
+      className={`
         border border-tungsten/50 bg-vault-panel
         hover:bg-tungsten/10 hover:border-tungsten
         text-tungsten font-display font-semibold text-sm tracking-widest uppercase
         px-5 py-2 rounded
-        transition-colors duration-150 cursor-pointer disabled:cursor-wait disabled:opacity-60
-      "
+        transition-colors duration-150 cursor-pointer disabled:cursor-wait disabled:opacity-60 ${className}
+      `}
     >
-      {isPending ? 'Connecting...' : 'Connect'}
+      {isPending ? 'Connecting...' : label}
     </button>
   );
 }

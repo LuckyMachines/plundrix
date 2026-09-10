@@ -4,6 +4,7 @@ import { decodeEventLog } from 'viem';
 import { useGameInfo } from '../../hooks/useGameInfo';
 import { useGamePlayers } from '../../hooks/useGamePlayers';
 import { usePlayerState } from '../../hooks/usePlayerState';
+import { useTablePlayerStates } from '../../hooks/useTablePlayerStates';
 import { useAllActionsSubmitted } from '../../hooks/useAllActionsSubmitted';
 import { useGameActions } from '../../hooks/useGameActions';
 import { useTxToast } from '../../hooks/useTxToast';
@@ -31,13 +32,14 @@ import IntegrationDebugTrace from './IntegrationDebugTrace';
 import { useSessionHistoryRecorder } from '../../hooks/useSessionHistory';
 import { GameShell, QuietPanel } from '../gameplay/GameShell';
 import { LatestEventSurface, MatchStatusStrip, OpponentRail } from '../gameplay/ActiveMatchReadout';
-import { NEXT_RULES_ENABLED, PLUNDRIX_ABI, PLUNDRIX_ADDRESS } from '../../config/contract';
+import { NEXT_RULES_ENABLED, PLUNDRIX_ABI, PLUNDRIX_ADDRESS, TABLE_PRESSURE_ENABLED } from '../../config/contract';
 
 export default function VaultBench({ gameId }) {
   const { address } = useAccount();
   const { state, currentRound, playerCount, roundStartTime, isLoading: gameLoading } = useGameInfo(gameId);
   const { players, isLoading: playersLoading } = useGamePlayers(gameId, playerCount);
   const { locksCracked, tools, stunned, registered, actionSubmitted } = usePlayerState(gameId, address);
+  const { leaderLocks } = useTablePlayerStates(gameId, players);
   const { allSubmitted } = useAllActionsSubmitted(gameId);
   const { data: configuredRoundTimeout } = useReadContract({
     address: PLUNDRIX_ADDRESS,
@@ -281,6 +283,8 @@ export default function VaultBench({ gameId }) {
               registered={registered}
               actionSubmitted={actionSubmitted}
               tools={tools}
+              locksCracked={locksCracked}
+              leaderLocks={TABLE_PRESSURE_ENABLED ? leaderLocks : locksCracked}
               players={players}
               currentAddress={address}
               session={session}
@@ -304,7 +308,7 @@ export default function VaultBench({ gameId }) {
                   onClick={handleResolve}
                   disabled={!isConfigured || resolvePending || resolveConfirming}
                   className={`
-                    min-h-[44px] rounded px-5 py-2 font-mono text-xs uppercase tracking-[0.16em]
+                    min-h-[44px] rounded px-5 py-2 font-mono text-xs uppercase tracking-label
                     border transition-all duration-200
                     ${resolvePending || resolveConfirming
                       ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'
@@ -352,7 +356,7 @@ export default function VaultBench({ gameId }) {
               <IntegrationDebugTrace session={session} />
             </div>
             <div className="grid gap-3 content-start">
-              <h3 className="text-xs tracking-[0.18em] text-vault-text-dim uppercase font-display">
+              <h3 className="text-xs tracking-brand text-vault-text-dim uppercase font-display">
                 Full player details
               </h3>
               {players.map((addr) => (

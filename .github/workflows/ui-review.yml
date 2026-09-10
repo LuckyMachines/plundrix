@@ -1,0 +1,58 @@
+name: UI review
+
+on:
+  pull_request:
+    paths:
+      - "app/src/**"
+      - "app/public/**"
+      - "app/tests/e2e/**"
+      - "app/ui-review/**"
+      - "app/playwright*.js"
+      - "app/scripts/ui-review.mjs"
+      - "app/scripts/compose-ui-review.py"
+      - "app/package*.json"
+      - "package*.json"
+      - "src/**"
+      - "script/**"
+      - "foundry.toml"
+      - ".github/workflows/ui-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-matrix:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            app/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: npm ci
+      - run: npm ci
+        working-directory: app
+      - run: python -m pip install Pillow==11.3.0
+      - run: npx playwright install chromium
+        working-directory: app
+      - run: npm run test:ui-system
+        working-directory: app
+      - run: npm run ui:review
+        working-directory: app
+      - name: Upload visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-review-${{ github.run_id }}
+          path: app/reports/ui-review/latest
+          if-no-files-found: warn
+          retention-days: 14

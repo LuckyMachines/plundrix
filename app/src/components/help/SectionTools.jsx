@@ -12,7 +12,7 @@ const TOOL_DESCRIPTIONS = [
 export default function SectionTools() {
   return (
     <div className="font-mono text-xs text-vault-text leading-relaxed">
-      <h3 className="font-display tracking-[0.25em] text-tungsten uppercase text-xs mb-3
+      <h3 className="font-display tracking-beacon text-tungsten uppercase text-xs mb-3
                      border-b border-vault-border pb-1">
         Equipment Manifest
       </h3>
@@ -36,7 +36,7 @@ export default function SectionTools() {
         })}
       </div>
 
-      <h3 className="font-display tracking-[0.25em] text-tungsten uppercase text-xs mb-2 mt-5
+      <h3 className="font-display tracking-beacon text-tungsten uppercase text-xs mb-2 mt-5
                      border-b border-vault-border pb-1">
         Impact Formula
       </h3>

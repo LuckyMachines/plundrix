@@ -139,7 +139,7 @@ export default function OpsPage() {
           </div>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[860px] text-left">
-              <thead className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+              <thead className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
                 <tr>
                   <th className="py-2 pr-3">Rank</th>
                   <th className="py-2 pr-3">Category</th>
@@ -216,7 +216,7 @@ export default function OpsPage() {
           <div className="mt-3 space-y-2">
             {report.risks.map((risk) => (
               <div key={risk.id} className="rounded border border-vault-border bg-vault-panel/55 px-3 py-2">
-                <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-tungsten">{risk.severity} / {risk.category}</div>
+                <div className="font-mono text-micro uppercase tracking-label text-tungsten">{risk.severity} / {risk.category}</div>
                 <p className="mt-1 text-sm text-vault-text">{risk.title}</p>
                 <p className="mt-1 text-xs text-vault-text-dim">{risk.mitigation}</p>
               </div>
@@ -227,7 +227,7 @@ export default function OpsPage() {
           <div className="mt-3 space-y-2">
             {report.opportunities.map((opportunity) => (
               <div key={opportunity.id} className="rounded border border-vault-border bg-vault-panel/55 px-3 py-2">
-                <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">{opportunity.category}</div>
+                <div className="font-mono text-micro uppercase tracking-label text-oxide-green">{opportunity.category}</div>
                 <p className="mt-1 text-sm text-vault-text">{opportunity.title}</p>
                 <p className="mt-1 text-xs text-vault-text-dim">{opportunity.action}</p>
               </div>
@@ -320,7 +320,7 @@ function OpsButton({ children, onClick, disabled }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:bg-vault-panel disabled:opacity-40"
+      className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text hover:bg-vault-panel disabled:opacity-40"
     >
       {children}
     </button>

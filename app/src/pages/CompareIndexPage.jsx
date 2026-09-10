@@ -39,7 +39,7 @@ export default function CompareIndexPage() {
         />
 
         <aside className="border border-vault-border bg-vault-surface p-5">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-vault-text-dim">
+          <p className="font-mono text-xs uppercase tracking-brand text-vault-text-dim">
             Best first reads
           </p>
           <div className="mt-4 grid gap-2">
@@ -67,16 +67,16 @@ export default function CompareIndexPage() {
             to={comparisonUrl(page.slug)}
             className="group flex min-h-[260px] flex-col border border-vault-border bg-vault-surface p-5 transition-colors hover:border-tungsten/70"
           >
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-oxide-green">
+            <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">
               {page.eyebrow}
             </p>
-            <h2 className="mt-3 font-display text-xl font-semibold uppercase tracking-[0.12em] text-vault-text group-hover:text-tungsten">
+            <h2 className="mt-3 font-display text-xl font-semibold uppercase tracking-interface text-vault-text group-hover:text-tungsten">
               {page.title}
             </h2>
             <p className="mt-3 text-sm leading-6 text-vault-text-dim">
               {page.summary}
             </p>
-            <div className="mt-auto pt-5 font-mono text-xs uppercase tracking-[0.16em] text-tungsten">
+            <div className="mt-auto pt-5 font-mono text-xs uppercase tracking-label text-tungsten">
               Compare {page.competitor}
             </div>
           </Link>

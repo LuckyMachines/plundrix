@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageIntro } from '../components/cohesion/CohesionLayout';
+import { AutoGrid, Cluster, PageShell, Rail, Stack } from '../components/layout/LayoutPrimitives';
 import { GameShell, QuietPanel, StatusPill } from '../components/gameplay/GameShell';
 import { LatestEventSurface, MatchStatusStrip } from '../components/gameplay/ActiveMatchReadout';
+import DecisionPlate from '../components/gameplay/DecisionPlate';
+import OperatorDossier from '../components/gameplay/OperatorDossier';
+import VaultMechanism from '../components/gameplay/VaultMechanism';
 import ActionPresenceField from '../components/actions/ActionPresenceField';
 import PickControl from '../components/actions/PickControl';
 import SearchControl from '../components/actions/SearchControl';
@@ -41,6 +45,8 @@ import {
   ART_FAMILY_LIBRARY,
   ART_PART_QUEUE,
   ART_PIPELINE_SUMMARY,
+  ACTION_STATE_CONTRACT,
+  CAPER_LAYERS,
   COLOR_TOKENS,
   DESIGN_PRINCIPLES,
   DESIGN_SECTIONS,
@@ -61,6 +67,10 @@ const MOCK_PLAYERS = [
   '0x4444444444444444444444444444444444444444',
 ];
 const INVENTORY_SPECIMENS = [GADGET_CATALOG[0], GADGET_CATALOG[527], GADGET_CATALOG[1199]];
+const CAPER_SPECIMEN_PLAYERS = [
+  { id: 'player-1', name: 'Operator', locksCracked: 2, tools: 1, gadget: 'precision-kit', gadgetReady: true, stunned: false },
+  { id: 'player-2', name: 'Vesper', locksCracked: 3, tools: 2, gadget: 'firewall', gadgetReady: false, stunned: false },
+];
 
 const mockSession = {
   mode: 'urgent',
@@ -125,6 +135,52 @@ function initialReview() {
   } catch {
     return normalizeReview();
   }
+}
+
+function TypeLayoutStress() {
+  return (
+    <PageShell wide className="ds-type-layout-stress pb-5 pt-24" data-layout-stress>
+      <Stack space="var(--layout-section-gap)">
+        <header className="border-b border-vault-border pb-5">
+          <p className="type-label text-oxide-green" data-type-contract>Layout and typography stress lab</p>
+          <h1 className="type-page mt-3 text-vault-text" data-type-contract>Steal the impossible prize before the whole vault wakes up.</h1>
+          <p className="type-body measure-copy mt-4 text-vault-text-dim" data-type-contract data-measure="prose">
+            This deliberately long briefing tests readable measure, balanced headings, natural wrapping, and hierarchy when real game language becomes more demanding than a polished placeholder.
+          </p>
+        </header>
+
+        <AutoGrid min="15rem" aria-label="Responsive stress cards">
+          {[
+            ['Current objective', 'Crack three remaining locks before Vesper completes the counter-sabotage sequence.'],
+            ['Dense result', '12,480 salvage / 1,200 blueprints / 99.8% synchronization'],
+            ['Long action', 'Commit the reinforced lockpick and reveal every operator decision'],
+          ].map(([label, value]) => (
+            <article key={label} className="surface-card l-stack" data-layout-card>
+              <p className="type-label text-tungsten" data-type-contract>{label}</p>
+              <p className="type-card text-vault-text" data-type-contract>{value}</p>
+              <p className="type-body measure-compact text-vault-text-dim" data-type-contract data-measure="compact">
+                Supporting information remains subordinate, readable, and free to wrap without forcing the card wider.
+              </p>
+            </article>
+          ))}
+        </AutoGrid>
+
+        <section className="surface-card l-stack" aria-labelledby="stress-action-title">
+          <p className="type-label text-blueprint" data-type-contract>Decision region</p>
+          <h2 id="stress-action-title" className="type-section text-vault-text" data-type-contract>Choose the next move</h2>
+          <Rail itemWidth="14rem" aria-label="Long action labels">
+            <button type="button" className="btn-primary" data-type-contract>Pick the reinforced final lock</button>
+            <button type="button" className="btn-secondary" data-type-contract>Search for a concealed bypass tool</button>
+            <button type="button" className="btn-danger" data-type-contract>Sabotage the leading rival operator</button>
+          </Rail>
+          <Cluster justify="space-between">
+            <span className="type-interface text-vault-text-dim" data-type-contract>ROUND 12 / 4 OPERATORS</span>
+            <span className="type-interface text-oxide-green" data-type-contract>READY TO COMMIT</span>
+          </Cluster>
+        </section>
+      </Stack>
+    </PageShell>
+  );
 }
 
 export default function DesignSystemPage() {
@@ -222,6 +278,10 @@ export default function DesignSystemPage() {
   const disabled = actionState === 'disabled';
   const stunned = actionState === 'stunned';
 
+  if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('stress') === 'type-layout') {
+    return <TypeLayoutStress />;
+  }
+
   return (
     <div className="internal-tool-page ds-page mx-auto max-w-[1600px] px-4 py-6 sm:px-6">
       <PageIntro
@@ -308,11 +368,11 @@ export default function DesignSystemPage() {
                   <div className="p-3">
                     <div className="flex items-start justify-between gap-3">
                       <h3 className="font-display text-lg uppercase text-vault-text">{color.label}</h3>
-                      <span className="font-mono text-[10px] text-vault-text-dim">{color.value}</span>
+                      <span className="font-mono text-micro text-vault-text-dim">{color.value}</span>
                     </div>
-                    <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-tungsten">{color.role}</p>
+                    <p className="mt-2 font-mono text-micro uppercase tracking-interface text-tungsten">{color.role}</p>
                     <p className="mt-2 text-sm leading-5 text-vault-text-dim">{color.usage}</p>
-                    <code className="mt-3 block break-all text-[11px] text-blueprint">var({color.token})</code>
+                    <code className="mt-3 block break-all text-micro text-blueprint">var({color.token})</code>
                   </div>
                 </article>
               ))}
@@ -324,9 +384,9 @@ export default function DesignSystemPage() {
             <div className="divide-y divide-vault-border rounded border border-vault-border bg-vault-dark/35">
               {TYPE_STYLES.map((style) => (
                 <div key={style.id} className="grid gap-3 p-4 lg:grid-cols-[150px_minmax(0,1fr)_220px] lg:items-center">
-                  <div><p className="label">{style.label}</p><p className="mt-1 font-mono text-[10px] text-vault-text-dim">{style.use}</p></div>
+                  <div><p className="label">{style.label}</p><p className="mt-1 font-mono text-micro text-vault-text-dim">{style.use}</p></div>
                   <p className={style.className}>{style.sample}</p>
-                  <code className="break-words font-mono text-[10px] leading-5 text-blueprint">{style.className}</code>
+                  <code className="break-words font-mono text-micro leading-5 text-blueprint">{style.className}</code>
                 </div>
               ))}
             </div>
@@ -360,6 +420,40 @@ export default function DesignSystemPage() {
                 ))}
               </div>
             </div>
+          </Specimen>
+
+          <Specimen {...specimenProps('caper')} label="Foundation" title="Caper visual language" description="The approved synthesis rendered as reusable code: blueprint structure, punchcard controls, restrained paper accents, and brass reserved for vault peaks.">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {CAPER_LAYERS.map((layer) => (
+                <article key={layer.id} className={`caper-layer ${layer.className} min-h-[150px] p-4`}>
+                  <p className="font-mono text-micro uppercase tracking-brand text-tungsten">{layer.id}</p>
+                  <h3 className="mt-3 font-display text-2xl uppercase text-vault-text">{layer.label}</h3>
+                  <p className="mt-2 text-sm leading-5 text-vault-text-dim">{layer.role}</p>
+                  <code className="mt-3 block text-micro text-blueprint">var({layer.token})</code>
+                </article>
+              ))}
+            </div>
+
+            <div className="ds-caper-specimen caper-operation caper-workbench mt-5 overflow-hidden border border-blueprint/30 p-3 sm:p-5">
+              <VaultMechanism cracked={2} total={5} label="System vault" />
+              <div className="instant-player-rail mt-3 flex min-w-0 gap-px overflow-x-auto" role="region" aria-label="Caper dossier specimens" tabIndex={0}>
+                <OperatorDossier candidate={CAPER_SPECIMEN_PLAYERS[0]} totalLocks={5} isCurrent tone="coral" />
+                <OperatorDossier candidate={CAPER_SPECIMEN_PLAYERS[1]} totalLocks={5} persona="The disruptor - turns a leader's plan against them." portrait="/images/parts/vesper-device.webp" tone="gold" />
+              </div>
+              <div className="instant-action-options mt-3 grid gap-3 md:grid-cols-3">
+                <DecisionPlate action="pick" label="Pick" metric="70% / 1 lock" detail="Attack the next lock." image="/images/parts/pick-tool.webp" index={0} selected onSelect={noop} />
+                <DecisionPlate action="search" label="Search" metric="60% base" detail="Build future Pick odds." image="/images/parts/search-kit.webp" index={1} committed onSelect={noop} />
+                <DecisionPlate action="sabotage" label="Sabotage" metric="One-round stun" detail="Stop a rival and steal a tool." image="/images/parts/sabotage-cable.webp" index={2} disabled onSelect={noop} />
+              </div>
+            </div>
+
+            <div className="mt-5 overflow-x-auto border border-vault-border" role="region" aria-label="Action state contract" tabIndex={0}>
+              <table className="w-full min-w-[680px] text-left">
+                <thead className="bg-vault-dark"><tr><th className="p-3 label">State</th><th className="p-3 label">Visible cue</th><th className="p-3 label">Meaning</th></tr></thead>
+                <tbody className="divide-y divide-vault-border">{ACTION_STATE_CONTRACT.map((state) => <tr key={state.id}><td className="p-3 font-mono text-xs uppercase text-tungsten">{state.label}</td><td className="p-3 text-sm text-vault-text">{state.cue}</td><td className="p-3 text-sm text-vault-text-dim">{state.behavior}</td></tr>)}</tbody>
+              </table>
+            </div>
+            <RulePair good="Build every gameplay screen from the same four layers and explicit state contract." avoid="Do not copy the concept image's invented rules, counts, or labels into the product." />
           </Specimen>
 
           <Specimen {...specimenProps('controls')} label="Components" title="Controls and inputs" description="Every control has a 44px minimum target, visible focus, explicit state, and a verb that predicts the result.">
@@ -441,7 +535,7 @@ export default function DesignSystemPage() {
               <SabotageControl onSubmit={noop} disabled={disabled} stunned={stunned} players={MOCK_PLAYERS} currentAddress={MOCK_PLAYERS[0]} active pressed={false} invalidCount={0} onIntentStart={noop} onIntentEnd={noop} onInvalidIntent={noop} onTargetIntentChange={setTarget} externalTarget={target} />
             </div>
             <div className="mt-5 grid gap-3 md:grid-cols-3"><StateTile label="Tools"><ToolTray toolCount={3} /></StateTile><StateTile label="Stun overlay" danger><div className="relative min-h-[72px]"><StunStamp visible /></div></StateTile><StateTile label="Committed"><div className="relative min-h-[72px]"><ActionSeal visible /></div></StateTile></div>
-            <details className="mt-5 rounded border border-vault-border bg-vault-dark/35 p-4"><summary className="cursor-pointer font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">State vocabulary</summary><div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5"><StateList title="Table moods" items={Object.values(TABLE_MOODS)} prefix="table" /><StateList title="Vault reactions" items={Object.values(VAULT_REACTIONS)} prefix="vault" /><StateList title="Action identities" items={Object.values(ACTION_IDENTITIES)} prefix="action" /><StateList title="Operator reactions" items={Object.values(OPERATOR_REACTIONS)} prefix="operator" /><StateList title="Moment tags" items={Object.values(MOMENT_TAGS)} prefix="moment" /></div></details>
+            <details className="mt-5 rounded border border-vault-border bg-vault-dark/35 p-4"><summary className="cursor-pointer font-mono text-xs uppercase tracking-label text-vault-text-dim">State vocabulary</summary><div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5"><StateList title="Table moods" items={Object.values(TABLE_MOODS)} prefix="table" /><StateList title="Vault reactions" items={Object.values(VAULT_REACTIONS)} prefix="vault" /><StateList title="Action identities" items={Object.values(ACTION_IDENTITIES)} prefix="action" /><StateList title="Operator reactions" items={Object.values(OPERATOR_REACTIONS)} prefix="operator" /><StateList title="Moment tags" items={Object.values(MOMENT_TAGS)} prefix="moment" /></div></details>
           </Specimen>
 
           <Specimen {...specimenProps('journeys')} label="Game" title="Journey state gallery" description="Every core moment should be recognizable before reading the supporting copy.">
@@ -470,9 +564,9 @@ export default function DesignSystemPage() {
           </Specimen>
 
           <Specimen {...specimenProps('responsive')} label="System" title="Responsive composition" description="Inspect the same hierarchy at target widths. Mobile preserves the decision and moves supporting detail below it.">
-            <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label="Preview width">{['mobile', 'tablet', 'desktop'].map((size) => <button key={size} type="button" aria-pressed={viewport === size} onClick={() => setViewport(size)} className={viewport === size ? 'btn-primary' : 'btn-secondary'}>{size}</button>)}</div>
-            <div className="overflow-x-auto rounded border border-vault-border bg-black/30 p-3 sm:p-6" role="region" aria-label="Responsive interface preview" tabIndex={0}><div className="ds-responsive-frame" data-viewport={viewport}><div className="border-b border-vault-border bg-vault-dark px-4 py-3"><span className="font-display text-xl font-bold uppercase tracking-[0.18em]">Plundrix</span></div><div className="ds-responsive-content grid grid-cols-[1fr_0.65fr] gap-4 p-4"><div className="instant-vault-core grid min-h-[240px] place-items-center border border-vault-border p-5 text-center"><div><p className="label">Round 4 / vault</p><p className="mt-3 font-display text-5xl text-tungsten-bright">3 / 5</p><p className="mt-2 text-vault-text-dim">Two locks remain.</p></div></div><div className="border border-vault-border bg-vault-surface p-4"><p className="label">Choose one action</p><div className="mt-4 grid gap-2"><button type="button" className="btn-primary">Pick - 70%</button><button type="button" className="btn-secondary">Search - 60%</button><button type="button" className="btn-danger">Sabotage</button></div></div></div></div></div>
-            <div className="mt-4 grid gap-3 md:grid-cols-3"><MiniRule title="Mobile / 390px" body="One decision column, horizontal rival rail, sticky commit action." /><MiniRule title="Tablet / 768px" body="Two-column actions where readable; details remain secondary." /><MiniRule title="Desktop / 1440px" body="Vault and action dock share the viewport; maximum line length stays controlled." /></div>
+            <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label="Preview width">{['narrow', 'mobile', 'tablet', 'desktop'].map((size) => <button key={size} type="button" aria-pressed={viewport === size} onClick={() => setViewport(size)} className={viewport === size ? 'btn-primary' : 'btn-secondary'}>{size}</button>)}</div>
+            <div className="overflow-x-auto rounded border border-vault-border bg-black/30 p-3 sm:p-6" role="region" aria-label="Responsive interface preview" tabIndex={0}><div className="ds-responsive-frame" data-viewport={viewport}><div className="border-b border-vault-border bg-vault-dark px-4 py-3"><span className="font-display text-xl font-bold uppercase tracking-brand">Plundrix</span></div><div className="ds-responsive-content grid grid-cols-[1fr_0.65fr] gap-4 p-4"><div className="instant-vault-core grid min-h-[240px] place-items-center border border-vault-border p-5 text-center"><div><p className="label">Round 4 / vault</p><p className="mt-3 font-display text-5xl text-tungsten-bright">3 / 5</p><p className="mt-2 text-vault-text-dim">Two locks remain.</p></div></div><div className="border border-vault-border bg-vault-surface p-4"><p className="label">Choose one action</p><div className="mt-4 grid gap-2"><button type="button" className="btn-primary">Pick - 70%</button><button type="button" className="btn-secondary">Search - 60%</button><button type="button" className="btn-danger">Sabotage</button></div></div></div></div></div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"><MiniRule title="Narrow / 320px" body="No clipped labels or sideways page scroll." /><MiniRule title="Mobile / 390px" body="One decision column, horizontal rival rail, sticky commit action." /><MiniRule title="Tablet / 768px" body="Two-column actions where readable; details remain secondary." /><MiniRule title="Desktop / 1440px" body="Vault and action dock share the viewport; maximum line length stays controlled." /></div>
           </Specimen>
 
           <Specimen {...specimenProps('motion')} label="System" title="Motion, sound, and accessibility" description="Feedback can enrich a result but must never carry required information by itself.">
@@ -484,7 +578,7 @@ export default function DesignSystemPage() {
 
           <Specimen {...specimenProps('voice')} label="System" title="Voice, terminology, and trust" description="Player language is terse, concrete, and theatrical without hiding mechanics or inventing proof.">
             <div className="overflow-x-auto rounded border border-vault-border" role="region" aria-label="Voice guidelines" tabIndex={0}><table className="w-full min-w-[680px] text-left"><thead className="bg-vault-dark"><tr><th className="p-3 label">Rule</th><th className="p-3 label text-oxide-green">Use</th><th className="p-3 label text-signal-red">Avoid</th></tr></thead><tbody className="divide-y divide-vault-border">{VOICE_RULES.map((rule) => <tr key={rule.label}><td className="p-3 font-display text-lg uppercase text-vault-text">{rule.label}</td><td className="p-3 text-sm text-vault-text">{rule.good}</td><td className="p-3 text-sm text-vault-text-dim line-through decoration-signal-red/70">{rule.avoid}</td></tr>)}</tbody></table></div>
-            <div className="mt-4 flex flex-wrap gap-2">{['Operation', 'Round', 'Vault', 'Player', 'Tool', 'Sabotage', 'Replay', 'Agent', 'Live table'].map((term) => <span key={term} className="rounded border border-vault-border bg-vault-dark/50 px-3 py-2 font-mono text-xs uppercase tracking-[0.12em] text-vault-text">{term}</span>)}</div>
+            <div className="mt-4 flex flex-wrap gap-2">{['Operation', 'Round', 'Vault', 'Player', 'Tool', 'Sabotage', 'Replay', 'Agent', 'Live table'].map((term) => <span key={term} className="rounded border border-vault-border bg-vault-dark/50 px-3 py-2 font-mono text-xs uppercase tracking-interface text-vault-text">{term}</span>)}</div>
           </Specimen>
 
           <Specimen {...specimenProps('assets')} label="System" title="Visual asset library" description="Generated atmosphere establishes the world; real interface states remain the product proof.">
@@ -494,7 +588,7 @@ export default function DesignSystemPage() {
               <Metric label="Reusable parts" value={ART_PIPELINE_SUMMARY.partsReady} tone="blue" />
               <Metric label="Asset families" value={ART_PIPELINE_SUMMARY.families} tone="amber" />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{ASSET_LIBRARY.map((asset) => <article key={asset.id} className={`overflow-hidden rounded border bg-vault-dark/40 ${asset.status === 'needs-revision' ? 'border-signal-red/55' : 'border-vault-border'}`}><img src={asset.src} alt={asset.alt} className={`aspect-video w-full ${asset.family === 'transparent-part' ? 'bg-[#10131a] object-contain p-3' : 'object-cover'}`} loading="lazy" /><div className="p-3"><div className="flex items-start justify-between gap-3"><h3 className="font-display text-xl uppercase text-vault-text">{asset.label}</h3><span className="font-mono text-[9px] uppercase text-tungsten">{asset.kind}</span></div><p className="mt-1 text-sm text-vault-text-dim">{asset.role}</p><p className={`mt-2 font-mono text-xs uppercase tracking-[0.1em] ${asset.status === 'needs-revision' ? 'text-signal-red' : 'text-oxide-green'}`}>{asset.status === 'needs-revision' ? 'Needs visual revision' : `Joy target: ${asset.joy}`}</p>{asset.reviewNote && <p className="mt-2 text-sm leading-5 text-signal-red">{asset.reviewNote}</p>}<code className="mt-2 block text-[10px] text-blueprint">{asset.src}</code></div></article>)}</div>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{ASSET_LIBRARY.map((asset) => <article key={asset.id} className={`overflow-hidden rounded border bg-vault-dark/40 ${asset.status === 'needs-revision' ? 'border-signal-red/55' : 'border-vault-border'}`}><img src={asset.src} alt={asset.alt} className={`aspect-video w-full ${asset.family === 'transparent-part' ? 'bg-[#10131a] object-contain p-3' : 'object-cover'}`} loading="lazy" /><div className="p-3"><div className="flex items-start justify-between gap-3"><h3 className="font-display text-xl uppercase text-vault-text">{asset.label}</h3><span className="font-mono text-micro uppercase text-tungsten">{asset.kind}</span></div><p className="mt-1 text-sm text-vault-text-dim">{asset.role}</p><p className={`mt-2 font-mono text-xs uppercase tracking-interface ${asset.status === 'needs-revision' ? 'text-signal-red' : 'text-oxide-green'}`}>{asset.status === 'needs-revision' ? 'Needs visual revision' : `Joy target: ${asset.joy}`}</p>{asset.reviewNote && <p className="mt-2 text-sm leading-5 text-signal-red">{asset.reviewNote}</p>}<code className="mt-2 block text-micro text-blueprint">{asset.src}</code></div></article>)}</div>
             <div className="mt-5 grid gap-4 xl:grid-cols-2">
               <div className="surface-card">
                 <p className="label">Family grammar</p>
@@ -502,7 +596,7 @@ export default function DesignSystemPage() {
               </div>
               <div className="surface-card">
                 <p className="label">Reusable part kit</p>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">{ART_PART_QUEUE.map((part) => <div key={part.id} className="rounded border border-blueprint/30 bg-blueprint/5 p-3"><h3 className="font-display text-lg uppercase text-vault-text">{part.label}</h3><p className="mt-1 text-sm text-vault-text-dim">{part.role}</p><p className="mt-2 font-mono text-xs uppercase tracking-[0.1em] text-oxide-green">{part.status === 'accepted' ? 'Accepted master' : 'Generation ready'} / Joy: {part.joy}</p><code className="mt-2 block break-all text-xs text-blueprint">{part.source}</code></div>)}</div>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">{ART_PART_QUEUE.map((part) => <div key={part.id} className="rounded border border-blueprint/30 bg-blueprint/5 p-3"><h3 className="font-display text-lg uppercase text-vault-text">{part.label}</h3><p className="mt-1 text-sm text-vault-text-dim">{part.role}</p><p className="mt-2 font-mono text-xs uppercase tracking-interface text-oxide-green">{part.status === 'accepted' ? 'Accepted master' : 'Generation ready'} / Joy: {part.joy}</p><code className="mt-2 block break-all text-xs text-blueprint">{part.source}</code></div>)}</div>
               </div>
             </div>
             <RulePair good="Atmosphere frames the choice; screenshots and replays prove the product." avoid="Never present generated art as a real match capture or player story." />
@@ -554,7 +648,7 @@ function Specimen({
       <header className="mb-5 flex flex-col gap-4 border-b border-vault-border pb-4 lg:flex-row lg:items-start lg:justify-between"><div className="max-w-3xl"><p className="label">{label} / {id}</p><h2 className="mt-2 font-display text-3xl text-vault-text">{title}</h2><p className="mt-2 text-sm leading-6 text-vault-text-dim">{description}</p></div><div className="flex shrink-0 flex-wrap gap-2" role="group" aria-label={`${title} review status`}><button type="button" aria-pressed={status === 'approved'} onClick={() => onStatusChange('approved')} className={status === 'approved' ? 'ds-review-button ds-review-approved' : 'ds-review-button'}>Approve</button><button type="button" aria-pressed={status === 'needs-work'} onClick={() => onStatusChange('needs-work')} className={status === 'needs-work' ? 'ds-review-button ds-review-needs-work' : 'ds-review-button'}>Needs work</button></div></header>
       {children}
       <details className="ds-section-review mt-5 rounded border border-vault-border bg-vault-dark/40 p-3">
-        <summary className="cursor-pointer font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
+        <summary className="cursor-pointer font-mono text-xs uppercase tracking-label text-vault-text-dim">
           Section critique {priority ? `/ ${priority}` : ''}{note ? ' / note saved' : ''}
         </summary>
         <div className="mt-3 grid gap-3 md:grid-cols-[180px_minmax(0,1fr)]">
@@ -591,7 +685,7 @@ function Metric({ label, value, tone = 'amber' }) {
 }
 
 function StateList({ title, items, prefix }) {
-  return <div className="rounded border border-vault-border bg-vault-panel/55 p-3"><h3 className="font-display text-sm uppercase tracking-[0.14em] text-vault-text">{title}</h3><div className="mt-3 grid gap-2">{items.map((item) => <div key={item.id} className="rounded border border-vault-border bg-vault-dark/45 px-2.5 py-2"><p className="font-mono text-xs uppercase text-vault-text">{item.label}</p><p className="mt-1 break-all font-mono text-[10px] text-vault-text-dim">{prefix}="{item.id}"</p></div>)}</div></div>;
+  return <div className="rounded border border-vault-border bg-vault-panel/55 p-3"><h3 className="font-display text-sm uppercase tracking-label text-vault-text">{title}</h3><div className="mt-3 grid gap-2">{items.map((item) => <div key={item.id} className="rounded border border-vault-border bg-vault-dark/45 px-2.5 py-2"><p className="font-mono text-xs uppercase text-vault-text">{item.label}</p><p className="mt-1 break-all font-mono text-micro text-vault-text-dim">{prefix}="{item.id}"</p></div>)}</div></div>;
 }
 
 function JourneyCard({ step, title, tone = 'neutral', children }) {

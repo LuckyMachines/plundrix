@@ -2,6 +2,8 @@ out/
 cache/
 broadcast/
 node_modules/
+**/__pycache__/
+*.py[cod]
 .env
 **/.DS_Store
 anvil.log

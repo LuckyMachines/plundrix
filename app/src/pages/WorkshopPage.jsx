@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
 import GadgetVisual from '../components/workshop/GadgetVisual';
@@ -71,6 +71,10 @@ export default function WorkshopPage() {
   const selectedMastery = getGadgetMastery(localInventory, selected.chassisId);
   const equippedMastery = equipped ? getGadgetMastery(localInventory, equipped.chassisId) : null;
   const setters = { setChassis, setFinish, setCalibration };
+
+  useEffect(() => {
+    trackProductEvent('Workshop Viewed', { mode: onchainMode ? 'onchain' : 'local' });
+  }, [onchainMode]);
 
   const families = useMemo(() => GADGET_CHASSIS.filter((chassis) => (
     protocolFilter === 'all' || chassis.protocol === protocolFilter
@@ -184,18 +188,18 @@ export default function WorkshopPage() {
         <div className="relative grid gap-8 p-6 sm:p-9 lg:grid-cols-[minmax(0,1fr)_390px] lg:p-12">
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <p className="font-mono text-xs uppercase tracking-[0.24em] text-oxide-green">Operator workshop</p>
-              <span className={`border px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] ${onchainMode ? 'border-oxide-green/50 text-oxide-green' : 'border-blueprint/50 text-[#79AEE9]'}`}>
+              <p className="font-mono text-xs uppercase tracking-beacon text-oxide-green">Operator workshop</p>
+              <span className={`border px-2 py-1 font-mono text-xs uppercase tracking-interface ${onchainMode ? 'border-oxide-green/50 text-oxide-green' : 'border-blueprint/50 text-[#79AEE9]'}`}>
                 {onchainReady ? 'Onchain collection' : onchainMode ? 'Checking onchain link' : 'Local practice collection'}
               </span>
             </div>
-            <h1 className="mt-4 max-w-4xl font-display text-5xl font-bold uppercase leading-[0.88] text-vault-text sm:text-7xl">Ten signature gadgets. Your build.</h1>
+            <h1 className="mt-4 max-w-4xl font-display text-4xl font-bold uppercase leading-display text-vault-text sm:text-7xl">Ten signature gadgets. Your build.</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-vault-text-dim">
-              Choose a gameplay-distinct chassis, then shape its appearance with ten material finishes and twelve visible calibration modules. That creates <strong className="font-normal text-tungsten-bright">{GADGET_BLUEPRINT_COUNT.toLocaleString()} stable configurations</strong> without pretending they are 1,200 different inventions.
+              Choose one of ten gameplay powers, then shape it with ten finishes and twelve visible calibrations. <strong className="font-normal text-tungsten-bright">Ten powers. {GADGET_BLUEPRINT_COUNT.toLocaleString()} builds.</strong>
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <a href="#families" className="inline-flex min-h-[50px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-vault-dark">Choose a chassis</a>
-              <Link to={onchainMode ? '/' : '/play?mode=tactical'} className="inline-flex min-h-[50px] items-center border border-tungsten/50 px-5 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">{onchainMode ? 'Enter live vault' : 'Test equipped build'}</Link>
+              <a href="#families" className="inline-flex min-h-[50px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">Choose a chassis</a>
+              <Link to={onchainMode ? '/' : '/play?mode=tactical'} className="inline-flex min-h-[50px] items-center border border-tungsten/50 px-5 font-mono text-xs uppercase tracking-label text-tungsten">{onchainMode ? 'Enter live vault' : 'Test equipped build'}</Link>
             </div>
           </div>
 
@@ -204,7 +208,7 @@ export default function WorkshopPage() {
             {equipped ? <>
               <GadgetVisual gadget={equipped} masteryLevel={equippedMastery.level} className="mt-3 min-h-[210px]" />
               <div className="mt-4 flex items-start justify-between gap-3"><div><h2 className="font-display text-2xl uppercase text-vault-text">{equipped.name}</h2><p className="mt-1 text-sm text-vault-text-dim">{equipped.effectName}: {equipped.protocolLabel}</p></div><span className="font-mono text-xs text-vault-text-dim">{equipped.serial}</span></div>
-              <div className="mt-4 border-t border-vault-border pt-4"><div className="flex items-center justify-between gap-3"><p className="font-mono text-[9px] uppercase tracking-[.14em] text-oxide-green">Device mastery {equippedMastery.level} / {equippedMastery.title}</p><span className="font-mono text-[9px] text-vault-text-dim">{equippedMastery.xp} XP</span></div><div className="mt-2 h-1.5 bg-vault-surface"><div className="h-full bg-oxide-green" style={{ width: `${equippedMastery.progress}%` }} /></div></div>
+              <div className="mt-4 border-t border-vault-border pt-4"><div className="flex items-center justify-between gap-3"><p className="font-mono text-micro uppercase tracking-label text-oxide-green">Device mastery {equippedMastery.level} / {equippedMastery.title}</p><span className="font-mono text-micro text-vault-text-dim">{equippedMastery.xp} XP</span></div><div className="mt-2 h-1.5 bg-vault-surface"><div className="h-full bg-oxide-green" style={{ width: `${equippedMastery.progress}%` }} /></div></div>
             </> : <div className="grid min-h-[250px] place-content-center text-center"><h2 className="font-display text-3xl uppercase text-vault-text">No build equipped</h2><p className="mt-3 text-sm text-vault-text-dim">Choose one below.</p></div>}
           </article>
         </div>
@@ -223,6 +227,7 @@ export default function WorkshopPage() {
             </article>
           ))}
         </div>
+        {!onchainMode && inventory.craftedCount === 0 && <p className="mt-4 border-l-2 border-oxide-green bg-oxide-green/5 px-4 py-3 text-sm leading-6 text-vault-text-dim">Your starter salvage supports a deliberate first build, while every one of the 1,200 configurations remains available to preview. Play operations to target more material: Pick favors cogs, Search favors glass, and Sabotage favors catalyst.</p>}
       </section>
 
       <section id="families" className="mt-6 scroll-mt-24 border border-vault-border bg-vault-surface p-5 sm:p-7">
@@ -262,20 +267,20 @@ export default function WorkshopPage() {
               <p className="mt-4 text-sm leading-6 text-vault-text-dim">{selected.lore}</p>
               <div className="mt-5 border-l-2 border-oxide-green bg-oxide-green/5 p-4"><p className="font-mono text-xs uppercase text-oxide-green">Gameplay / {selected.effectName}</p><p className="mt-2 text-vault-text">{selected.protocolLabel}</p><p className="mt-2 font-mono text-xs uppercase text-vault-text-dim">Triggers: {selected.effectTrigger}</p></div>
               <div className="mt-3 border-l-2 border-blueprint bg-blueprint/5 p-4"><p className="font-mono text-xs uppercase text-[#79AEE9]">Appearance only</p><p className="mt-2 text-sm text-vault-text-dim">{selected.finishLabel} changes material treatment. {selected.calibrationLabel} adds the visible {selected.calibrationModule.toLowerCase()}. Neither changes hidden match math.</p></div>
-              <div className="mt-3 border-l-2 border-tungsten bg-tungsten/5 p-4"><div className="flex justify-between gap-3"><p className="font-mono text-xs uppercase text-tungsten">Device mastery {selectedMastery.level} / {selectedMastery.title}</p><span className="font-mono text-xs text-vault-text-dim">{selectedMastery.xp} XP</span></div><div className="mt-3 h-1.5 bg-vault-dark"><div className="h-full bg-tungsten" style={{ width: `${selectedMastery.progress}%` }} /></div><p className="mt-3 text-xs text-vault-text-dim">{selectedMastery.activations} signature activations / {selectedMastery.wins} wins / {selectedMastery.runs} recorded runs. Device-local mastery changes the maker mark, never the odds.</p></div>
+              <div className="mt-3 border-l-2 border-tungsten bg-tungsten/5 p-4"><div className="flex justify-between gap-3"><p className="font-mono text-xs uppercase text-tungsten">Device mastery {selectedMastery.level} / {selectedMastery.title}</p><span className="font-mono text-xs text-vault-text-dim">{selectedMastery.xp} XP</span></div><div className="mt-3 h-1.5 bg-vault-dark"><div className="h-full bg-tungsten" style={{ width: `${selectedMastery.progress}%` }} /></div><p className="mt-3 text-xs text-vault-text-dim">Cosmetic unlocked: {selectedMastery.reward}. {selectedMastery.activations} signature activations / {selectedMastery.wins} wins / {selectedMastery.runs} recorded runs. Mastery never changes the odds.</p></div>
             </div>
           </div>
 
           <div className="space-y-5">
             <fieldset className="border border-vault-border bg-vault-dark/35 p-4">
-              <legend className="px-2 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">2 / Material finish</legend>
+              <legend className="px-2 font-mono text-xs uppercase tracking-label text-tungsten">2 / Material finish</legend>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                 {MATERIAL_FINISHES.map((finish) => <button key={finish.id} type="button" aria-pressed={finishId === finish.id} onClick={() => setFinish(finish.id)} className={`min-h-[64px] border p-2 text-left ${finishId === finish.id ? 'border-[var(--swatch)] bg-white/5' : 'border-vault-border'}`} style={{ '--swatch': finish.color }}><span className="mb-2 block h-2 w-full" style={{ background: `linear-gradient(90deg, ${finish.shadow}, ${finish.color})` }} /><span className="font-mono text-xs uppercase text-vault-text">{finish.label}</span></button>)}
               </div>
             </fieldset>
 
             <fieldset className="border border-vault-border bg-vault-dark/35 p-4">
-              <legend className="px-2 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">3 / Calibration module</legend>
+              <legend className="px-2 font-mono text-xs uppercase tracking-label text-tungsten">3 / Calibration module</legend>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {CALIBRATIONS.map((calibration) => <button key={calibration.id} type="button" aria-pressed={calibrationId === calibration.id} onClick={() => setCalibration(calibration.id)} className={`min-h-[68px] border p-3 text-left ${calibrationId === calibration.id ? 'border-oxide-green bg-oxide-green/10' : 'border-vault-border'}`}><span className="font-display text-lg uppercase text-vault-text">{calibration.label}</span><span className="mt-1 block text-xs text-vault-text-dim">{calibration.module}</span></button>)}
               </div>

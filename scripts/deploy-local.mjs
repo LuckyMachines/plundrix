@@ -94,6 +94,8 @@ function writeAppEnvLocal(contractAddress, workshopAddress) {
   content = upsertEnv(content, 'VITE_CONTRACT_ADDRESS', contractAddress);
   content = upsertEnv(content, 'VITE_WORKSHOP_ADDRESS', workshopAddress);
   content = upsertEnv(content, 'VITE_FOUNDRY_RPC_URL', anvilRpcUrl);
+  content = upsertEnv(content, 'VITE_ENABLE_NEXT_RULES', 'true');
+  content = upsertEnv(content, 'VITE_ENABLE_TABLE_PRESSURE', 'true');
   writeFileSync(envLocalPath, content);
 }
 

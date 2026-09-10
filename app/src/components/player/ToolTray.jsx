@@ -26,7 +26,7 @@ export default function ToolTray({ toolCount = 0 }) {
               />
             </div>
             <span className={`
-              font-mono text-[11px] uppercase leading-none
+              font-mono text-micro uppercase leading-none
               ${filled ? 'text-vault-text-dim' : 'text-vault-text-dim/30'}
             `}>
               {TOOL_NAMES[i]?.split(' ').pop() || `T${i + 1}`}

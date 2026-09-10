@@ -201,16 +201,61 @@ export default function InstantPlayPage() {
   const leader = state.players.reduce((current, candidate) => (
     candidate.locksCracked > current.locksCracked ? candidate : current
   ), state.players[0]);
-  const threatPercent = Math.min(96, 18 + ((state.currentRound - 1) * 9) + (leader.locksCracked * 15));
-  const threatLabel = threatPercent >= 70 ? 'High' : threatPercent >= 38 ? 'Moderate' : 'Low';
+  const leaderLocks = leader.locksCracked;
+  const leadersAtTop = state.players.filter((candidate) => candidate.locksCracked === leaderLocks);
+  const lockGap = Math.max(0, leaderLocks - player.locksCracked);
+  const pressurePercent = Math.round((leaderLocks / state.rules.totalLocks) * 100);
+  const pressureLabel = leaderLocks === 0 || leadersAtTop.length > 1
+    ? 'Table even'
+    : leader.id === player.id ? 'You lead' : `${lockGap} ${lockGap === 1 ? 'lock' : 'locks'} behind`;
+  const pressureDetail = leaderLocks === 0
+    ? 'No locks cracked yet'
+    : leader.id === player.id && leadersAtTop.length === 1
+      ? `You set the pace / ${leaderLocks} of ${state.rules.totalLocks}`
+      : `${leader.name} leads / ${leaderLocks} of ${state.rules.totalLocks}`;
   const operationObjectives = [
-    { label: 'Collect intel', complete: player.tools > 0 },
-    { label: 'Reach the vault', complete: player.locksCracked > 0 },
-    { label: 'Extract safely', complete: false },
+    { label: `Crack ${state.rules.totalLocks} vault locks`, complete: player.locksCracked >= state.rules.totalLocks },
+    { label: 'Build a tool advantage', complete: player.tools > Math.max(...state.players.slice(1).map((candidate) => candidate.tools)) },
+    { label: 'Move ahead of every rival', complete: player.locksCracked > Math.max(...state.players.slice(1).map((candidate) => candidate.locksCracked)) },
   ];
   const tablePressure = getTablePressure(player, state, state.rules);
   const winner = state.players.find((candidate) => candidate.id === state.winner);
-  const preview = actionPreview(state, selectedAction, target);
+  const actionPreviews = {
+    [SIM_ACTION.PICK]: actionPreview(state, SIM_ACTION.PICK, target),
+    [SIM_ACTION.SEARCH]: actionPreview(state, SIM_ACTION.SEARCH, target),
+    [SIM_ACTION.SABOTAGE]: actionPreview(state, SIM_ACTION.SABOTAGE, target),
+  };
+  const actionChoices = [
+    {
+      id: SIM_ACTION.PICK,
+      identity: 'pick',
+      label: 'Pick',
+      metric: `${actionPreviews[SIM_ACTION.PICK].match(/^\d+%/)?.[0] || getPickChance(player, state.rules, state)} / ${tablePressure.locksOnSuccess} ${tablePressure.locksOnSuccess === 1 ? 'lock' : 'locks'}`,
+      shortDetail: 'Pressure the vault',
+      detail: actionPreviews[SIM_ACTION.PICK],
+      image: ACTION_ART[SIM_ACTION.PICK],
+    },
+    {
+      id: SIM_ACTION.SEARCH,
+      identity: 'search',
+      label: 'Search',
+      metric: `${actionPreviews[SIM_ACTION.SEARCH].match(/^\d+%/)?.[0] || getSearchChance(player, state.rules)} / tools`,
+      shortDetail: 'Build future odds',
+      detail: actionPreviews[SIM_ACTION.SEARCH],
+      image: ACTION_ART[SIM_ACTION.SEARCH],
+    },
+    {
+      id: SIM_ACTION.SABOTAGE,
+      identity: 'sabotage',
+      label: 'Sabotage',
+      metric: `${state.players.find((candidate) => candidate.id === target)?.name || 'Choose rival'} / stun`,
+      shortDetail: 'Disrupt a rival',
+      detail: actionPreviews[SIM_ACTION.SABOTAGE],
+      image: ACTION_ART[SIM_ACTION.SABOTAGE],
+    },
+  ];
+  const selectedActionChoice = actionChoices.find((action) => action.id === selectedAction) || actionChoices[0];
+  const preview = selectedActionChoice.detail;
   const lastRound = state.roundHistory.at(-1);
   const latestOutcomes = useMemo(
     () => (lastRound?.events || []).filter((event) => event.type === 'ActionOutcome'),
@@ -495,8 +540,8 @@ export default function InstantPlayPage() {
       />
       {state.state === 'ACTIVE' && (
         <div className="instant-mobile-command" role="region" aria-label="Selected action command">
-          <a href="#instant-actions" className="instant-mobile-command__selection">
-            <span>Selected action</span>
+          <a href="#instant-vault-actions" className="instant-mobile-command__selection">
+            <span>{selectedActionChoice.metric}</span>
             <strong>{ACTION_LABELS[selectedAction]} / change</strong>
           </a>
           <button
@@ -528,7 +573,7 @@ export default function InstantPlayPage() {
           <section className={`instant-round-board instant-heist-console caper-layer ${isResolving ? 'instant-resolving' : ''}`} aria-live="polite">
             <header className="instant-round-header flex flex-wrap items-center justify-between gap-3 border-b border-vault-border px-5 py-4">
               <div>
-                <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Active operation / R{state.currentRound} / {state.rules.totalLocks - player.locksCracked} locks / {threatPercent}% heat</p>
+                <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Active operation / R{state.currentRound} / {player.locksCracked} of {state.rules.totalLocks} locks / {pressureLabel}</p>
                 <p className="mt-1 font-display text-2xl uppercase text-vault-text">Nightfall vault</p>
               </div>
               <dl className="instant-operation-metrics" aria-label="Live operation status">
@@ -551,8 +596,11 @@ export default function InstantPlayPage() {
                   round={state.currentRound}
                   modeLabel={MODES[mode].label}
                   objectives={operationObjectives}
-                  threatPercent={threatPercent}
-                  threatLabel={threatLabel}
+                  pressurePercent={pressurePercent}
+                  pressureValue={leaderLocks}
+                  pressureMax={state.rules.totalLocks}
+                  pressureLabel={pressureLabel}
+                  pressureDetail={pressureDetail}
                 />
                 <CrewReadinessRail players={state.players} totalLocks={state.rules.totalLocks} />
               </div>
@@ -562,8 +610,12 @@ export default function InstantPlayPage() {
                   cracked={player.locksCracked}
                   total={state.rules.totalLocks}
                   resolving={isResolving}
-                  selectedAction={ACTION_LABELS[selectedAction].toLowerCase()}
-                  label="Nightfall vault / live route"
+                  selectedAction={selectedAction}
+                  actions={actionChoices}
+                  players={state.players}
+                  latestOutcome={latestOutcomes.find((event) => event.actor === player.id)}
+                  onSelectAction={setSelectedAction}
+                  label="Nightfall vault"
                 />
                 <section className="instant-tool-rack" aria-label="Tools and gadgets">
                   <div className="instant-tool-rack__heading"><span>Tools &amp; gadgets</span><strong>{player.tools} carried</strong></div>
@@ -583,9 +635,12 @@ export default function InstantPlayPage() {
               <OperationFile
                 player={player}
                 leader={leader}
+                tablePosition={pressureLabel}
                 totalLocks={state.rules.totalLocks}
+                maxTools={state.rules.maxTools}
                 selectedActionLabel={ACTION_LABELS[selectedAction]}
-                materials={CRAFTING_MATERIALS}
+                selectedActionMetric={selectedActionChoice.metric}
+                selectedActionPreview={preview}
                 round={state.currentRound}
               />
             </div>
@@ -605,24 +660,20 @@ export default function InstantPlayPage() {
               )}
               <div className="instant-action-row">
                 <div className="instant-action-options mt-4 grid gap-3 md:grid-cols-3">
-                  {[
-                    [SIM_ACTION.PICK, 'Pick', `${getPickChance(player, state.rules, state)}% / ${tablePressure.locksOnSuccess} ${tablePressure.locksOnSuccess === 1 ? 'lock' : 'locks'}`, tablePressure.pickBonus ? `Table pressure adds ${tablePressure.pickBonus} points.` : 'Attack the next lock.'],
-                    [SIM_ACTION.SEARCH, 'Search', `${getSearchChance(player, state.rules)}% base`, 'Build future Pick odds.'],
-                    [SIM_ACTION.SABOTAGE, 'Sabotage', 'One-round stun', 'Stop a rival and steal one tool when available.'],
-                  ].map(([id, label, metric, detail], index) => (
+                  {actionChoices.map((action, index) => (
                     <DecisionPlate
-                      key={id}
-                      action={id}
-                      identity={label.toLowerCase()}
-                      label={label}
-                      metric={metric}
-                      detail={detail}
-                      image={ACTION_ART[id]}
+                      key={action.id}
+                      action={action.id}
+                      identity={action.identity}
+                      label={action.label}
+                      metric={action.metric}
+                      detail={action.detail}
+                      image={action.image}
                       index={index}
-                      selected={selectedAction === id}
-                      committed={isResolving && selectedAction === id}
+                      selected={selectedAction === action.id}
+                      committed={isResolving && selectedAction === action.id}
                       disabled={isResolving}
-                      onSelect={() => setSelectedAction(id)}
+                      onSelect={() => setSelectedAction(action.id)}
                     />
                   ))}
                 </div>

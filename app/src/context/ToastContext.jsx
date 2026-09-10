@@ -131,7 +131,7 @@ function Toast({ toast, onDismiss }) {
         </span>
         <div className="flex-1 min-w-0">
           {toast.title && (
-            <p className={`font-mono text-xs font-semibold uppercase tracking-[0.18em] ${s.title}`}>
+            <p className={`font-mono text-xs font-semibold uppercase tracking-brand ${s.title}`}>
               {toast.title}
             </p>
           )}
@@ -141,7 +141,7 @@ function Toast({ toast, onDismiss }) {
           {toast.action && (
             <button
               onClick={() => { toast.action.onClick(); dismiss(); }}
-              className={`mt-2 font-mono text-[10px] uppercase tracking-[0.2em] ${s.icon} hover:brightness-125 transition-all`}
+              className={`mt-2 font-mono text-micro uppercase tracking-brand ${s.icon} hover:brightness-125 transition-all`}
             >
               {toast.action.label}
             </button>

@@ -65,7 +65,7 @@ export default function GameBrowser() {
     <div className="border border-vault-border rounded bg-vault-surface">
       {/* Header bar */}
       <div className="border-b border-vault-border px-6 py-4 flex items-center justify-between">
-        <h3 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+        <h3 className="font-mono text-xs tracking-beacon text-vault-text-dim uppercase">
           Available now
         </h3>
 
@@ -110,7 +110,7 @@ export default function GameBrowser() {
             You can still learn the game and run a complete match in the practice table.
           </p>
           {import.meta.env.DEV && (
-            <p className="mt-2 font-mono text-[10px] text-vault-text-dim">{configError}</p>
+            <p className="mt-2 font-mono text-micro text-vault-text-dim">{configError}</p>
           )}
         </div>
       )}
@@ -118,7 +118,7 @@ export default function GameBrowser() {
       {/* Create Game Modal */}
       <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} ariaLabel="Create a live operation">
           <div className="border border-vault-border rounded bg-vault-panel p-6 w-full space-y-4">
-            <h3 className="font-mono text-xs tracking-[0.3em] text-tungsten uppercase">
+            <h3 className="font-mono text-xs tracking-beacon text-tungsten uppercase">
               New Operation
             </h3>
 
@@ -224,7 +224,7 @@ export default function GameBrowser() {
           <div className="border border-oxide-green/25 bg-oxide-green/5 px-5 py-9 text-center">
             <p className="font-display text-2xl uppercase text-vault-text">The first table is yours</p>
             <p className="mt-2 text-sm text-vault-text-dim">Create a free live operation above, or learn the vault in Instant Play.</p>
-            <Link to="/play" className="mt-4 inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Play instantly</Link>
+            <Link to="/play" className="mt-4 inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-label text-tungsten">Play instantly</Link>
           </div>
         ) : usingCatalog ? (
           <div className="space-y-6">
@@ -238,12 +238,12 @@ export default function GameBrowser() {
               <div className="border border-oxide-green/25 bg-oxide-green/5 px-5 py-7 text-center">
                 <p className="font-display text-2xl uppercase text-vault-text">No live tables right now</p>
                 <p className="mt-2 text-sm text-vault-text-dim">Create a free table or warm up instantly while the vault is quiet.</p>
-                <Link to="/play" className="mt-4 inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Play instantly</Link>
+                <Link to="/play" className="mt-4 inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-label text-tungsten">Play instantly</Link>
               </div>
             )}
             {completedGames.length > 0 && (
               <details className="border-t border-vault-border pt-5">
-                <summary className="min-h-[44px] cursor-pointer font-mono text-xs uppercase tracking-[0.16em] text-vault-text-dim hover:text-vault-text">
+                <summary className="min-h-[44px] cursor-pointer font-mono text-xs uppercase tracking-label text-vault-text-dim hover:text-vault-text">
                   Recent completed operations ({completedGames.length} shown)
                 </summary>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -251,7 +251,7 @@ export default function GameBrowser() {
                     <GameCard key={game.gameId} gameId={game.gameId} summary={game} loadPlayers={false} />
                   ))}
                 </div>
-                <Link to="/sessions?state=complete" className="mt-4 inline-flex min-h-[44px] items-center font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Browse operation history -&gt;</Link>
+                <Link to="/sessions?state=complete" className="mt-4 inline-flex min-h-[44px] items-center font-mono text-xs uppercase tracking-label text-tungsten">Browse operation history -&gt;</Link>
               </details>
             )}
           </div>
@@ -272,7 +272,7 @@ export default function GameBrowser() {
       </div>
       ) : (
         <div className="px-5 py-5">
-          <Link to="/play" className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-[0.14em] text-tungsten hover:bg-tungsten/10">
+          <Link to="/play" className="inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-label text-tungsten hover:bg-tungsten/10">
             Play instantly
           </Link>
         </div>

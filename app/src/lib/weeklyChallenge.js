@@ -14,6 +14,9 @@ export function localWeeklyChallenge(date = new Date()) {
     { modifier: 'Hot Locks', note: 'Pick odds start 5 points lower. Scores run 10% hotter.' },
     { modifier: 'Loose Wires', note: 'Sabotage protection cools down immediately.' },
     { modifier: 'Deep Pockets', note: 'The run opens with one carried tool.' },
+    { modifier: 'Searchlight', note: 'Search odds gain 10 points in every vault.' },
+    { modifier: 'Long Fuse', note: 'Anti-chain-stun protection lasts one extra round.' },
+    { modifier: 'Brittle Seams', note: 'Table pressure cracks two locks when only one lock behind.' },
   ];
   const variant = variants[week % variants.length];
   return {

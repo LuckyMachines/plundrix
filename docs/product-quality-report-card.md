@@ -461,3 +461,195 @@ Overall grade: **A for deployment integrity; public source publication and a pos
 - Publish both new implementation sources through Sourcify or a supported explorer verifier.
 - Run one guarded FREE operation through the upgraded proxy with an equipped workshop gadget.
 - Set `VITE_WORKSHOP_ADDRESS` in each deployed frontend environment before enabling connected workshop actions.
+
+## v0.21.0 - Whole-loop consequence and comeback pass
+
+Date: 2026-09-07
+
+Overall grade: **A- for the implemented loop ecosystem; durable season storage, deployed next-rules configuration, and observed human evidence remain open.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Core table balance | A | A 10,000-game fresh-table run completed every game with 24.6%-25.4% seat win rates, 9.20 average rounds, and 2.1% runaways. Visible table pressure adds +6 Pick points per lock behind and creates a two-lock breach for deep or late-table trailers. |
+| Comeback counterplay | A | The 10,000-game asymmetric lab moved the starting leader from the 69% baseline to 42.6%; two trailing seats reached 36.9% and 18.6%, and runaways fell from 40% to 18.2%. The intentionally extreme zero-lock seat remains a low-probability recovery at 1.9%. |
+| Match consequence | A+ | Every completed Instant operation now saves its exact action transcript, links directly to replay, awards action-directed salvage, advances identity and rivalry state, and offers rematch, Career, Replay, and Workshop continuations. |
+| Career and economy | A | `/career` unifies local identity, rank, win rate, rivals, runs, collection, mastery, replays, and four next objectives. Fresh inventory is reduced from near-catalog abundance to a deliberate starter allowance while all 1,200 configurations remain previewable. |
+| Vault Run variety | A+ | Six persistent contraband choices, three explicit Heat states, route consequences, bounded round-two vendettas, revenge score objectives, run history, and personal bests make stages mechanically cumulative. |
+| Weekly integrity | A- | Six rotating modifiers and exact deterministic replay proofs replace trusted score claims. The service rebuilds every stage and verifies identity, rules, loadouts, routes, contraband progression, outcomes, rounds, and score. Storage remains process-memory beta until a production database binding exists. |
+| Live beta honesty | A- | One capability rail reports core contract, Workshop, paced-rule, table-pressure, and one-confirmation relay readiness from runtime configuration. Lobby invitations and waiting guidance close the social handoff. The current public environment must still configure the Workshop, pressure rules, and session relay before those capabilities can say ready. |
+| Technical reliability | A | 12 agent-service tests, 54 Solidity tests, 98 JavaScript tests, 5 tournament tests, production build, SEO checks, exact-replay tests, inventory tests, and 37 active Chromium journeys pass. Production game runtime is 24,194 bytes, leaving 382 bytes below EIP-170. |
+
+### Remaining A+ evidence
+
+- Bind the weekly board to durable production storage and retain the exact-replay verifier at the write boundary.
+- Deploy and verify the next-rules game implementation on Sepolia, configure the Workshop address in the frontend, and enable the session relay only after a funded end-to-end rehearsal.
+- Observe first-time and returning players through the new Career, contraband, pressure, and reward explanations before making another balance change.
+
+## v0.22.0 - Solo continuous-improvement loop
+
+Date: 2026-09-07
+
+Overall grade: **A for process design; F for real evidence coverage until the first current sessions and production baseline are recorded.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Solo sustainability | A | One active-experiment limit, a 30-minute weekly review, one generated briefing, and one next action replace parallel backlogs and dashboard maintenance. |
+| Evidence integrity | A | T0 opinion, T1 simulation, T2 automated proof, T3 observed-human evidence, and T4 production behavior are explicit. T3 and T4 are rejected without affirmative provenance. |
+| Decision memory | A | One versioned ledger connects hypotheses, metrics, guardrails, evidence, build/ruleset attribution, and ship/iterate/revert/stop decisions. |
+| Player measurement | B | Nine activation, comprehension, retention, reliability, and release metrics now have targets and minimum samples. Current evidence coverage is deliberately 0/9 rather than inferred from simulations. |
+| Behavioral instrumentation | A- | Product events carry schema, release, ruleset, experiment, variant, cohort, and bounded latency context without sending identity, wallet, seed, or free text. A real production baseline remains uncollected. |
+| Human observation | A- | The recorder now captures result comprehension, observed joy, returning-player status, timestamps, and explicit facilitator confirmation. Four current first-time sessions remain the next required action. |
+| Automated enforcement | A | Ledger validation, evidence rules, stale-review detection, WIP enforcement, product verification, release verification, tests, and a pull-request workflow are wired into repeatable commands. |
+
+### Stricter A+ bar
+
+- Complete four confirmed first-time observations and decide the active comprehension experiment.
+- Import at least 30 production Instant starts/completions and 50 anonymous return samples.
+- Demonstrate one full ledger cycle ending in a recorded ship, iterate, revert, or stop decision.
+- Review the metric set after four weeks and remove any measure that did not change a decision.
+
+## v0.23.0 - Solo UI evidence loop
+
+Date: 2026-09-08
+
+Overall grade: **A for automated UI governance; observed usability remains ungraded until current player sessions exist.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Canonical coverage | A | Twelve bounded player-facing states cover setup, active decisions, resolution, final briefing, Vault Run, Workshop, Career, replay, and local-chain lobby/play at desktop and mobile widths. |
+| Visual regression | A | Twenty-four deterministic Playwright references use a strict 0.2% default diff limit, controlled rendering, explicit masks, and reason-gated approval history. |
+| Reviewability | A+ | One command creates approved-left/current-right comparisons, an original-resolution contact sheet, HTML, Markdown, JSON, and per-render diagnostic evidence. |
+| Accessibility and geometry | A | Every canonical render passes serious/critical Axe checks, page overflow, visible-image loading, and focused action/player-container clipping checks. |
+| Responsive live play | A | Action controls and opponent summaries now respond to their actual container width; the desktop clipping found by the first review pass is fixed and regression-tested. |
+| Design-system maintainability | A- | Canonical color, typography, spacing, radius, and motion tokens now have one module and a governance test. The remaining large stylesheet should be split only when a real feature touches a coherent component family. |
+| Solo governance | A | The matrix is capped at 12 surfaces, links to the one-active-experiment ledger, supports targeted runs, and has a path-filtered Windows CI gate with retained evidence artifacts. |
+| Observed usability | N/A | Rendering evidence cannot establish comprehension, joy, or return intent. Four newcomer sessions and two returning-player sessions remain intentionally open. |
+
+### Stricter A+ bar
+
+- Complete four confirmed newcomer observations across setup, first action, resolution, and continuation.
+- Complete two returning-player observations after seven days.
+- Use those findings to make and record one ship, iterate, revert, or stop decision for the active experiment.
+- Retire any canonical surface or metric that has not changed a decision after four review cycles.
+
+## v0.24.0 - Decision-first game interface
+
+Date: 2026-09-08
+
+Overall grade: **A for the implemented interface and automated evidence; human usability and joy remain ungraded.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Mobile decision hierarchy | A | Instant and Vault Run compress status, rivals, and action choices so the current decision and commitment control appear in the first mobile viewport. |
+| Outcome comprehension | A | A causal resolution surface now names the result, actor, action, and consequence before presenting the next decision; final briefing no longer competes with stale round chrome. |
+| Connected play | A | Lobby readiness is written as a short launch sequence, with visible wallet actions both before joining and when a disconnected player reaches an action. |
+| Content priority | A | Career leads with objectives, Replays leads with visual stories, and route choices use distinct imagery plus an explicit mobile comparison cue. |
+| Continuation design | A | The final briefing establishes one primary rematch, one secondary replay, and a compact overflow for lower-priority destinations. |
+| Visual character | A- | Brighter, more distinct art treatment and tighter copy improve recognition and energy. Emotional response still requires observed players. |
+| Regression reliability | A+ | All 24 canonical desktop/mobile renders pass visual, Axe, overflow, image, and clipping gates. The full release suite passes 11/11 with zero failed or flaky checks. |
+| Observed usability | N/A | No comprehension, joy, or return claims are inferred from automated evidence. Four newcomers and two seven-day return sessions remain open. |
+
+### Stricter A+ bar
+
+- Observe four newcomers through setup, first action, resolution, and continuation.
+- Observe two players returning after seven days.
+- Establish production play, completion, replay, and error baselines with privacy-safe aggregate telemetry.
+- Use those findings to record a ship, iterate, revert, or stop decision for the active experiment.
+
+## v0.25.0 - Semantic layout and typography
+
+Date: 2026-09-08
+
+Overall grade: **A for the maintainable layout/type system and automated evidence; observed readability remains open.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Typography foundation | A | Seven semantic roles now govern family, size, weight, leading, tracking, casing, and measure. Barlow provides readable prose while the established condensed display and mono interface voices remain distinct. |
+| Layout composition | A | Page, stack, cluster, auto-grid, rail, and decision primitives centralize recurring composition without introducing another UI framework. |
+| Responsive resilience | A | Container-aware decision layouts and a dedicated 320/390-readable/768/1440 stress matrix cover long labels, dense values, narrow cards, and overflow behavior. |
+| Source consistency | A+ | A repository check rejects arbitrary pixel type sizes, arbitrary tracking or leading, un-tokenized CSS tracking, and type below the 12px floor. The migration leaves zero source violations. |
+| Runtime verification | A+ | Font loading, contracted-text overflow, prose measure, accessibility, page overflow, image loading, and component clipping are exercised alongside visual screenshots. |
+| Solo operability | A | The existing design-system route and review command gained these capabilities; no parallel SaaS, catalog, or review workflow was added. |
+| Visual evidence | A | 24/24 canonical journey renders and 4/4 type/layout stress renders pass after original-resolution inspection and reasoned approval. |
+| Observed readability | N/A | Automated evidence cannot prove scanning speed or comprehension. Four newcomer sessions and two returning-player sessions remain open. |
+
+### Stricter A+ bar
+
+- Confirm that four newcomers identify the primary action and explain the outcome without facilitation.
+- Validate readable mode with at least one player who regularly uses enlarged text.
+- Check two returning players after seven days for navigation and terminology recall.
+- Remove or merge any semantic role or primitive that does not reduce real maintenance work after four review cycles.
+
+## v0.26.0 - Authored caper interface system
+
+Date: 2026-09-08
+
+Overall grade: **A for implemented art direction and automated production evidence; human joy and comprehension remain ungraded.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Art-direction coherence | A | The approved synthesis is translated into a blueprint work surface, information plane, control plane, and dramatic overlay. The result preserves the central vault, mid-plane dossiers, near action cards, and restrained paper/brass language without becoming a fixed raster skin. |
+| Gameplay truth | A+ | Pick, Search, Sabotage, simultaneous reveal, probabilities, locks, tools, targets, and real continuation actions remain authoritative. Generated concept labels that implied nonexistent rules were excluded. |
+| Interaction states | A | Whole action plates expose stable ready, hover, focus, pressed, selected, committed, disabled, and unavailable behavior. Text tabs, tool silhouettes, geometry, and patterns supplement color. |
+| Responsive hierarchy | A | Desktop keeps vault, rivals, three actions, and commit in one viewport. Mobile keeps the vault and rival carousel near the top, exposes supporting intel in a dismissible drawer, and pins selected action, commit, and auto-play in the thumb zone. |
+| Design-system maintainability | A+ | Three reusable gameplay components, four surface tokens, shared live-game layers, and a 16-section living design system make the direction inspectable and extensible by one maintainer. No new production raster skin was added. |
+| Accessibility and resilience | A | Grayscale and protanopia/deuteranopia/tritanopia evidence preserves meaning; keyboard drawer dismissal, reduced motion, 12px minimum type, visible focus, target sizing, overflow, image, clipping, and serious/critical Axe checks pass. |
+| Visual evidence | A+ | Original-resolution reference/product comparison, relative-depth maps, color-vision contact sheet, written acceptance checklist, and reasoned visual approvals make the implementation auditable. All 28 canonical and type/layout renders pass. |
+| Release reliability | A+ | The complete improvement release reports 11/11 checks passing with zero failures and zero flakes, including contracts, agent, integration, tournament, production build, and browser journeys. |
+| Observed delight | N/A | The visual and technical system is ready to test, but no claim about joy, comprehension, or return intent is inferred without observed players. |
+
+### Stricter A+ bar
+
+- Observe four newcomers identify the primary action and explain the result without facilitation.
+- Include at least one player who regularly uses enlarged text.
+- Record whether action identity, rival recognition, delight, and desire for another run improve.
+- Use those observations to make one documented ship, iterate, revert, or stop decision.
+
+## v0.27.0 - Full improvement harness audit
+
+Date: 2026-09-08
+
+Overall grade: **A for local product and improvement-system reliability; Sepolia provenance and real-player evidence remain explicit blockers to a broader release claim.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Harness reliability | A+ | All 15 focused system suites passed. The canonical release harness passed 11/11 checks, including production build, contract/agent/integration/tournament tests, and browser journeys. |
+| UI and responsive coverage | A+ | The complete visual review passed 28/28 desktop, mobile, narrow, readable, tablet, and desktop-stress cases. The Sepolia read-only verifier is now self-contained and passed against the live testnet feed. |
+| Art and inventory systems | A+ | The art manifest validates 34 accepted assets with zero revisions queued, and the inventory generator verifies 1,200 unique blueprints across 10 chassis, 10 finishes, 12 calibrations, and 6 materials. |
+| Game feel and replay | A | The fun harness scored 94/100 (A), and the directed replay scored 100 with five lead changes. Automated evidence is strong; observed delight remains unmeasured. |
+| Archetype balance | B+ | A 64-game balanced-cast run found 84/100 fairness with every archetype passing and no detected risks. The focused 256-game Tool Hoarder matrix scored 81/100 with no blockers. Leader Hunter and Reckless Picker still produce weaker fun/story scores than Tool Hoarder. |
+| Rule exploration | B+ | The normal-budget beam search found a promising 90.83 candidate, but it changes four rule constants and remains simulation-only. The stricter promotion matrix remains HOLD, and the comeback mutation remains REJECT. No candidate was silently applied. |
+| Improvement governance | A+ | Design Control Tower reports 95/100 (A+) with 19 recorded decisions. Launch Copilot is GO for internal playtest at 93/100 after its default ghost sample was raised from 3 to 16 games to avoid unstable false blockers. |
+| Sepolia operations | B | Read-only product verification and funded preflight pass. The testnet has 116 games, all required operator roles, sufficient balances, automation enabled, and external entropy required. Current compiled runtime is 24,194 bytes while the then-deployed runtime is 23,910 bytes, so provenance correctly fails until the intended implementation is redeployed. |
+| Live and human evidence | F | The evidence ledger has only 1/9 qualified metrics. Live Ops is orange at 61/100 because current newcomer observations, production funnel/error baselines, durable live data, and broader release confirmations are absent. |
+
+### Stricter A bar
+
+- Run four observed newcomer sessions and record first-action, goal, result, delight, and replay-intent evidence.
+- Collect the minimum production beta samples for completion, errors, and return behavior before making retention claims.
+- Resolve the Sepolia source/deployment mismatch and rerun the provenance guard before calling the deployed contract current.
+- Keep the 90.83 balance candidate in simulation until it passes the promotion matrix and an observed playtest; keep the rejected comeback mutation out of deployed rules.
+- Complete mainnet configuration, operator, rollback, deployment, and rehearsal confirmations only when a mainnet launch is intentionally scheduled.
+
+## v0.28.0 - Verified Sepolia table-pressure upgrade
+
+Date: 2026-09-08
+
+Overall grade: **A+ for Sepolia deployment integrity and automated proof; observed human outcomes remain the next evidence frontier.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Upgrade safety | A+ | A guarded KMS flow checked chain ID, proxy code, EIP-1967 slot, UUPS UUID, upgrader role, code-size ceiling, gas reserve, transaction simulation, receipt status, post-upgrade slot, and preserved state. Production upgrades now require a separate explicit opt-in. |
+| Source provenance | A+ | Commit `7147d03` anchors the contract and deployment tooling. Sourcify reports an exact match for implementation `0x50a562176eef29aa45722edabaebfe27bcc906c5`; Blockscout and Routescan both publish the verified source. |
+| State preservation | A+ | Total games, pause state, automation settings, external-entropy requirement, workshop linkage, and fee configuration remained identical across the proxy upgrade. The prior implementation is recorded as the rollback target. |
+| Live behavior | A+ | Guarded FREE operation `117` completed in eight rounds with two HSM-backed players and external entropy. The trailing player moved from 0 to 2 locks on round 8, directly exercising the deployed table-pressure breach. |
+| Player-facing read path | A+ | The production build and self-contained Sepolia browser check passed after the upgrade and operation. The proxy address remained unchanged, so deployed clients require no contract-address migration. |
+| Runtime headroom | B+ | The implementation is valid at 24,194 bytes but has only 382 bytes of EIP-170 margin. Future onchain features should move to the workshop, a new module, or a deliberate size-reduction pass. |
+| Human evidence | F | Automated deployment proof cannot establish whether table pressure feels fair, legible, or delightful. Four observed newcomer sessions and current production telemetry remain required. |
+
+### Stricter A+ bar
+
+- Observe four newcomers and record whether the two-lock pressure breach is noticed and understood.
+- Collect production completion, error, replay-intent, and return baselines with the existing privacy-safe telemetry.
+- Keep the previous implementation address and upgrade transaction evidence available for rollback.
+- Require a size-reduction plan before adding more logic to the game implementation.

@@ -1,0 +1,19 @@
+{"approvedAt":"2026-09-08T07:06:37.845Z","buildSha":"cd470fd","reason":"Establish the canonical solo UI review baseline","surface":"all"}
+{"approvedAt":"2026-09-08T07:15:08.154Z","buildSha":"cd470fd","reason":"Prevent live action and player-summary clipping in constrained desktop layouts","surface":"live-active"}
+{"approvedAt":"2026-09-08T14:17:57.607Z","buildSha":"cd470fd","reason":"Make canonical game surfaces decision-first, story-first, and mobile-responsive","surface":"all"}
+{"approvedAt":"2026-09-08T14:29:03.870Z","buildSha":"cd470fd","reason":"Stabilize top-aligned Vault active capture after removing focus scroll drift","surface":"vault-active"}
+{"approvedAt":"2026-09-08T15:05:22.641Z","buildSha":"cd470fd","reason":"Freeze the local-chain clock for deterministic canonical live-play evidence","surface":"live-active"}
+{"approvedAt":"2026-09-08T17:50:18.735Z","buildSha":"cd470fd","reason":"Adopt semantic typography, readable body copy, and reusable responsive layout primitives","surface":"all"}
+{"approvedAt":"2026-09-09T00:55:38.191Z","buildSha":"c9a7696","reason":"Approved caper-system convergence: blueprint vault hierarchy, compact complete dossiers, action-specific selected states, and persistent mobile command dock.","surface":"instant-active"}
+{"approvedAt":"2026-09-09T01:04:19.004Z","buildSha":"c9a7696","reason":"Approved caper-system round continuity: causal result first, compact mechanism and dossiers, signature feedback, and persistent mobile command.","surface":"instant-resolution"}
+{"approvedAt":"2026-09-09T01:06:20.565Z","buildSha":"c9a7696","reason":"Approved caper-system final state: dramatic breach remains primary while workshop, identity, and continuation occupy coherent information planes.","surface":"instant-final"}
+{"approvedAt":"2026-09-09T01:07:52.668Z","buildSha":"c9a7696","reason":"Approved shared caper layers for live play: recessed vault work surface, information status plane, explicit action-control plane, and text-labeled unavailable states.","surface":"live-active"}
+{"approvedAt":"2026-09-09T16:51:19.179Z","buildSha":"acae921","reason":"Implement synthesized tactile caper board with live vault, crew, operation file, inventory tray, and decision tickets","surface":"instant-active"}
+{"approvedAt":"2026-09-09T16:52:08.893Z","buildSha":"acae921","reason":"Carry the synthesized operation board through simultaneous reveal while preserving result causality and next-decision continuity","surface":"instant-resolution"}
+{"approvedAt":"2026-09-09T16:53:07.532Z","buildSha":"acae921","reason":"Restore the complete-state desktop reward and loadout rail alongside the synthesized active-game layout","surface":"instant-final"}
+{"approvedAt":"2026-09-10T01:21:03.280Z","buildSha":"607673f","reason":"Second-pass operational hardware: richer blueprint routes, compact threat dial, recessed inventory slots, and tactile action plates","surface":"instant-active"}
+{"approvedAt":"2026-09-10T01:21:46.845Z","buildSha":"607673f","reason":"Carry second-pass blueprint, threat, inventory, and action hardware through the round-resolution state","surface":"instant-resolution"}
+{"approvedAt":"2026-09-10T09:05:10.657Z","buildSha":"c9925ba","reason":"Replace decorative route map with truthful lock race, live rival positions, and first-viewport action controls","surface":"instant-active"}
+{"approvedAt":"2026-09-10T09:10:35.991Z","buildSha":"c9925ba","reason":"Carry truthful lock progress, rival outcomes, and compact mobile reveal hierarchy through resolved rounds","surface":"instant-resolution"}
+{"approvedAt":"2026-09-10T09:20:24.064Z","buildSha":"c9925ba","reason":"Finalize truthful vault tumbler geometry and live action labels across three-lock and five-lock modes","surface":"instant-active"}
+{"approvedAt":"2026-09-10T09:22:54.276Z","buildSha":"c9925ba","reason":"Finalize post-reveal outcome labeling and responsive lock-race geometry","surface":"instant-resolution"}

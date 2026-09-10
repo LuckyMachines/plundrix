@@ -11,8 +11,8 @@ export function GameShell({
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   return (
-    <div className="game-shell">
-      <div className="game-status-strip">
+    <div className="game-shell l-decision-frame">
+      <div className="game-status-strip caper-layer caper-layer-information">
         {status}
         {details && (
           <button
@@ -26,23 +26,23 @@ export function GameShell({
         )}
       </div>
 
-      <div className="game-focus-grid">
-        <section className="game-stage" aria-label="Vault stage">
+      <div className="game-focus-grid l-decision">
+        <section className="game-stage caper-layer caper-layer-planning l-decision-primary" aria-label="Vault stage">
           {stage}
         </section>
-        <section className="game-action-dock" aria-label="Current action">
+        <section className="game-action-dock caper-layer caper-layer-control l-decision-action" aria-label="Current action">
           {action}
         </section>
       </div>
 
       {detailsOpen && (
-        <section className="game-detail-drawer" aria-label={drawerLabel}>
+        <section className="game-detail-drawer caper-layer caper-layer-information" aria-label={drawerLabel}>
           {details}
         </section>
       )}
 
       {footer && (
-        <section className="game-post-action" aria-label="Round outcome">
+        <section className="game-post-action caper-layer caper-layer-overlay" aria-label="Round outcome">
           {footer}
         </section>
       )}
@@ -52,7 +52,7 @@ export function GameShell({
 
 export function QuietPanel({ children, className = '' }) {
   return (
-    <div className={`game-quiet-panel ${className}`}>
+    <div className={`game-quiet-panel caper-layer caper-layer-information ${className}`}>
       {children}
     </div>
   );
@@ -69,7 +69,7 @@ export function StatusPill({ label, value, tone = 'neutral' }) {
 
   return (
     <div className="min-w-0">
-      <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+      <span className="type-label block text-vault-text-dim" data-type-contract>
         {label}
       </span>
       <span className={`block truncate font-mono text-xs ${toneClass}`}>

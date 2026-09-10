@@ -5,8 +5,13 @@ import App from './App';
 import { AccessibilityProvider } from './context/AccessibilityContext';
 import { ToastProvider } from './context/ToastContext';
 import AppErrorBoundary from './components/shared/AppErrorBoundary';
+import { analyticsRoute, trackProductEvent } from './lib/analytics';
 import './index.css';
 import './styles/caper.css';
+
+window.addEventListener('unhandledrejection', () => {
+  trackProductEvent('Client Error', { source: 'unhandled-promise', surface: analyticsRoute(window.location.pathname) });
+});
 
 const DataProvider = lazy(() => import('./components/shared/DataProvider'));
 const Web3Provider = lazy(() => import('./components/wallet/Web3Provider'));

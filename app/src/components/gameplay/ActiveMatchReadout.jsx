@@ -101,7 +101,7 @@ function OpponentChip({ gameId, address, currentAddress, targeted, latestCue, se
           />
         ))}
       </div>
-      <div className="mt-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em] text-vault-text-dim">
+      <div className="game-opponent-stats mt-2 font-mono text-micro uppercase tracking-interface text-vault-text-dim">
         <span>{isLoading ? 'Sync' : `${cracked}/${TOTAL_LOCKS}`}</span>
         <span>{Number(tools || 0)} tools</span>
         <span>{actionSubmitted ? 'In' : 'Open'}</span>
@@ -114,7 +114,7 @@ export function LatestEventSurface({ event }) {
   if (!event) {
     return (
       <div className="game-latest-event">
-        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+        <span className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
           Latest
         </span>
         <p className="mt-1 text-sm text-vault-text-dim">No table events yet.</p>
@@ -130,7 +130,7 @@ export function LatestEventSurface({ event }) {
   return (
     <div className="game-latest-event">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+        <span className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
           Latest
         </span>
         <span className="game-latest-event-tag">{tag.label}</span>

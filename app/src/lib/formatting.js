@@ -18,9 +18,19 @@ export function formatTimeRemaining(roundStartTime, timeout = 300) {
   return `${mins}:${String(secs).padStart(2, '0')}`;
 }
 
-export function pickChance(tools, stunned) {
+export function tablePressure(locksCracked = 0, leaderLocks = locksCracked) {
+  const gap = Math.max(0, Number(leaderLocks) - Number(locksCracked));
+  return {
+    gap,
+    bonus: Math.min(18, gap * 6),
+    locksOnSuccess: gap >= 2 || (gap > 0 && Number(leaderLocks) >= 3) ? 2 : 1,
+  };
+}
+
+export function pickChance(tools, stunned, locksCracked = 0, leaderLocks = locksCracked) {
   if (stunned) return 0;
-  return Math.min(40 + Number(tools) * 15, 95);
+  const pressure = tablePressure(locksCracked, leaderLocks);
+  return Math.min(40 + Number(tools) * 15 + pressure.bonus, 95);
 }
 
 export function searchChance(stunned) {

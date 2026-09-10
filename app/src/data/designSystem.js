@@ -6,6 +6,7 @@ export const DESIGN_SECTIONS = Object.freeze([
   { id: 'color', label: 'Color', group: 'Foundation' },
   { id: 'type', label: 'Typography', group: 'Foundation' },
   { id: 'space', label: 'Space + shape', group: 'Foundation' },
+  { id: 'caper', label: 'Caper language', group: 'Foundation' },
   { id: 'controls', label: 'Controls', group: 'Components' },
   { id: 'feedback', label: 'Status + feedback', group: 'Components' },
   { id: 'gameplay', label: 'Gameplay shell', group: 'Game' },
@@ -17,6 +18,23 @@ export const DESIGN_SECTIONS = Object.freeze([
   { id: 'voice', label: 'Voice + terms', group: 'System' },
   { id: 'assets', label: 'Asset library', group: 'System' },
   { id: 'coverage', label: 'Coverage', group: 'Governance' },
+]);
+
+export const CAPER_LAYERS = Object.freeze([
+  { id: 'planning', label: 'Work surface', token: '--caper-work-surface', role: 'Vault, routes, and spatial game state', className: 'caper-layer-planning' },
+  { id: 'information', label: 'Information plane', token: '--caper-information-plane', role: 'Operator dossiers, rules, and evidence', className: 'caper-layer-information' },
+  { id: 'control', label: 'Control plane', token: '--caper-control-plane', role: 'Actions, targets, and commitment', className: 'caper-layer-control' },
+  { id: 'overlay', label: 'Dramatic overlay', token: '--caper-dramatic-overlay', role: 'Resolution, danger, and rare peaks', className: 'caper-layer-overlay' },
+]);
+
+export const ACTION_STATE_CONTRACT = Object.freeze([
+  { id: 'ready', label: 'Ready', cue: 'Border + numbered tab', behavior: 'Available, not chosen' },
+  { id: 'hover', label: 'Hover', cue: 'Lift + stronger depth', behavior: 'Pointer preview only' },
+  { id: 'focus', label: 'Focus', cue: 'Visible focus ring', behavior: 'Keyboard location' },
+  { id: 'pressed', label: 'Pressed', cue: 'One-pixel depression', behavior: 'Immediate physical response' },
+  { id: 'selected', label: 'Selected', cue: 'Accent inset + state label', behavior: 'Current concealed choice' },
+  { id: 'committed', label: 'Committed', cue: 'Sealed label + held posture', behavior: 'Awaiting simultaneous reveal' },
+  { id: 'disabled', label: 'Unavailable', cue: 'Muted + explicit label', behavior: 'Cannot be chosen now' },
 ]);
 
 export const COLOR_TOKENS = Object.freeze([
@@ -37,12 +55,13 @@ export const COLOR_TOKENS = Object.freeze([
 ]);
 
 export const TYPE_STYLES = Object.freeze([
-  { id: 'display-xl', label: 'Display XL', sample: 'CRACK THE VAULT', className: 'font-display text-6xl font-bold uppercase leading-[0.9] tracking-[0.02em]', use: 'Page promise or victory only' },
-  { id: 'display-lg', label: 'Display LG', sample: 'Choose your breach.', className: 'font-display text-4xl font-semibold leading-none', use: 'Primary section headline' },
-  { id: 'display-md', label: 'Display MD', sample: 'Operation briefing', className: 'font-display text-2xl font-semibold uppercase tracking-[0.08em]', use: 'Card and panel titles' },
-  { id: 'body', label: 'Body', sample: 'Every choice resolves with the rest of the table.', className: 'font-display text-base leading-7', use: 'Explanations and narrative' },
-  { id: 'mono', label: 'Interface', sample: 'ROUND 07 / 4 OPERATORS / ACTIVE', className: 'font-mono text-xs uppercase tracking-[0.14em]', use: 'Controls, status, and compact data' },
-  { id: 'micro', label: 'Micro label', sample: 'LAST RESOLUTION', className: 'label', use: 'Eyebrows and supporting metadata' },
+  { id: 'hero', label: 'Hero', sample: 'CRACK THE VAULT', className: 'type-hero', use: 'One page promise or victory only' },
+  { id: 'page', label: 'Page title', sample: 'Choose your breach.', className: 'type-page', use: 'One primary page heading' },
+  { id: 'section', label: 'Section title', sample: 'Operation briefing', className: 'type-section', use: 'Major content regions' },
+  { id: 'card', label: 'Card title', sample: 'First principle', className: 'type-card uppercase', use: 'Cards and compact panels' },
+  { id: 'body', label: 'Body', sample: 'Every choice resolves with the rest of the table.', className: 'type-body', use: 'Instructions, explanations, and narrative' },
+  { id: 'interface', label: 'Interface', sample: 'ROUND 07 / 4 OPERATORS / ACTIVE', className: 'type-interface', use: 'Controls, status, and compact data' },
+  { id: 'label', label: 'Label', sample: 'LAST RESOLUTION', className: 'type-label', use: 'Short eyebrows and metadata only' },
 ]);
 
 export const SPACING_TOKENS = Object.freeze([

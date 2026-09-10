@@ -90,7 +90,7 @@ export default function GameCard({ gameId, summary = null, loadPlayers = true })
             {/* Details row */}
             <div className="flex items-center gap-6">
               <div>
-                <p className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
+                <p className="font-mono text-xs tracking-beacon text-vault-text-dim uppercase mb-0.5">
                   Players
                 </p>
                 <p className="font-mono text-xs text-vault-text">
@@ -100,7 +100,7 @@ export default function GameCard({ gameId, summary = null, loadPlayers = true })
 
               {stateNum === GameState.ACTIVE && (
                 <div>
-                  <p className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
+                  <p className="font-mono text-xs tracking-beacon text-vault-text-dim uppercase mb-0.5">
                     Round
                   </p>
                   <p className="font-mono text-xs text-vault-text">
@@ -111,7 +111,7 @@ export default function GameCard({ gameId, summary = null, loadPlayers = true })
 
               {pressure && (
                 <div>
-                  <p className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-0.5">
+                  <p className="font-mono text-xs tracking-beacon text-vault-text-dim uppercase mb-0.5">
                     Pressure
                   </p>
                   <p className="font-mono text-xs text-vault-text">

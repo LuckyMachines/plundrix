@@ -27,7 +27,7 @@ export default function TargetCycler({
   return (
     <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded border border-vault-border bg-vault-dark/40 px-3 py-2">
       <div>
-        <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+        <p className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
           Target Link
         </p>
         <p className="font-mono text-xs text-vault-text">

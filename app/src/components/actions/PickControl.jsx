@@ -1,4 +1,4 @@
-import { pickChance } from '../../lib/formatting';
+import { pickChance, tablePressure } from '../../lib/formatting';
 import AliveActionCard from './AliveActionCard';
 
 const ARC_RADIUS = 34;
@@ -21,6 +21,8 @@ export default function PickControl({
   disabled,
   stunned,
   tools,
+  locksCracked,
+  leaderLocks,
   active,
   pressed,
   invalidCount,
@@ -28,7 +30,8 @@ export default function PickControl({
   onIntentEnd,
   onInvalidIntent,
 }) {
-  const chance = pickChance(tools, stunned);
+  const pressure = tablePressure(locksCracked, leaderLocks);
+  const chance = pickChance(tools, stunned, locksCracked, leaderLocks);
   // Arc goes from -135 deg to +135 deg (270 degree sweep)
   const startAngle = 135;
   const endAngle = 405;
@@ -50,7 +53,7 @@ export default function PickControl({
       onInvalidIntent={onInvalidIntent}
     >
       {/* Label */}
-      <p className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
+      <p className="font-mono text-micro leading-5 text-vault-text-dim uppercase tracking-label mb-3">
         Pick / Set tension
       </p>
 
@@ -110,9 +113,16 @@ export default function PickControl({
           Pick mechanism jammed
         </p>
       ) : (
-        <p className="font-mono text-xs text-vault-text-dim text-center mb-3 leading-relaxed">
-          {Number(tools)} tool{Number(tools) !== 1 ? 's' : ''} applied
-        </p>
+        <div className="mb-3 text-center font-mono text-xs leading-relaxed">
+          <p className="text-vault-text-dim">
+            {Number(tools)} tool{Number(tools) !== 1 ? 's' : ''} applied
+          </p>
+          {pressure.gap > 0 && (
+            <p className="mt-1 text-oxide-green">
+              Table pressure +{pressure.bonus}%{pressure.locksOnSuccess > 1 ? ' / cracks 2 locks' : ''}
+            </p>
+          )}
+        </div>
       )}
 
       {/* Execute button */}
@@ -126,7 +136,7 @@ export default function PickControl({
         }}
         disabled={disabled || isJammed}
         className={`
-          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
+          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-brand
           border transition-all duration-200
           ${disabled || isJammed
             ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'

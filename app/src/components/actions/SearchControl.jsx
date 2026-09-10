@@ -33,7 +33,7 @@ export default function SearchControl({
       onInvalidIntent={onInvalidIntent}
     >
       {/* Label */}
-      <p className="font-mono text-xs text-vault-text-dim uppercase tracking-[0.25em] mb-3">
+      <p className="font-mono text-micro leading-5 text-vault-text-dim uppercase tracking-label mb-3">
         Search / Sweep compartment
       </p>
 
@@ -68,7 +68,7 @@ export default function SearchControl({
         `}>
           {chance}%
         </span>
-        <span className="font-mono text-[11px] text-vault-text-dim uppercase">
+        <span className="font-mono text-micro text-vault-text-dim uppercase">
           signal
         </span>
       </div>
@@ -97,7 +97,7 @@ export default function SearchControl({
         }}
         disabled={disabled}
         className={`
-          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
+          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-brand
           border transition-all duration-200 mt-3
           ${disabled
             ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'

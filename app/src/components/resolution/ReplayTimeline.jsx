@@ -61,7 +61,7 @@ export default function ReplayTimeline({
   if (roundHistory.length === 0) {
     return (
       <div className="border border-vault-border rounded bg-vault-panel p-4">
-        <h3 className="font-display text-xs tracking-[0.3em] uppercase text-vault-text-dim mb-2">
+        <h3 className="font-display text-xs tracking-beacon uppercase text-vault-text-dim mb-2">
           Replay Timeline
         </h3>
         <p className="font-mono text-xs text-vault-text-dim italic">
@@ -76,7 +76,7 @@ export default function ReplayTimeline({
 
   return (
     <div className="border border-vault-border rounded bg-vault-panel p-4 space-y-4">
-      <h3 className="font-display text-xs tracking-[0.3em] uppercase text-vault-text-dim">
+      <h3 className="font-display text-xs tracking-beacon uppercase text-vault-text-dim">
         Replay Timeline
       </h3>
 
@@ -106,7 +106,7 @@ export default function ReplayTimeline({
             ['Hits', selectedSummary.sabotages],
           ].map(([label, value]) => (
             <div key={label} className="rounded border border-vault-border bg-vault-dark/30 px-3 py-2">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+              <p className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
                 {label}
               </p>
               <p className="font-mono text-sm text-vault-text tabular-nums">{value}</p>

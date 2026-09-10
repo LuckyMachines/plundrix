@@ -7,6 +7,7 @@ import {
   exportReplayCsv,
   exportReplayJson,
   exportReplayMarkdown,
+  loadReplayFromSearch,
   parseReplayPayload,
   scoreReplayDrama,
   validateReplay,
@@ -30,6 +31,12 @@ assert.ok(replay.shareUrl.includes('replay='), 'share url encodes replay');
 const payload = parseReplayPayload(replay.shareUrl.slice(replay.shareUrl.indexOf('?')));
 assert.equal(payload.seed, replay.seed);
 assert.equal(payload.scenarioId, replay.scenarioId);
+assert.equal(payload.version, 2, 'share payload uses exact replay proof');
+assert.equal(payload.rounds.length, replay.summary.rounds, 'share payload preserves every round');
+const sharedReplay = loadReplayFromSearch(replay.shareUrl.slice(replay.shareUrl.indexOf('?')));
+assert.equal(sharedReplay.summary.winner, replay.summary.winner, 'shared proof preserves winner');
+assert.equal(sharedReplay.timeline.length, replay.timeline.length, 'shared proof preserves timeline');
+assert.equal(loadReplayFromSearch('?replay=not-valid-base64'), null, 'invalid shared proof fails closed');
 
 const state = runSimulation({ seed: 'timeline-test', scenarioId: 'new-player-table', maxRounds: 12 });
 const timeline = buildReplayTimeline(state);

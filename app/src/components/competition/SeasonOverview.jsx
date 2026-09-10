@@ -6,10 +6,10 @@ export default function SeasonOverview({ overview, season }) {
     <section className="border border-vault-border rounded bg-vault-surface p-6 space-y-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-vault-text-dim">
+          <p className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
             Live Season
           </p>
-          <h2 className="font-display text-3xl uppercase tracking-[0.16em] text-tungsten mt-2">
+          <h2 className="font-display text-3xl uppercase tracking-label text-tungsten mt-2">
             {season.label}
           </h2>
           <p className="font-mono text-sm text-vault-text-dim mt-2">
@@ -18,7 +18,7 @@ export default function SeasonOverview({ overview, season }) {
         </div>
         <Link
           to="/leaderboard"
-          className="rounded border border-tungsten/35 px-3 py-2 font-mono text-xs uppercase tracking-[0.22em] text-tungsten hover:bg-tungsten/10"
+          className="rounded border border-tungsten/35 px-3 py-2 font-mono text-xs uppercase tracking-beacon text-tungsten hover:bg-tungsten/10"
         >
           View Ladder
         </Link>
@@ -46,10 +46,10 @@ export default function SeasonOverview({ overview, season }) {
 function Metric({ label, value }) {
   return (
     <div className="rounded border border-vault-border bg-vault-panel/70 px-4 py-3">
-      <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-vault-text-dim">
+      <div className="font-mono text-micro uppercase tracking-beacon text-vault-text-dim">
         {label}
       </div>
-      <div className="font-display text-3xl tracking-[0.12em] uppercase text-vault-text mt-2">
+      <div className="font-display text-3xl tracking-interface uppercase text-vault-text mt-2">
         {value}
       </div>
     </div>
@@ -59,10 +59,10 @@ function Metric({ label, value }) {
 function QueueMetric({ label, value }) {
   return (
     <div className="rounded border border-vault-border/70 bg-vault-surface/70 px-4 py-3">
-      <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-vault-text-dim">
+      <div className="font-mono text-micro uppercase tracking-beacon text-vault-text-dim">
         {label}
       </div>
-      <div className="font-display text-2xl tracking-[0.12em] uppercase text-tungsten mt-2">
+      <div className="font-display text-2xl tracking-interface uppercase text-tungsten mt-2">
         {value}
       </div>
     </div>

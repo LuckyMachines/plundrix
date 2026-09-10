@@ -44,7 +44,7 @@ export default function SabotageControl({
       onInvalidIntent={onInvalidIntent}
     >
       {/* Label */}
-      <p className="font-mono text-xs text-signal-red/80 uppercase tracking-[0.25em] mb-3">
+      <p className="font-mono text-micro leading-5 text-signal-red/80 uppercase tracking-label mb-3">
         Sabotage / Cut line
       </p>
 
@@ -63,7 +63,7 @@ export default function SabotageControl({
 
       {/* Target selector */}
       <div className="w-full mb-3">
-        <label htmlFor={selectId} className="font-mono text-[11px] text-vault-text-dim uppercase tracking-wider block mb-1">
+        <label htmlFor={selectId} className="font-mono text-micro text-vault-text-dim uppercase tracking-wider block mb-1">
           Target
         </label>
         <select
@@ -115,7 +115,7 @@ export default function SabotageControl({
         }}
         disabled={!canExecute}
         className={`
-          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-[0.2em]
+          min-h-[44px] w-full py-2 px-4 rounded font-mono text-xs uppercase tracking-brand
           border transition-all duration-200 mt-3
           ${!canExecute
             ? 'border-vault-border bg-vault-dark/40 text-vault-text-dim cursor-not-allowed'

@@ -9,10 +9,10 @@ import {
 export const INVENTORY_STORAGE_KEY = 'plundrix-workshop-v1';
 
 export const MASTERY_RANKS = Object.freeze([
-  { level: 4, threshold: 600, title: 'Vault Virtuoso' },
-  { level: 3, threshold: 300, title: 'Tricksmith' },
-  { level: 2, threshold: 120, title: 'Field Tinkerer' },
-  { level: 1, threshold: 0, title: 'Bench Initiate' },
+  { level: 4, threshold: 600, title: 'Vault Virtuoso', reward: 'Animated victory stamp' },
+  { level: 3, threshold: 300, title: 'Tricksmith', reward: 'Engraved operator plate' },
+  { level: 2, threshold: 120, title: 'Field Tinkerer', reward: 'Oxide maker patina' },
+  { level: 1, threshold: 0, title: 'Bench Initiate', reward: 'Stamped maker mark' },
 ]);
 
 function defaultMaterials() {
@@ -153,11 +153,19 @@ function hashString(value) {
   return hash >>> 0;
 }
 
-export function grantMatchSalvageState(state, { matchId, won = false, rounds = 1, rewardMultiplier = 1 } = {}) {
+export function grantMatchSalvageState(state, { matchId, won = false, rounds = 1, rewardMultiplier = 1, actionMix = {}, routeId = null } = {}) {
   const current = normalizeInventory(state);
   if (!matchId || current.claimedMatches.includes(matchId)) return { awarded: false, next: current, drops: [] };
   const hash = hashString(`${matchId}:${rounds}:${won}`);
-  const first = CRAFTING_MATERIALS[hash % CRAFTING_MATERIALS.length];
+  const actionMaterial = dominantActionMaterial(actionMix);
+  const routeMaterial = {
+    'hot-entry': 'oxide-catalyst',
+    'inside-route': 'cipher-glass',
+    'ghost-route': 'vault-resin',
+  }[routeId];
+  const preferredId = actionMaterial?.materialId || routeMaterial;
+  const first = CRAFTING_MATERIALS.find((material) => material.id === preferredId)
+    || CRAFTING_MATERIALS[hash % CRAFTING_MATERIALS.length];
   const second = CRAFTING_MATERIALS[(hash + Math.max(1, rounds)) % CRAFTING_MATERIALS.length];
   const multiplier = Math.max(0.5, Math.min(2, Number(rewardMultiplier) || 1));
   const rewards = new Map([[first.id, Math.max(1, Math.round((won ? 5 : 3) * multiplier))]]);
@@ -165,7 +173,13 @@ export function grantMatchSalvageState(state, { matchId, won = false, rounds = 1
   const materials = { ...current.materials };
   const drops = [...rewards].map(([materialId, amount]) => {
     materials[materialId] = (materials[materialId] || 0) + amount;
-    return { materialId, amount };
+    return {
+      materialId,
+      amount,
+      reason: materialId === first.id
+        ? actionMaterial?.reason || (routeMaterial ? 'Recovered from your chosen route.' : 'Recovered from the operation.')
+        : 'Recovered from the vault spill.',
+    };
   });
   const record = { matchId, won, drops, at: new Date().toISOString() };
   return {
@@ -178,6 +192,16 @@ export function grantMatchSalvageState(state, { matchId, won = false, rounds = 1
       recentDrops: [...current.recentDrops, record].slice(-8),
     },
   };
+}
+
+function dominantActionMaterial(actionMix = {}) {
+  const entries = [
+    { keys: ['1', 'PICK', 'pick'], materialId: 'brass-cogs', reason: 'Your Pick-heavy play recovered mechanical stock.' },
+    { keys: ['2', 'SEARCH', 'search'], materialId: 'cipher-glass', reason: 'Your Search-heavy play uncovered optical salvage.' },
+    { keys: ['3', 'SABOTAGE', 'sabotage'], materialId: 'oxide-catalyst', reason: 'Your Sabotage-heavy play recovered volatile tuning compound.' },
+  ].map((entry) => ({ ...entry, count: entry.keys.reduce((sum, key) => sum + (Number(actionMix[key]) || 0), 0) }));
+  const strongest = entries.sort((a, b) => b.count - a.count)[0];
+  return strongest?.count > 0 ? strongest : null;
 }
 
 export function getGadgetMastery(state, gadgetId) {

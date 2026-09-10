@@ -10,7 +10,7 @@ export default function LeaderboardTable({
   return (
     <section className="border border-vault-border rounded bg-vault-surface">
       <div className="border-b border-vault-border px-5 py-4">
-        <h2 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+        <h2 className="font-mono text-xs tracking-beacon text-vault-text-dim uppercase">
           {title}
         </h2>
       </div>
@@ -32,13 +32,13 @@ export default function LeaderboardTable({
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
                       to={`/profile/${entry.address}`}
-                      className="font-display text-xl tracking-[0.12em] uppercase text-vault-text hover:text-tungsten"
+                      className="font-display text-xl tracking-interface uppercase text-vault-text hover:text-tungsten"
                     >
                       {entry.displayName}
                     </Link>
                     <TypePill type={entry.type} />
                   </div>
-                  <p className="font-mono text-xs uppercase tracking-[0.22em] text-vault-text-dim">
+                  <p className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
                     {entry.title}
                   </p>
                   {entry.badges?.length ? (
@@ -53,21 +53,21 @@ export default function LeaderboardTable({
 
               <div className="grid grid-cols-2 gap-3 text-sm font-mono text-vault-text-dim sm:min-w-[14rem]">
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.2em]">Points</div>
+                  <div className="text-micro uppercase tracking-brand">Points</div>
                   <div className="text-lg text-vault-text">{entry.points}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.2em]">Wins</div>
+                  <div className="text-micro uppercase tracking-brand">Wins</div>
                   <div className="text-lg text-vault-text">{entry.wins ?? entry.ladderWins}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.2em]">Games</div>
+                  <div className="text-micro uppercase tracking-brand">Games</div>
                   <div className="text-lg text-vault-text">
                     {entry.gamesPlayed ?? entry.ladderGames}
                   </div>
                 </div>
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.2em]">Form</div>
+                  <div className="text-micro uppercase tracking-brand">Form</div>
                   <div className="text-lg text-vault-text">
                     {entry.recentForm?.length ? entry.recentForm.join(' ') : '...'}
                   </div>
@@ -77,7 +77,7 @@ export default function LeaderboardTable({
           ))}
         </div>
       ) : (
-        <div className="px-5 py-10 text-center font-mono text-xs uppercase tracking-[0.24em] text-vault-text-dim">
+        <div className="px-5 py-10 text-center font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
           {emptyLabel}
         </div>
       )}

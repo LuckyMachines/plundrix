@@ -1,0 +1,34 @@
+{
+  "name": "narrow",
+  "viewport": {
+    "width": 320,
+    "height": 800
+  },
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 320,
+    "scrollWidth": 320,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  }
+}

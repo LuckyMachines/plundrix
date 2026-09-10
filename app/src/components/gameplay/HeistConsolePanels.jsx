@@ -1,6 +1,6 @@
-const CREW_ROLES = ['Dealer', 'Hacker', 'Breacher', 'Scout'];
 const CREW_TONES = ['coral', 'cyan', 'green', 'gold'];
 const CREW_DEVICES = [null, '/images/parts/rook-device.webp', '/images/parts/mara-device.webp', '/images/parts/vesper-device.webp'];
+const TABLE_STYLES = ['You', 'Leader hunter', 'Tool hoarder', 'Saboteur'];
 
 function MaskInsignia({ tone = 'cyan' }) {
   return (
@@ -15,7 +15,7 @@ function MaskInsignia({ tone = 'cyan' }) {
   );
 }
 
-export function MissionStatusPanel({ round, modeLabel, objectives, threatPercent, threatLabel }) {
+export function MissionStatusPanel({ round, modeLabel, objectives, pressurePercent, pressureValue, pressureMax, pressureLabel, pressureDetail }) {
   return (
     <section className="instant-mission-status" aria-labelledby="instant-round-heading">
       <div className="instant-round-plaque">
@@ -37,16 +37,16 @@ export function MissionStatusPanel({ round, modeLabel, objectives, threatPercent
       </div>
 
       <div className="instant-threat-gauge">
-        <div className="instant-threat-gauge__heading"><span>Threat level</span><strong>{threatLabel}</strong></div>
+        <div className="instant-threat-gauge__heading"><span>Table pressure</span><strong>{pressureLabel}</strong></div>
         <div className="instant-threat-gauge__body">
-          <div className="instant-threat-dial" style={{ '--threat-angle': `${threatPercent * 3.6}deg` }} aria-hidden="true">
-            <span>{threatPercent}</span>
+          <div className="instant-threat-dial" style={{ '--threat-angle': `${pressurePercent * 3.6}deg` }} aria-hidden="true">
+            <span>{pressureValue}/{pressureMax}</span>
           </div>
           <div className="instant-threat-gauge__readout">
-            <div className="instant-threat-gauge__track" role="progressbar" aria-label="Threat level" aria-valuemin="0" aria-valuemax="100" aria-valuenow={threatPercent}>
-              <span style={{ width: `${threatPercent}%` }} />
+            <div className="instant-threat-gauge__track" role="progressbar" aria-label="Leading lock progress" aria-valuemin="0" aria-valuemax={pressureMax} aria-valuenow={pressureValue}>
+              <span style={{ width: `${pressurePercent}%` }} />
             </div>
-            <p><span className="instant-threat-gauge__lamp" aria-hidden="true" /> Alert rising / {threatPercent}%</p>
+            <p><span className="instant-threat-gauge__lamp" aria-hidden="true" /> {pressureDetail}</p>
           </div>
         </div>
       </div>
@@ -55,12 +55,14 @@ export function MissionStatusPanel({ round, modeLabel, objectives, threatPercent
 }
 
 export function CrewReadinessRail({ players, totalLocks }) {
-  const readyCount = players.filter((candidate) => !candidate.stunned).length;
+  const leaderLocks = Math.max(0, ...players.map((candidate) => candidate.locksCracked));
+  const leaders = players.filter((candidate) => candidate.locksCracked === leaderLocks);
+  const tableState = leaderLocks === 0 || leaders.length > 1 ? 'Table even' : `${leaders[0].name} leads`;
   return (
     <section className="instant-crew-briefing" aria-labelledby="instant-crew-heading">
       <div className="instant-crew-briefing__heading">
-        <h2 id="instant-crew-heading">Crew briefing</h2>
-        <span>{readyCount}/{players.length} ready</span>
+        <h2 id="instant-crew-heading">Table positions</h2>
+        <span>{tableState}</span>
       </div>
       <ul>
         {players.map((candidate, index) => (
@@ -68,31 +70,31 @@ export function CrewReadinessRail({ players, totalLocks }) {
             <MaskInsignia tone={CREW_TONES[index]} />
             <span className="instant-crew-briefing__identity">
               <strong>{candidate.name}</strong>
-              <small>{CREW_ROLES[index]} / {candidate.locksCracked} of {totalLocks}</small>
+              <small>{TABLE_STYLES[index]} / {candidate.locksCracked} of {totalLocks} locks / {candidate.tools} tools</small>
             </span>
             <span className="instant-crew-briefing__signals">
               {CREW_DEVICES[index] && <img src={CREW_DEVICES[index]} alt={`${candidate.name} gadget`} width="48" height="48" />}
-              <span className="instant-crew-briefing__state" aria-label={candidate.stunned ? 'Stunned' : 'Ready'}>
-                {candidate.stunned ? '!' : 'OK'}
+              <span className="instant-crew-briefing__state" aria-label={candidate.stunned ? 'Stunned' : candidate.locksCracked === leaderLocks && leaderLocks > 0 ? 'Leading' : 'Active'}>
+                {candidate.stunned ? '!' : candidate.locksCracked === leaderLocks && leaderLocks > 0 ? '1' : 'ON'}
               </span>
             </span>
           </li>
         ))}
       </ul>
       <div className="instant-crew-route" aria-hidden="true">
-        {players.map((candidate, index) => <span key={candidate.id} data-tone={CREW_TONES[index]} data-active={!candidate.stunned} />)}
+        {players.map((candidate, index) => <span key={candidate.id} data-tone={CREW_TONES[index]} style={{ '--player-progress': `${(candidate.locksCracked / totalLocks) * 100}%` }} />)}
       </div>
     </section>
   );
 }
 
-export function OperationFile({ player, leader, totalLocks, selectedActionLabel, materials, round }) {
+export function OperationFile({ player, leader, tablePosition, totalLocks, maxTools, selectedActionLabel, selectedActionMetric, selectedActionPreview, round }) {
   const remaining = Math.max(0, totalLocks - player.locksCracked);
-  const security = remaining > 3 ? 'High' : remaining > 1 ? 'Medium' : 'Low';
-  const pressure = leader.id === player.id ? 'You lead' : `${leader.name} +${leader.locksCracked - player.locksCracked}`;
-  const directive = leader.id === player.id
-    ? 'Protect the lead. Expect interference on the next reveal.'
-    : `${leader.name} has the inside line. Change tempo before the trail goes cold.`;
+  const directive = tablePosition === 'Table even'
+    ? 'The table is level. Choose whether to advance, prepare, or disrupt.'
+    : leader.id === player.id
+      ? 'Protect the lead. Expect interference on the next reveal.'
+      : `${leader.name} has the inside line. Change tempo before the trail goes cold.`;
 
   return (
     <aside className="instant-operation-file" aria-labelledby="instant-file-heading">
@@ -102,22 +104,16 @@ export function OperationFile({ player, leader, totalLocks, selectedActionLabel,
         <div><p>Restricted / active</p><h2 id="instant-file-heading">Operation file</h2></div>
       </div>
       <dl>
-        <div><dt>Vault security</dt><dd>{security}</dd></div>
-        <div><dt>Sealed locks</dt><dd>{remaining}/{totalLocks}</dd></div>
-        <div><dt>Rival pressure</dt><dd>{pressure}</dd></div>
+        <div><dt>Your progress</dt><dd>{player.locksCracked}/{totalLocks} locks</dd></div>
+        <div><dt>Table position</dt><dd>{tablePosition}</dd></div>
+        <div><dt>Tools carried</dt><dd>{player.tools}/{maxTools}</dd></div>
         <div><dt>Current plan</dt><dd>{selectedActionLabel}</dd></div>
       </dl>
 
-      <div className="instant-potential-loot">
-        <p>Potential loot</p>
-        <div>
-          {materials.slice(0, 4).map((material) => (
-            <span key={material.id} title={material.label}>
-              <img src={material.image} alt="" width="96" height="96" />
-            </span>
-          ))}
-          <span aria-label="Unknown reward">?</span>
-        </div>
+      <div className="instant-action-intel">
+        <p>Expected effect</p>
+        <strong>{selectedActionMetric}</strong>
+        <span>{selectedActionPreview}</span>
       </div>
 
       <div className="instant-file-directive">

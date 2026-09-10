@@ -47,12 +47,12 @@ export default function Footer({ web3Enabled = false }) {
             >
               Privacy
             </Link>
-            <span className="tracking-[0.2em] text-tungsten/60 uppercase font-display font-semibold px-3">
+            <span className="tracking-brand text-tungsten/60 uppercase font-display font-semibold px-3">
               Plundrix
             </span>
           </div>
         </div>
-        <div className="flex flex-col gap-2 border-t border-vault-border/70 pt-4 text-[11px] leading-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-2 border-t border-vault-border/70 pt-4 text-micro leading-5 sm:flex-row sm:items-start sm:justify-between">
           <p>Lucky Machines, LLC / Copyright 2026</p>
           <p className="max-w-2xl sm:text-right">
             Free-play beta. No cash prizes are live. Normal network gas may apply. AI and bot

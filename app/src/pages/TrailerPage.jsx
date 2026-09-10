@@ -46,8 +46,8 @@ export default function TrailerPage() {
       />
 
       <header className="max-w-4xl">
-        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">32-second trailer</p>
-        <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-[0.88] text-vault-text sm:text-7xl lg:text-8xl">One vault. Three intentions. No safe turn.</h1>
+        <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">32-second trailer</p>
+        <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-display text-vault-text sm:text-7xl lg:text-8xl">One vault. Three intentions. No safe turn.</h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-vault-text-dim">Four operators. Five locks. Every choice lands at once. Watch the table turn in 32 seconds.</p>
       </header>
 
@@ -70,18 +70,18 @@ export default function TrailerPage() {
       <section className="mt-8 grid gap-px border border-vault-border bg-vault-border md:grid-cols-2 xl:grid-cols-3">
         {CHAPTERS.map(([time, title, copy]) => (
           <button type="button" key={time} onClick={() => seekTo(time)} className="min-h-[132px] bg-vault-surface p-5 text-left hover:bg-vault-panel focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-tungsten">
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-tungsten">{time}</p>
+            <p className="font-mono text-micro uppercase tracking-label text-tungsten">{time}</p>
             <h2 className="mt-2 font-display text-2xl uppercase text-vault-text">{title}</h2>
             <p className="mt-3 text-sm leading-6 text-vault-text-dim">{copy}</p>
-            <span className="mt-4 block font-mono text-xs uppercase tracking-[0.12em] text-tungsten">Play chapter -&gt;</span>
+            <span className="mt-4 block font-mono text-xs uppercase tracking-interface text-tungsten">Play chapter -&gt;</span>
           </button>
         ))}
       </section>
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link to="/play" className="inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-vault-dark">Play instantly -&gt;</Link>
-        <Link to="/#live-operations" className="inline-flex min-h-[52px] items-center border border-tungsten/45 px-6 font-mono text-xs uppercase tracking-[0.14em] text-tungsten">Open Sepolia tables</Link>
-        <a href="/video/plundrix-gameplay-trailer.mp4" download className="inline-flex min-h-[52px] items-center border border-vault-border px-6 font-mono text-xs uppercase tracking-[0.14em] text-vault-text">Download trailer</a>
+        <Link to="/play" className="inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">Play instantly -&gt;</Link>
+        <Link to="/#live-operations" className="inline-flex min-h-[52px] items-center border border-tungsten/45 px-6 font-mono text-xs uppercase tracking-label text-tungsten">Open Sepolia tables</Link>
+        <a href="/video/plundrix-gameplay-trailer.mp4" download className="inline-flex min-h-[52px] items-center border border-vault-border px-6 font-mono text-xs uppercase tracking-label text-vault-text">Download trailer</a>
       </div>
     </div>
   );

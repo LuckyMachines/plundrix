@@ -129,14 +129,14 @@ export default function SnapshotPage() {
     <div className="max-w-7xl mx-auto px-5 py-8 space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-vault-text-dim">
+          <p className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
             Deterministic Dummy Data
           </p>
-          <h1 className="font-display text-3xl uppercase tracking-[0.2em] text-tungsten">
+          <h1 className="font-display text-3xl uppercase tracking-brand text-tungsten">
             Plundrix Screenshot Rig
           </h1>
         </div>
-        <Link to="/" className="font-mono text-xs uppercase tracking-[0.2em] text-vault-text-dim border border-vault-border px-3 py-2">
+        <Link to="/" className="font-mono text-xs uppercase tracking-brand text-vault-text-dim border border-vault-border px-3 py-2">
           Console
         </Link>
       </div>
@@ -175,7 +175,7 @@ export default function SnapshotPage() {
       <section data-snapshot="leaderboard" className="snapshot-frame space-y-4">
         <div className="border border-vault-border rounded bg-vault-surface">
           <div className="border-b border-vault-border px-5 py-4">
-            <h2 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+            <h2 className="font-mono text-xs tracking-beacon text-vault-text-dim uppercase">
               Local Playstyle Integration
             </h2>
           </div>
@@ -187,8 +187,8 @@ export default function SnapshotPage() {
             <div key={address} className="px-5 py-4 grid gap-3 md:grid-cols-[4rem_1fr_18rem] md:items-center border-b border-vault-border last:border-b-0">
               <div className="font-display text-2xl text-tungsten">{rank}</div>
               <div>
-                <p className="font-mono text-sm uppercase tracking-[0.16em] text-vault-text">{address}</p>
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-vault-text-dim mt-1">
+                <p className="font-mono text-sm uppercase tracking-label text-vault-text">{address}</p>
+                <p className="font-mono text-xs uppercase tracking-brand text-vault-text-dim mt-1">
                   Score {score} // 4 observed games
                 </p>
               </div>
@@ -205,10 +205,10 @@ export default function SnapshotPage() {
 
       <section data-snapshot="profile" className="snapshot-frame space-y-4">
         <div className="border border-vault-border rounded bg-vault-surface p-5">
-          <h2 className="font-display text-3xl uppercase tracking-[0.18em] text-tungsten">
+          <h2 className="font-display text-3xl uppercase tracking-brand text-tungsten">
             0x71F2 Player
           </h2>
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-vault-text-dim mt-2">
+          <p className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim mt-2">
             Observed Session Story
           </p>
           <div className="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -240,8 +240,8 @@ function ActionCard({ tone, title, value, detail }) {
         : 'text-tungsten border-tungsten/30';
   return (
     <div className={`border rounded bg-vault-panel p-4 ${toneClass}`}>
-      <p className="font-mono text-xs uppercase tracking-[0.24em]">{title}</p>
-      <p className="font-display text-3xl uppercase tracking-[0.1em] text-vault-text mt-3">{value}</p>
+      <p className="font-mono text-xs uppercase tracking-beacon">{title}</p>
+      <p className="font-display text-3xl uppercase tracking-interface text-vault-text mt-3">{value}</p>
       <p className="font-mono text-xs text-vault-text-dim mt-2">{detail}</p>
       <div className="mt-3">
         <OutcomeBadge tone={tone === 'danger' ? 'danger' : tone === 'oxide' ? 'oxide' : 'tungsten'}>
@@ -255,7 +255,7 @@ function ActionCard({ tone, title, value, detail }) {
 function Metric({ label, value }) {
   return (
     <div className="rounded border border-vault-border bg-vault-panel/70 px-3 py-3">
-      <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-vault-text-dim">
+      <div className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">
         {label}
       </div>
       <div className="mt-2 font-mono text-vault-text">{value}</div>

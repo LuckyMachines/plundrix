@@ -6,15 +6,15 @@ export default function LobbyContinuityRail({ steps = [], count = 0, isRegistere
     <div className="alive-lobby-rail rounded border border-vault-border bg-vault-dark/40 p-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
-            Briefing Continuity
+          <p className="font-mono text-micro uppercase tracking-wider text-vault-text-dim">
+            Launch progress
           </p>
           <p className="font-mono text-sm text-vault-text">
-            {count} enrolled // {isRegistered ? 'you are in the crew' : 'not enrolled'}
+            {count} player{count === 1 ? '' : 's'} joined. {isRegistered ? 'You are in the crew.' : 'You have not joined yet.'}
           </p>
         </div>
         <span className="font-mono text-xs uppercase tracking-wider text-tungsten">
-          {done}/{steps.length} ready
+          {done}/{steps.length} steps complete
         </span>
       </div>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-vault-border">

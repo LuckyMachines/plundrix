@@ -7,7 +7,7 @@ const ACTIONS = [
     name: 'Pick',
     label: ACTION_LABELS[Action.PICK],
     color: 'border-tungsten/40 text-tungsten',
-    desc: 'Attempt to crack the next lock. Success chance scales with your tool count. If stunned, automatically fails.',
+    desc: 'Attempt to crack the next lock. Tools add 15 points. Table pressure adds 6 points per lock behind, up to 18; a deep gap or a rival at three locks turns success into a double breach. If stunned, Pick fails.',
   },
   {
     action: Action.SEARCH,
@@ -30,7 +30,7 @@ const TOOL_COUNTS = [0, 1, 2, 3, 4];
 export default function SectionActions() {
   return (
     <div className="font-mono text-xs text-vault-text leading-relaxed space-y-1">
-      <h3 className="font-display tracking-[0.25em] text-tungsten uppercase text-xs mb-3
+      <h3 className="font-display tracking-beacon text-tungsten uppercase text-xs mb-3
                      border-b border-vault-border pb-1">
         Available Actions
       </h3>
@@ -47,7 +47,7 @@ export default function SectionActions() {
         ))}
       </div>
 
-      <h3 className="font-display tracking-[0.25em] text-tungsten uppercase text-xs mb-2 mt-5
+      <h3 className="font-display tracking-beacon text-tungsten uppercase text-xs mb-2 mt-5
                      border-b border-vault-border pb-1">
         Pick Probability Table
       </h3>
@@ -76,6 +76,9 @@ export default function SectionActions() {
       <p className="text-vault-text-dim text-xs mt-2">
         Search success: {searchChance(false)}% normal / {searchChance(true)}% stunned.
         Sabotage always succeeds but costs your action for the round.
+      </p>
+      <p className="mt-2 border-l-2 border-oxide-green bg-oxide-green/5 px-3 py-2 text-vault-text-dim">
+        The table shows pressure before you commit. At one lock behind, Pick gains +6 points. At two or more behind - or whenever the leader has reached three locks - a trailing operator cracks two locks on success.
       </p>
     </div>
   );

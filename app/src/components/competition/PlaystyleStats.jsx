@@ -7,7 +7,7 @@ export default function PlaystyleStats({ profiles = [], currentAddress }) {
   return (
     <section className="border border-vault-border rounded bg-vault-surface">
       <div className="border-b border-vault-border px-5 py-4">
-        <h2 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase">
+        <h2 className="font-mono text-xs tracking-beacon text-vault-text-dim uppercase">
           Local Playstyle Integration
         </h2>
       </div>
@@ -26,11 +26,11 @@ export default function PlaystyleStats({ profiles = [], currentAddress }) {
                 <div>
                   <Link
                     to={`/profile/${profile.address}`}
-                    className="font-mono text-sm uppercase tracking-[0.16em] text-vault-text hover:text-tungsten"
+                    className="font-mono text-sm uppercase tracking-label text-vault-text hover:text-tungsten"
                   >
                     {truncateAddress(profile.address)}
                   </Link>
-                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-vault-text-dim mt-1">
+                  <p className="font-mono text-xs uppercase tracking-brand text-vault-text-dim mt-1">
                     Score {profile.playstyleScore} // {profile.gamesPlayed} observed game{profile.gamesPlayed === 1 ? '' : 's'}
                   </p>
                 </div>
@@ -45,7 +45,7 @@ export default function PlaystyleStats({ profiles = [], currentAddress }) {
           })}
         </div>
       ) : (
-        <div className="px-5 py-10 text-center font-mono text-xs uppercase tracking-[0.24em] text-vault-text-dim">
+        <div className="px-5 py-10 text-center font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
           Playstyle stats appear after this browser observes live game events.
         </div>
       )}
@@ -56,7 +56,7 @@ export default function PlaystyleStats({ profiles = [], currentAddress }) {
 function Metric({ label, value }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-[0.18em]">{label}</div>
+      <div className="text-micro uppercase tracking-brand">{label}</div>
       <div className="text-vault-text">{value}</div>
     </div>
   );

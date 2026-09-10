@@ -22,10 +22,10 @@ export default function ReplayTimeline({ timeline = [], activeRound, onJump, ana
                 className="flex w-full items-center justify-between gap-3 text-left"
                 aria-label={`Jump to round ${round}`}
               >
-                <span className="font-mono text-xs uppercase tracking-[0.14em] text-vault-text">
+                <span className="font-mono text-xs uppercase tracking-label text-vault-text">
                   Round {round}
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+                <span className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
                   {items[0]?.snapshot?.tensionLabel || 'quiet'}
                 </span>
               </button>
@@ -34,7 +34,7 @@ export default function ReplayTimeline({ timeline = [], activeRound, onJump, ana
                   <div key={`${item.type}-${item.playerId}-${item.round}-${item.text}`} className="rounded bg-vault-dark/75 px-3 py-2">
                     <p className="text-sm text-vault-text">{item.text}</p>
                     {analysisMode && (
-                      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-vault-text-dim">
+                      <p className="mt-1 font-mono text-micro uppercase tracking-interface text-vault-text-dim">
                         {item.actionLabel}
                         {item.roll !== null ? ` / roll ${item.roll}/${item.chance}` : ''}
                         {item.reason ? ` / ${item.reason}` : ''}

@@ -128,7 +128,7 @@ export default function ReplayViewer({ replay, comparison }) {
           </select>
         </div>
         <details className="mt-3 rounded border border-vault-border bg-vault-panel/45 p-3">
-          <summary className="cursor-pointer font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
+          <summary className="cursor-pointer font-mono text-xs uppercase tracking-label text-vault-text-dim">
             Replay tools
           </summary>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -161,7 +161,7 @@ export default function ReplayViewer({ replay, comparison }) {
         <section className="rounded border border-vault-border bg-vault-surface/75 p-4">
           <div className="flex items-center justify-between gap-3">
             <p className="label">Round {activeRound}</p>
-            <span className="font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">
+            <span className="font-mono text-xs uppercase tracking-label text-vault-text-dim">
               {activeRoundItems[0]?.snapshot?.tensionLabel || 'quiet'}
             </span>
           </div>
@@ -170,7 +170,7 @@ export default function ReplayViewer({ replay, comparison }) {
               <article key={player.id} className="rounded border border-vault-border bg-vault-panel/55 p-3">
                 <div className="flex items-center justify-between gap-3">
                   <h2 className="font-display text-xl text-vault-text">{player.name}</h2>
-                  <span className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] ${
+                  <span className={`rounded border px-2 py-1 font-mono text-micro uppercase tracking-interface ${
                     player.stunned ? 'border-signal-red/50 text-signal-red' : 'border-oxide-green/40 text-oxide-green'
                   }`}>
                     {player.stunned ? 'Stunned' : 'Ready'}
@@ -194,7 +194,7 @@ export default function ReplayViewer({ replay, comparison }) {
                   onClick={() => setActiveRound(beat.round)}
                   className="block w-full rounded bg-vault-dark px-3 py-2 text-left text-sm text-vault-text hover:bg-vault-panel"
                 >
-                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">
+                  <span className="font-mono text-micro uppercase tracking-label text-oxide-green">
                     R{beat.round} {beat.label}
                   </span>
                   <span className="mt-1 block">{beat.text}</span>
@@ -237,7 +237,7 @@ function ControlButton({ children, onClick, label }) {
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:bg-vault-panel"
+      className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text hover:bg-vault-panel"
     >
       {children}
     </button>

@@ -142,12 +142,12 @@ export const CALIBRATIONS = Object.freeze([
 export const CALIBRATIONS_BY_ID = Object.freeze(Object.fromEntries(CALIBRATIONS.map((calibration) => [calibration.id, calibration])));
 
 export const CRAFTING_MATERIALS = Object.freeze([
-  { id: 'brass-cogs', label: 'Brass Cogs', image: '/images/inventory/brass-cogs.webp', description: 'Reliable mechanical stock.', start: 48 },
-  { id: 'cipher-glass', label: 'Cipher Glass', image: '/images/inventory/cipher-glass.webp', description: 'Smoked optical inserts.', start: 36 },
-  { id: 'flux-wire', label: 'Flux Wire', image: '/images/inventory/flux-wire.webp', description: 'Insulated signal windings.', start: 42 },
-  { id: 'tungsten-shard', label: 'Tungsten Shards', image: '/images/inventory/tungsten-shard.webp', description: 'Dense structural offcuts.', start: 28 },
-  { id: 'oxide-catalyst', label: 'Oxide Catalyst', image: '/images/inventory/oxide-catalyst.webp', description: 'Specialist tuning compound.', start: 22 },
-  { id: 'vault-resin', label: 'Vault Resin', image: '/images/inventory/vault-resin.webp', description: 'Rare reinforced bonding resin.', start: 18 },
+  { id: 'brass-cogs', label: 'Brass Cogs', image: '/images/inventory/brass-cogs.webp', description: 'Reliable mechanical stock.', start: 5 },
+  { id: 'cipher-glass', label: 'Cipher Glass', image: '/images/inventory/cipher-glass.webp', description: 'Smoked optical inserts.', start: 4 },
+  { id: 'flux-wire', label: 'Flux Wire', image: '/images/inventory/flux-wire.webp', description: 'Insulated signal windings.', start: 4 },
+  { id: 'tungsten-shard', label: 'Tungsten Shards', image: '/images/inventory/tungsten-shard.webp', description: 'Dense structural offcuts.', start: 2 },
+  { id: 'oxide-catalyst', label: 'Oxide Catalyst', image: '/images/inventory/oxide-catalyst.webp', description: 'Specialist tuning compound.', start: 2 },
+  { id: 'vault-resin', label: 'Vault Resin', image: '/images/inventory/vault-resin.webp', description: 'Rare reinforced bonding resin.', start: 1 },
 ].map(Object.freeze));
 
 export const GADGET_RARITIES = Object.freeze([

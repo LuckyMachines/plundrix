@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import { formatEther } from 'viem';
 import { useGameInfo } from '../../hooks/useGameInfo';
@@ -11,9 +12,12 @@ import { truncateAddress } from '../../lib/formatting';
 import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
 import LobbyContinuityRail from './LobbyContinuityRail';
+import { copyText } from '../../lib/clipboard';
+import ConnectButton from '../wallet/ConnectButton';
 
 export default function GameLobby({ gameId }) {
   const { address } = useAccount();
+  const [inviteNotice, setInviteNotice] = useState('');
 
   // --- read contract data (using shared hooks with polling) ---
   const { playerCount, isLoading: loadingInfo } = useGameInfo(gameId);
@@ -55,6 +59,18 @@ export default function GameLobby({ gameId }) {
   } = useGameActions();
   useTxToast({ hash, isPending, isConfirming, isSuccess, error }, 'Lobby');
 
+  const inviteCrew = async () => {
+    const url = `${window.location.origin}/game/${gameId}`;
+    const text = `Join Plundrix operation #${gameId} on Sepolia. ${url}`;
+    try {
+      if (navigator.share) await navigator.share({ title: `Plundrix operation #${gameId}`, text, url });
+      else await copyText(text);
+      setInviteNotice('Crew invitation ready. Keep this tab open while they join.');
+    } catch (inviteError) {
+      if (inviteError?.name !== 'AbortError') setInviteNotice('Could not copy the invitation. Copy this page URL instead.');
+    }
+  };
+
   if (loadingInfo) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -68,7 +84,7 @@ export default function GameLobby({ gameId }) {
       {/* Header stamp */}
       <div className="border-b border-vault-border px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold tracking-[0.25em] text-tungsten uppercase font-display">
+          <h2 className="text-lg font-semibold tracking-beacon text-tungsten uppercase font-display">
             Operation Briefing
           </h2>
           <span className="font-mono text-xs text-vault-text-dim bg-vault-dark/50 border border-vault-border rounded px-2 py-0.5">
@@ -89,12 +105,26 @@ export default function GameLobby({ gameId }) {
 
       {/* Body */}
       <div className="px-6 py-5 space-y-5">
+        {!address && (
+          <section className="flex flex-wrap items-center justify-between gap-4 border border-tungsten/45 bg-tungsten/5 p-4" aria-label="Join this operation">
+            <div>
+              <p className="font-display text-xl uppercase text-vault-text">Join this crew</p>
+              <p className="mt-1 text-sm text-vault-text-dim">Connect on Sepolia, then claim a seat in operation #{gameId}.</p>
+            </div>
+            <ConnectButton surface="live-lobby" label="Connect wallet" className="min-h-[48px] !bg-tungsten-bright !text-vault-dark" />
+          </section>
+        )}
         <LobbyContinuityRail steps={steps} count={count} isRegistered={isRegistered} />
+        <div className="flex flex-wrap items-center justify-between gap-3 border border-oxide-green/30 bg-oxide-green/5 p-3">
+          <div><p className="font-mono text-xs uppercase tracking-label text-oxide-green">Waiting room</p><p className="mt-1 text-xs text-vault-text-dim">Share the table; any joined player can start once two seats are filled.</p></div>
+          <button type="button" onClick={inviteCrew} className="min-h-[44px] border border-oxide-green/45 px-4 font-mono text-xs uppercase text-oxide-green">Invite crew</button>
+          {inviteNotice && <p className="w-full text-xs text-vault-text-dim" role="status">{inviteNotice}</p>}
+        </div>
 
         {/* Stakes info */}
         {isStakes && (
           <div className="border border-signal-red/30 bg-signal-red/5 rounded p-3 space-y-1">
-            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-signal-red">
+            <h3 className="font-mono text-xs uppercase tracking-beacon text-signal-red">
               Stakes Mode
             </h3>
             <p className="font-mono text-xs text-vault-text">
@@ -115,8 +145,8 @@ export default function GameLobby({ gameId }) {
         )}
 
         <div className="border border-vault-border/70 bg-vault-dark/40 rounded p-3">
-          <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-vault-text-dim mb-2">
-            Launch Checklist
+          <h3 className="font-mono text-xs uppercase tracking-brand text-vault-text-dim mb-2">
+            Three steps to play
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {steps.map((step) => (
@@ -128,7 +158,7 @@ export default function GameLobby({ gameId }) {
                     : 'text-vault-text-dim border-vault-border bg-vault-panel'
                 }`}
               >
-                {step.done ? 'DONE' : 'PENDING'} // {step.label}
+                {step.done ? 'READY' : 'NEXT'} - {step.label}
               </div>
             ))}
           </div>
@@ -136,7 +166,7 @@ export default function GameLobby({ gameId }) {
 
         {/* Crew manifest */}
         <div>
-          <h3 className="font-mono text-xs tracking-[0.3em] text-vault-text-dim uppercase mb-3">
+          <h3 className="font-mono text-xs tracking-beacon text-vault-text-dim uppercase mb-3">
             Crew Manifest ({count} enrolled)
           </h3>
 
@@ -168,12 +198,6 @@ export default function GameLobby({ gameId }) {
 
         {/* Action buttons */}
         <div className="flex flex-wrap gap-3 pt-2 border-t border-vault-border/50">
-          {!address && (
-            <p className="self-center font-mono text-xs text-vault-text-dim italic">
-              Connect a wallet to join or start this operation.
-            </p>
-          )}
-
           {!isRegistered && address && (
             <button
               onClick={() => registerPlayer(gameId, isStakes ? entryFee : undefined)}

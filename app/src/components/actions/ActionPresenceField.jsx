@@ -100,7 +100,7 @@ export default function ActionPresenceField({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <div>
-              <p className={`font-display text-sm uppercase tracking-[0.25em] ${tone.tint}`}>
+              <p className={`font-display text-sm uppercase tracking-beacon ${tone.tint}`}>
                 {tone.label}
               </p>
               <p className="font-mono text-xs text-vault-text-dim mt-1">
@@ -111,7 +111,7 @@ export default function ActionPresenceField({
                     : `${Number(tools || 0)} tool${Number(tools || 0) === 1 ? '' : 's'} ready`}
               </p>
             </div>
-            <div className="flex flex-wrap items-center justify-end gap-2 font-mono text-[11px] uppercase tracking-wider text-vault-text-dim">
+            <div className="flex flex-wrap items-center justify-end gap-2 font-mono text-micro uppercase tracking-wider text-vault-text-dim">
               {recommendedIntent !== 'idle' && (
                 <span className="rounded border border-blueprint/30 bg-blueprint/5 px-2 py-0.5 text-blueprint">
                   {recommendedIntent}

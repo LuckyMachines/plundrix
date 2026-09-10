@@ -1,4 +1,5 @@
 import { MAX_TOOLS } from '../../lib/constants';
+import ConnectButton from '../wallet/ConnectButton';
 
 function recommendAction({ connected, registered, actionSubmitted, stunned, tools }) {
   if (!connected) {
@@ -71,7 +72,7 @@ export default function MissionCoach({
   return (
     <div className="alive-mission-coach border border-blueprint/30 rounded bg-blueprint/5 p-4 space-y-2" data-mode={session?.mode || 'steady'}>
       <div className="flex items-center justify-between gap-3">
-        <h3 className="font-display text-xs uppercase tracking-[0.3em] text-blueprint">
+        <h3 className="font-display text-xs uppercase tracking-beacon text-blueprint">
           Tactical Guidance
         </h3>
         {canResolve && (
@@ -81,6 +82,7 @@ export default function MissionCoach({
         )}
       </div>
       <p className="font-mono text-sm text-vault-text">{recommendation}</p>
+      {!connected && <ConnectButton surface="live-action" label="Connect to act" className="mt-2 min-h-[48px]" />}
       {readout && (
         <p className="font-mono text-xs text-blueprint">{readout}</p>
       )}

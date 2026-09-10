@@ -38,7 +38,7 @@ export default function TurnAlertButton({ currentRound, gameState, actionSubmitt
   };
 
   return (
-    <button type="button" onClick={toggle} className="min-h-[44px] border border-vault-border bg-vault-dark/45 px-3 text-left font-mono text-[10px] uppercase tracking-[0.12em] text-vault-text-dim hover:text-vault-text">
+    <button type="button" onClick={toggle} className="min-h-[44px] border border-vault-border bg-vault-dark/45 px-3 text-left font-mono text-micro uppercase tracking-interface text-vault-text-dim hover:text-vault-text">
       Background turn alerts: <span className={enabled ? 'text-oxide-green' : 'text-vault-text'}>{enabled ? 'on' : 'off'}</span>
     </button>
   );

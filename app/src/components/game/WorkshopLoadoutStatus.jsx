@@ -43,13 +43,13 @@ export default function WorkshopLoadoutStatus({ gameId, gameState }) {
     <aside className="mb-5 flex min-h-[70px] items-center gap-4 border border-vault-border bg-vault-panel px-4 py-3" aria-label="Workshop loadout">
       {gadget ? <GadgetVisual gadget={gadget} compact className="h-14 min-h-14 w-14 shrink-0" /> : <div className="grid h-12 w-12 shrink-0 place-items-center border border-vault-border font-mono text-lg text-vault-text-dim">-</div>}
       <div className="min-w-0 flex-1">
-        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-tungsten">{isOpen ? 'Next-match loadout' : 'Locked match loadout'}</p>
+        <p className="font-mono text-micro uppercase tracking-brand text-tungsten">{isOpen ? 'Next-match loadout' : 'Locked match loadout'}</p>
         <p className="mt-1 truncate font-display text-lg uppercase text-vault-text">{gadget?.name || 'No gadget equipped'}</p>
-        <p className={`mt-1 font-mono text-[9px] uppercase tracking-[0.1em] ${ready ? 'text-oxide-green' : 'text-vault-text-dim'}`}>
+        <p className={`mt-1 font-mono text-micro uppercase tracking-interface ${ready ? 'text-oxide-green' : 'text-vault-text-dim'}`}>
           {gadget ? (ready ? `${gadget.protocolLabel} / armed` : `${gadget.protocolLabel} / consumed`) : 'This operation has no gadget protocol.'}
         </p>
       </div>
-      {isOpen && <Link to="/workshop" className="shrink-0 border border-tungsten/40 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.12em] text-tungsten hover:bg-tungsten/10">Change</Link>}
+      {isOpen && <Link to="/workshop" className="shrink-0 border border-tungsten/40 px-3 py-2 font-mono text-micro uppercase tracking-interface text-tungsten hover:bg-tungsten/10">Change</Link>}
     </aside>
   );
 }

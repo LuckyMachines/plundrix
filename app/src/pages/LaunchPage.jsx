@@ -216,7 +216,7 @@ export default function LaunchPage() {
           <select
             value={targetGate}
             onChange={(event) => setTargetGate(event.target.value)}
-            className="min-h-[44px] rounded border border-vault-border bg-vault-dark px-3 font-mono text-xs uppercase tracking-[0.14em] text-vault-text"
+            className="min-h-[44px] rounded border border-vault-border bg-vault-dark px-3 font-mono text-xs uppercase tracking-label text-vault-text"
           >
             {LAUNCH_GATES.map((gate) => (
               <option key={gate.id} value={gate.id}>{gate.label}</option>
@@ -260,7 +260,7 @@ export default function LaunchPage() {
           <div className="mt-4 space-y-2">
             {Object.entries(plan.readiness.categories).map(([category, item]) => (
               <div key={category} className="grid grid-cols-[120px_1fr_56px] items-center gap-3 text-sm">
-                <span className="font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">{category}</span>
+                <span className="font-mono text-xs uppercase tracking-label text-vault-text-dim">{category}</span>
                 <div className="h-2 rounded bg-vault-dark">
                   <div className={`h-2 rounded ${barClass(item.score)}`} style={{ width: `${item.score}%` }} />
                 </div>
@@ -273,7 +273,7 @@ export default function LaunchPage() {
         <Panel title="Checks">
           <div className="mt-3 max-h-[560px] overflow-auto">
             <table className="w-full min-w-[860px] text-left">
-              <thead className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+              <thead className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
                 <tr>
                   <th className="py-2 pr-3">Status</th>
                   <th className="py-2 pr-3">Gate</th>
@@ -316,7 +316,7 @@ export default function LaunchPage() {
                     className="mt-1"
                   />
                   <span>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-tungsten">{risk.severity} / {risk.category}</span>
+                    <span className="font-mono text-micro uppercase tracking-label text-tungsten">{risk.severity} / {risk.category}</span>
                     <span className="block mt-1">{risk.title}</span>
                     <span className="block mt-1 text-xs text-vault-text-dim">{risk.mitigation}</span>
                   </span>
@@ -467,7 +467,7 @@ function LaunchButton({ children, onClick, disabled }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="mt-3 min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:bg-vault-panel disabled:opacity-40"
+      className="mt-3 min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text hover:bg-vault-panel disabled:opacity-40"
     >
       {children}
     </button>
@@ -476,7 +476,7 @@ function LaunchButton({ children, onClick, disabled }) {
 
 function StatusPill({ status }) {
   return (
-    <span className={`inline-flex rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${pillClass(status)}`}>
+    <span className={`inline-flex rounded border px-2 py-1 font-mono text-micro uppercase tracking-label ${pillClass(status)}`}>
       {status}
     </span>
   );
@@ -500,7 +500,7 @@ function MiniList({ label, items }) {
 function ProofRow({ label, value }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded border border-vault-border bg-vault-panel/55 px-3 py-2">
-      <span className="font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">{label}</span>
+      <span className="font-mono text-xs uppercase tracking-label text-vault-text-dim">{label}</span>
       <span className="text-right">{value}</span>
     </div>
   );

@@ -61,7 +61,7 @@ export function CommandCard({ command, purpose, safety, status }) {
       <button
         type="button"
         onClick={() => navigator.clipboard?.writeText(command)}
-        className="mt-3 min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:border-tungsten/55"
+        className="mt-3 min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text hover:border-tungsten/55"
       >
         Copy command
       </button>
@@ -113,9 +113,9 @@ function CardMeta({ source, command, timestamp }) {
   if (!source && !command && !timestamp) return null;
   return (
     <dl className="mt-4 grid gap-2 font-mono text-xs text-vault-text-dim">
-      {source && <div><dt className="uppercase tracking-[0.12em]">Source</dt><dd className="break-words text-vault-text">{source}</dd></div>}
-      {timestamp && <div><dt className="uppercase tracking-[0.12em]">Timestamp</dt><dd className="text-vault-text">{timestamp}</dd></div>}
-      {command && <div><dt className="uppercase tracking-[0.12em]">Command</dt><dd><code className="break-all text-vault-text">{command}</code></dd></div>}
+      {source && <div><dt className="uppercase tracking-interface">Source</dt><dd className="break-words text-vault-text">{source}</dd></div>}
+      {timestamp && <div><dt className="uppercase tracking-interface">Timestamp</dt><dd className="text-vault-text">{timestamp}</dd></div>}
+      {command && <div><dt className="uppercase tracking-interface">Command</dt><dd><code className="break-all text-vault-text">{command}</code></dd></div>}
     </dl>
   );
 }

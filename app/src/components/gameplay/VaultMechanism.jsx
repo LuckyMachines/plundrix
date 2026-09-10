@@ -1,80 +1,122 @@
+const OPERATOR_TONES = ['coral', 'cyan', 'green', 'gold'];
+
+function tumblerPosition(index, total) {
+  const angle = (-Math.PI / 2) + ((Math.PI * 2 * index) / total);
+  return {
+    left: `${50 + (46 * Math.cos(angle))}%`,
+    top: `${50 + (46 * Math.sin(angle))}%`,
+  };
+}
+
 export default function VaultMechanism({
   cracked = 0,
   total = 5,
   resolving = false,
-  label = 'Your vault',
-  selectedAction = 'pick',
+  label = 'Nightfall vault',
+  selectedAction,
+  actions = [],
+  players = [],
+  latestOutcome = null,
+  onSelectAction,
 }) {
   const remaining = Math.max(0, total - cracked);
+  const selected = actions.find((action) => action.id === selectedAction) || actions[0];
+  const leaderLocks = Math.max(0, ...players.map((candidate) => candidate.locksCracked));
+  const outcomeState = latestOutcome ? (latestOutcome.success ? 'success' : 'failed') : 'idle';
+  const statusCopy = resolving
+    ? 'Moves sealed. The whole table is revealing.'
+    : latestOutcome ? `Last reveal: ${latestOutcome.message}` : selected?.detail || `Crack ${remaining} more ${remaining === 1 ? 'lock' : 'locks'} before the table.`;
 
   return (
-    <div className="instant-vault-core caper-layer caper-layer-planning relative overflow-hidden text-center" data-route={selectedAction}>
-      <div className="caper-route-map" aria-hidden="true">
+    <section
+      id="instant-vault-actions"
+      className="instant-vault-core caper-layer caper-layer-planning relative overflow-hidden text-center"
+      data-route={selected?.identity || 'pick'}
+      data-outcome={outcomeState}
+      aria-labelledby="instant-vault-heading"
+    >
+      <div className="caper-conflict-map" aria-hidden="true">
         <svg viewBox="0 0 760 500" preserveAspectRatio="none" focusable="false">
-          <path className="caper-route-map__architecture" d="M70 70h150v55h72v82h-88v83H88v102h188m208-312h178v90h-84v92h112v108H548v74H430" />
-          <g className="caper-route-map__rooms">
-            <rect x="62" y="78" width="78" height="54" rx="4" />
-            <rect x="152" y="56" width="94" height="72" rx="4" />
-            <rect x="84" y="158" width="112" height="68" rx="4" />
-            <rect x="214" y="142" width="72" height="92" rx="4" />
-            <rect x="54" y="264" width="94" height="76" rx="4" />
-            <rect x="164" y="286" width="110" height="66" rx="4" />
-            <rect x="488" y="66" width="92" height="68" rx="4" />
-            <rect x="594" y="92" width="94" height="76" rx="4" />
-            <rect x="518" y="176" width="132" height="66" rx="4" />
-            <rect x="590" y="270" width="106" height="72" rx="4" />
-            <rect x="478" y="326" width="94" height="68" rx="4" />
-            <path d="M96 105h18v14H96zm98-19h26v18h-26zM111 184h44v16h-44zm128-10h22v34h-22zM80 294h42v18H80zm112 18h54v16h-54zM514 92h38v18h-38zm110 28h36v20h-36zm-74 82h72v16h-72zm72 96h46v18h-46zm-116 54h38v18h-38z" />
-          </g>
-          <path className="caper-route-map__service-lines" d="M140 104h12m94-12h38v62m-88 38h18m-66 110h16m110 18h42M488 100h-54v66m146-36h14m56 78h34m-94 98h-42v46m-70 8h-50" />
-          <path className="caper-route-map__line caper-route-map__line-pick" d="M28 410 C 150 392, 158 286, 286 310 S 424 244, 545 282 S 646 176, 728 84" />
-          <path className="caper-route-map__line caper-route-map__line-search" d="M20 96 C 150 80, 176 188, 302 182 S 474 104, 726 214" />
-          <path className="caper-route-map__line caper-route-map__line-sabotage" d="M52 260 C 168 238, 234 400, 382 350 S 578 404, 724 332" />
-          {[['72','394'],['166','340'],['286','310'],['445','262'],['545','282'],['664','190'],['120','98'],['302','182'],['596','138'],['216','346'],['382','350'],['610','388']].map(([cx, cy], index) => <circle key={index} cx={cx} cy={cy} r="7" />)}
+          <path className="caper-conflict-map__frame" d="M30 72h145l28 26h354l28-26h145M30 428h145l28-26h354l28 26h145" />
+          <path className="caper-conflict-map__circuit" d="M45 128h118l34 34h70m226 0h70l34-34h118M45 370h112l48-42h70m210 0h70l48 42h112" />
+          <path className="caper-conflict-map__line caper-conflict-map__line-pick" d="M104 430 C 160 392, 205 330, 326 284" />
+          <path className="caper-conflict-map__line caper-conflict-map__line-search" d="M380 430 C 380 372, 380 330, 380 286" />
+          <path className="caper-conflict-map__line caper-conflict-map__line-sabotage" d="M656 430 C 600 392, 555 330, 434 284" />
+          <circle cx="104" cy="430" r="7" />
+          <circle cx="380" cy="430" r="7" />
+          <circle cx="656" cy="430" r="7" />
         </svg>
       </div>
 
       <div className="instant-vault-title">
-        <p className="caper-kicker font-mono text-xs uppercase tracking-brand text-tungsten">{label}</p>
-        <span>{remaining === 0 ? 'Breach open' : `${remaining} sealed`}</span>
-      </div>
-      <div className="instant-vault-machine">
-        <div className="instant-vault-heart" aria-hidden="true">
-          <i /><i /><i /><span />
+        <div>
+          <p id="instant-vault-heading" className="caper-kicker font-mono text-xs uppercase tracking-brand text-tungsten">{label}</p>
+          <small>Live lock race / simultaneous reveal</small>
         </div>
-        <div
-          className="instant-lock-rack"
-          role="img"
-          aria-label={`${cracked} of ${total} locks cracked`}
-        >
-          {Array.from({ length: total }, (_, index) => {
-            const open = index < cracked;
-            return (
-              <span
-                key={index}
-                className={`instant-lock ${open ? 'instant-lock-cracked' : ''}`}
-                data-state={open ? 'open' : 'sealed'}
-                aria-hidden="true"
-              >
-                <span className="instant-lock__index">{index + 1}</span>
-                <span className="instant-lock__keyway" />
-                <span className="instant-lock__state">{open ? 'Open' : 'Sealed'}</span>
-              </span>
-            );
-          })}
+        <span>{remaining === 0 ? 'Breach open' : `${cracked}/${total} cracked`}</span>
+      </div>
+
+      <div className="instant-vault-operators" aria-label="Live table positions">
+        {players.map((candidate, index) => {
+          const initials = candidate.name.slice(0, 2).toUpperCase();
+          const isLeader = candidate.locksCracked === leaderLocks && leaderLocks > 0;
+          return (
+            <div
+              key={candidate.id}
+              className="instant-vault-operator"
+              data-tone={OPERATOR_TONES[index]}
+              data-current={candidate.id === 'player-1'}
+              data-stunned={candidate.stunned}
+              data-leader={isLeader}
+              aria-label={`${candidate.name}: ${candidate.locksCracked} of ${total} locks, ${candidate.tools} tools${candidate.stunned ? ', stunned' : ''}`}
+            >
+              <span aria-hidden="true">{initials}</span>
+              <strong>{candidate.name}</strong>
+              <small>{candidate.locksCracked}/{total} locks</small>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="instant-vault-machine">
+        <div className="instant-vault-heart" role="img" aria-label={`${cracked} of ${total} vault tumblers opened`}>
+          <i /><i /><i />
+          <div className="instant-vault-tumblers" aria-hidden="true">
+            {Array.from({ length: total }, (_, index) => {
+              const open = index < cracked;
+              return <span key={index} data-state={open ? 'open' : 'sealed'} style={tumblerPosition(index, total)}>{index + 1}</span>;
+            })}
+          </div>
+          <div className="instant-vault-count" aria-hidden="true">
+            <strong>{cracked}/{total}</strong>
+            <span>Locks</span>
+          </div>
         </div>
       </div>
 
-      <p className="instant-vault-copy text-sm text-vault-text-dim">
-        {remaining === 0
-          ? 'The final lock is open.'
-          : `Crack ${remaining} more ${remaining === 1 ? 'lock' : 'locks'} before the table.`}
+      <div className="instant-vault-conduits" role="group" aria-label="Choose an action">
+        {actions.map((action) => (
+          <button
+            key={action.id}
+            type="button"
+            data-action={action.identity}
+            data-selected={selectedAction === action.id}
+            aria-pressed={selectedAction === action.id}
+            aria-label={`Select ${action.label}: ${action.metric}. ${action.shortDetail}`}
+            disabled={resolving}
+            onClick={() => onSelectAction?.(action.id)}
+          >
+            <span>{action.label}</span>
+            <strong>{action.metric}</strong>
+            <small>{action.shortDetail}</small>
+          </button>
+        ))}
+      </div>
+
+      <p className="instant-vault-copy text-sm text-vault-text-dim" aria-live="polite">
+        <span data-state={outcomeState} aria-hidden="true" />
+        {statusCopy}
       </p>
-      {resolving && (
-        <p className="mt-2 font-mono text-xs uppercase tracking-brand text-tungsten" role="status">
-          Actions sealed. Revealing...
-        </p>
-      )}
-    </div>
+    </section>
   );
 }

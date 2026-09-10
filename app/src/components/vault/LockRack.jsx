@@ -13,7 +13,7 @@ export default function LockRack({ locksCracked = 0, session, vaultReaction, act
       data-action-identity={actionIdentity?.id || 'idle'}
     >
       {/* Section label */}
-      <h3 className="text-xs tracking-[0.35em] text-vault-text-dim uppercase font-display mb-3">
+      <h3 className="text-xs tracking-beacon text-vault-text-dim uppercase font-display mb-3">
         Vault Face
       </h3>
 
@@ -38,11 +38,11 @@ export default function LockRack({ locksCracked = 0, session, vaultReaction, act
           />
         </div>
         <div className="flex justify-between mt-1">
-          <span className="font-mono text-[11px] text-vault-text-dim uppercase">
+          <span className="font-mono text-micro text-vault-text-dim uppercase">
             {cracked} / {TOTAL_LOCKS}
           </span>
           {cracked >= TOTAL_LOCKS && (
-            <span className="font-mono text-[11px] text-tungsten-bright uppercase tracking-wider animate-pulse">
+            <span className="font-mono text-micro text-tungsten-bright uppercase tracking-wider animate-pulse">
               Vault Open
             </span>
           )}

@@ -2,10 +2,10 @@ export default function ProfileIntegrationStats({ stats }) {
   if (!stats) {
     return (
       <section className="border border-vault-border rounded bg-vault-surface p-5">
-        <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-vault-text-dim">
+        <h2 className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
           Observed Session Story
         </h2>
-        <p className="mt-3 font-mono text-xs uppercase tracking-[0.22em] text-vault-text-dim">
+        <p className="mt-3 font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
           No local event history has been observed for this profile yet.
         </p>
       </section>
@@ -15,7 +15,7 @@ export default function ProfileIntegrationStats({ stats }) {
   return (
     <section className="border border-vault-border rounded bg-vault-surface p-5 space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-vault-text-dim">
+        <h2 className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
           Observed Session Story
         </h2>
         <span className="font-mono text-xs uppercase tracking-wider text-blueprint">
@@ -39,7 +39,7 @@ export default function ProfileIntegrationStats({ stats }) {
 function Metric({ label, value }) {
   return (
     <div className="rounded border border-vault-border bg-vault-panel/70 px-3 py-3">
-      <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-vault-text-dim">
+      <div className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">
         {label}
       </div>
       <div className="mt-2 font-mono text-vault-text">{value}</div>

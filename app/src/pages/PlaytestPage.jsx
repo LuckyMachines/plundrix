@@ -192,7 +192,7 @@ export default function PlaytestPage() {
               <div key={brief.id} className="rounded border border-vault-border bg-vault-panel/55 p-3 text-sm text-vault-text">
                 <p className="font-display text-lg">{brief.role}</p>
                 <p className="mt-1 text-vault-text-dim">{brief.goal}</p>
-                <p className="mt-2 text-xs uppercase tracking-[0.14em] text-tungsten">{brief.behaviorPrompt}</p>
+                <p className="mt-2 text-xs uppercase tracking-label text-tungsten">{brief.behaviorPrompt}</p>
               </div>
             ))}
           </div>
@@ -228,7 +228,7 @@ export default function PlaytestPage() {
             {mission.observationSheet.dimensions.map((item) => (
               <div key={item.id} className="flex items-center justify-between gap-3 rounded border border-vault-border bg-vault-panel/55 px-3 py-2 text-sm text-vault-text">
                 <span>{item.label}</span>
-                <span className="font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">{item.scale}</span>
+                <span className="font-mono text-xs uppercase tracking-label text-vault-text-dim">{item.scale}</span>
               </div>
             ))}
           </div>
@@ -249,7 +249,7 @@ export default function PlaytestPage() {
         <Panel title="Backlog">
           <div className="mt-3 overflow-x-auto">
             <table className="w-full min-w-[760px] text-left">
-              <thead className="font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+              <thead className="font-mono text-micro uppercase tracking-label text-vault-text-dim">
                 <tr>
                   <th className="py-2 pr-3">Rank</th>
                   <th className="py-2 pr-3">Category</th>
@@ -334,7 +334,7 @@ function CoachButton({ children, onClick, disabled }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="mt-3 min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-[0.14em] text-vault-text hover:bg-vault-panel disabled:opacity-40"
+      className="mt-3 min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text hover:bg-vault-panel disabled:opacity-40"
     >
       {children}
     </button>
@@ -359,7 +359,7 @@ function MiniList({ label, items }) {
 function Slider({ label, value, onChange }) {
   return (
     <label className="block">
-      <span className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-vault-text-dim">
+      <span className="flex items-center justify-between gap-3 font-mono text-micro uppercase tracking-label text-vault-text-dim">
         <span>{label}</span>
         <span>{value}</span>
       </span>
@@ -378,7 +378,7 @@ function Slider({ label, value, onChange }) {
 function ProofRow({ label, value }) {
   return (
     <div className="flex items-center justify-between gap-3 rounded border border-vault-border bg-vault-panel/55 px-3 py-2">
-      <span className="font-mono text-xs uppercase tracking-[0.14em] text-vault-text-dim">{label}</span>
+      <span className="font-mono text-xs uppercase tracking-label text-vault-text-dim">{label}</span>
       <span className="text-right">{value}</span>
     </div>
   );

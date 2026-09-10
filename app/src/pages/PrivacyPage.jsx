@@ -2,7 +2,7 @@ export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-10 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-2xl font-display font-bold tracking-[0.25em] text-tungsten uppercase">
+        <h1 className="text-2xl font-display font-bold tracking-beacon text-tungsten uppercase">
           Privacy Policy
         </h1>
         <p className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">
@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           1. Overview
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           2. Information We Collect
         </h2>
 
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           3. Information We Do Not Collect
         </h2>
         <ul className="space-y-1">
@@ -101,7 +101,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           4. How We Use Information
         </h2>
         <ul className="space-y-1">
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           5. Data Sharing
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
@@ -132,7 +132,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           6. Data Retention
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
@@ -143,7 +143,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           7. Cookies and Local Storage
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
@@ -157,7 +157,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           8. Security
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
@@ -169,7 +169,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           9. Children's Privacy
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
@@ -179,7 +179,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           10. Changes to This Policy
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
@@ -190,7 +190,7 @@ export default function PrivacyPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-display font-semibold tracking-[0.2em] text-vault-text uppercase">
+        <h2 className="text-sm font-display font-semibold tracking-brand text-vault-text uppercase">
           11. Contact
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">

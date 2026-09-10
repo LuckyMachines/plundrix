@@ -9,12 +9,12 @@ export default function ProfileSummary({ data }) {
     <section className="space-y-6">
       <div className="border border-vault-border rounded bg-vault-surface p-6 space-y-4">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-display text-3xl uppercase tracking-[0.16em] text-tungsten">
+          <h1 className="font-display text-3xl uppercase tracking-label text-tungsten">
             {profile.displayName}
           </h1>
           <TypePill type={profile.type} />
         </div>
-        <p className="font-mono text-sm text-vault-text-dim uppercase tracking-[0.22em]">
+        <p className="font-mono text-sm text-vault-text-dim uppercase tracking-beacon">
           {profile.title}
         </p>
         {profile.team ? (
@@ -33,7 +33,7 @@ export default function ProfileSummary({ data }) {
       </div>
 
       <div className="border border-vault-border rounded bg-vault-surface p-6 space-y-4">
-        <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-vault-text-dim">
+        <h2 className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
           Badges
         </h2>
         {profile.badges?.length ? (
@@ -43,7 +43,7 @@ export default function ProfileSummary({ data }) {
             ))}
           </div>
         ) : (
-          <p className="font-mono text-xs uppercase tracking-[0.22em] text-vault-text-dim">
+          <p className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
             No badges yet.
           </p>
         )}
@@ -60,10 +60,10 @@ export default function ProfileSummary({ data }) {
 function Metric({ label, value }) {
   return (
     <div className="rounded border border-vault-border bg-vault-panel/70 px-4 py-3">
-      <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-vault-text-dim">
+      <div className="font-mono text-micro uppercase tracking-beacon text-vault-text-dim">
         {label}
       </div>
-      <div className="font-display text-3xl tracking-[0.12em] uppercase text-vault-text mt-2">
+      <div className="font-display text-3xl tracking-interface uppercase text-vault-text mt-2">
         {value}
       </div>
     </div>
@@ -73,7 +73,7 @@ function Metric({ label, value }) {
 function StatsCard({ title, stats }) {
   return (
     <div className="border border-vault-border rounded bg-vault-surface p-5">
-      <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-vault-text-dim">
+      <h2 className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
         {title}
       </h2>
       <div className="mt-4 grid grid-cols-2 gap-3 font-mono text-sm">
@@ -91,7 +91,7 @@ function StatsCard({ title, stats }) {
 function StatRow({ label, value }) {
   return (
     <div className="rounded border border-vault-border/70 bg-vault-panel/70 px-3 py-3">
-      <div className="text-[11px] uppercase tracking-[0.2em] text-vault-text-dim">
+      <div className="text-micro uppercase tracking-brand text-vault-text-dim">
         {label}
       </div>
       <div className="mt-2 text-vault-text">{value}</div>

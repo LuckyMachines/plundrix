@@ -5,7 +5,9 @@ import {
   buildFunCurve,
   buildReplayConfig,
   compareRulesets,
+  createInitialSimulation,
   normalizeRuleset,
+  resolveSimulationRound,
   runBatch,
   runSimulation,
   summarizeSimulation,
@@ -83,6 +85,7 @@ export function getReplayId(config = {}) {
     scenarioId: config.scenarioId,
     rules: normalizeRuleset(config.rules || SIM_DEFAULT_RULES),
     strategies: config.strategies || [],
+    actionDigest: config.actionDigest || null,
   });
   return `replay-${hashString(payload).toString(16).padStart(8, '0')}`;
 }
@@ -95,6 +98,84 @@ function replayConfigFromState(state, options = {}) {
     strategies: options.strategies || ['balanced', 'picker', 'searcher', 'saboteur'],
     maxRounds: options.maxRounds || state.roundHistory.length || 40,
   };
+}
+
+export function buildReplayProof(state) {
+  const initialPlayers = state.roundHistory?.[0]?.beforePlayers || state.players || [];
+  return {
+    version: 2,
+    seed: state.seed,
+    gameId: state.gameId,
+    scenarioId: state.scenarioId,
+    rules: state.rules,
+    players: initialPlayers.map((player) => ({
+      id: player.id,
+      name: player.name,
+      locksCracked: player.locksCracked,
+      tools: player.tools,
+      stunned: player.stunned,
+      lastSabotagedRound: player.lastSabotagedRound || 0,
+      gadget: player.gadget || null,
+      gadgetReady: Boolean(player.gadgetReady),
+    })),
+    rounds: (state.roundHistory || []).map((round) => {
+      const bargains = Object.fromEntries(
+        round.events
+          .filter((event) => event.type === 'BargainResolved')
+          .map((event) => [event.actor, event.bargain]),
+      );
+      return round.events
+        .filter((event) => event.type === 'ActionOutcome')
+        .map((event) => ({
+          playerId: event.actor,
+          action: event.action,
+          sabotageTarget: event.target || null,
+          bargain: bargains[event.actor] || null,
+        }));
+    }),
+  };
+}
+
+export function rebuildStateFromReplayProof(proof) {
+  if (!proof || proof.version !== 2 || !Array.isArray(proof.rounds)) {
+    throw new Error('Unsupported exact replay proof');
+  }
+  let state = createInitialSimulation({
+    seed: proof.seed,
+    gameId: proof.gameId,
+    scenarioId: proof.scenarioId,
+    playerCount: proof.players.length,
+    names: proof.players.map((player) => player.name),
+    gadgets: proof.players.map((player) => player.gadget),
+    playerPatches: proof.players.map((player) => ({
+      locksCracked: player.locksCracked,
+      tools: player.tools,
+      stunned: player.stunned,
+      lastSabotagedRound: player.lastSabotagedRound,
+      gadgetReady: player.gadgetReady,
+    })),
+    rules: proof.rules,
+  });
+  for (const round of proof.rounds) {
+    if (state.state === 'COMPLETE') break;
+    const actions = Object.fromEntries(round.map((entry) => [entry.playerId, {
+      action: entry.action,
+      sabotageTarget: entry.sabotageTarget,
+      bargain: entry.bargain,
+    }]));
+    state = resolveSimulationRound(state, actions);
+  }
+  return state;
+}
+
+export function buildExactReplayShareUrl(state, options = {}, basePath = '/replay') {
+  const proof = buildReplayProof(state);
+  const id = getReplayId({
+    ...proof,
+    strategies: options.strategies || ['balanced', 'picker', 'searcher', 'saboteur'],
+    actionDigest: proof.rounds,
+  });
+  return `${basePath}/${id}?replay=${encodeURIComponent(encodeBase64(JSON.stringify(proof)))}`;
 }
 
 function actionText(item) {
@@ -492,14 +573,15 @@ export function parseReplayPayload(search = '') {
 
 export function buildReplayFromSimulation(state, options = {}) {
   const config = replayConfigFromState(state, options);
+  const proof = buildReplayProof(state);
   const timeline = buildReplayTimeline(state);
   const ghostHighlights = options.ghostMatch ? buildGhostHighlights(options.ghostMatch) : [];
   const highlights = [...detectReplayHighlights(state, timeline), ...ghostHighlights]
     .sort((a, b) => b.importance - a.importance);
   const dramaticScore = scoreReplayDrama(state, timeline, highlights);
   const beats = extractReplayBeats(state, timeline, highlights);
-  const id = getReplayId(config);
-  const shareUrl = buildShareUrl(config);
+  const id = getReplayId({ ...config, actionDigest: proof.rounds });
+  const shareUrl = buildExactReplayShareUrl(state, { strategies: config.strategies });
   const summary = summarizeSimulation(state);
   const momentTags = buildMomentTags(state, { totalLocks: state.rules?.totalLocks });
   const funProof = buildFunProof({
@@ -854,20 +936,33 @@ export function migrateReplay(replay) {
 }
 
 export function loadReplayFromSearch(search, fallbackConfig = {}) {
-  const payload = parseReplayPayload(search);
-  if (!payload) return buildReplayFromSeed(fallbackConfig);
-  return buildReplayFromSeed({
-    seed: payload.seed,
-    scenarioId: payload.scenarioId,
-    strategies: payload.strategies,
-    rules: payload.rules,
-  });
+  try {
+    const payload = parseReplayPayload(search);
+    if (!payload) return buildReplayFromSeed(fallbackConfig);
+    if (payload.version === 2 && Array.isArray(payload.rounds)) {
+      return buildReplayFromSimulation(rebuildStateFromReplayProof(payload), {
+        sourceType: 'shared exact operation',
+      });
+    }
+    return buildReplayFromSeed({
+      seed: payload.seed,
+      scenarioId: payload.scenarioId,
+      strategies: payload.strategies,
+      rules: payload.rules,
+    });
+  } catch {
+    return null;
+  }
 }
 
 function readLibrary() {
   if (typeof localStorage === 'undefined') return [];
-  const raw = localStorage.getItem(REPLAY_LIBRARY_KEY);
-  return raw ? JSON.parse(raw).map(migrateReplay) : [];
+  try {
+    const value = JSON.parse(localStorage.getItem(REPLAY_LIBRARY_KEY));
+    return Array.isArray(value) ? value.map(migrateReplay) : [];
+  } catch {
+    return [];
+  }
 }
 
 function writeLibrary(items) {
@@ -878,6 +973,10 @@ function writeLibrary(items) {
 
 export function listReplayLibrary() {
   return readLibrary();
+}
+
+export function findReplayInLibrary(id) {
+  return readLibrary().find((replay) => replay.id === id) || null;
 }
 
 export function saveReplayToLibrary(replay) {

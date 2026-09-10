@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "name": "Plundrix canonical UI review",
+  "description": "A deliberately small visual contract for the player-facing states that carry the product.",
+  "viewports": {
+    "desktop": { "width": 1440, "height": 1000 },
+    "mobile": { "width": 390, "height": 844 }
+  },
+  "defaults": {
+    "viewports": ["desktop", "mobile"],
+    "maxDiffPixelRatio": 0.002,
+    "pixelThreshold": 0.2,
+    "maskSelectors": [".alive-timeout-dial"],
+    "rules": [
+      "Capture the same seeded fixture and viewport every time.",
+      "Judge composition and hierarchy before decorative detail.",
+      "Never approve a changed baseline without a written reason.",
+      "Treat accessibility, overflow, missing images, and unstable state as visual failures."
+    ]
+  },
+  "surfaces": [
+    {
+      "id": "player-hub",
+      "label": "Player hub",
+      "path": "/",
+      "priority": "P0",
+      "fixture": "none",
+      "ready": { "type": "role", "role": "heading", "name": "Choose your breach." },
+      "experimentIds": ["first-run-comprehension"],
+      "reviewFocus": ["gameplay proof above the fold", "instant versus live choice", "primary CTA dominance"]
+    },
+    {
+      "id": "instant-setup",
+      "label": "Instant setup",
+      "path": "/play?mode=tactical&seed=ui-review-setup",
+      "priority": "P0",
+      "fixture": "none",
+      "ready": { "type": "role", "role": "heading", "name": "Your table is ready." },
+      "experimentIds": ["first-run-comprehension"],
+      "reviewFocus": ["goal comprehension", "mode choice", "breach CTA"]
+    },
+    {
+      "id": "instant-active",
+      "label": "Instant active round",
+      "path": "/play?mode=tactical&seed=ui-review-active",
+      "priority": "P0",
+      "fixture": "instant-active",
+      "ready": { "type": "role", "role": "heading", "name": "Round 1" },
+      "experimentIds": ["first-run-comprehension"],
+      "reviewFocus": ["decision owns the screen", "rival readability", "action consequence preview"]
+    },
+    {
+      "id": "instant-resolution",
+      "label": "Instant round resolution",
+      "path": "/play?mode=tactical&seed=ui-review-resolution",
+      "priority": "P0",
+      "fixture": "instant-resolution",
+      "ready": { "type": "text", "name": "Last resolution" },
+      "focus": { "type": "css", "selector": ".instant-resolution-summary" },
+      "experimentIds": ["first-run-comprehension"],
+      "reviewFocus": ["result and cause", "state change visibility", "next decision continuity"]
+    },
+    {
+      "id": "instant-final",
+      "label": "Instant final briefing",
+      "path": "/play?mode=tactical&seed=ui-review-final",
+      "priority": "P0",
+      "fixture": "instant-final",
+      "ready": { "type": "text", "name": "Final briefing" },
+      "focus": { "type": "css", "selector": ".instant-complete" },
+      "settle": { "type": "text", "name": "Workshop salvage recovered" },
+      "experimentIds": ["return-loop-choice"],
+      "reviewFocus": ["celebration hierarchy", "earned reward", "one obvious continuation"]
+    },
+    {
+      "id": "vault-route",
+      "label": "Vault Run route choice",
+      "path": "/vault-run",
+      "priority": "P0",
+      "fixture": "vault-route",
+      "ready": { "type": "role", "role": "heading", "name": "Every route leaves fingerprints." },
+      "reviewFocus": ["tradeoff legibility", "route differentiation", "heat consequence"]
+    },
+    {
+      "id": "vault-active",
+      "label": "Vault Run active stage",
+      "path": "/vault-run",
+      "priority": "P0",
+      "fixture": "vault-active",
+      "ready": { "type": "role", "role": "heading", "name": "Outer Ring" },
+      "reviewFocus": ["stage identity", "gambit clarity", "persistent run context"]
+    },
+    {
+      "id": "workshop",
+      "label": "Workshop",
+      "path": "/workshop",
+      "priority": "P0",
+      "fixture": "none",
+      "ready": { "type": "role", "role": "heading", "name": "Ten signature gadgets. Your build." },
+      "reviewFocus": ["collection comprehension", "configuration identity", "crafting affordance"]
+    },
+    {
+      "id": "career",
+      "label": "Career",
+      "path": "/career",
+      "priority": "P1",
+      "fixture": "none",
+      "ready": { "type": "role", "role": "heading", "name": "Operator" },
+      "reviewFocus": ["identity hierarchy", "progress readability", "next objective"]
+    },
+    {
+      "id": "replay-gallery",
+      "label": "Replay gallery",
+      "path": "/replays",
+      "priority": "P1",
+      "fixture": "none",
+      "ready": { "type": "css", "selector": "img[src^='/images/replay-']" },
+      "reviewFocus": ["story differentiation", "proof over promise", "inspect and share actions"]
+    },
+    {
+      "id": "live-lobby",
+      "label": "Live operation lobby",
+      "path": "/game/1",
+      "priority": "P0",
+      "fixture": "none",
+      "ready": { "type": "role", "role": "heading", "name": "Operation Briefing" },
+      "reviewFocus": ["crew readiness", "wallet context", "waiting continuity"]
+    },
+    {
+      "id": "live-active",
+      "label": "Live active operation",
+      "path": "/game/2",
+      "priority": "P0",
+      "fixture": "live-active",
+      "ready": { "type": "role", "role": "region", "name": "Current action" },
+      "reviewFocus": ["decision hierarchy", "on-chain state", "table pressure"]
+    }
+  ]
+}

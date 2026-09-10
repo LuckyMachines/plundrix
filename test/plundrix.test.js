@@ -23,7 +23,7 @@ import { createDefaultInventory, getGadgetMastery, grantGadgetMasteryState, gran
 import { readBalanceTelemetry, recordLocalBalanceSample } from '../app/src/lib/gadgetTelemetry.js';
 import { createChronicle, recordRivalryMatch, rivalTaunt } from '../app/src/lib/playerChronicle.js';
 import { summarizeObservations } from '../app/src/lib/observationStore.js';
-import { applyVaultRound, buildVaultActionMap, createVaultRun, startVaultStage } from '../app/src/lib/vaultRun.js';
+import { applyVaultRound, buildVaultActionMap, chooseVaultContraband, createVaultRun, getVaultHeatState, readVaultRunHistory, startVaultStage, writeVaultRun } from '../app/src/lib/vaultRun.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -1063,6 +1063,58 @@ describe('A+ gameplay improvements', () => {
     expect(state.roundHistory[1].events.some((event) => event.reason === 'SABOTAGE_FAILED_COOLDOWN')).toBe(true);
   });
 
+  it('turns deep table pressure into a visible double breach', () => {
+    let pressuredState = null;
+    for (let index = 0; index < 100 && !pressuredState; index += 1) {
+      const state = createInitialSimulation({
+        seed: `pressure-breach-${index}`,
+        playerPatches: [
+          { locksCracked: 0 },
+          { locksCracked: 2 },
+        ],
+      });
+      const next = resolveSimulationRound(state, allPick);
+      const outcome = next.roundHistory[0].events.find(
+        (event) => event.type === 'ActionOutcome' && event.actor === 'player-1',
+      );
+      if (outcome.success) pressuredState = next;
+    }
+    expect(pressuredState).not.toBeNull();
+    expect(pressuredState.players[0].locksCracked).toBe(2);
+    expect(pressuredState.roundHistory[0].events.some((event) => event.type === 'PressureBreach')).toBe(true);
+  });
+
+  it('keeps ordinary Picks to one lock when the gap is smaller than two', () => {
+    let ordinaryState = null;
+    for (let index = 0; index < 100 && !ordinaryState; index += 1) {
+      const state = createInitialSimulation({
+        seed: `ordinary-breach-${index}`,
+        playerPatches: [
+          { locksCracked: 1, tools: 5 },
+          { locksCracked: 2 },
+        ],
+      });
+      const next = resolveSimulationRound(state, allPick);
+      const outcome = next.roundHistory[0].events.find(
+        (event) => event.type === 'ActionOutcome' && event.actor === 'player-1',
+      );
+      if (outcome.success) ordinaryState = next;
+    }
+    expect(ordinaryState).not.toBeNull();
+    expect(ordinaryState.players[0].locksCracked).toBe(2);
+    expect(ordinaryState.roundHistory[0].events.some((event) => event.type === 'PressureBreach')).toBe(false);
+  });
+
+  it('opens late-table counterplay once the leader reaches three locks', () => {
+    const state = createInitialSimulation({
+      seed: 'late-pressure-proof',
+      playerPatches: [{ locksCracked: 2, tools: 5 }, { locksCracked: 3 }],
+    });
+    const next = resolveSimulationRound(state, allPick);
+    expect(next.players[0].locksCracked).toBe(4);
+    expect(next.roundHistory[0].events.some((event) => event.type === 'PressureBreach' && event.actor === 'player-1')).toBe(true);
+  });
+
   it('lets a one-use Firewall block sabotage', () => {
     const state = createInitialSimulation({ seed: 'firewall-proof', gadgets: [null, 'firewall'] });
     const next = resolveSimulationRound(state, {
@@ -1127,6 +1179,7 @@ describe('A+ gameplay improvements', () => {
     const next = resolveSimulationRound(state, {
       ...allPick,
       'player-1': { action: SIM_ACTION.SABOTAGE, sabotageTarget: 'player-2' },
+      'player-2': { action: SIM_ACTION.SABOTAGE, sabotageTarget: 'player-3' },
     });
     expect(next.players[0].tools).toBe(0);
     expect(next.players[1].gadgetReady).toBe(false);
@@ -1141,6 +1194,7 @@ describe('A+ gameplay improvements', () => {
     const next = resolveSimulationRound(state, {
       ...allPick,
       'player-1': { action: SIM_ACTION.SABOTAGE, sabotageTarget: 'player-2' },
+      'player-2': { action: SIM_ACTION.SABOTAGE, sabotageTarget: 'player-3' },
     });
     expect(next.players[1].tools).toBe(1);
     expect(next.players[1].gadgetReady).toBe(false);
@@ -1166,6 +1220,14 @@ describe('A+ gameplay improvements', () => {
 });
 
 describe('vault-run retention systems', () => {
+  it('keeps the shared weekly seed free from personal rivalry modifiers', () => {
+    const first = createVaultRun({ weekly: true, gadget: 'precision-kit', rivalGrudges: { Rook: 5, Mara: 4, Vesper: 3 }, runNonce: 'first', date: new Date('2026-09-06T12:00:00.000Z') });
+    const second = createVaultRun({ weekly: true, gadget: 'precision-kit', runNonce: 'second', date: new Date('2026-09-06T12:00:00.000Z') });
+    expect(first.rivalGrudges).toEqual({ Rook: 0, Mara: 0, Vesper: 0 });
+    expect(first.runId).not.toBe(second.runId);
+    expect(startVaultStage(first, 'inside-route').currentMatch.gameId).toBe(startVaultStage(second, 'inside-route').currentMatch.gameId);
+  });
+
   it('creates and starts a three-stage run with an explicit route tradeoff', () => {
     const run = createVaultRun({ seed: 'run-proof', gadget: 'precision-kit' });
     const active = startVaultStage(run, 'hot-entry');
@@ -1184,13 +1246,21 @@ describe('vault-run retention systems', () => {
     }
     expect(run.path).toHaveLength(1);
     expect(run.path[0].won).toBe(true);
-    expect(run.status).toBe('ROUTE');
+    expect(run.status).toBe('LOOT');
     expect(run.stageIndex).toBe(1);
     expect(run.score).toBeGreaterThan(0);
+    expect(run.lootChoices).toHaveLength(3);
+    const upgraded = chooseVaultContraband(run, run.lootChoices[0]);
+    expect(upgraded.status).toBe('ROUTE');
+    expect(upgraded.contraband).toHaveLength(1);
   });
 
   it('can carry one gadget through all three vaults to a complete run', () => {
-    let run = createVaultRun({ seed: 'complete-run-proof', gadget: 'signal-scanner' });
+    let run = createVaultRun({
+      seed: 'complete-run-proof',
+      gadget: 'signal-scanner',
+      runNonce: 'complete-run-proof',
+    });
     for (let stageIndex = 0; stageIndex < 3; stageIndex += 1) {
       run = startVaultStage(run, stageIndex === 1 ? 'hot-entry' : 'inside-route');
       run.currentMatch.players[0].locksCracked = run.currentMatch.rules.totalLocks - 1;
@@ -1198,6 +1268,7 @@ describe('vault-run retention systems', () => {
       for (let round = 0; round < 8 && run.status === 'ACTIVE'; round += 1) {
         run = applyVaultRound(run, buildVaultActionMap(run, { action: SIM_ACTION.PICK }));
       }
+      if (run.status === 'LOOT') run = chooseVaultContraband(run, run.lootChoices[0]);
     }
     expect(run.status).toBe('COMPLETE');
     expect(run.path).toHaveLength(3);
@@ -1221,6 +1292,25 @@ describe('vault-run retention systems', () => {
     expect(grantMatchSalvageState(boosted.next, { matchId: 'boosted-drop', won: true, rewardMultiplier: 1.5 }).awarded).toBe(false);
   });
 
+  it('makes heat consequences explicit and archives terminal runs once', () => {
+    expect(getVaultHeatState(0).label).toBe('Cool');
+    expect(getVaultHeatState(2).label).toBe('Watched');
+    expect(getVaultHeatState(4).label).toBe('Hunted');
+    const values = new Map();
+    const storage = { getItem: (key) => values.get(key) || null, setItem: (key, value) => values.set(key, value), removeItem: (key) => values.delete(key) };
+    const complete = { ...createVaultRun({ seed: 'history-proof' }), status: 'COMPLETE', score: 1234, path: [{ rounds: 5 }], contraband: ['whisper-lens'] };
+    writeVaultRun(complete, storage);
+    writeVaultRun(complete, storage);
+    expect(readVaultRunHistory(storage)).toHaveLength(1);
+    expect(readVaultRunHistory(storage)[0].score).toBe(1234);
+  });
+
+  it('targets the primary salvage drop from the operator action mix', () => {
+    const result = grantMatchSalvageState(createDefaultInventory(), { matchId: 'search-drop', actionMix: { [SIM_ACTION.SEARCH]: 5, [SIM_ACTION.PICK]: 1 } });
+    expect(result.drops[0].materialId).toBe('cipher-glass');
+    expect(result.drops[0].reason).toMatch(/Search-heavy/);
+  });
+
   it('turns match events into persistent rival grudges and contextual lines', () => {
     const chronicle = recordRivalryMatch(createChronicle(), {
       winner: 'player-2',
@@ -1236,7 +1326,7 @@ describe('vault-run retention systems', () => {
       { completedFirstAction: true, understoodGoal: true, noticedGadget: false, wantedReplay: true, secondsToFirstAction: 20 },
       { completedFirstAction: true, understoodGoal: false, noticedGadget: true, wantedReplay: false, secondsToFirstAction: 40 },
     ]);
-    expect(summary).toEqual({ count: 2, firstActionRate: 100, goalRate: 50, gadgetRate: 50, replayRate: 50, averageSeconds: 30 });
+    expect(summary).toEqual({ count: 2, firstActionRate: 100, goalRate: 50, whyRate: 0, gadgetRate: 50, replayRate: 50, returningCount: 0, averageSeconds: 30, averageJoy: 3 });
   });
 
   it('stores only aggregate gadget balance samples', () => {
