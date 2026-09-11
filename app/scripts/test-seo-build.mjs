@@ -30,7 +30,11 @@ const trailerHtml = await readFile(resolve(appDir, 'dist', 'trailer', 'index.htm
 const sitemap = await readFile(resolve(appDir, 'dist', 'sitemap.xml'), 'utf8');
 const publicSitemap = await readFile(resolve(appDir, 'public', 'sitemap.xml'), 'utf8');
 const llms = await readFile(resolve(appDir, 'dist', 'llms.txt'), 'utf8');
+const productionDockerfile = await readFile(resolve(appDir, '..', 'Dockerfile'), 'utf8');
 const socialCards = ['plundrix-home.jpg', 'plundrix-play.jpg', 'plundrix-trailer.jpg'];
+
+expectIncludes(productionDockerfile, 'COPY app/src/lib ./app/src/lib', 'production runtime');
+expectIncludes(productionDockerfile, 'COPY app/src/data ./app/src/data', 'production runtime');
 
 for (const [label, source] of [['home', homeHtml], ['play', playHtml], ['trailer', trailerHtml]]) {
   const structuredData = source.match(/<script id="plundrix-static-jsonld" type="application\/ld\+json">(.*?)<\/script>/s);

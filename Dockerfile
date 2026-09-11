@@ -40,6 +40,8 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY abi ./abi
 COPY agent-service ./agent-service
 COPY app/scripts/serve-dist.mjs ./app/scripts/serve-dist.mjs
+COPY app/src/lib ./app/src/lib
+COPY app/src/data ./app/src/data
 COPY --from=frontend-build /workspace/app/dist ./app/dist
 COPY scripts/start-production.mjs ./scripts/start-production.mjs
 
