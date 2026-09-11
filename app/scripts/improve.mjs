@@ -22,6 +22,7 @@ const reportDir = resolve(appDir, 'reports', 'improvement');
 
 const QUICK_CHECKS = Object.freeze([
   ['improvement-system', 'Improvement-system tests', ['run', 'test:improvement']],
+  ['preferences', 'Menu and preference-system tests', ['run', 'test:preferences']],
   ['ui-review-system', 'UI review manifest and governance tests', ['run', 'test:ui-system']],
   ['art-manifest', 'Art manifest validation', ['run', 'art:validate']],
   ['inventory', 'Workshop inventory tests', ['run', 'test:inventory']],

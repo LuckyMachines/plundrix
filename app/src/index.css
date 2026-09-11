@@ -8,6 +8,7 @@
 @import "./styles/tokens.css";
 @import "./styles/typography.css";
 @import "./styles/layout.css";
+@import "./styles/settings.css";
 
 /* Bundled font files avoid third-party runtime requests and CORS failures. */
 
@@ -80,6 +81,32 @@ html.readable-ui body {
 
 html.readable-ui .font-mono {
   font-weight: 500;
+}
+
+.mobile-menu-drawer {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(58, 124, 196, 0.1), transparent 38%),
+    linear-gradient(180deg, #0a0a0f, #09131d);
+}
+
+html.high-contrast-ui {
+  --color-vault-border: #62627a;
+  --color-vault-text: #f2f2f7;
+  --color-vault-text-dim: #c5c5d2;
+  --color-tungsten: #efbc86;
+  --color-oxide-green: #63d7ae;
+  --color-blueprint: #77b8ff;
+}
+
+html.high-contrast-ui :focus-visible {
+  outline: 3px solid var(--color-tungsten-bright);
+  outline-offset: 3px;
+}
+
+html.compact-ui {
+  --layout-section-gap: clamp(1rem, 2.5vw, 2rem);
+  --layout-card-gap: clamp(0.55rem, 1.25vw, 0.85rem);
+  --layout-card-padding: clamp(0.7rem, 1.25vw, 1rem);
 }
 
 button,

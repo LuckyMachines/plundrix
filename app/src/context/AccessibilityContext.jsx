@@ -1,71 +1,136 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  PREFERENCE_BY_ID,
+  PREFERENCE_STORAGE_KEY,
+  importPreferenceBundle,
+  loadPreferences,
+  normalizePreferences,
+  preferenceDefaults,
+  savePreferences,
+} from '../data/preferences';
 
-const AccessibilityContext = createContext(null);
+const PreferencesContext = createContext(null);
 
-const READABILITY_KEY = 'plundrix_readability_mode';
-const REDUCED_MOTION_KEY = 'plundrix_reduced_motion';
-const SOUND_KEY = 'plundrix_sound_enabled';
+function environmentPreferences() {
+  return {
+    prefersReducedMotion: typeof window !== 'undefined'
+      && Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches),
+  };
+}
 
-function readBoolean(key, fallback) {
-  if (typeof window === 'undefined') return fallback;
-  const value = window.localStorage.getItem(key);
-  if (value === null) return fallback;
-  return value === 'true';
+function initialState() {
+  if (typeof window === 'undefined') {
+    return { preferences: preferenceDefaults(), storageStatus: 'ready' };
+  }
+  const result = loadPreferences(window.localStorage, environmentPreferences());
+  return { preferences: result.values, storageStatus: result.status };
 }
 
 export function AccessibilityProvider({ children }) {
-  const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const [initial] = useState(initialState);
+  const [preferences, setPreferences] = useState(initial.preferences);
+  const [storageStatus, setStorageStatus] = useState(initial.storageStatus);
+  const [notificationPermission, setNotificationPermission] = useState(() => (
+    typeof Notification === 'undefined' ? 'unsupported' : Notification.permission
+  ));
 
-  const [readabilityMode, setReadabilityMode] = useState(() =>
-    readBoolean(READABILITY_KEY, false)
-  );
-  const [reducedMotion, setReducedMotion] = useState(() =>
-    readBoolean(REDUCED_MOTION_KEY, prefersReducedMotion)
-  );
-  const [soundEnabled, setSoundEnabled] = useState(() =>
-    readBoolean(SOUND_KEY, true)
-  );
+  const setPreference = useCallback((id, value) => {
+    const definition = PREFERENCE_BY_ID[id];
+    if (!definition) throw new Error(`Unknown preference: ${id}`);
+    setPreferences((current) => normalizePreferences({ ...current, [id]: value }, environmentPreferences()));
+    setStorageStatus('ready');
+  }, []);
+
+  const resetPreferences = useCallback(() => {
+    setPreferences(preferenceDefaults(environmentPreferences()));
+    setStorageStatus('reset');
+  }, []);
+
+  const importPreferences = useCallback((source) => {
+    const next = importPreferenceBundle(source, environmentPreferences());
+    setPreferences(next);
+    setStorageStatus('imported');
+    return next;
+  }, []);
+
+  const setBackgroundTurnAlerts = useCallback(async (next) => {
+    if (!next) {
+      setPreference('backgroundTurnAlerts', false);
+      return 'disabled';
+    }
+    if (typeof Notification === 'undefined') {
+      setNotificationPermission('unsupported');
+      return 'unsupported';
+    }
+    let permission = Notification.permission;
+    if (permission === 'default') permission = await Notification.requestPermission();
+    setNotificationPermission(permission);
+    setPreference('backgroundTurnAlerts', permission === 'granted');
+    return permission;
+  }, [setPreference]);
 
   useEffect(() => {
-    window.localStorage.setItem(READABILITY_KEY, String(readabilityMode));
-    document.documentElement.classList.toggle('readable-ui', readabilityMode);
-  }, [readabilityMode]);
+    const saved = savePreferences(window.localStorage, preferences);
+    if (!saved.ok) setStorageStatus('unavailable');
+  }, [preferences]);
 
   useEffect(() => {
-    window.localStorage.setItem(REDUCED_MOTION_KEY, String(reducedMotion));
-    document.documentElement.classList.toggle('reduced-motion-ui', reducedMotion);
-  }, [reducedMotion]);
+    const root = document.documentElement;
+    root.classList.toggle('readable-ui', preferences.readabilityMode);
+    root.classList.toggle('reduced-motion-ui', preferences.reducedMotion);
+    root.classList.toggle('high-contrast-ui', preferences.highContrast);
+    root.classList.toggle('compact-ui', preferences.interfaceDensity === 'compact');
+    root.classList.toggle('keyboard-hints-ui', preferences.keyboardHints);
+    root.dataset.preferenceSchema = '2';
+  }, [preferences]);
 
   useEffect(() => {
-    window.localStorage.setItem(SOUND_KEY, String(soundEnabled));
-  }, [soundEnabled]);
+    const onStorage = (event) => {
+      if (event.key !== PREFERENCE_STORAGE_KEY) return;
+      const result = loadPreferences(window.localStorage, environmentPreferences());
+      setPreferences(result.values);
+      setStorageStatus('synced');
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
-  const value = useMemo(
-    () => ({
-      readabilityMode,
-      reducedMotion,
-      soundEnabled,
-      setReadabilityMode,
-      setReducedMotion,
-      setSoundEnabled,
-    }),
-    [readabilityMode, reducedMotion, soundEnabled]
-  );
+  const legacySetters = useMemo(() => ({
+    setReadabilityMode: (value) => setPreference('readabilityMode', value),
+    setReducedMotion: (value) => setPreference('reducedMotion', value),
+    setSoundEnabled: (value) => setPreference('soundEnabled', value),
+  }), [setPreference]);
 
-  return (
-    <AccessibilityContext.Provider value={value}>
-      {children}
-    </AccessibilityContext.Provider>
-  );
+  const value = useMemo(() => ({
+    ...preferences,
+    preferences,
+    storageStatus,
+    notificationPermission,
+    setPreference,
+    setBackgroundTurnAlerts,
+    resetPreferences,
+    importPreferences,
+    ...legacySetters,
+  }), [
+    importPreferences,
+    legacySetters,
+    notificationPermission,
+    preferences,
+    resetPreferences,
+    setBackgroundTurnAlerts,
+    setPreference,
+    storageStatus,
+  ]);
+
+  return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>;
 }
+
+export const PreferencesProvider = AccessibilityProvider;
 
 export function useAccessibility() {
-  const ctx = useContext(AccessibilityContext);
-  if (!ctx) {
-    throw new Error('useAccessibility must be used within AccessibilityProvider');
-  }
-  return ctx;
+  const context = useContext(PreferencesContext);
+  if (!context) throw new Error('useAccessibility must be used within AccessibilityProvider');
+  return context;
 }
+
+export const usePreferences = useAccessibility;

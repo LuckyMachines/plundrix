@@ -653,3 +653,26 @@ Overall grade: **A+ for Sepolia deployment integrity and automated proof; observ
 - Collect production completion, error, replay-intent, and return baselines with the existing privacy-safe telemetry.
 - Keep the previous implementation address and upgrade transaction evidence available for rollback.
 - Require a size-reduction plan before adding more logic to the game implementation.
+
+## v0.29.0 - Unified menu and preference system
+
+Date: 2026-09-10
+
+Overall grade: **A for implemented architecture, accessibility, and automated evidence; observed settings discoverability remains ungraded.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Preference architecture | A+ | Eleven settings now come from one metadata registry with versioned storage, legacy migration, validation, cross-tab synchronization, malformed-record recovery, device-aware defaults, and portable import/export. |
+| Behavioral integrity | A | Display, density, contrast, motion, sound, volume, haptics, match recovery, browser alerts, keyboard hints, and anonymous analytics all affect real product behavior. No decorative or nonfunctional preference is exposed. |
+| Settings UX | A | A searchable four-group control center provides automatic saving, explicit capability states, testable audio, reset confirmation, and a compact `Ctrl+.` shortcut while preserving the authored caper visual language. |
+| Menu UX | A | Mobile navigation uses an opaque dedicated plane, named Settings and Manual actions, body scroll locking, focus containment, Escape dismissal, trigger restoration, and safe-area-aware scrolling. |
+| Accessibility and recovery | A+ | Switch, slider, select, dialog, and menu semantics are keyboard operable. Readable, high-contrast, reduced-motion, disabled-capability, storage-recovery, and mobile-overflow states have deterministic behavior. |
+| Automated proof | A | Unit coverage verifies all storage boundaries, browser journeys verify persistence and recovery, and the canonical matrix adds desktop/mobile Settings plus mobile navigation with reasoned baselines. |
+| Human discoverability | N/A | The anonymous observation recorder now captures settings discovery, task completion, persistence comprehension, and timing. Five actual sessions are still required; none are invented here. |
+
+### Stricter A+ bar
+
+- Observe five people find Settings and complete one assigned task without prompting.
+- Reach at least 80 percent unaided discovery and task completion with a median under 30 seconds.
+- Include one keyboard-only session and one player who regularly uses enlarged text or reduced motion.
+- Remove, rename, or relocate any control repeatedly misunderstood in those sessions.

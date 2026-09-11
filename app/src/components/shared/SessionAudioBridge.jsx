@@ -23,7 +23,7 @@ function createContext() {
   return AudioContext ? new AudioContext() : null;
 }
 
-function playCue(audioContext, cue, index) {
+function playCue(audioContext, cue, index, volume) {
   const profile = CUE_PROFILE[cue];
   if (!audioContext || !profile) return;
 
@@ -36,7 +36,7 @@ function playCue(audioContext, cue, index) {
   oscillator.frequency.setValueAtTime(frequency, start);
   oscillator.frequency.exponentialRampToValueAtTime(Math.max(60, frequency * 0.72), start + duration);
   gain.gain.setValueAtTime(0.0001, start);
-  gain.gain.exponentialRampToValueAtTime(0.035, start + 0.01);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, 0.05 * (volume / 100)), start + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
   oscillator.connect(gain).connect(audioContext.destination);
   oscillator.start(start);
@@ -44,7 +44,7 @@ function playCue(audioContext, cue, index) {
 }
 
 export default function SessionAudioBridge() {
-  const { soundEnabled } = useAccessibility();
+  const { soundEnabled, masterVolume } = useAccessibility();
   const contextRef = useRef(null);
   const armedRef = useRef(false);
 
@@ -67,15 +67,15 @@ export default function SessionAudioBridge() {
 
   useEffect(() => {
     const onCues = (event) => {
-      if (!armedRef.current || !soundEnabled) return;
+      if (!armedRef.current || !soundEnabled || masterVolume <= 0) return;
       if (!contextRef.current) contextRef.current = createContext();
       const cues = event.detail?.cues || [];
-      cues.slice(-3).forEach((cue, index) => playCue(contextRef.current, cue, index));
+      cues.slice(-3).forEach((cue, index) => playCue(contextRef.current, cue, index, masterVolume));
     };
 
     window.addEventListener('plundrix:sound-cues', onCues);
     return () => window.removeEventListener('plundrix:sound-cues', onCues);
-  }, [soundEnabled]);
+  }, [masterVolume, soundEnabled]);
 
   return null;
 }

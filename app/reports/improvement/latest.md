@@ -1,7 +1,7 @@
 # Plundrix Improvement Loop
 
-Generated: 2026-09-10T21:12:01.547Z
-Build: c9925ba
+Generated: 2026-09-11T01:42:24.248Z
+Build: 9dec568
 Mode: solo
 
 ## Do this next
@@ -34,7 +34,7 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 | Players who want another run or replay | missing | not measured | at-least 60% | T3 |
 | Seven-day returning-player rate | missing | not measured | at-least 20% | T4 |
 | Production client error rate | missing | not measured | at-most 2% | T4 |
-| Automated release gates passing | pass | 100% / n=9 | exactly 100% | T2 |
+| Automated release gates passing | pass | 100% / n=10 | exactly 100% | T2 |
 
 ## Experiment queue
 
@@ -56,12 +56,13 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 
 ## Automated checks
 
-- PASS Improvement-system tests (1055ms)
-- PASS UI review manifest and governance tests (2461ms)
-- PASS Art manifest validation (1751ms)
-- PASS Workshop inventory tests (1305ms)
-- PASS Replay-system tests (1166ms)
-- PASS Fun-system tests (1154ms)
-- PASS Telemetry tests (1491ms)
-- PASS Product-cohesion gate (956ms)
-- PASS Production build (28206ms)
+- PASS Improvement-system tests (614ms)
+- PASS Menu and preference-system tests (678ms)
+- PASS UI review manifest and governance tests (1297ms)
+- PASS Art manifest validation (698ms)
+- PASS Workshop inventory tests (639ms)
+- PASS Replay-system tests (667ms)
+- PASS Fun-system tests (576ms)
+- PASS Telemetry tests (802ms)
+- PASS Product-cohesion gate (646ms)
+- PASS Production build (8679ms)

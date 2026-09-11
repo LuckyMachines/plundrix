@@ -3,8 +3,8 @@
   "name": "Plundrix canonical UI review",
   "status": "pass",
   "summary": {
-    "passed": 24,
-    "total": 24
+    "passed": 27,
+    "total": 27
   },
   "typeLayoutSummary": {
     "passed": 4,
@@ -79,6 +79,144 @@
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\player-hub-mobile.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\player-hub-mobile.png",
       "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\player-hub-mobile.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "settings",
+      "label": "Game settings",
+      "priority": "P0",
+      "viewport": "desktop",
+      "path": "/",
+      "reviewFocus": [
+        "preference hierarchy",
+        "control-state clarity",
+        "keyboard and mobile reachability"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\settings-desktop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\settings-desktop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\settings-desktop.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "settings",
+      "label": "Game settings",
+      "priority": "P0",
+      "viewport": "mobile",
+      "path": "/",
+      "reviewFocus": [
+        "preference hierarchy",
+        "control-state clarity",
+        "keyboard and mobile reachability"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\settings-mobile.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\settings-mobile.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\settings-mobile.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "mobile-menu",
+      "label": "Mobile navigation",
+      "priority": "P0",
+      "viewport": "mobile",
+      "path": "/",
+      "reviewFocus": [
+        "journey hierarchy",
+        "settings and help access",
+        "thumb-safe navigation"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\mobile-menu-mobile.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\mobile-menu-mobile.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\mobile-menu-mobile.png",
       "accessibility": [],
       "layout": {
         "clientWidth": 390,

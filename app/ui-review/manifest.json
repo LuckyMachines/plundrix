@@ -30,6 +30,25 @@
       "reviewFocus": ["gameplay proof above the fold", "instant versus live choice", "primary CTA dominance"]
     },
     {
+      "id": "settings",
+      "label": "Game settings",
+      "path": "/",
+      "priority": "P0",
+      "fixture": "settings-open",
+      "ready": { "type": "role", "role": "dialog", "name": "Game settings" },
+      "reviewFocus": ["preference hierarchy", "control-state clarity", "keyboard and mobile reachability"]
+    },
+    {
+      "id": "mobile-menu",
+      "label": "Mobile navigation",
+      "path": "/",
+      "priority": "P0",
+      "fixture": "mobile-menu-open",
+      "viewports": ["mobile"],
+      "ready": { "type": "role", "role": "navigation", "name": "Mobile navigation" },
+      "reviewFocus": ["journey hierarchy", "settings and help access", "thumb-safe navigation"]
+    },
+    {
       "id": "instant-setup",
       "label": "Instant setup",
       "path": "/play?mode=tactical&seed=ui-review-setup",

@@ -62,6 +62,7 @@
     "test:design": "node scripts/test-design-control-tower.mjs",
     "test:telemetry": "node scripts/test-live-telemetry.mjs",
     "test:improvement": "node scripts/test-improvement-system.mjs",
+    "test:preferences": "node scripts/test-preferences-system.mjs",
     "style:check": "node scripts/style-contract.mjs",
     "style:fix": "node scripts/style-contract.mjs --fix",
     "test:ui-system": "npm run style:check && node scripts/test-ui-review-system.mjs",

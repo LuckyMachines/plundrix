@@ -1,7 +1,7 @@
 # Plundrix UI Review
 
 Status: **PASS**
-Coverage: **24/24 canonical renders**
+Coverage: **27/27 canonical renders**
 
 ## Review order
 
@@ -13,6 +13,9 @@ Composition -> hierarchy -> geometry -> typography/data -> state behavior -> res
 | --- | --- | ---: | ---: |
 | Player hub | desktop | pass | 0.000% |
 | Player hub | mobile | pass | 0.000% |
+| Game settings | desktop | pass | 0.000% |
+| Game settings | mobile | pass | 0.000% |
+| Mobile navigation | mobile | pass | 0.000% |
 | Instant setup | desktop | pass | 0.000% |
 | Instant setup | mobile | pass | 0.000% |
 | Instant active round | desktop | pass | 0.000% |

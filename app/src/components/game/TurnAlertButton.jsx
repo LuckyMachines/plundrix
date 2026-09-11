@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-
-const ALERT_KEY = 'plundrix-background-turn-alerts';
+import { useEffect, useRef } from 'react';
+import { usePreferences } from '../../context/AccessibilityContext';
 
 export default function TurnAlertButton({ currentRound, gameState, actionSubmitted }) {
-  const supported = typeof Notification !== 'undefined';
-  const [enabled, setEnabled] = useState(() => (
-    supported && Notification.permission === 'granted' && localStorage.getItem(ALERT_KEY) === 'true'
-  ));
+  const { backgroundTurnAlerts, notificationPermission, setBackgroundTurnAlerts } = usePreferences();
+  const supported = notificationPermission !== 'unsupported';
+  const enabled = supported && notificationPermission === 'granted' && backgroundTurnAlerts;
   const previousRound = useRef(currentRound);
   const previousState = useRef(gameState);
 
@@ -25,20 +23,8 @@ export default function TurnAlertButton({ currentRound, gameState, actionSubmitt
 
   if (!supported) return null;
 
-  const toggle = async () => {
-    if (enabled) {
-      localStorage.setItem(ALERT_KEY, 'false');
-      setEnabled(false);
-      return;
-    }
-    const permission = await Notification.requestPermission();
-    const next = permission === 'granted';
-    localStorage.setItem(ALERT_KEY, String(next));
-    setEnabled(next);
-  };
-
   return (
-    <button type="button" onClick={toggle} className="min-h-[44px] border border-vault-border bg-vault-dark/45 px-3 text-left font-mono text-micro uppercase tracking-interface text-vault-text-dim hover:text-vault-text">
+    <button type="button" onClick={() => setBackgroundTurnAlerts(!enabled)} aria-pressed={enabled} className="min-h-[44px] border border-vault-border bg-vault-dark/45 px-3 text-left font-mono text-micro uppercase tracking-interface text-vault-text-dim hover:text-vault-text">
       Background turn alerts: <span className={enabled ? 'text-oxide-green' : 'text-vault-text'}>{enabled ? 'on' : 'off'}</span>
     </button>
   );

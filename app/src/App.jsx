@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -39,20 +39,54 @@ const ProductMapPage = lazy(() => import('./pages/ProductMapPage'));
 const DesignSystemPage = lazy(() => import('./pages/DesignSystemPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
+const SettingsDrawer = lazy(() => import('./components/settings/SettingsDrawer'));
 const INTERNAL_TOOLS_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 
 export default function App({ web3Enabled = false }) {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(() => (
+    typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('settings') === 'open'
+  ));
   const [helpInitialTab, setHelpInitialTab] = useState('overview');
 
   useEffect(() => {
     const onOpenHelp = (event) => {
       setHelpInitialTab(event.detail?.tab || 'overview');
+      setIsSettingsOpen(false);
       setIsHelpOpen(true);
     };
     window.addEventListener('plundrix:open-help', onOpenHelp);
     return () => window.removeEventListener('plundrix:open-help', onOpenHelp);
   }, []);
+
+  useLayoutEffect(() => {
+    const openSettings = () => {
+      setIsHelpOpen(false);
+      setIsSettingsOpen(true);
+    };
+    const onShortcut = (event) => {
+      if ((event.ctrlKey || event.metaKey) && (event.key === '.' || event.code === 'Period')) {
+        event.preventDefault();
+        openSettings();
+      }
+    };
+    window.addEventListener('plundrix:open-settings', openSettings);
+    window.addEventListener('keydown', onShortcut);
+    return () => {
+      window.removeEventListener('plundrix:open-settings', openSettings);
+      window.removeEventListener('keydown', onShortcut);
+    };
+  }, []);
+
+  const openHelp = () => {
+    setIsSettingsOpen(false);
+    setIsHelpOpen(true);
+  };
+
+  const openSettings = () => {
+    setIsHelpOpen(false);
+    setIsSettingsOpen(true);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[radial-gradient(circle_at_top,rgba(196,149,106,0.08),transparent_45%),linear-gradient(180deg,var(--color-vault-dark),#111214)]">
@@ -60,7 +94,7 @@ export default function App({ web3Enabled = false }) {
       <RouteMetadata />
       <ScrollToTop />
       <RouteAnalytics />
-      <Header onHelpClick={() => setIsHelpOpen(true)} web3Enabled={web3Enabled} />
+      <Header onHelpClick={openHelp} onSettingsClick={openSettings} web3Enabled={web3Enabled} />
       {web3Enabled && <Suspense fallback={null}><NetworkSwitchBanner /></Suspense>}
       <main className="min-w-0 flex-1" id="main-content" tabIndex="-1">
         <Suspense
@@ -111,6 +145,9 @@ export default function App({ web3Enabled = false }) {
       </main>
       <Footer web3Enabled={web3Enabled} />
       <SessionAudioBridge />
+      <Suspense fallback={null}>
+        <SettingsDrawer isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      </Suspense>
       <Modal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} ariaLabel="Plundrix field manual">
         <Suspense
           fallback={

@@ -1,0 +1,44 @@
+{
+  "surfaceId": "settings",
+  "label": "Game settings",
+  "priority": "P0",
+  "viewport": "desktop",
+  "dimensions": {
+    "width": 1440,
+    "height": 1000
+  },
+  "path": "/",
+  "reviewFocus": [
+    "preference hierarchy",
+    "control-state clarity",
+    "keyboard and mobile reachability"
+  ],
+  "experimentIds": [],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 1440,
+    "scrollWidth": 1440,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  }
+}

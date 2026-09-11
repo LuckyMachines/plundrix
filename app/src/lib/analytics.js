@@ -1,3 +1,5 @@
+import { readPreferenceSnapshot } from '../data/preferences.js';
+
 export const PRODUCT_EVENT_SCHEMA_VERSION = 2;
 
 const ALLOWED_PROPERTIES = new Set([
@@ -16,6 +18,7 @@ function safeProperties(properties = {}) {
 
 export function trackProductEvent(name, properties = {}) {
   if (typeof window === 'undefined') return;
+  if (!readPreferenceSnapshot(window.localStorage).analyticsEnabled) return;
   const params = new URLSearchParams(window.location.search);
   const props = safeProperties({
     schema: PRODUCT_EVENT_SCHEMA_VERSION,

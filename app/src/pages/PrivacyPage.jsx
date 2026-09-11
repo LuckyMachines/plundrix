@@ -147,12 +147,14 @@ export default function PrivacyPage() {
           7. Cookies and Local Storage
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
-          Plundrix uses browser local storage to save accessibility preferences, instant-play
-          progression, operator names, and background-alert preferences. Optional session keys
+          Plundrix uses browser local storage to save versioned game and accessibility preferences,
+          instant-play progression, operator names, and background-alert preferences. Preferences
+          can be reset, exported, imported, or disabled from Game Settings. Optional session keys
           are generated locally and kept in session storage for the current browser session; they
           are never sent to Plundrix services. Browser notifications require your explicit
-          permission. We do not use tracking cookies. Wallet connection state is managed by your
-          wallet provider and is not stored by us.
+          permission. Anonymous product signals respect the Game Settings control and exclude names,
+          wallet addresses, seeds, and free text. We do not use tracking cookies. Wallet connection
+          state is managed by your wallet provider and is not stored by us.
         </p>
       </section>
 

@@ -4,6 +4,10 @@ export const DELIGHT_MOMENTS = Object.freeze([
   'gadget-trigger', 'sabotage-swing', 'double-lock', 'rival-reaction', 'vault-win', 'none-yet',
 ]);
 
+export const SETTINGS_TASKS = Object.freeze([
+  'not-tested', 'open-settings', 'enable-readable-text', 'adjust-sound', 'find-turn-alerts', 'restore-defaults',
+]);
+
 export function normalizeObservation(input = {}) {
   return {
     schemaVersion: 2,
@@ -17,10 +21,15 @@ export function normalizeObservation(input = {}) {
     understoodWhy: Boolean(input.understoodWhy),
     noticedGadget: Boolean(input.noticedGadget),
     wantedReplay: Boolean(input.wantedReplay),
+    foundSettings: Boolean(input.foundSettings),
+    completedSettingsTask: Boolean(input.completedSettingsTask),
+    understoodSettingsPersistence: Boolean(input.understoodSettingsPersistence),
+    settingsTask: SETTINGS_TASKS.includes(input.settingsTask) ? input.settingsTask : 'not-tested',
     joyScore: Math.max(1, Math.min(5, Math.floor(Number(input.joyScore) || 3))),
     delightMoment: DELIGHT_MOMENTS.includes(input.delightMoment) ? input.delightMoment : 'none-yet',
-    friction: ['none', 'setup', 'action-choice', 'odds', 'resolution', 'result'].includes(input.friction) ? input.friction : 'none',
+    friction: ['none', 'setup', 'action-choice', 'odds', 'resolution', 'result', 'menu', 'settings'].includes(input.friction) ? input.friction : 'none',
     secondsToFirstAction: Math.max(0, Math.min(900, Math.floor(Number(input.secondsToFirstAction) || 0))),
+    secondsToSettings: Math.max(0, Math.min(900, Math.floor(Number(input.secondsToSettings) || 0))),
   };
 }
 
@@ -54,8 +63,12 @@ export function summarizeObservations(records = []) {
     whyRate: rate('understoodWhy'),
     gadgetRate: rate('noticedGadget'),
     replayRate: rate('wantedReplay'),
+    settingsDiscoveryRate: rate('foundSettings'),
+    settingsTaskRate: rate('completedSettingsTask'),
+    settingsPersistenceRate: rate('understoodSettingsPersistence'),
     returningCount: normalized.filter((item) => item.returningPlayer).length,
     averageSeconds,
+    averageSettingsSeconds: count ? Math.round(normalized.reduce((sum, item) => sum + item.secondsToSettings, 0) / count) : 0,
     averageJoy,
   };
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-10T21:12:01.547Z",
-  "buildSha": "c9925ba",
+  "generatedAt": "2026-09-11T01:42:24.248Z",
+  "buildSha": "9dec568",
   "operatingMode": "solo",
   "health": {
     "processScore": 90,
@@ -145,8 +145,8 @@
         "tier": "T2",
         "source": "improve:verify",
         "artifact": "reports/improvement/latest.json",
-        "capturedAt": "2026-09-10T21:12:01.547Z",
-        "sampleSize": 9,
+        "capturedAt": "2026-09-11T01:42:24.248Z",
+        "sampleSize": 10,
         "value": 100
       },
       "pass": true
@@ -397,7 +397,16 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1055,
+      "durationMs": 614,
+      "outputTail": ""
+    },
+    {
+      "id": "preferences",
+      "label": "Menu and preference-system tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 678,
       "outputTail": ""
     },
     {
@@ -406,7 +415,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 2461,
+      "durationMs": 1297,
       "outputTail": ""
     },
     {
@@ -415,7 +424,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1751,
+      "durationMs": 698,
       "outputTail": ""
     },
     {
@@ -424,7 +433,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1305,
+      "durationMs": 639,
       "outputTail": ""
     },
     {
@@ -433,7 +442,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1166,
+      "durationMs": 667,
       "outputTail": ""
     },
     {
@@ -442,7 +451,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1154,
+      "durationMs": 576,
       "outputTail": ""
     },
     {
@@ -451,7 +460,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1491,
+      "durationMs": 802,
       "outputTail": ""
     },
     {
@@ -460,7 +469,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 956,
+      "durationMs": 646,
       "outputTail": ""
     },
     {
@@ -469,7 +478,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 28206,
+      "durationMs": 8679,
       "outputTail": ""
     }
   ],

@@ -27,7 +27,7 @@ for (const surface of manifest.surfaces) {
   for (const experimentId of surface.experimentIds || []) {
     assert.ok(experimentIds.has(experimentId), `${surface.id} references unknown experiment ${experimentId}`);
   }
-  for (const viewport of manifest.defaults.viewports) {
+  for (const viewport of surface.viewports || manifest.defaults.viewports) {
     assert.ok(existsSync(resolve(appDir, 'tests', 'e2e', '__screenshots__', `${surface.id}-${viewport}.png`)),
       `Missing approved baseline: ${surface.id}-${viewport}.png`);
   }
@@ -89,4 +89,8 @@ for (const token of [
 assert.equal(packageJson.scripts['ui:review'], 'node scripts/ui-review.mjs');
 assert.equal(packageJson.scripts['ui:approve'], 'node scripts/ui-review.mjs --approve');
 
-console.log(`UI review system passed: ${manifest.surfaces.length} surfaces x ${manifest.defaults.viewports.length} viewports`);
+const renderCount = manifest.surfaces.reduce(
+  (count, surface) => count + (surface.viewports || manifest.defaults.viewports).length,
+  0,
+);
+console.log(`UI review system passed: ${manifest.surfaces.length} surfaces / ${renderCount} canonical renders`);

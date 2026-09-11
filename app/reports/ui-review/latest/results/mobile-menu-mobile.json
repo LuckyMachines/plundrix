@@ -1,0 +1,44 @@
+{
+  "surfaceId": "mobile-menu",
+  "label": "Mobile navigation",
+  "priority": "P0",
+  "viewport": "mobile",
+  "dimensions": {
+    "width": 390,
+    "height": 844
+  },
+  "path": "/",
+  "reviewFocus": [
+    "journey hierarchy",
+    "settings and help access",
+    "thumb-safe navigation"
+  ],
+  "experimentIds": [],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 390,
+    "scrollWidth": 390,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  }
+}

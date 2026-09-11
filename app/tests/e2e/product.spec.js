@@ -177,7 +177,8 @@ test('player hub separates instant play from live operations', async ({ page }) 
 test('mobile navigation exposes the important player journeys', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Open menu' }).click();
+  const menuTrigger = page.getByRole('button', { name: 'Open menu' });
+  await menuTrigger.click();
   const navigation = page.getByRole('navigation', { name: 'Mobile navigation' });
   await expect(navigation.getByRole('link', { name: 'Hub 01', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Play now 02', exact: true })).toBeVisible();
@@ -185,6 +186,54 @@ test('mobile navigation exposes the important player journeys', async ({ page })
   await expect(navigation.getByRole('link', { name: 'Workshop 04', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Replays 05', exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: 'Career 06', exact: true })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: 'Hub 01', exact: true })).toBeFocused();
+  await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
+  await page.keyboard.press('Escape');
+  await expect(navigation).toBeHidden();
+  await expect(menuTrigger).toBeFocused();
+});
+
+test('settings persist, recover safely, and remain keyboard accessible', async ({ page }) => {
+  await page.goto('/');
+  const trigger = page.getByRole('button', { name: 'Game settings' }).first();
+  await trigger.click();
+  const dialog = page.getByRole('dialog', { name: 'Game settings' });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'Close settings' })).toBeFocused();
+
+  await dialog.getByRole('switch', { name: 'Readable text' }).click();
+  await dialog.getByRole('switch', { name: 'High contrast' }).click();
+  await expect(page.locator('html')).toHaveClass(/readable-ui/);
+  await expect(page.locator('html')).toHaveClass(/high-contrast-ui/);
+  await dialog.getByRole('button', { name: /Feedback/i }).click();
+  await dialog.getByRole('switch', { name: 'Reduced motion' }).click();
+  await dialog.getByRole('slider', { name: 'Cue volume' }).fill('35');
+  await expect(page.locator('html')).toHaveClass(/reduced-motion-ui/);
+  await expect(dialog.getByRole('slider', { name: 'Cue volume' })).toHaveValue('35');
+  await expectNoSeriousA11yIssues(page);
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await page.reload();
+  await expect(page.locator('html')).toHaveClass(/readable-ui/);
+  await expect(page.locator('html')).toHaveClass(/high-contrast-ui/);
+  await expect(page.locator('html')).toHaveClass(/reduced-motion-ui/);
+  await expect(trigger).toBeVisible();
+
+  await page.keyboard.press('Control+Period');
+  await expect(page.getByRole('dialog', { name: 'Game settings' })).toBeVisible();
+});
+
+test('damaged preference storage falls back to safe defaults', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('plundrix-preferences-v2', '{damaged'));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Game settings' }).first().click();
+  const dialog = page.getByRole('dialog', { name: 'Game settings' });
+  await expect(dialog.getByText(/damaged preference record was safely replaced/i)).toBeVisible();
+  await dialog.getByRole('button', { name: /Feedback/i }).click();
+  await expect(dialog.getByRole('switch', { name: 'Interface sound' })).toBeChecked();
+  await expectNoSeriousA11yIssues(page);
 });
 
 test('client navigation keeps canonical and crawler metadata route-specific', async ({ page }) => {

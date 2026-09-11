@@ -54,7 +54,11 @@ async function prepareSurface(page, surface) {
   }
   await page.goto(surface.path, { waitUntil: 'domcontentloaded' });
 
-  if (surface.fixture === 'instant-active') {
+  if (surface.fixture === 'settings-open') {
+    await page.getByRole('button', { name: 'Game settings' }).first().click();
+  } else if (surface.fixture === 'mobile-menu-open') {
+    await page.getByRole('button', { name: 'Open menu' }).click();
+  } else if (surface.fixture === 'instant-active') {
     await beginInstantMatch(page);
   } else if (surface.fixture === 'instant-resolution') {
     await beginInstantMatch(page);
@@ -65,10 +69,16 @@ async function prepareSurface(page, surface) {
     await beginInstantMatch(page);
     const finalBriefing = page.getByText('Final briefing', { exact: true });
     for (let round = 0; round < 60 && !(await finalBriefing.isVisible().catch(() => false)); round += 1) {
-      const currentRound = await page.getByRole('heading', { name: /^Round \d+$/ }).textContent();
       const commit = instantCommitControl(page);
+      await expect(commit.or(finalBriefing)).toBeVisible({ timeout: 5_000 });
+      if (await finalBriefing.isVisible().catch(() => false)) break;
+      const currentRound = await page.getByRole('heading', { name: /^Round \d+$/ }).textContent();
       let advanced = false;
       for (let attempt = 0; attempt < 2 && !advanced; attempt += 1) {
+        if (await finalBriefing.isVisible().catch(() => false)) {
+          advanced = true;
+          break;
+        }
         await expect(commit).toBeEnabled();
         await commit.click();
         try {
@@ -258,7 +268,7 @@ test.describe('layout and typography stress matrix', () => {
       await documentFontsReady(page);
 
       const specimen = page.locator('[data-layout-stress]');
-      await expect(specimen).toBeVisible();
+      await expect(specimen).toBeVisible({ timeout: 30_000 });
       const screenshotName = `type-layout-stress-${name}.png`;
       await specimen.screenshot({ path: resolve(actualRoot, screenshotName), animations: 'disabled', caret: 'hide', scale: 'css' });
       await expect(specimen).toHaveScreenshot(screenshotName, {

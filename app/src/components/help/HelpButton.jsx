@@ -1,10 +1,10 @@
-export default function HelpButton({ onClick }) {
+export default function HelpButton({ onClick, showLabel = false }) {
   return (
     <button
       onClick={onClick}
-      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded border border-vault-border
+      className={`min-h-[44px] min-w-[44px] flex items-center justify-center gap-2 rounded border border-vault-border
                  bg-vault-dark/40 text-vault-text-dim hover:text-tungsten hover:border-tungsten/40
-                 transition-colors"
+                 transition-colors ${showLabel ? 'px-3 font-mono text-micro uppercase tracking-interface' : ''}`}
       aria-label="Open Field Manual"
       title="Field Manual"
     >
@@ -14,6 +14,7 @@ export default function HelpButton({ onClick }) {
         <line x1="6" y1="8" x2="10" y2="8" />
         <line x1="6" y1="11" x2="8" y2="11" />
       </svg>
+      {showLabel && <span>Manual</span>}
     </button>
   );
 }

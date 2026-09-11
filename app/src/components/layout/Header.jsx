@@ -1,7 +1,8 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import HelpButton from '../help/HelpButton';
-import AccessibilityToggle from './AccessibilityToggle';
+import { usePreferences } from '../../context/AccessibilityContext';
+import { Shortcut } from '../settings/SettingsPrimitives';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Hub' },
@@ -13,19 +14,76 @@ const NAV_ITEMS = [
 ];
 const ConnectButton = lazy(() => import('../wallet/ConnectButton'));
 const NetworkBadge = lazy(() => import('../wallet/NetworkBadge'));
+const FOCUSABLE = 'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export default function Header({ onHelpClick, web3Enabled = false }) {
+function SettingsButton({ onClick, iconOnly = false, keyboardHints = false }) {
+  return (
+    <button
+      type="button"
+      className={`settings-trigger${iconOnly ? ' min-w-[44px] justify-center px-0' : ''}`}
+      onClick={onClick}
+      aria-label={iconOnly ? 'Game settings' : undefined}
+      aria-haspopup="dialog"
+      aria-keyshortcuts="Control+. Meta+."
+    >
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19 12a7 7 0 0 0-.12-1.28l2-1.55-2-3.46-2.45.99a7.2 7.2 0 0 0-2.2-1.28L13.9 2h-4l-.34 3.42A7.2 7.2 0 0 0 7.36 6.7l-2.45-.99-2 3.46 2 1.55A7 7 0 0 0 4.8 12c0 .44.04.87.12 1.28l-2 1.55 2 3.46 2.45-.99a7.2 7.2 0 0 0 2.2 1.28L9.9 22h4l.34-3.42a7.2 7.2 0 0 0 2.2-1.28l2.45.99 2-3.46-2-1.55c.08-.41.12-.84.12-1.28Z" />
+      </svg>
+      {!iconOnly && <span>Settings</span>}
+      {!iconOnly && keyboardHints && <Shortcut keys={['Ctrl', '.']} label="Shortcut" compact />}
+    </button>
+  );
+}
+
+export default function Header({ onHelpClick, onSettingsClick, web3Enabled = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const menuTriggerRef = useRef(null);
   const location = useLocation();
+  const { keyboardHints } = usePreferences();
   const walletOptional = !web3Enabled;
   const isActive = (to) => (to === '/' ? location.pathname === '/' : location.pathname === to || location.pathname.startsWith(`${to}/`));
 
   useEffect(() => setMenuOpen(false), [location.pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (!menuOpen) return undefined;
+    const priorOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const focusTimer = window.setTimeout(() => menuRef.current?.querySelector(FOCUSABLE)?.focus(), 0);
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setMenuOpen(false);
+        menuTriggerRef.current?.focus();
+        return;
+      }
+      if (event.key !== 'Tab' || !menuRef.current) return;
+      const focusable = [...menuRef.current.querySelectorAll(FOCUSABLE)];
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = priorOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+    };
   }, [menuOpen]);
+
+  const leaveMenuFor = (callback) => {
+    setMenuOpen(false);
+    menuTriggerRef.current?.focus();
+    window.setTimeout(callback, 0);
+  };
 
   return (
     <header className="safe-top sticky top-0 z-40 border-b border-vault-border/80 bg-vault-dark/90 backdrop-blur-xl">
@@ -58,7 +116,7 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
         </nav>
 
         <div className="ml-auto hidden shrink-0 items-center gap-2 min-[1600px]:ml-0 min-[1600px]:flex">
-          <AccessibilityToggle />
+          <SettingsButton onClick={onSettingsClick} keyboardHints={keyboardHints} />
           <HelpButton onClick={onHelpClick} />
           {!walletOptional && <Suspense fallback={null}><NetworkBadge /></Suspense>}
           {!walletOptional && <Suspense fallback={null}><ConnectButton /></Suspense>}
@@ -67,12 +125,15 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
 
         <div className="ml-auto flex items-center gap-2 min-[1600px]:hidden">
           {!walletOptional && <Suspense fallback={null}><ConnectButton /></Suspense>}
+          <SettingsButton onClick={onSettingsClick} iconOnly />
           <button
+            ref={menuTriggerRef}
             type="button"
             onClick={() => setMenuOpen((value) => !value)}
             className="grid min-h-[44px] min-w-[44px] place-items-center border border-vault-border text-vault-text-dim"
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
+            aria-controls="primary-menu-drawer"
           >
             <span className="sr-only">{menuOpen ? 'Close menu' : 'Open menu'}</span>
             <span className="grid gap-1.5" aria-hidden="true">
@@ -85,7 +146,7 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
       </div>
 
       {menuOpen && (
-        <div className="fixed inset-x-0 top-[69px] h-[calc(100dvh-69px)] border-t border-vault-border bg-vault-dark/98 px-5 py-6 backdrop-blur-xl min-[1600px]:hidden">
+        <div ref={menuRef} id="primary-menu-drawer" className="mobile-menu-drawer fixed inset-x-0 top-[69px] h-[calc(100dvh-69px)] overflow-y-auto border-t border-vault-border px-5 py-6 min-[1600px]:hidden">
           <nav className="grid gap-2" aria-label="Mobile navigation">
             {NAV_ITEMS.map((item, index) => (
               <Link
@@ -103,8 +164,8 @@ export default function Header({ onHelpClick, web3Enabled = false }) {
           </nav>
           <div className="mt-5 flex items-center justify-between border-t border-vault-border pt-5">
             <div className="flex items-center gap-2">
-              <AccessibilityToggle />
-              <HelpButton onClick={onHelpClick} />
+              <SettingsButton onClick={() => leaveMenuFor(onSettingsClick)} />
+              <HelpButton onClick={() => leaveMenuFor(onHelpClick)} showLabel />
             </div>
             {!walletOptional && <Suspense fallback={null}><NetworkBadge /></Suspense>}
           </div>

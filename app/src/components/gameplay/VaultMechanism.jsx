@@ -56,7 +56,7 @@ export default function VaultMechanism({
         <span>{remaining === 0 ? 'Breach open' : `${cracked}/${total} cracked`}</span>
       </div>
 
-      <div className="instant-vault-operators" aria-label="Live table positions">
+      <div className="instant-vault-operators" role="list" aria-label="Live table positions">
         {players.map((candidate, index) => {
           const initials = candidate.name.slice(0, 2).toUpperCase();
           const isLeader = candidate.locksCracked === leaderLocks && leaderLocks > 0;
@@ -68,11 +68,13 @@ export default function VaultMechanism({
               data-current={candidate.id === 'player-1'}
               data-stunned={candidate.stunned}
               data-leader={isLeader}
-              aria-label={`${candidate.name}: ${candidate.locksCracked} of ${total} locks, ${candidate.tools} tools${candidate.stunned ? ', stunned' : ''}`}
+              role="listitem"
             >
               <span aria-hidden="true">{initials}</span>
               <strong>{candidate.name}</strong>
-              <small>{candidate.locksCracked}/{total} locks</small>
+              <small>
+                {candidate.locksCracked}/{total} locks / {candidate.tools} tools{candidate.stunned ? ' / stunned' : ''}
+              </small>
             </div>
           );
         })}

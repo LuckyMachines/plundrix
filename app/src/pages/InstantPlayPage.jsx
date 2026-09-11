@@ -75,7 +75,7 @@ function rankForXp(xp) {
   return RANKS.find(([threshold]) => xp >= threshold)?.[1] || 'Vault Rookie';
 }
 
-function playAudioCue(type) {
+function playAudioCue(type, volume = 70) {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return;
   const context = new AudioContext();
@@ -86,7 +86,7 @@ function playAudioCue(type) {
     oscillator.type = type === 'sabotage' ? 'sawtooth' : 'triangle';
     oscillator.frequency.value = frequency;
     gain.gain.setValueAtTime(0.0001, context.currentTime + index * 0.08);
-    gain.gain.exponentialRampToValueAtTime(0.045, context.currentTime + index * 0.08 + 0.015);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, 0.06 * (volume / 100)), context.currentTime + index * 0.08 + 0.015);
     gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + index * 0.08 + 0.18);
     oscillator.connect(gain).connect(context.destination);
     oscillator.start(context.currentTime + index * 0.08);
@@ -167,9 +167,11 @@ function actionPreview(state, action, target) {
 
 export default function InstantPlayPage() {
   const [params] = useSearchParams();
-  const { reducedMotion, soundEnabled, setSoundEnabled } = useAccessibility();
+  const { reducedMotion, soundEnabled, masterVolume, matchRecovery, setSoundEnabled } = useAccessibility();
   const [profile, setProfile] = useState(readProfile);
-  const [restoredMatch] = useState(() => (params.has('seed') || params.has('target') ? null : readSavedMatch()));
+  const [restoredMatch] = useState(() => (
+    !matchRecovery || params.has('seed') || params.has('target') ? null : readSavedMatch()
+  ));
   const [equippedBlueprint] = useState(() => getGadgetById(readInventory().equippedId));
   const [mode, setMode] = useState(() => restoredMatch?.mode || (MODES[params.get('mode')] ? params.get('mode') : 'blitz'));
   const [gadget, setGadget] = useState(() => {
@@ -280,7 +282,7 @@ export default function InstantPlayPage() {
   }, [intelOpen]);
 
   useEffect(() => {
-    if (!started || state.state !== 'ACTIVE') {
+    if (!matchRecovery || !started || state.state !== 'ACTIVE') {
       localStorage.removeItem(MATCH_KEY);
       return;
     }
@@ -295,7 +297,7 @@ export default function InstantPlayPage() {
       selectedAction,
       target,
     }));
-  }, [gadget, mode, seed, selectedAction, started, state, target]);
+  }, [gadget, matchRecovery, mode, seed, selectedAction, started, state, target]);
 
   useEffect(() => {
     if (state.state !== 'COMPLETE' || recordedGame.current === state.gameId) return;
@@ -406,7 +408,7 @@ export default function InstantPlayPage() {
       };
     }
     setIsResolving(true);
-    if (soundEnabled) playAudioCue(selectedAction === SIM_ACTION.SABOTAGE ? 'sabotage' : 'resolve');
+    if (soundEnabled && masterVolume > 0) playAudioCue(selectedAction === SIM_ACTION.SABOTAGE ? 'sabotage' : 'resolve', masterVolume);
     resolveTimer.current = window.setTimeout(() => {
       const next = resolveSimulationRound(state, map);
       setState(next);
@@ -417,7 +419,7 @@ export default function InstantPlayPage() {
         action: spectate ? 'auto' : selectedAction,
         roundBucket: next.currentRound <= 5 ? '1-5' : next.currentRound <= 10 ? '6-10' : '11+',
       });
-      if (soundEnabled && next.winner) playAudioCue('win');
+      if (soundEnabled && masterVolume > 0 && next.winner) playAudioCue('win', masterVolume);
       if (next.winner) trackProductEvent('Instant Match Completed', { mode, result: next.winner === 'player-1' ? 'win' : 'loss' });
     }, reducedMotion ? 0 : 520);
   };
@@ -425,7 +427,7 @@ export default function InstantPlayPage() {
   const toggleAudio = () => {
     const next = !soundEnabled;
     setSoundEnabled(next);
-    if (next) playAudioCue('resolve');
+    if (next && masterVolume > 0) playAudioCue('resolve', masterVolume);
   };
 
   const share = async () => {

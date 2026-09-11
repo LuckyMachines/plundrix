@@ -38,7 +38,7 @@ Run commands from the repository root. `ui:review` builds the deterministic loca
 
 ## Canonical scope
 
-The source of truth is `app/ui-review/manifest.json`. It is intentionally capped at 10-14 surfaces so review does not become a second product. The current matrix covers 12 player-facing states at desktop and mobile widths.
+The source of truth is `app/ui-review/manifest.json`. It is intentionally capped at 10-14 surfaces so review does not become a second product. The current matrix covers 14 player-facing surfaces. Thirteen render at desktop and mobile widths; the mobile navigation is intentionally mobile-only. The separate stress matrix brings the complete visual contract to 31 renders.
 
 Each surface declares:
 
@@ -58,7 +58,17 @@ The separate type/layout stress contract in `app/ui-review/type-layout.json` exe
 - Keep prose within `measure-copy`, compact explanations within `measure-compact`, and wide editorial copy within `measure-wide`.
 - Compose with `PageShell`, `Stack`, `Cluster`, `AutoGrid`, `Rail`, and `DecisionLayout`; let reusable modules respond to their container.
 - `npm --prefix app run style:check` rejects arbitrary pixel type sizes, arbitrary tracking/leading, text below the 12px floor, and un-tokenized CSS tracking.
+- `npm --prefix app run test:preferences` verifies schema defaults, legacy migration, type/range normalization, malformed-storage recovery, and portable imports.
 - The browser matrix verifies bundled font loading, contracted-text overflow, prose measure, Axe findings, page overflow, image loading, and key component clipping.
+
+## Menu and preference contract
+
+- Define preferences in `app/src/data/preferences.js`; do not add isolated local-storage toggles to components.
+- Use the shared settings dialog, menu, switch, slider, select, and shortcut primitives for preference work.
+- Every visible preference must change real application behavior and remain safe when storage or a browser capability is unavailable.
+- Changes save locally, migrate older keys, synchronize across tabs, and can be exported or reset without identity data.
+- The mobile menu and settings dialog must trap focus, close with Escape, restore focus, prevent background scrolling, and avoid horizontal overflow.
+- Claims about discoverability require anonymous observed sessions. Record settings task, time, completion, and persistence comprehension in `/playtest`.
 
 Add a surface only when it represents a materially different player job or state. Do not add screenshots for cosmetic variants that shared component specimens already cover.
 
