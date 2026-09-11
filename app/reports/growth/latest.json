@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-11T08:46:06.469Z",
+  "operatingMode": "solo",
+  "validation": {
+    "ok": true,
+    "errors": []
+  },
+  "audit": {
+    "total": 336,
+    "passed": 222,
+    "failures": 114,
+    "pages": 36
+  },
+  "scorecard": [
+    {
+      "id": "valid-index-rate",
+      "label": "Submitted public URLs valid and indexable",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 95,
+      "minimumSample": 10,
+      "source": "search-console",
+      "value": null,
+      "sampleSize": 0,
+      "state": "needs-data"
+    },
+    {
+      "id": "nonbrand-organic-clicks",
+      "label": "Weekly non-brand organic clicks",
+      "unit": "clicks",
+      "direction": "at-least",
+      "target": 25,
+      "minimumSample": 1,
+      "source": "search-console",
+      "value": null,
+      "sampleSize": 0,
+      "state": "needs-data"
+    },
+    {
+      "id": "marketing-handoff-rate",
+      "label": "Marketing visitors who enter the Player Hub",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 20,
+      "minimumSample": 50,
+      "source": "plausible",
+      "value": null,
+      "sampleSize": 0,
+      "state": "needs-data"
+    },
+    {
+      "id": "handoff-start-rate",
+      "label": "Attributed Player Hub landings that start Instant Play",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 50,
+      "minimumSample": 30,
+      "source": "plausible",
+      "value": null,
+      "sampleSize": 0,
+      "state": "needs-data"
+    },
+    {
+      "id": "source-match-completion-rate",
+      "label": "Attributed Instant Play starts that finish",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 65,
+      "minimumSample": 30,
+      "source": "plausible",
+      "value": null,
+      "sampleSize": 0,
+      "state": "needs-data"
+    },
+    {
+      "id": "share-rate",
+      "label": "Completed matches that produce a challenge share",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 15,
+      "minimumSample": 30,
+      "source": "plausible",
+      "value": null,
+      "sampleSize": 0,
+      "state": "needs-data"
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "owned-player-hub",
+      "status": "always-on",
+      "audience": "strategy-curious",
+      "source": "plundrix",
+      "medium": "owned",
+      "campaign": "player-hub",
+      "creative": "primary-cta",
+      "destination": "https://game.plundrix.com/",
+      "promise": "Choose Instant Play or live Sepolia.",
+      "proof": "Playable mode cards",
+      "primaryMetric": "marketing-handoff-rate"
+    },
+    {
+      "id": "replay-comeback-proof",
+      "status": "planned",
+      "audience": "table-drama",
+      "source": "replay",
+      "medium": "social",
+      "campaign": "comeback-proof",
+      "creative": "vertical-clip",
+      "destination": "https://game.plundrix.com/replays",
+      "promise": "One sabotage can reopen the vault race.",
+      "proof": "Reviewed comeback replay",
+      "primaryMetric": "share-rate"
+    }
+  ],
+  "nextAction": "Repair 114 production discovery failures before publishing more pages."
+}

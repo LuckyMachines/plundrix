@@ -1,11 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import {
-  COMPARISON_PAGES,
-  SITE_ORIGIN,
-  absoluteComparisonUrl,
-  comparisonUrl,
-} from '../src/data/comparisonPages.js';
+import { spawnSync } from 'node:child_process';
+import { SITE_ORIGIN } from '../src/data/comparisonPages.js';
 import { ROUTE_META, publicStaticRoutes } from '../src/data/productSpine.js';
 
 const distRoot = join(process.cwd(), 'dist');
@@ -14,7 +10,23 @@ const indexPath = join(distRoot, 'index.html');
 const html = await readFile(indexPath, 'utf8');
 const defaultImage = `${SITE_ORIGIN}/images/og/plundrix-home.jpg`;
 const defaultImageAlt = 'Plundrix - Crack the Vault. Break the Table.';
-const lastModified = '2026-08-16';
+const marketingOrigin = 'https://plundrix.com';
+
+function command(args) {
+  return spawnSync('git', args, { cwd: process.cwd(), encoding: 'utf8', windowsHide: true });
+}
+
+function contentLastModified() {
+  if (process.env.SEO_BUILD_DATE) return process.env.SEO_BUILD_DATE;
+  const dirty = command(['status', '--porcelain', '--', 'src', 'public', 'scripts/postbuild-seo-pages.mjs']);
+  if (dirty.status === 0 && dirty.stdout.trim()) return new Date().toISOString().slice(0, 10);
+  const committed = command(['log', '-1', '--format=%cs', '--', 'src', 'public', 'scripts/postbuild-seo-pages.mjs']);
+  return committed.status === 0 && /^\d{4}-\d{2}-\d{2}$/.test(committed.stdout.trim())
+    ? committed.stdout.trim()
+    : new Date().toISOString().slice(0, 10);
+}
+
+const lastModified = contentLastModified();
 
 function escapeHtml(value) {
   return String(value)
@@ -22,36 +34,6 @@ function escapeHtml(value) {
     .replaceAll('"', '&quot;')
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;');
-}
-
-function pageJsonLd(page) {
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebPage',
-        name: page.metaTitle,
-        description: page.metaDescription,
-        url: absoluteComparisonUrl(page.slug),
-        isPartOf: {
-          '@type': 'WebSite',
-          name: 'Plundrix',
-          url: SITE_ORIGIN,
-        },
-      },
-      {
-        '@type': 'FAQPage',
-        mainEntity: page.faq.map(([question, answer]) => ({
-          '@type': 'Question',
-          name: question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: answer,
-          },
-        })),
-      },
-    ],
-  };
 }
 
 function injectSeo(shell, {
@@ -103,6 +85,36 @@ function injectSeo(shell, {
     .replace('</head>', `    ${tags}\n  </head>`);
 }
 
+function publicNextRoutes(meta) {
+  return (meta.nextRoutes || [])
+    .filter((path) => ROUTE_META[path] && ROUTE_META[path].public !== false)
+    .slice(0, 2);
+}
+
+function staticRouteBody(route, meta) {
+  const links = publicNextRoutes(meta);
+  if (!links.includes('/play') && route !== '/play') links.unshift('/play');
+  const linkHtml = links.slice(0, 2).map((path) => {
+    const destination = ROUTE_META[path];
+    return `<a href="${escapeHtml(path)}">${escapeHtml(destination?.title || 'Play Plundrix')}</a>`;
+  }).join('\n        ');
+  const context = route === '/'
+    ? 'Choose a complete no-wallet match against three labeled agents or enter a live multiplayer table on Ethereum Sepolia. Every round resolves Pick, Search, and Sabotage together.'
+    : 'Plundrix is a free-play simultaneous-action vault race. Players read the table, build tools, pressure rivals, and try to crack five locks first.';
+  return `<main data-static-discovery="true">
+      <nav aria-label="Discovery"><a href="${marketingOrigin}">About Plundrix</a> <a href="${SITE_ORIGIN}/">Player Hub</a></nav>
+      <p>${escapeHtml(meta.label)}</p>
+      <h1>${escapeHtml(meta.title)}</h1>
+      <p>${escapeHtml(meta.description)}</p>
+      <p>${escapeHtml(context)}</p>
+      <div>${linkHtml}</div>
+    </main>`;
+}
+
+function injectStaticBody(shell, content) {
+  return shell.replace('<div id="root"></div>', `<div id="root">${content}</div>`);
+}
+
 async function writeRouteHtml(routePath, pageHtml) {
   const target = routePath === '/compare'
     ? join(distRoot, 'compare', 'index.html')
@@ -110,27 +122,6 @@ async function writeRouteHtml(routePath, pageHtml) {
   await mkdir(dirname(target), { recursive: true });
   await writeFile(target, pageHtml, 'utf8');
 }
-
-const indexJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: 'Plundrix game comparisons',
-  description: 'Comparison pages for players looking for Plundrix alternatives to raid games, online board games, sabotage games, and onchain games.',
-  url: `${SITE_ORIGIN}/compare`,
-  hasPart: COMPARISON_PAGES.map((page) => ({
-    '@type': 'WebPage',
-    name: page.metaTitle,
-    url: absoluteComparisonUrl(page.slug),
-    description: page.metaDescription,
-  })),
-};
-
-const homeFaq = [
-  ['Can I play without a wallet?', 'Yes. Instant Play starts a four-operator match against three clearly labeled agents in your browser. No signup, wallet, or test ETH is required.'],
-  ['What is actually onchain?', 'The live multiplayer beta runs through the published Plundrix contract on Ethereum Sepolia. Instant Play is a fast local version of the same Pick, Search, and Sabotage decision loop.'],
-  ['Does the beta cost money?', 'Plundrix has no cash prizes or paid public mode. Instant Play is free. Live Sepolia games may require free test ETH for network gas.'],
-  ['Are bots hidden as players?', 'No. Agents and bots are labeled wherever they participate. Live session state, outcomes, and the verified contract can be inspected publicly.'],
-];
 
 function sharedNodes() {
   return [
@@ -146,8 +137,8 @@ function sharedNodes() {
       '@type': 'Organization',
       '@id': `${SITE_ORIGIN}/#organization`,
       name: 'Lucky Machines, LLC',
-      url: `${SITE_ORIGIN}/`,
-      sameAs: ['https://github.com/LuckyMachines/plundrix'],
+      url: `${marketingOrigin}/`,
+      sameAs: [`${SITE_ORIGIN}/`, 'https://github.com/LuckyMachines/plundrix'],
     },
   ];
 }
@@ -168,8 +159,7 @@ function routeJsonLd(route, meta) {
 
   const graph = [...sharedNodes(), webPage];
   if (route === '/') {
-    graph.push(
-      {
+    graph.push({
         '@type': 'VideoGame',
         '@id': `${SITE_ORIGIN}/#game`,
         name: 'Plundrix',
@@ -185,17 +175,7 @@ function routeJsonLd(route, meta) {
         author: { '@id': `${SITE_ORIGIN}/#organization` },
         potentialAction: { '@type': 'PlayAction', target: `${SITE_ORIGIN}/play` },
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-      },
-      {
-        '@type': 'FAQPage',
-        '@id': `${SITE_ORIGIN}/#faq`,
-        mainEntity: homeFaq.map(([question, answer]) => ({
-          '@type': 'Question',
-          name: question,
-          acceptedAnswer: { '@type': 'Answer', text: answer },
-        })),
-      },
-    );
+      });
   }
   if (route === '/trailer') {
     graph.push({
@@ -218,11 +198,9 @@ function routeJsonLd(route, meta) {
 
 for (const route of publicStaticRoutes()) {
   const meta = ROUTE_META[route];
-  const jsonLd = route === '/compare'
-    ? indexJsonLd
-    : routeJsonLd(route, meta);
+  const jsonLd = routeJsonLd(route, meta);
   const image = meta.image ? `${SITE_ORIGIN}${meta.image}` : defaultImage;
-  await writeRouteHtml(route, injectSeo(html, {
+  const pageHtml = injectSeo(html, {
     title: meta.title,
     description: meta.description,
     canonical: `${SITE_ORIGIN}${route === '/' ? '/' : route}`,
@@ -234,21 +212,12 @@ for (const route of publicStaticRoutes()) {
         ? 'Plundrix gameplay trailer - One vault. No safe turn.'
         : defaultImageAlt,
     video: route === '/trailer' ? `${SITE_ORIGIN}/video/plundrix-gameplay-trailer.mp4` : undefined,
-  }));
-}
-
-for (const page of COMPARISON_PAGES) {
-  await writeRouteHtml(comparisonUrl(page.slug), injectSeo(html, {
-    title: page.metaTitle,
-    description: page.metaDescription,
-    canonical: absoluteComparisonUrl(page.slug),
-    jsonLd: pageJsonLd(page),
-  }));
+  });
+  await writeRouteHtml(route, injectStaticBody(pageHtml, staticRouteBody(route, meta)));
 }
 
 const staticRoutes = [...new Set([
   ...publicStaticRoutes(),
-  ...COMPARISON_PAGES.map((page) => comparisonUrl(page.slug)),
 ])];
 
 function sitemapFrequency(route) {

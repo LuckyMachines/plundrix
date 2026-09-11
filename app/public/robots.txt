@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /design
 Disallow: /design-system
+Disallow: /compare
 Disallow: /ghosts
 Disallow: /launch
 Disallow: /mutations
@@ -17,6 +18,7 @@ User-agent: GPTBot
 Allow: /
 Disallow: /design
 Disallow: /design-system
+Disallow: /compare
 Disallow: /ghosts
 Disallow: /launch
 Disallow: /mutations

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "campaigns": [
+    {
+      "id": "owned-player-hub",
+      "status": "always-on",
+      "audience": "strategy-curious",
+      "source": "plundrix",
+      "medium": "owned",
+      "campaign": "player-hub",
+      "creative": "primary-cta",
+      "destination": "https://game.plundrix.com/",
+      "promise": "Choose Instant Play or live Sepolia.",
+      "proof": "Playable mode cards",
+      "primaryMetric": "marketing-handoff-rate"
+    },
+    {
+      "id": "replay-comeback-proof",
+      "status": "planned",
+      "audience": "table-drama",
+      "source": "replay",
+      "medium": "social",
+      "campaign": "comeback-proof",
+      "creative": "vertical-clip",
+      "destination": "https://game.plundrix.com/replays",
+      "promise": "One sabotage can reopen the vault race.",
+      "proof": "Reviewed comeback replay",
+      "primaryMetric": "share-rate"
+    }
+  ]
+}

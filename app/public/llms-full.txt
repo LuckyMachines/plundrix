@@ -1,6 +1,6 @@
 # Plundrix factual reference
 
-Last updated: 2026-08-16
+Last updated: 2026-09-11
 Canonical URL: https://game.plundrix.com/
 Publisher: Lucky Machines, LLC
 
@@ -39,6 +39,7 @@ Plundrix has two public entry paths:
 - Verified implementation on Blockscout: https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract
 - Gameplay trailer: https://game.plundrix.com/trailer
 - Replay gallery: https://game.plundrix.com/replays
+- Factual game comparisons: https://plundrix.com/compare
 - Terms: https://game.plundrix.com/terms
 - Privacy: https://game.plundrix.com/privacy
 

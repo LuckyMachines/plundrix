@@ -676,3 +676,26 @@ Overall grade: **A for implemented architecture, accessibility, and automated ev
 - Reach at least 80 percent unaided discovery and task completion with a median under 30 seconds.
 - Include one keyboard-only session and one player who regularly uses enlarged text or reduced motion.
 - Remove, rename, or relocate any control repeatedly misunderstood in those sessions.
+
+## v0.30.0 - Solo SEO and marketing growth system
+
+Date: 2026-09-11
+
+Overall grade: **A for the implemented local system; B for the still-undeployed production state.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Crawlability | A | Every public game route now emits one semantic H1, useful pre-JavaScript copy, and crawlable links. The marketing comparison collection and eight detail routes are statically generated with substantial body content. Production remains on the prior empty-root build until deployment. |
+| Search integrity | A | Build-derived sitemap dates, route ownership, permanent comparison redirects, crawler policy, canonicals, grounded JSON-LD, AI-reference link checks, and a live two-domain crawler replace the prior tag-only gate. |
+| Domain architecture | A | Acquisition, explanation, press, and comparisons belong to `plundrix.com`; playable modes, operational state, replays, and progression belong to `game.plundrix.com`. Old game comparison URLs preserve equity through permanent redirects. |
+| Attribution and privacy | A | First-touch source, medium, campaign, creative, landing route, and referrer hostname persist only for the browser session. Events add an explicit site label and continue to exclude wallet addresses, names, replay seeds, and free text. |
+| Marketing production | A | Campaign registry links are deterministic, comparison CTAs are attributable, and replay proof bundles now include channel copy, alt text, tracked destinations, and a bounded asset checklist. Genuine proof remains distinct from generated atmosphere. |
+| Solo operating loop | A+ | `growth:weekly` performs the production crawl, optional aggregate metric fetch, scorecard, and single next-action report. One active experiment and a 30-minute review ceiling prevent a content treadmill. |
+| External evidence | C | The complete 25-route registry found 110 failures on the old deployment, including empty game response bodies, missing marketing comparison routes, stale marketing sitemap dates, and the stale simulator AI link. Search Console and Plausible API credentials are not present, so no traffic or conversion result is claimed. |
+
+### Stricter A+ bar
+
+- Deploy both builds and reach zero failures in the live production crawl.
+- Connect read-only Search Console and Plausible access, then collect four complete weekly snapshots.
+- Confirm that organic and campaign visitors can be followed in aggregate from landing to match completion.
+- Select one experiment from evidence, run it to its declared sample threshold, and record a ship, iterate, revert, or stop decision.

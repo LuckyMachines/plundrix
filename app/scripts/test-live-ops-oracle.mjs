@@ -47,6 +47,10 @@ assert.ok(exportOracleMarkdown(report).includes('# Plundrix Live Ops Oracle'));
 assert.ok(exportRecommendationsCsv(report).includes('rank,category,title'));
 assert.ok(report.releaseNotes.includes('## Added'));
 assert.ok(report.marketingBundle.headlines.length > 0);
+assert.equal(report.marketingBundle.schemaVersion, 2);
+assert.equal(report.marketingBundle.campaignId, 'replay-comeback-proof');
+assert.ok(report.marketingBundle.assetChecklist.length >= 5);
+assert.ok(report.marketingBundle.socialPosts.every((post) => post.caption && post.altText && post.url.includes('utm_campaign=')));
 
 const risks = buildRisks({
   balance: { readiness: 'none', topRisks: ['none'], scoreDelta: 0 },

@@ -307,6 +307,7 @@ export const ROUTE_META = Object.freeze({
     description: 'Compare Plundrix with raid games, online board games, sabotage games, and onchain strategy games.',
     primaryCta: 'Compare',
     nextRoutes: ['/', '/map'],
+    public: false,
   },
   '/map': {
     label: 'Map',

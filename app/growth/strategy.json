@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 1,
+  "project": "Plundrix",
+  "operatingMode": "solo",
+  "canonicalDomains": {
+    "marketing": "https://plundrix.com",
+    "game": "https://game.plundrix.com"
+  },
+  "weeklyReviewMinutes": 30,
+  "maxActiveExperiments": 1,
+  "northStarMetric": "source-match-completion-rate",
+  "audiences": [
+    {
+      "id": "strategy-curious",
+      "need": "A short competitive strategy game with readable choices and a real ending.",
+      "promise": "Race through five locks with Pick, Search, and Sabotage.",
+      "proof": "A complete no-wallet match and exact replay."
+    },
+    {
+      "id": "table-drama",
+      "need": "Backstabbing and comeback stories without a long rules teach.",
+      "promise": "Every simultaneous reveal can move the leader or create a grudge.",
+      "proof": "Curated replay turns with visible before-and-after state."
+    },
+    {
+      "id": "onchain-curious",
+      "need": "An inspectable blockchain game that still behaves like a game.",
+      "promise": "Practice locally, then choose a free Sepolia table when ready.",
+      "proof": "Verified contracts, labeled agents, and public session records."
+    }
+  ],
+  "metrics": [
+    {
+      "id": "valid-index-rate",
+      "label": "Submitted public URLs valid and indexable",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 95,
+      "minimumSample": 10,
+      "source": "search-console"
+    },
+    {
+      "id": "nonbrand-organic-clicks",
+      "label": "Weekly non-brand organic clicks",
+      "unit": "clicks",
+      "direction": "at-least",
+      "target": 25,
+      "minimumSample": 1,
+      "source": "search-console"
+    },
+    {
+      "id": "marketing-handoff-rate",
+      "label": "Marketing visitors who enter the Player Hub",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 20,
+      "minimumSample": 50,
+      "source": "plausible"
+    },
+    {
+      "id": "handoff-start-rate",
+      "label": "Attributed Player Hub landings that start Instant Play",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 50,
+      "minimumSample": 30,
+      "source": "plausible"
+    },
+    {
+      "id": "source-match-completion-rate",
+      "label": "Attributed Instant Play starts that finish",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 65,
+      "minimumSample": 30,
+      "source": "plausible"
+    },
+    {
+      "id": "share-rate",
+      "label": "Completed matches that produce a challenge share",
+      "unit": "%",
+      "direction": "at-least",
+      "target": 15,
+      "minimumSample": 30,
+      "source": "plausible"
+    }
+  ],
+  "routeIntents": [
+    {
+      "url": "https://plundrix.com/",
+      "owner": "marketing",
+      "intent": "vault heist strategy game",
+      "audience": "strategy-curious",
+      "promise": "Understand the fantasy, rules, and trust posture.",
+      "proof": "Real gameplay screenshots and the 32-second trailer.",
+      "cta": "Enter Player Hub"
+    },
+    {
+      "url": "https://plundrix.com/compare",
+      "owner": "marketing",
+      "intent": "strategy and sabotage game alternatives",
+      "audience": "table-drama",
+      "promise": "Choose Plundrix by player craving rather than hype.",
+      "proof": "Factual side-by-side mechanic comparisons.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/compare/coin-master-alternative",
+      "owner": "marketing",
+      "intent": "Coin Master alternative with strategic raids",
+      "audience": "table-drama",
+      "promise": "Trade passive spins for a tactical decision every round.",
+      "proof": "Mechanic-level differences with a link to the official Coin Master source.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/compare/monopoly-go-alternative",
+      "owner": "marketing",
+      "intent": "Monopoly GO alternative with more agency",
+      "audience": "table-drama",
+      "promise": "Get social heist pressure inside a complete short match.",
+      "proof": "Mechanic-level differences with a link to the official Monopoly GO source.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/compare/catan-online-alternative",
+      "owner": "marketing",
+      "intent": "short online strategy game alternative to CATAN",
+      "audience": "strategy-curious",
+      "promise": "Keep resource timing and table reads in a shorter operation.",
+      "proof": "Mechanic-level differences with a link to the official CATAN source.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/compare/risk-online-alternative",
+      "owner": "marketing",
+      "intent": "fast turn-based alternative to RISK",
+      "audience": "table-drama",
+      "promise": "Keep visible leader pressure without a long world-map campaign.",
+      "proof": "Mechanic-level differences with a link to the official RISK source.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/compare/among-us-board-game-alternative",
+      "owner": "marketing",
+      "intent": "turn-based sabotage game alternative to Among Us",
+      "audience": "table-drama",
+      "promise": "Create sabotage drama without hidden roles or voice chat.",
+      "proof": "Mechanic-level differences with a link to the official Among Us source.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/compare/munchkin-alternative",
+      "owner": "marketing",
+      "intent": "fast digital backstabbing game alternative to Munchkin",
+      "audience": "table-drama",
+      "promise": "Get mischievous leader pressure without card bookkeeping.",
+      "proof": "Mechanic-level differences with a link to the official Munchkin source.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/compare/onchain-board-game",
+      "owner": "marketing",
+      "intent": "onchain board game with no-wallet practice",
+      "audience": "onchain-curious",
+      "promise": "Try the complete match before choosing verified blockchain rails.",
+      "proof": "Product-mode distinctions and a verified Sepolia contract source.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/compare/pirate-nation-alternative",
+      "owner": "marketing",
+      "intent": "short-session alternative to Pirate Nation",
+      "audience": "onchain-curious",
+      "promise": "Choose a focused competitive match over a broad progression world.",
+      "proof": "Mechanic-level differences with a link to Pirate Nation documentation.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://plundrix.com/press",
+      "owner": "marketing",
+      "intent": "Plundrix press kit",
+      "audience": "onchain-curious",
+      "promise": "Get accurate facts and approved assets quickly.",
+      "proof": "Publisher, availability, source, and visual assets.",
+      "cta": "Open Player Hub"
+    },
+    {
+      "url": "https://plundrix.com/terms",
+      "owner": "marketing",
+      "intent": "Plundrix website terms",
+      "audience": "onchain-curious",
+      "promise": "State the website, free-play, and testnet terms plainly.",
+      "proof": "Dated terms identifying Lucky Machines LLC and current product status.",
+      "cta": "Return to Plundrix"
+    },
+    {
+      "url": "https://plundrix.com/privacy",
+      "owner": "marketing",
+      "intent": "Plundrix website privacy policy",
+      "audience": "onchain-curious",
+      "promise": "Explain what the marketing site collects and why.",
+      "proof": "A dated privacy policy with contact and control information.",
+      "cta": "Return to Plundrix"
+    },
+    {
+      "url": "https://game.plundrix.com/",
+      "owner": "game",
+      "intent": "play Plundrix",
+      "audience": "strategy-curious",
+      "promise": "Choose no-wallet Instant Play or live Sepolia.",
+      "proof": "Playable mode cards and live table status.",
+      "cta": "Start instant match"
+    },
+    {
+      "url": "https://game.plundrix.com/play",
+      "owner": "game",
+      "intent": "play vault strategy game online",
+      "audience": "strategy-curious",
+      "promise": "Start a complete match without signup or wallet.",
+      "proof": "One player and three clearly labeled tactical agents.",
+      "cta": "Breach the vault"
+    },
+    {
+      "url": "https://game.plundrix.com/vault-run",
+      "owner": "game",
+      "intent": "play a solo Plundrix vault run",
+      "audience": "strategy-curious",
+      "promise": "Make route and gadget tradeoffs through a compact solo run.",
+      "proof": "A playable branching route with visible risk and reward.",
+      "cta": "Start vault run"
+    },
+    {
+      "url": "https://game.plundrix.com/career",
+      "owner": "game",
+      "intent": "Plundrix local progression and goals",
+      "audience": "strategy-curious",
+      "promise": "See earned progress and the next useful objective without an account.",
+      "proof": "Local career milestones derived from completed play.",
+      "cta": "Continue career"
+    },
+    {
+      "url": "https://game.plundrix.com/workshop",
+      "owner": "game",
+      "intent": "Plundrix gadgets and crafting workshop",
+      "audience": "strategy-curious",
+      "promise": "Inspect, configure, and equip modular vault gadgets.",
+      "proof": "A deterministic 1,200-blueprint inventory with tested recipes.",
+      "cta": "Open workshop"
+    },
+    {
+      "url": "https://game.plundrix.com/trailer",
+      "owner": "game",
+      "intent": "Plundrix gameplay trailer",
+      "audience": "table-drama",
+      "promise": "See a complete vault race in 32 seconds.",
+      "proof": "Real product captures.",
+      "cta": "Play instantly"
+    },
+    {
+      "url": "https://game.plundrix.com/leaderboard",
+      "owner": "game",
+      "intent": "Plundrix leaderboard",
+      "audience": "onchain-curious",
+      "promise": "Inspect available competitive standings without invented data.",
+      "proof": "A labeled live feed with an explicit unavailable state.",
+      "cta": "Check standings"
+    },
+    {
+      "url": "https://game.plundrix.com/sessions",
+      "owner": "game",
+      "intent": "Plundrix verified game sessions",
+      "audience": "onchain-curious",
+      "promise": "Inspect current public session records and their source.",
+      "proof": "Contract-backed records with a transparent unavailable state.",
+      "cta": "Inspect sessions"
+    },
+    {
+      "url": "https://game.plundrix.com/replays",
+      "owner": "game",
+      "intent": "Plundrix gameplay replays",
+      "audience": "table-drama",
+      "promise": "Inspect the turns that changed the table.",
+      "proof": "Curated deterministic replay stories.",
+      "cta": "Start a match"
+    },
+    {
+      "url": "https://game.plundrix.com/glossary",
+      "owner": "game",
+      "intent": "Plundrix rules and terminology",
+      "audience": "strategy-curious",
+      "promise": "Decode actions, status effects, gadgets, and live-mode language.",
+      "proof": "Definitions tied to the current product rules.",
+      "cta": "Learn the operation"
+    },
+    {
+      "url": "https://game.plundrix.com/terms",
+      "owner": "game",
+      "intent": "Plundrix game terms",
+      "audience": "onchain-curious",
+      "promise": "Explain the playable beta and testnet conditions plainly.",
+      "proof": "Versioned terms embedded with the game build.",
+      "cta": "Return to Player Hub"
+    },
+    {
+      "url": "https://game.plundrix.com/privacy",
+      "owner": "game",
+      "intent": "Plundrix game privacy policy",
+      "audience": "onchain-curious",
+      "promise": "Explain local preferences, anonymous telemetry, and player control.",
+      "proof": "A privacy notice aligned with the current event schema.",
+      "cta": "Return to Player Hub"
+    }
+  ]
+}

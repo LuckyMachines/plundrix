@@ -35,6 +35,11 @@
     "test:ui-system": "npm --prefix app run test:ui-system",
     "ui:review": "npm --prefix app run ui:review --",
     "ui:approve": "npm --prefix app run ui:approve --",
+    "growth:audit": "npm --prefix app run growth:audit --",
+    "growth:fetch": "npm --prefix app run growth:fetch --",
+    "growth:review": "npm --prefix app run growth:review --",
+    "growth:weekly": "npm --prefix app run growth:weekly --",
+    "growth:link": "npm --prefix app run growth:link --",
     "dev": "cd app && npm run dev"
   },
   "author": "Max Meier",

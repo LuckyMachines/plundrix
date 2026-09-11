@@ -290,17 +290,28 @@ test('instant play starts against agents and resolves a guided turn', async ({ p
   await expectNoSeriousA11yIssues(page);
 });
 
-test('improvement events carry bounded experiment context without player identifiers', async ({ page }) => {
+test('improvement events carry bounded experiment and acquisition context without player identifiers', async ({ page }) => {
   await page.addInitScript(() => {
     window.__plundrixEvents = [];
     window.addEventListener('plundrix:analytics', (event) => window.__plundrixEvents.push(event.detail));
   });
-  await page.goto('/play?experiment=first-action-copy&variant=a');
+  await page.goto('/play?experiment=first-action-copy&variant=a&utm_source=press&utm_medium=referral&utm_campaign=launch-beta&utm_content=hero-link');
   await page.getByRole('button', { name: /breach the vault/i }).click();
   await page.getByRole('button', { name: /commit and reveal/i }).click();
   await expect.poll(() => page.evaluate(() => window.__plundrixEvents.find((event) => event.name === 'First Meaningful Action'))).toBeTruthy();
   const event = await page.evaluate(() => window.__plundrixEvents.find((item) => item.name === 'First Meaningful Action'));
-  expect(event.props).toMatchObject({ schema: '2', experiment: 'first-action-copy', variant: 'a', cohort: 'new' });
+  expect(event.props).toMatchObject({
+    schema: '2',
+    site: 'game',
+    experiment: 'first-action-copy',
+    variant: 'a',
+    cohort: 'new',
+    source: 'press',
+    channel: 'referral',
+    campaign: 'launch-beta',
+    creative: 'hero-link',
+    landing: 'play',
+  });
   expect(['0-30s', '31-60s', '61-120s', '121s+']).toContain(event.props.latency);
   expect(event.props).not.toHaveProperty('address');
   expect(event.props).not.toHaveProperty('seed');

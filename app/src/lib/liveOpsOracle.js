@@ -1009,16 +1009,39 @@ export function buildReleaseNotes(report) {
 
 export function buildMarketingBundle(report) {
   const strongest = report.marketingProof.strongestReplays || [];
+  const trackedReplayLinks = strongest.map((replay, index) => {
+    const url = new URL(replay.shareUrl, 'https://game.plundrix.com');
+    url.searchParams.set('utm_source', 'replay');
+    url.searchParams.set('utm_medium', 'social');
+    url.searchParams.set('utm_campaign', 'comeback-proof');
+    url.searchParams.set('utm_content', `replay-${index + 1}`);
+    return url.toString();
+  });
   return {
+    schemaVersion: 2,
+    campaignId: 'replay-comeback-proof',
     headlines: [
       'Plundrix turns on-chain vault races into replayable strategy stories.',
       'Simulator-backed balance search meets shareable heist replays.',
       'Every lock, sabotage, and comeback can become proof.',
     ],
     replayLinks: strongest.map((replay) => replay.shareUrl),
+    trackedReplayLinks,
     screenshotPlan: strongest.map((replay) => replay.capturePlan?.screenshots?.[0]).filter(Boolean),
-    socialPosts: report.marketingProof.socialHooks.map((hook) => `${hook}. Watch the vault race unfold in Plundrix.`),
+    socialPosts: report.marketingProof.socialHooks.map((hook, index) => ({
+      channel: index % 2 ? 'community' : 'short-video',
+      caption: `${hook}. Watch the vault race unfold in Plundrix.`,
+      url: trackedReplayLinks[index % Math.max(1, trackedReplayLinks.length)] || 'https://game.plundrix.com/replays?utm_source=replay&utm_medium=social&utm_campaign=comeback-proof',
+      altText: 'Plundrix vault race showing four operators, five locks, tool pressure, and a decisive sabotage turn.',
+    })),
     pressBullets: report.marketingProof.pressHooks,
+    assetChecklist: [
+      'One 9:16 clip with captions and a readable first-frame hook.',
+      'One 16:9 clip with real gameplay visible before decorative art.',
+      'One 1200x630 still with no invented player quote or performance claim.',
+      'Plain-language alt text describing the actual visible match state.',
+      'A tracked destination generated from the campaign registry.',
+    ],
     websiteChecklist: [
       'Add top replay to homepage proof strip.',
       'Embed one replay on press page.',

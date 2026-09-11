@@ -1,4 +1,5 @@
 import { readPreferenceSnapshot } from '../data/preferences.js';
+import { readAcquisitionSnapshot } from './acquisition.js';
 
 export const PRODUCT_EVENT_SCHEMA_VERSION = 2;
 
@@ -6,6 +7,7 @@ const ALLOWED_PROPERTIES = new Set([
   'mode', 'action', 'result', 'surface', 'state', 'roundBucket', 'stage', 'gadget',
   'bargain', 'weekly', 'outcome', 'rival', 'source', 'chassis', 'rarity', 'protocol',
   'schema', 'release', 'ruleset', 'experiment', 'variant', 'cohort', 'latency', 'destination',
+  'site', 'channel', 'medium', 'campaign', 'creative', 'landing', 'referrer',
 ]);
 
 function safeProperties(properties = {}) {
@@ -22,10 +24,12 @@ export function trackProductEvent(name, properties = {}) {
   const params = new URLSearchParams(window.location.search);
   const props = safeProperties({
     schema: PRODUCT_EVENT_SCHEMA_VERSION,
+    site: 'game',
     release: import.meta.env?.VITE_RELEASE_ID || 'unversioned',
     ruleset: import.meta.env?.VITE_RULESET_ID || 'default',
     experiment: params.get('experiment') || undefined,
     variant: params.get('variant') || undefined,
+    ...readAcquisitionSnapshot(),
     ...properties,
   });
   window.dispatchEvent(new CustomEvent('plundrix:analytics', { detail: { name, props } }));

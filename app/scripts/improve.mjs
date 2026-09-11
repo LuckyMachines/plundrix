@@ -22,6 +22,7 @@ const reportDir = resolve(appDir, 'reports', 'improvement');
 
 const QUICK_CHECKS = Object.freeze([
   ['improvement-system', 'Improvement-system tests', ['run', 'test:improvement']],
+  ['growth-system', 'SEO and marketing-system tests', ['run', 'test:growth']],
   ['preferences', 'Menu and preference-system tests', ['run', 'test:preferences']],
   ['ui-review-system', 'UI review manifest and governance tests', ['run', 'test:ui-system']],
   ['art-manifest', 'Art manifest validation', ['run', 'art:validate']],
@@ -31,6 +32,7 @@ const QUICK_CHECKS = Object.freeze([
   ['telemetry', 'Telemetry tests', ['run', 'test:telemetry']],
   ['cohesion', 'Product-cohesion gate', ['run', 'cohesion:check']],
   ['build', 'Production build', ['run', 'build']],
+  ['seo', 'Static SEO and delivery tests', ['run', 'test:seo']],
 ]);
 
 const RELEASE_CHECKS = Object.freeze([

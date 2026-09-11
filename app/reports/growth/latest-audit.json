@@ -1,0 +1,2590 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-11T08:46:05.946Z",
+  "environment": "production",
+  "sites": [
+    {
+      "owner": "marketing",
+      "origin": "https://plundrix.com",
+      "canonicalOrigin": "https://plundrix.com",
+      "systemChecks": [
+        {
+          "id": "robots-status",
+          "ok": true,
+          "detail": "HTTP 200"
+        },
+        {
+          "id": "robots-sitemap",
+          "ok": true,
+          "detail": "https://plundrix.com/sitemap.xml"
+        },
+        {
+          "id": "sitemap-status",
+          "ok": true,
+          "detail": "HTTP 200"
+        },
+        {
+          "id": "sitemap-populated",
+          "ok": true,
+          "detail": "4 URLs"
+        },
+        {
+          "id": "sitemap-freshness",
+          "ok": false,
+          "detail": "3 stale URLs"
+        },
+        {
+          "id": "llms-status",
+          "ok": true,
+          "detail": "HTTP 200"
+        }
+      ],
+      "sitemapEntries": [
+        {
+          "url": "https://plundrix.com/",
+          "lastModified": "2026-03-01"
+        },
+        {
+          "url": "https://plundrix.com/llms.txt",
+          "lastModified": "2026-03-01"
+        },
+        {
+          "url": "https://plundrix.com/press",
+          "lastModified": "2026-05-14"
+        },
+        {
+          "url": "https://plundrix.com/llms-full.txt",
+          "lastModified": "2026-03-01"
+        }
+      ],
+      "linkedUrls": [
+        "https://plundrix.com/llms-full.txt",
+        "https://plundrix.com/",
+        "https://plundrix.com/",
+        "https://plundrix.com/",
+        "https://plundrix.com/",
+        "https://plundrix.com/",
+        "https://plundrix.com/sitemap.xml"
+      ],
+      "documents": [
+        {
+          "requestedUrl": "https://plundrix.com/",
+          "finalUrl": "https://plundrix.com/",
+          "status": 200,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+            "h1Count": 1,
+            "linkCount": 23,
+            "textLength": 3098,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index, follow, max-image-preview:large, max-snippet:-1"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": true,
+              "detail": "3098 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "23 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "requestedUrl": "https://plundrix.com/press",
+          "finalUrl": "https://plundrix.com/press",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Press Kit",
+            "description": "Media kit, short pitch, product description, and visual references for Plundrix.",
+            "canonical": "https://plundrix.com/press",
+            "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+            "h1Count": 1,
+            "linkCount": 12,
+            "textLength": 806,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "18 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "80 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://plundrix.com/press"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index, follow, max-image-preview:large, max-snippet:-1"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": true,
+              "detail": "806 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "12 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "requestedUrl": "https://plundrix.com/play",
+          "finalUrl": "https://game.plundrix.com/",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Player Hub - Choose Your Table",
+            "description": "Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.",
+            "canonical": "https://game.plundrix.com/",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/#webpage\",\"name\":\"Plundrix Player Hub - Choose Your Table\",\"description\":\"Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.\",\"url\":\"https://game.plundrix.com/\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game for 2-4 players.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":\"2-4\",\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"FAQPage\",\"@id\":\"https://game.plundrix.com/#faq\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Can I play without a wallet?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. Instant Play starts a four-operator match against three clearly labeled agents in your browser. No signup, wallet, or test ETH is required.\"}},{\"@type\":\"Question\",\"name\":\"What is actually onchain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"The live multiplayer beta runs through the published Plundrix contract on Ethereum Sepolia. Instant Play is a fast local version of the same Pick, Search, and Sabotage decision loop.\"}},{\"@type\":\"Question\",\"name\":\"Does the beta cost money?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix has no cash prizes or paid public mode. Instant Play is free. Live Sepolia games may require free test ETH for network gas.\"}},{\"@type\":\"Question\",\"name\":\"Are bots hidden as players?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Agents and bots are labeled wherever they participate. Live session state, outcomes, and the verified contract can be inspected publicly.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "39 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "99 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://game.plundrix.com/"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare",
+          "finalUrl": "https://plundrix.com/compare",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare/coin-master-alternative",
+          "finalUrl": "https://plundrix.com/compare/coin-master-alternative",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare/monopoly-go-alternative",
+          "finalUrl": "https://plundrix.com/compare/monopoly-go-alternative",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare/catan-online-alternative",
+          "finalUrl": "https://plundrix.com/compare/catan-online-alternative",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare/risk-online-alternative",
+          "finalUrl": "https://plundrix.com/compare/risk-online-alternative",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare/among-us-board-game-alternative",
+          "finalUrl": "https://plundrix.com/compare/among-us-board-game-alternative",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare/munchkin-alternative",
+          "finalUrl": "https://plundrix.com/compare/munchkin-alternative",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare/onchain-board-game",
+          "finalUrl": "https://plundrix.com/compare/onchain-board-game",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/compare/pirate-nation-alternative",
+          "finalUrl": "https://plundrix.com/compare/pirate-nation-alternative",
+          "status": 404,
+          "facts": {
+            "title": "PLUNDRIX(TM) - Free-Play On-Chain Vault Heist Game",
+            "description": "Pick locks, search for tools, sabotage rivals, and crack five locks first in a fast free-play on-chain vault heist game live on Sepolia testnet.",
+            "canonical": "https://plundrix.com",
+            "robots": "noindex",
+            "h1Count": 1,
+            "linkCount": 2,
+            "textLength": 115,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "50 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "144 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://plundrix.com"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "noindex"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "115 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "2 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/terms",
+          "finalUrl": "https://plundrix.com/terms",
+          "status": 200,
+          "facts": {
+            "title": "Terms of Service | Plundrix",
+            "description": "Terms of Service for the Plundrix website.",
+            "canonical": "https://plundrix.com/terms",
+            "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+            "h1Count": 1,
+            "linkCount": 10,
+            "textLength": 2536,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "27 characters"
+            },
+            {
+              "id": "description",
+              "ok": false,
+              "detail": "42 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://plundrix.com/terms"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index, follow, max-image-preview:large, max-snippet:-1"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": true,
+              "detail": "2536 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "10 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://plundrix.com/privacy",
+          "finalUrl": "https://plundrix.com/privacy",
+          "status": 200,
+          "facts": {
+            "title": "Privacy Policy | Plundrix",
+            "description": "Privacy Policy for the Plundrix website and waitlist.",
+            "canonical": "https://plundrix.com/privacy",
+            "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+            "h1Count": 1,
+            "linkCount": 10,
+            "textLength": 2721,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free-play on-chain strategy game where players compete to crack five vault locks through picking, searching, and sabotage. Live play currently opens on Sepolia testnet.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Blockchain Game\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Instant no-wallet play against labeled agents\",\"Live multiplayer on Sepolia\",\"Transparent and verifiable outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Sepolia testnet play\",\"Free-play competitive sessions\",\"Open-source contracts\",\"Season ladders and agent play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a fully on-chain vault heist strategy game built around transparent smart contract rules.\"}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"HowTo\",\"name\":\"How to Play Plundrix\",\"description\":\"A step-by-step guide to joining and playing a Plundrix vault heist game session.\",\"step\":[{\"@type\":\"HowToStep\",\"position\":1,\"name\":\"Read the Table\",\"text\":\"Track the vault locks, tools, and rival positions before choosing your move.\"},{\"@type\":\"HowToStep\",\"position\":2,\"name\":\"Choose Your Action\",\"text\":\"Select one of three actions: Pick locks, Search for tools, or Sabotage a rival. Each action changes your race to crack all five locks first.\"},{\"@type\":\"HowToStep\",\"position\":3,\"name\":\"Resolve Together\",\"text\":\"Every operator's choice lands together. Adapt to the new table and be first through all five locks.\"}]}",
+              "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What is Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a simultaneous-action vault-heist strategy game. Players compete by picking locks, searching for tools, or sabotaging rivals. Instant Play requires no wallet; live multiplayer runs on Sepolia.\"}},{\"@type\":\"Question\",\"name\":\"How does Plundrix work?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players join a game session and each round choose to pick, search, or sabotage. The first operative to crack all five locks wins the session.\"}},{\"@type\":\"Question\",\"name\":\"What are the three actions in Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Pick: attempt to crack a lock. Search: look for tools that improve future picks. Sabotage: stun a rival and steal a tool if they have one.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix fully on-chain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Live multiplayer actions and outcomes are recorded through an open-source smart contract on Sepolia. Instant Play runs locally in the browser and requires no wallet.\"}},{\"@type\":\"Question\",\"name\":\"How long does a Plundrix game take?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix sessions are short and intense, typically lasting minutes rather than hours. Players join a session, make their moves across several rounds, and finish quickly.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix free to play?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes, Plundrix is currently free-play. Players may still incur standard blockchain gas fees for on-chain transactions. There are no cash prizes currently live.\"}},{\"@type\":\"Question\",\"name\":\"What network should I use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use Sepolia for the current testnet version. Mainnet access comes later.\"}},{\"@type\":\"Question\",\"name\":\"What wallet actions does Plundrix require?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Players should expect wallet signatures and on-chain transactions when joining a game, submitting a round action, and resolving a round.\"}},{\"@type\":\"Question\",\"name\":\"Where can I verify the rules?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Use the contract source, Sepolia explorer, and live game console links to inspect game rules and outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Who made Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is a Racerverse production by LuckyMachines. It is built with lean smart contract architecture designed for fast, competitive gameplay.\"}}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "25 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "53 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://plundrix.com/privacy"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index, follow, max-image-preview:large, max-snippet:-1"
+            },
+            {
+              "id": "h1",
+              "ok": true,
+              "detail": "1 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": true,
+              "detail": "2721 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": true,
+              "detail": "10 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "4 blocks"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "owner": "game",
+      "origin": "https://game.plundrix.com",
+      "canonicalOrigin": "https://game.plundrix.com",
+      "systemChecks": [
+        {
+          "id": "robots-status",
+          "ok": true,
+          "detail": "HTTP 200"
+        },
+        {
+          "id": "robots-sitemap",
+          "ok": true,
+          "detail": "https://game.plundrix.com/sitemap.xml"
+        },
+        {
+          "id": "sitemap-status",
+          "ok": true,
+          "detail": "HTTP 200"
+        },
+        {
+          "id": "sitemap-populated",
+          "ok": true,
+          "detail": "20 URLs"
+        },
+        {
+          "id": "sitemap-freshness",
+          "ok": true,
+          "detail": "0 stale URLs"
+        },
+        {
+          "id": "llms-status",
+          "ok": true,
+          "detail": "HTTP 200"
+        }
+      ],
+      "sitemapEntries": [
+        {
+          "url": "https://game.plundrix.com/",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/play",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/vault-run",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/workshop",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/trailer",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/leaderboard",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/sessions",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/replays",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/glossary",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/terms",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/privacy",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare/coin-master-alternative",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare/monopoly-go-alternative",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare/catan-online-alternative",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare/risk-online-alternative",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare/among-us-board-game-alternative",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare/munchkin-alternative",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare/onchain-board-game",
+          "lastModified": "2026-08-16"
+        },
+        {
+          "url": "https://game.plundrix.com/compare/pirate-nation-alternative",
+          "lastModified": "2026-08-16"
+        }
+      ],
+      "linkedUrls": [
+        "https://game.plundrix.com/",
+        "https://game.plundrix.com/play",
+        "https://game.plundrix.com/trailer",
+        "https://game.plundrix.com/simulator",
+        "https://game.plundrix.com/replays",
+        "https://game.plundrix.com/leaderboard",
+        "https://game.plundrix.com/glossary",
+        "https://game.plundrix.com/compare",
+        "https://game.plundrix.com/llms-full.txt"
+      ],
+      "documents": [
+        {
+          "requestedUrl": "https://game.plundrix.com/",
+          "finalUrl": "https://game.plundrix.com/",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Player Hub - Choose Your Table",
+            "description": "Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.",
+            "canonical": "https://game.plundrix.com/",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/#webpage\",\"name\":\"Plundrix Player Hub - Choose Your Table\",\"description\":\"Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.\",\"url\":\"https://game.plundrix.com/\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game for 2-4 players.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":\"2-4\",\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"FAQPage\",\"@id\":\"https://game.plundrix.com/#faq\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Can I play without a wallet?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. Instant Play starts a four-operator match against three clearly labeled agents in your browser. No signup, wallet, or test ETH is required.\"}},{\"@type\":\"Question\",\"name\":\"What is actually onchain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"The live multiplayer beta runs through the published Plundrix contract on Ethereum Sepolia. Instant Play is a fast local version of the same Pick, Search, and Sabotage decision loop.\"}},{\"@type\":\"Question\",\"name\":\"Does the beta cost money?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix has no cash prizes or paid public mode. Instant Play is free. Live Sepolia games may require free test ETH for network gas.\"}},{\"@type\":\"Question\",\"name\":\"Are bots hidden as players?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Agents and bots are labeled wherever they participate. Live session state, outcomes, and the verified contract can be inspected publicly.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "39 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "99 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/play",
+          "finalUrl": "https://game.plundrix.com/play",
+          "status": 200,
+          "facts": {
+            "title": "Play Plundrix Instantly - No Wallet Required",
+            "description": "Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup or wallet.",
+            "canonical": "https://game.plundrix.com/play",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/play#webpage\",\"name\":\"Play Plundrix Instantly - No Wallet Required\",\"description\":\"Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup or wallet.\",\"url\":\"https://game.plundrix.com/play\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "44 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "130 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/play"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/vault-run",
+          "finalUrl": "https://game.plundrix.com/vault-run",
+          "status": 200,
+          "facts": {
+            "title": "Vault Run - Three Vault Roguelite | Plundrix",
+            "description": "Choose risky routes, outwit persistent rivals, and carry one workshop gadget through a three-stage Plundrix run.",
+            "canonical": "https://game.plundrix.com/vault-run",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/vault-run#webpage\",\"name\":\"Vault Run - Three Vault Roguelite | Plundrix\",\"description\":\"Choose risky routes, outwit persistent rivals, and carry one workshop gadget through a three-stage Plundrix run.\",\"url\":\"https://game.plundrix.com/vault-run\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "44 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "112 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/vault-run"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/workshop",
+          "finalUrl": "https://game.plundrix.com/workshop",
+          "status": 200,
+          "facts": {
+            "title": "Operator Workshop - 10 Signature Gadgets, 1,200 Builds | Plundrix",
+            "description": "Choose one of ten gameplay-distinct gadgets, then assemble a visible material and calibration configuration for your next Plundrix operation.",
+            "canonical": "https://game.plundrix.com/workshop",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/workshop#webpage\",\"name\":\"Operator Workshop - 10 Signature Gadgets, 1,200 Builds | Plundrix\",\"description\":\"Choose one of ten gameplay-distinct gadgets, then assemble a visible material and calibration configuration for your next Plundrix operation.\",\"url\":\"https://game.plundrix.com/workshop\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "65 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "141 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/workshop"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/trailer",
+          "finalUrl": "https://game.plundrix.com/trailer",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Gameplay Trailer - 32 Seconds",
+            "description": "Watch a four-player vault race swing from first move to final lock in 32 seconds.",
+            "canonical": "https://game.plundrix.com/trailer",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/trailer#webpage\",\"name\":\"Plundrix Gameplay Trailer - 32 Seconds\",\"description\":\"Watch a four-player vault race swing from first move to final lock in 32 seconds.\",\"url\":\"https://game.plundrix.com/trailer\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"},{\"@type\":\"VideoObject\",\"@id\":\"https://game.plundrix.com/trailer#video\",\"name\":\"Plundrix Gameplay Trailer\",\"description\":\"A 32-second gameplay trailer assembled from real Plundrix product captures and original game art.\",\"thumbnailUrl\":\"https://game.plundrix.com/images/og/plundrix-trailer.jpg\",\"contentUrl\":\"https://game.plundrix.com/video/plundrix-gameplay-trailer.mp4\",\"embedUrl\":\"https://game.plundrix.com/trailer\",\"uploadDate\":\"2026-08-15\",\"duration\":\"PT32S\",\"inLanguage\":\"en\",\"isFamilyFriendly\":true}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "38 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "81 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/trailer"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/leaderboard",
+          "finalUrl": "https://game.plundrix.com/leaderboard",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Operator Ladder",
+            "description": "Review seasonal Plundrix operators, agent ladders, points, and competitive progress.",
+            "canonical": "https://game.plundrix.com/leaderboard",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/leaderboard#webpage\",\"name\":\"Plundrix Operator Ladder\",\"description\":\"Review seasonal Plundrix operators, agent ladders, points, and competitive progress.\",\"url\":\"https://game.plundrix.com/leaderboard\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "24 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "84 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/leaderboard"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/sessions",
+          "finalUrl": "https://game.plundrix.com/sessions",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Operation History",
+            "description": "Review recent Plundrix operations, operator results, and session history.",
+            "canonical": "https://game.plundrix.com/sessions",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/sessions#webpage\",\"name\":\"Plundrix Operation History\",\"description\":\"Review recent Plundrix operations, operator results, and session history.\",\"url\":\"https://game.plundrix.com/sessions\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "26 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "73 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/sessions"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/replays",
+          "finalUrl": "https://game.plundrix.com/replays",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Replay Director",
+            "description": "Review dramatic operations, close finishes, and shareable table stories.",
+            "canonical": "https://game.plundrix.com/replays",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/replays#webpage\",\"name\":\"Plundrix Replay Director\",\"description\":\"Review dramatic operations, close finishes, and shareable table stories.\",\"url\":\"https://game.plundrix.com/replays\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "24 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "72 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/replays"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare",
+          "finalUrl": "https://game.plundrix.com/compare",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Game Comparisons",
+            "description": "Compare Plundrix with raid games, online board games, sabotage games, and onchain strategy games.",
+            "canonical": "https://game.plundrix.com/compare",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@type\":\"CollectionPage\",\"name\":\"Plundrix game comparisons\",\"description\":\"Comparison pages for players looking for Plundrix alternatives to raid games, online board games, sabotage games, and onchain games.\",\"url\":\"https://game.plundrix.com/compare\",\"hasPart\":[{\"@type\":\"WebPage\",\"name\":\"Coin Master Alternative: Plundrix for Turn-Based Vault Raids\",\"url\":\"https://game.plundrix.com/compare/coin-master-alternative\",\"description\":\"Looking for a Coin Master alternative with more turn-by-turn agency? Compare raid-and-attack loops with Plundrix vault races, sabotage, and replayable decisions.\"},{\"@type\":\"WebPage\",\"name\":\"Monopoly GO Alternative: Plundrix for Strategic Vault Heists\",\"url\":\"https://game.plundrix.com/compare/monopoly-go-alternative\",\"description\":\"Compare Monopoly GO-style quick social heist energy with Plundrix, a short-session turn-based vault game with direct sabotage and strategic choices.\"},{\"@type\":\"WebPage\",\"name\":\"CATAN Online Alternative: Plundrix for Short Heist Strategy\",\"url\":\"https://game.plundrix.com/compare/catan-online-alternative\",\"description\":\"Looking for a CATAN online alternative? Compare resource-trading board-game strategy with Plundrix short-session vault races, tools, and sabotage.\"},{\"@type\":\"WebPage\",\"name\":\"Risk Online Alternative: Plundrix for Short Turn-Based Strategy\",\"url\":\"https://game.plundrix.com/compare/risk-online-alternative\",\"description\":\"Compare Risk-style turn-based competitive pressure with Plundrix, a shorter online vault-race strategy game with sabotage and replayable finishes.\"},{\"@type\":\"WebPage\",\"name\":\"Among Us Alternative: Plundrix for Turn-Based Sabotage\",\"url\":\"https://game.plundrix.com/compare/among-us-board-game-alternative\",\"description\":\"Want sabotage without hidden-role voice-chat chaos? Compare Among Us-style suspicion with Plundrix turn-based vault races and visible disruption.\"},{\"@type\":\"WebPage\",\"name\":\"Munchkin Alternative: Plundrix for Fast Digital Backstabbing\",\"url\":\"https://game.plundrix.com/compare/munchkin-alternative\",\"description\":\"Looking for a Munchkin alternative online? Compare backstabbing card-game energy with Plundrix vault races, sabotage, tools, and replayable table drama.\"},{\"@type\":\"WebPage\",\"name\":\"Onchain Board Game: Plundrix Vault Strategy on Blockchain Rails\",\"url\":\"https://game.plundrix.com/compare/onchain-board-game\",\"description\":\"Plundrix is an onchain board-game-like vault race with short sessions, visible sabotage, replays, leaderboards, and explicit bot/agent play.\"},{\"@type\":\"WebPage\",\"name\":\"Pirate Nation Alternative: Plundrix for Session-Based Onchain Strategy\",\"url\":\"https://game.plundrix.com/compare/pirate-nation-alternative\",\"description\":\"Compare Pirate Nation-style onchain game interest with Plundrix, a shorter session-based vault race with sabotage, replays, and readable match records.\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "25 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "97 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/glossary",
+          "finalUrl": "https://game.plundrix.com/glossary",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Glossary",
+            "description": "Definitions for Plundrix operations, rounds, vaults, operators, tools, sabotage, and replays.",
+            "canonical": "https://game.plundrix.com/glossary",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"CollectionPage\",\"@id\":\"https://game.plundrix.com/glossary#webpage\",\"name\":\"Plundrix Glossary\",\"description\":\"Definitions for Plundrix operations, rounds, vaults, operators, tools, sabotage, and replays.\",\"url\":\"https://game.plundrix.com/glossary\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "17 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "93 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/glossary"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/terms",
+          "finalUrl": "https://game.plundrix.com/terms",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Terms of Service",
+            "description": "Terms of Service for Plundrix, including eligibility, game modes, blockchain interactions, and beta posture.",
+            "canonical": "https://game.plundrix.com/terms",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/terms#webpage\",\"name\":\"Plundrix Terms of Service\",\"description\":\"Terms of Service for Plundrix, including eligibility, game modes, blockchain interactions, and beta posture.\",\"url\":\"https://game.plundrix.com/terms\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "25 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "108 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/terms"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/privacy",
+          "finalUrl": "https://game.plundrix.com/privacy",
+          "status": 200,
+          "facts": {
+            "title": "Plundrix Privacy Policy",
+            "description": "Privacy Policy for Plundrix, including data handling, wallet interactions, analytics, and service operations.",
+            "canonical": "https://game.plundrix.com/privacy",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/privacy#webpage\",\"name\":\"Plundrix Privacy Policy\",\"description\":\"Privacy Policy for Plundrix, including data handling, wallet interactions, analytics, and service operations.\",\"url\":\"https://game.plundrix.com/privacy\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "23 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "109 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/privacy"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare/coin-master-alternative",
+          "finalUrl": "https://game.plundrix.com/compare/coin-master-alternative",
+          "status": 200,
+          "facts": {
+            "title": "Coin Master Alternative: Plundrix for Turn-Based Vault Raids",
+            "description": "Looking for a Coin Master alternative with more turn-by-turn agency? Compare raid-and-attack loops with Plundrix vault races, sabotage, and replayable decisions.",
+            "canonical": "https://game.plundrix.com/compare/coin-master-alternative",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"name\":\"Coin Master Alternative: Plundrix for Turn-Based Vault Raids\",\"description\":\"Looking for a Coin Master alternative with more turn-by-turn agency? Compare raid-and-attack loops with Plundrix vault races, sabotage, and replayable decisions.\",\"url\":\"https://game.plundrix.com/compare/coin-master-alternative\",\"isPartOf\":{\"@type\":\"WebSite\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com\"}},{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Plundrix the same kind of game as Coin Master?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. The overlap is player intent: raids, attacks, loot tension, and social pressure. Plundrix is a turn-based vault-race strategy game.\"}},{\"@type\":\"Question\",\"name\":\"Why would a Coin Master player try Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Because Plundrix makes the heist moment tactical. You decide when to build tools, when to pick, and when to sabotage another player.\"}},{\"@type\":\"Question\",\"name\":\"Does Plundrix have village progression?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Plundrix focuses on session-based vault races, ladders, replays, and competitive table outcomes.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "60 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "161 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare/coin-master-alternative"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare/monopoly-go-alternative",
+          "finalUrl": "https://game.plundrix.com/compare/monopoly-go-alternative",
+          "status": 200,
+          "facts": {
+            "title": "Monopoly GO Alternative: Plundrix for Strategic Vault Heists",
+            "description": "Compare Monopoly GO-style quick social heist energy with Plundrix, a short-session turn-based vault game with direct sabotage and strategic choices.",
+            "canonical": "https://game.plundrix.com/compare/monopoly-go-alternative",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"name\":\"Monopoly GO Alternative: Plundrix for Strategic Vault Heists\",\"description\":\"Compare Monopoly GO-style quick social heist energy with Plundrix, a short-session turn-based vault game with direct sabotage and strategic choices.\",\"url\":\"https://game.plundrix.com/compare/monopoly-go-alternative\",\"isPartOf\":{\"@type\":\"WebSite\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com\"}},{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Plundrix a Monopoly game?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Plundrix is an original vault-heist strategy game. The comparison is for players seeking a quick social board-game alternative.\"}},{\"@type\":\"Question\",\"name\":\"Does Plundrix use dice rolls?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Plundrix centers on action choices: Pick, Search, and Sabotage.\"}},{\"@type\":\"Question\",\"name\":\"Why compare it to Monopoly GO?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Because the search intent overlaps: short sessions, social pressure, and heist-style moments.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "60 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "148 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare/monopoly-go-alternative"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare/catan-online-alternative",
+          "finalUrl": "https://game.plundrix.com/compare/catan-online-alternative",
+          "status": 200,
+          "facts": {
+            "title": "CATAN Online Alternative: Plundrix for Short Heist Strategy",
+            "description": "Looking for a CATAN online alternative? Compare resource-trading board-game strategy with Plundrix short-session vault races, tools, and sabotage.",
+            "canonical": "https://game.plundrix.com/compare/catan-online-alternative",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"name\":\"CATAN Online Alternative: Plundrix for Short Heist Strategy\",\"description\":\"Looking for a CATAN online alternative? Compare resource-trading board-game strategy with Plundrix short-session vault races, tools, and sabotage.\",\"url\":\"https://game.plundrix.com/compare/catan-online-alternative\",\"isPartOf\":{\"@type\":\"WebSite\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com\"}},{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Plundrix for CATAN players?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"It can be, if they want shorter online strategy with visible table pressure and less negotiation.\"}},{\"@type\":\"Question\",\"name\":\"Does Plundrix have resource trading?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Tools are collected and used inside the vault race rather than traded across a settlement economy.\"}},{\"@type\":\"Question\",\"name\":\"What is the shared appeal?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Both ask players to read the table, time resources, and notice when another player is about to pull ahead.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "59 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "146 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare/catan-online-alternative"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare/risk-online-alternative",
+          "finalUrl": "https://game.plundrix.com/compare/risk-online-alternative",
+          "status": 200,
+          "facts": {
+            "title": "Risk Online Alternative: Plundrix for Short Turn-Based Strategy",
+            "description": "Compare Risk-style turn-based competitive pressure with Plundrix, a shorter online vault-race strategy game with sabotage and replayable finishes.",
+            "canonical": "https://game.plundrix.com/compare/risk-online-alternative",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"name\":\"Risk Online Alternative: Plundrix for Short Turn-Based Strategy\",\"description\":\"Compare Risk-style turn-based competitive pressure with Plundrix, a shorter online vault-race strategy game with sabotage and replayable finishes.\",\"url\":\"https://game.plundrix.com/compare/risk-online-alternative\",\"isPartOf\":{\"@type\":\"WebSite\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com\"}},{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Plundrix a war game?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. It is a vault-heist strategy game. The overlap is turn-based competition and leader pressure.\"}},{\"@type\":\"Question\",\"name\":\"Why would a Risk player care?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix gives a similar feeling of watching the board for runaway threats, but in a shorter session.\"}},{\"@type\":\"Question\",\"name\":\"Does Plundrix support online competition?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. Plundrix is built around online sessions, leaderboards, and explicit bot/agent labeling.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "63 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "146 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare/risk-online-alternative"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare/among-us-board-game-alternative",
+          "finalUrl": "https://game.plundrix.com/compare/among-us-board-game-alternative",
+          "status": 200,
+          "facts": {
+            "title": "Among Us Alternative: Plundrix for Turn-Based Sabotage",
+            "description": "Want sabotage without hidden-role voice-chat chaos? Compare Among Us-style suspicion with Plundrix turn-based vault races and visible disruption.",
+            "canonical": "https://game.plundrix.com/compare/among-us-board-game-alternative",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"name\":\"Among Us Alternative: Plundrix for Turn-Based Sabotage\",\"description\":\"Want sabotage without hidden-role voice-chat chaos? Compare Among Us-style suspicion with Plundrix turn-based vault races and visible disruption.\",\"url\":\"https://game.plundrix.com/compare/among-us-board-game-alternative\",\"isPartOf\":{\"@type\":\"WebSite\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com\"}},{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Does Plundrix have impostors?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. All players are vault racers. Sabotage is a tactical action, not a hidden role.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix social deduction?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. It has social pressure and targeting, but the core game is turn-based strategy.\"}},{\"@type\":\"Question\",\"name\":\"Why compare Plundrix to Among Us?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Because some players want sabotage and table drama without voice-chat deception.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "54 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "145 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare/among-us-board-game-alternative"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare/munchkin-alternative",
+          "finalUrl": "https://game.plundrix.com/compare/munchkin-alternative",
+          "status": 200,
+          "facts": {
+            "title": "Munchkin Alternative: Plundrix for Fast Digital Backstabbing",
+            "description": "Looking for a Munchkin alternative online? Compare backstabbing card-game energy with Plundrix vault races, sabotage, tools, and replayable table drama.",
+            "canonical": "https://game.plundrix.com/compare/munchkin-alternative",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"name\":\"Munchkin Alternative: Plundrix for Fast Digital Backstabbing\",\"description\":\"Looking for a Munchkin alternative online? Compare backstabbing card-game energy with Plundrix vault races, sabotage, tools, and replayable table drama.\",\"url\":\"https://game.plundrix.com/compare/munchkin-alternative\",\"isPartOf\":{\"@type\":\"WebSite\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com\"}},{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Plundrix a card game?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. It is a digital turn-based vault game. The comparison is about backstabbing table energy.\"}},{\"@type\":\"Question\",\"name\":\"Can players gang up on a leader?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. Sabotage and target choice let players pressure near-winners.\"}},{\"@type\":\"Question\",\"name\":\"Why would Munchkin players try Plundrix?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Because it offers a faster digital way to create betrayals, reversals, and table stories.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "60 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "152 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare/munchkin-alternative"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare/onchain-board-game",
+          "finalUrl": "https://game.plundrix.com/compare/onchain-board-game",
+          "status": 200,
+          "facts": {
+            "title": "Onchain Board Game: Plundrix Vault Strategy on Blockchain Rails",
+            "description": "Plundrix is an onchain board-game-like vault race with short sessions, visible sabotage, replays, leaderboards, and explicit bot/agent play.",
+            "canonical": "https://game.plundrix.com/compare/onchain-board-game",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"name\":\"Onchain Board Game: Plundrix Vault Strategy on Blockchain Rails\",\"description\":\"Plundrix is an onchain board-game-like vault race with short sessions, visible sabotage, replays, leaderboards, and explicit bot/agent play.\",\"url\":\"https://game.plundrix.com/compare/onchain-board-game\",\"isPartOf\":{\"@type\":\"WebSite\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com\"}},{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Plundrix fully onchain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix uses blockchain rails for game sessions and contract interaction, while the frontend, practice table, replays, and leaderboards support the player experience.\"}},{\"@type\":\"Question\",\"name\":\"Is Plundrix gambling?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No cash prizes or monetary rewards are currently live. The app is presented as a free-play beta with published terms.\"}},{\"@type\":\"Question\",\"name\":\"Why call it an onchain board game?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Because the session shape is table-based, turn-based, and stateful, with an onchain game record and board-game-like player decisions.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "63 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "140 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare/onchain-board-game"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/compare/pirate-nation-alternative",
+          "finalUrl": "https://game.plundrix.com/compare/pirate-nation-alternative",
+          "status": 200,
+          "facts": {
+            "title": "Pirate Nation Alternative: Plundrix for Session-Based Onchain Strategy",
+            "description": "Compare Pirate Nation-style onchain game interest with Plundrix, a shorter session-based vault race with sabotage, replays, and readable match records.",
+            "canonical": "https://game.plundrix.com/compare/pirate-nation-alternative",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"name\":\"Pirate Nation Alternative: Plundrix for Session-Based Onchain Strategy\",\"description\":\"Compare Pirate Nation-style onchain game interest with Plundrix, a shorter session-based vault race with sabotage, replays, and readable match records.\",\"url\":\"https://game.plundrix.com/compare/pirate-nation-alternative\",\"isPartOf\":{\"@type\":\"WebSite\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com\"}},{\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Plundrix a Pirate Nation clone?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Plundrix is a vault-heist board-game-like strategy session. The comparison is for onchain-game searchers.\"}},{\"@type\":\"Question\",\"name\":\"Which is more competitive?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix is explicitly centered on short competitive sessions and leaderboard-ready outcomes.\"}},{\"@type\":\"Question\",\"name\":\"Why compare onchain games at all?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Because players often search by ecosystem and technology posture before they know the exact game format they want.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": true,
+              "detail": "HTTP 200"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "70 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "151 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": true,
+              "detail": "https://game.plundrix.com/compare/pirate-nation-alternative"
+            },
+            {
+              "id": "robots",
+              "ok": true,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/career",
+          "finalUrl": "https://game.plundrix.com/career",
+          "status": 404,
+          "facts": {
+            "title": "Plundrix Player Hub - Choose Your Table",
+            "description": "Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.",
+            "canonical": "https://game.plundrix.com/",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/#webpage\",\"name\":\"Plundrix Player Hub - Choose Your Table\",\"description\":\"Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.\",\"url\":\"https://game.plundrix.com/\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game for 2-4 players.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":\"2-4\",\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"FAQPage\",\"@id\":\"https://game.plundrix.com/#faq\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Can I play without a wallet?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. Instant Play starts a four-operator match against three clearly labeled agents in your browser. No signup, wallet, or test ETH is required.\"}},{\"@type\":\"Question\",\"name\":\"What is actually onchain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"The live multiplayer beta runs through the published Plundrix contract on Ethereum Sepolia. Instant Play is a fast local version of the same Pick, Search, and Sabotage decision loop.\"}},{\"@type\":\"Question\",\"name\":\"Does the beta cost money?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix has no cash prizes or paid public mode. Instant Play is free. Live Sepolia games may require free test ETH for network gas.\"}},{\"@type\":\"Question\",\"name\":\"Are bots hidden as players?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Agents and bots are labeled wherever they participate. Live session state, outcomes, and the verified contract can be inspected publicly.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "39 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "99 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://game.plundrix.com/"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        },
+        {
+          "requestedUrl": "https://game.plundrix.com/simulator",
+          "finalUrl": "https://game.plundrix.com/simulator",
+          "status": 404,
+          "facts": {
+            "title": "Plundrix Player Hub - Choose Your Table",
+            "description": "Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.",
+            "canonical": "https://game.plundrix.com/",
+            "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+            "h1Count": 0,
+            "linkCount": 0,
+            "textLength": 0,
+            "jsonLd": [
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://game.plundrix.com/\",\"sameAs\":[\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/#webpage\",\"name\":\"Plundrix Player Hub - Choose Your Table\",\"description\":\"Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.\",\"url\":\"https://game.plundrix.com/\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-08-16\"},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game for 2-4 players.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":\"2-4\",\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"FAQPage\",\"@id\":\"https://game.plundrix.com/#faq\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Can I play without a wallet?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. Instant Play starts a four-operator match against three clearly labeled agents in your browser. No signup, wallet, or test ETH is required.\"}},{\"@type\":\"Question\",\"name\":\"What is actually onchain?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"The live multiplayer beta runs through the published Plundrix contract on Ethereum Sepolia. Instant Play is a fast local version of the same Pick, Search, and Sabotage decision loop.\"}},{\"@type\":\"Question\",\"name\":\"Does the beta cost money?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Plundrix has no cash prizes or paid public mode. Instant Play is free. Live Sepolia games may require free test ETH for network gas.\"}},{\"@type\":\"Question\",\"name\":\"Are bots hidden as players?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Agents and bots are labeled wherever they participate. Live session state, outcomes, and the verified contract can be inspected publicly.\"}}]}]}"
+            ]
+          },
+          "checks": [
+            {
+              "id": "status",
+              "ok": false,
+              "detail": "HTTP 404"
+            },
+            {
+              "id": "title",
+              "ok": true,
+              "detail": "39 characters"
+            },
+            {
+              "id": "description",
+              "ok": true,
+              "detail": "99 characters"
+            },
+            {
+              "id": "canonical",
+              "ok": false,
+              "detail": "https://game.plundrix.com/"
+            },
+            {
+              "id": "robots",
+              "ok": false,
+              "detail": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+            },
+            {
+              "id": "h1",
+              "ok": false,
+              "detail": "0 h1 elements"
+            },
+            {
+              "id": "crawlable-copy",
+              "ok": false,
+              "detail": "0 visible characters"
+            },
+            {
+              "id": "internal-links",
+              "ok": false,
+              "detail": "0 links"
+            },
+            {
+              "id": "json-ld",
+              "ok": true,
+              "detail": "1 blocks"
+            }
+          ],
+          "ok": false
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total": 336,
+    "passed": 222,
+    "failures": 114,
+    "pages": 36
+  }
+}

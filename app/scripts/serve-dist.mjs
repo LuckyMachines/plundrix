@@ -35,7 +35,6 @@ const publicClientRoutes = new Set([
   '/terms',
   '/privacy',
   '/replays',
-  '/compare',
   '/glossary',
 ]);
 
@@ -52,6 +51,7 @@ function isSafePath(pathname) {
 
 function isNoIndexPath(pathname) {
   return [
+    '/compare',
     '/design',
     '/design-system',
     '/game/',
@@ -139,6 +139,14 @@ const server = createServer(async (req, res) => {
         res.end(JSON.stringify({ error: 'Live competition feed unavailable' }));
       });
       req.pipe(upstream);
+      return;
+    }
+    if (pathname === '/compare' || pathname.startsWith('/compare/')) {
+      res.writeHead(308, {
+        Location: `https://plundrix.com${pathname}`,
+        'Cache-Control': 'public, max-age=86400',
+      });
+      res.end();
       return;
     }
     if (!isSafePath(pathname)) {

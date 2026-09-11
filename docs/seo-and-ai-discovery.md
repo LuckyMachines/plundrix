@@ -47,4 +47,21 @@ npm run test:e2e
 
 The SEO test validates generated metadata, JSON-LD parsing, clean-route serving, synchronized sitemaps, AI reference delivery, social assets, internal-route noindex headers, and MP4 byte-range responses.
 
+Every public game route also ships a semantic pre-JavaScript discovery body with one heading, useful copy, and crawlable navigation. Acquisition-oriented comparison pages are owned by `plundrix.com`; legacy game comparison URLs redirect permanently to the matching marketing canonical.
+
+## Solo growth loop
+
+The growth registry lives in `app/growth/strategy.json` and `app/growth/campaigns.json`. It defines audiences, route intent, funnel metrics, targets, and deterministic campaign parameters without storing player identifiers.
+
+From the repository root:
+
+```powershell
+npm run growth:weekly
+npm run growth:link -- --campaign owned-player-hub
+```
+
+`growth:weekly` performs a live cross-domain crawl, imports aggregate Search Console and Plausible measurements when server-side credentials are available, and writes one recommended action to `app/reports/growth/latest.md`. Missing credentials remain visibly marked as missing; the system never invents measurements.
+
+The required server-side variables are documented in `app/.env.example`. They must never use the `VITE_` prefix because that would expose them to browser code.
+
 The production game process also hosts the read-only competition index on an internal port and proxies `/api/*` through the canonical game origin. This keeps leaderboard requests same-origin while preserving the friendly unavailable state for local builds without `VITE_AGENT_SERVICE_URL`.

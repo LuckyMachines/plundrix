@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-11T01:42:24.248Z",
-  "buildSha": "9dec568",
+  "generatedAt": "2026-09-11T08:49:25.735Z",
+  "buildSha": "2c081b2",
   "operatingMode": "solo",
   "health": {
     "processScore": 90,
@@ -145,8 +145,8 @@
         "tier": "T2",
         "source": "improve:verify",
         "artifact": "reports/improvement/latest.json",
-        "capturedAt": "2026-09-11T01:42:24.248Z",
-        "sampleSize": 10,
+        "capturedAt": "2026-09-11T08:49:25.735Z",
+        "sampleSize": 12,
         "value": 100
       },
       "pass": true
@@ -397,7 +397,16 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 614,
+      "durationMs": 547,
+      "outputTail": ""
+    },
+    {
+      "id": "growth-system",
+      "label": "SEO and marketing-system tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 526,
       "outputTail": ""
     },
     {
@@ -406,7 +415,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 678,
+      "durationMs": 519,
       "outputTail": ""
     },
     {
@@ -415,7 +424,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1297,
+      "durationMs": 1277,
       "outputTail": ""
     },
     {
@@ -424,7 +433,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 698,
+      "durationMs": 626,
       "outputTail": ""
     },
     {
@@ -433,7 +442,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 639,
+      "durationMs": 874,
       "outputTail": ""
     },
     {
@@ -442,7 +451,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 667,
+      "durationMs": 759,
       "outputTail": ""
     },
     {
@@ -451,7 +460,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 576,
+      "durationMs": 772,
       "outputTail": ""
     },
     {
@@ -460,7 +469,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 802,
+      "durationMs": 991,
       "outputTail": ""
     },
     {
@@ -469,7 +478,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 646,
+      "durationMs": 699,
       "outputTail": ""
     },
     {
@@ -478,7 +487,16 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 8679,
+      "durationMs": 8919,
+      "outputTail": ""
+    },
+    {
+      "id": "seo",
+      "label": "Static SEO and delivery tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 1444,
       "outputTail": ""
     }
   ],

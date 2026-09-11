@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-11T08:44:19.430Z",
+  "period": {
+    "start": "2026-09-04",
+    "end": "2026-09-10"
+  },
+  "production": true,
+  "sources": {
+    "searchConsole": "missing-credentials",
+    "plausible": "missing-credentials"
+  },
+  "searchConsole": {},
+  "plausible": {},
+  "errors": []
+}

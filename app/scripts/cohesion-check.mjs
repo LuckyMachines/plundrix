@@ -53,9 +53,10 @@ for (const path of publicStaticRoutes()) {
   assert(sitemap.includes(url), `Sitemap missing ${url}`);
 }
 for (const page of COMPARISON_PAGES) {
-  const url = `https://game.plundrix.com${comparisonUrl(page.slug)}`;
-  assert(sitemap.includes(url), `Sitemap missing ${url}`);
+  const retiredGameUrl = `https://game.plundrix.com${comparisonUrl(page.slug)}`;
+  assert(!sitemap.includes(retiredGameUrl), `Game sitemap should not compete with marketing comparison URL ${retiredGameUrl}`);
 }
+assert(!sitemap.includes('https://game.plundrix.com/compare</loc>'), 'Game sitemap should not own marketing comparison intent');
 
 const requiredFiles = [
   'docs/product-cohesion-implementation-plan.md',

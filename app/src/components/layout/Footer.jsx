@@ -23,12 +23,12 @@ export default function Footer({ web3Enabled = false }) {
             >
               Glossary
             </Link>
-            <Link
-              to="/compare"
+            <a
+              href="https://plundrix.com/compare"
               className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
             >
               Compare
-            </Link>
+            </a>
             <Link
               to="/workshop"
               className="tracking-wider uppercase hover:text-vault-text transition-colors min-h-[44px] px-3 flex items-center"
