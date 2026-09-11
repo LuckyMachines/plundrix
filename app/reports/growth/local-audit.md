@@ -1,19 +1,18 @@
 # Plundrix Local Preview Growth Audit
 
-Generated: 2026-09-11T08:50:34.240Z
+Generated: 2026-09-11T10:47:38.899Z
 
-**246/246 checks passed; 0 failed.**
+**237/237 checks passed; 0 failed.**
 
 ## marketing: http://127.0.0.1:5601
 
 - PASS robots-status: HTTP 200
 - PASS robots-sitemap: https://plundrix.com/sitemap.xml
 - PASS sitemap-status: HTTP 200
-- PASS sitemap-populated: 14 URLs
+- PASS sitemap-populated: 13 URLs
 - PASS sitemap-freshness: 0 stale URLs
 - PASS llms-status: HTTP 200
 - PASS http://127.0.0.1:5601/
-- PASS http://127.0.0.1:5601/play
 - PASS http://127.0.0.1:5601/press
 - PASS http://127.0.0.1:5601/terms
 - PASS http://127.0.0.1:5601/privacy

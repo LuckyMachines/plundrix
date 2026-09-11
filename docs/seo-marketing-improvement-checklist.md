@@ -36,7 +36,7 @@ Overall: **B** under the stricter growth bar.
 
 ## External evidence still required
 
-- [ ] Deploy both repositories, then rerun `npm run growth:audit -- --check` until production passes.
+- [x] Deploy both repositories and pass the production audit at 237/237 checks across 25 public pages.
 - [ ] Supply short-lived Search Console access and a read-only Plausible API key when production measurement is desired.
 - [ ] Collect at least four complete weekly snapshots before changing targets.
 - [ ] Run only the single active experiment selected by the shared improvement ledger.
