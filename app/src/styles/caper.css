@@ -2642,6 +2642,277 @@
   }
 }
 
+/* Keep the complete turn decision visible on common laptop and desktop viewports. */
+@media (min-width: 981px) and (min-height: 700px) {
+  .instant-play-active[data-match-state="active"] {
+    height: calc(100svh - 4.25rem);
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+    overflow: hidden;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-layout,
+  .instant-play-active[data-match-state="active"] .instant-primary-column {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-primary-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-primary-column.space-y-5 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.45rem 0.7rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary h2,
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary p,
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary > div {
+    margin-top: 0;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary h2 {
+    font-size: 1.35rem;
+    white-space: nowrap;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary > div {
+    display: flex;
+    min-width: 0;
+    gap: 0.55rem;
+    overflow: hidden;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary > div p {
+    overflow: hidden;
+    padding: 0;
+    border: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-round-board {
+    display: flex;
+    min-height: 0;
+    flex: 1 1 0;
+    flex-direction: column;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-round-header {
+    min-height: 3.6rem;
+    flex: 0 0 auto;
+    padding-block: 0.5rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-round-header > div:first-child p:last-child {
+    margin-top: 0.15rem;
+    font-size: 1.2rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-metrics > div {
+    padding: 0.35rem 0.55rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-round-controls button {
+    min-height: 2.5rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-heist-grid {
+    min-height: 0;
+    flex: 1 1 0;
+    grid-template-columns: minmax(12rem, 0.7fr) minmax(25rem, 2.35fr) minmax(14.5rem, 0.82fr);
+    gap: 0.55rem;
+    padding: 0.55rem;
+    overflow: hidden;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-heist-left,
+  .instant-play-active[data-match-state="active"] .instant-vault-column,
+  .instant-play-active[data-match-state="active"] .instant-operation-file {
+    min-height: 0;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-vault-column {
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-vault-core,
+  .instant-play-active[data-match-state="active"] .instant-vault-machine {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-vault-heart {
+    width: clamp(7.4rem, 10vw, 9.5rem);
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-tool-rack {
+    padding: 0.38rem 0.55rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-tool-rack__items {
+    gap: 0.3rem;
+    margin-top: 0.25rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-tool-rack__items > span {
+    min-height: 2.35rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-tool-rack__items img {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-round-plaque {
+    padding: 0.5rem 0.65rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-round-plaque h1 {
+    font-size: 1.75rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-objective-sheet,
+  .instant-play-active[data-match-state="active"] .instant-threat-gauge {
+    padding: 0.45rem 0.65rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-objective-sheet ul {
+    gap: 0.2rem;
+    margin-top: 0.35rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-crew-briefing {
+    display: none;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-file {
+    padding: 0.65rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-file__identity {
+    grid-template-columns: 3.1rem minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-file__identity .caper-mask-insignia {
+    width: 3.1rem;
+    height: 3.1rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-file__identity h2 {
+    margin-top: 0.2rem;
+    font-size: 1.45rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-file dl {
+    margin-top: 0.55rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-file dl > div {
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+    gap: 0.35rem;
+    padding: 0.38rem 0;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-operation-file dt,
+  .instant-play-active[data-match-state="active"] .instant-operation-file dd {
+    font-size: 0.65rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-potential-loot {
+    margin-top: 0.55rem;
+    padding-top: 0.45rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-file-directive {
+    display: none;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-decision-board {
+    flex: 0 0 auto;
+    grid-template-columns: minmax(10.5rem, 0.25fr) minmax(0, 1fr);
+    column-gap: 0.75rem;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-decision-heading {
+    font-size: 1.55rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-first-move {
+    align-self: center;
+    overflow: hidden;
+    padding: 0.45rem 0.65rem;
+    font-size: var(--text-xs);
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-action-row {
+    grid-template-columns: minmax(0, 1fr) minmax(11.5rem, 14rem);
+    gap: 0.55rem;
+    margin-top: 0.45rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-action-options {
+    gap: 0.55rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-action-option {
+    min-height: 6.25rem;
+    padding: 0.65rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-action-option .font-display {
+    font-size: 1.45rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-action-option .mt-2 {
+    margin-top: 0.25rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-action-art {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-action-detail {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: 0.35rem;
+    font-size: var(--text-xs);
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .instant-play-active[data-match-state="active"] .caper-action-confirm {
+    margin-top: 0.35rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-action-commit > button:first-child {
+    min-height: 4rem;
+  }
+
+  .instant-play-active[data-match-state="active"] .instant-decision-board > div[aria-live="polite"] {
+    display: none;
+  }
+}
+
 @keyframes caper-drawer-in {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }

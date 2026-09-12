@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Plundrix UI Review</title><style>
 :root{--ground:#090a0f;--panel:#14141f;--border:#2a2a3e;--text:#c8c8d4;--dim:#8b8a9e;--accent:#e8b078;--good:#40a080;--bad:#f06a6a}*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--text);font:16px/1.5 Arial,sans-serif}main{max-width:1600px;margin:auto;padding:32px}h1,h2{margin:.2em 0;text-transform:uppercase}.summary{border-left:4px solid var(--accent);padding:16px 20px;background:var(--panel)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;margin-top:24px}.card{border:1px solid var(--border);background:var(--panel)}.card[data-status=fail]{border-color:var(--bad)}img{display:block;width:100%;aspect-ratio:16/10;object-fit:contain;background:#05060a}.body{padding:16px}.meta{color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.12em}p,li{color:var(--dim)}a{color:var(--accent)}.links{display:flex;gap:18px}@media(max-width:600px){main{padding:16px}}
-</style></head><body><main><section class="summary"><p class="meta">Solo visual evidence loop</p><h1>Plundrix UI Review</h1><p>27/27 canonical renders and 4/4 type/layout stress renders pass. Approved reference stays on the left; current render stays on the right.</p><p><a href="contact-sheet.png">Open journey contact sheet</a> / <a href="type-layout-contact-sheet.png">Open type/layout contact sheet</a> / <a href="report.md">Open Markdown report</a></p></section><section class="grid">
+</style></head><body><main><section class="summary"><p class="meta">Solo visual evidence loop</p><h1>Plundrix UI Review</h1><p>29/29 canonical renders and 4/4 type/layout stress renders pass. Approved reference stays on the left; current render stays on the right.</p><p><a href="contact-sheet.png">Open journey contact sheet</a> / <a href="type-layout-contact-sheet.png">Open type/layout contact sheet</a> / <a href="report.md">Open Markdown report</a></p></section><section class="grid">
         <article class="card" data-status="pass" data-priority="P0">
           <a href="comparisons/player-hub-desktop.png"><img src="comparisons/player-hub-desktop.png" alt="Approved reference and current Player hub at desktop" loading="lazy"></a>
           <div class="body"><p class="meta">P0 / desktop / pass</p><h2>Player hub</h2>
@@ -52,6 +52,12 @@
           <p class="links"><a href="../../../tests/e2e/__screenshots__/instant-active-desktop.png">Reference</a> <a href="actual/instant-active-desktop.png">Current</a></p></div>
         </article>
         <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/instant-active-laptop.png"><img src="comparisons/instant-active-laptop.png" alt="Approved reference and current Instant active round at laptop" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / laptop / pass</p><h2>Instant active round</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>decision owns the screen</li><li>rival readability</li><li>action consequence preview</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/instant-active-laptop.png">Reference</a> <a href="actual/instant-active-laptop.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
           <a href="comparisons/instant-active-mobile.png"><img src="comparisons/instant-active-mobile.png" alt="Approved reference and current Instant active round at mobile" loading="lazy"></a>
           <div class="body"><p class="meta">P0 / mobile / pass</p><h2>Instant active round</h2>
           <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>decision owns the screen</li><li>rival readability</li><li>action consequence preview</li></ul>
@@ -62,6 +68,12 @@
           <div class="body"><p class="meta">P0 / desktop / pass</p><h2>Instant round resolution</h2>
           <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>result and cause</li><li>state change visibility</li><li>next decision continuity</li></ul>
           <p class="links"><a href="../../../tests/e2e/__screenshots__/instant-resolution-desktop.png">Reference</a> <a href="actual/instant-resolution-desktop.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/instant-resolution-laptop.png"><img src="comparisons/instant-resolution-laptop.png" alt="Approved reference and current Instant round resolution at laptop" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / laptop / pass</p><h2>Instant round resolution</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>result and cause</li><li>state change visibility</li><li>next decision continuity</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/instant-resolution-laptop.png">Reference</a> <a href="actual/instant-resolution-laptop.png">Current</a></p></div>
         </article>
         <article class="card" data-status="pass" data-priority="P0">
           <a href="comparisons/instant-resolution-mobile.png"><img src="comparisons/instant-resolution-mobile.png" alt="Approved reference and current Instant round resolution at mobile" loading="lazy"></a>

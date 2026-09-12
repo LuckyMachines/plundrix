@@ -1,0 +1,46 @@
+{
+  "surfaceId": "instant-resolution",
+  "label": "Instant round resolution",
+  "priority": "P0",
+  "viewport": "laptop",
+  "dimensions": {
+    "width": 1366,
+    "height": 768
+  },
+  "path": "/play?mode=tactical&seed=ui-review-resolution",
+  "reviewFocus": [
+    "result and cause",
+    "state change visibility",
+    "next decision continuity"
+  ],
+  "experimentIds": [
+    "first-run-comprehension"
+  ],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 1366,
+    "scrollWidth": 1366,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  }
+}

@@ -4,6 +4,7 @@
   "description": "A deliberately small visual contract for the player-facing states that carry the product.",
   "viewports": {
     "desktop": { "width": 1440, "height": 1000 },
+    "laptop": { "width": 1366, "height": 768 },
     "mobile": { "width": 390, "height": 844 }
   },
   "defaults": {
@@ -64,6 +65,7 @@
       "path": "/play?mode=tactical&seed=ui-review-active",
       "priority": "P0",
       "fixture": "instant-active",
+      "viewports": ["desktop", "laptop", "mobile"],
       "ready": { "type": "role", "role": "heading", "name": "Round 1" },
       "experimentIds": ["first-run-comprehension"],
       "reviewFocus": ["decision owns the screen", "rival readability", "action consequence preview"]
@@ -74,6 +76,7 @@
       "path": "/play?mode=tactical&seed=ui-review-resolution",
       "priority": "P0",
       "fixture": "instant-resolution",
+      "viewports": ["desktop", "laptop", "mobile"],
       "ready": { "type": "text", "name": "Last resolution" },
       "focus": { "type": "css", "selector": ".instant-resolution-summary" },
       "experimentIds": ["first-run-comprehension"],

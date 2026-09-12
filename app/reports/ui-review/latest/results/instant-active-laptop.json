@@ -1,0 +1,46 @@
+{
+  "surfaceId": "instant-active",
+  "label": "Instant active round",
+  "priority": "P0",
+  "viewport": "laptop",
+  "dimensions": {
+    "width": 1366,
+    "height": 768
+  },
+  "path": "/play?mode=tactical&seed=ui-review-active",
+  "reviewFocus": [
+    "decision owns the screen",
+    "rival readability",
+    "action consequence preview"
+  ],
+  "experimentIds": [
+    "first-run-comprehension"
+  ],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 1366,
+    "scrollWidth": 1366,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  }
+}

@@ -3,8 +3,8 @@
   "name": "Plundrix canonical UI review",
   "status": "pass",
   "summary": {
-    "passed": 27,
-    "total": 27
+    "passed": 29,
+    "total": 29
   },
   "typeLayoutSummary": {
     "passed": 4,
@@ -356,7 +356,7 @@
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 0.0,
+      "diffRatio": 1.388888888888889e-06,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-active-desktop.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-active-desktop.png",
@@ -365,6 +365,54 @@
       "layout": {
         "clientWidth": 1440,
         "scrollWidth": 1440,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "instant-active",
+      "label": "Instant active round",
+      "priority": "P0",
+      "viewport": "laptop",
+      "path": "/play?mode=tactical&seed=ui-review-active",
+      "reviewFocus": [
+        "decision owns the screen",
+        "rival readability",
+        "action consequence preview"
+      ],
+      "experimentIds": [
+        "first-run-comprehension"
+      ],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-active-laptop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-active-laptop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\instant-active-laptop.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 1366,
+        "scrollWidth": 1366,
         "overflowPixels": 0,
         "unloadedImages": [],
         "clippedContainers": []
@@ -461,6 +509,54 @@
       "layout": {
         "clientWidth": 1440,
         "scrollWidth": 1440,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "instant-resolution",
+      "label": "Instant round resolution",
+      "priority": "P0",
+      "viewport": "laptop",
+      "path": "/play?mode=tactical&seed=ui-review-resolution",
+      "reviewFocus": [
+        "result and cause",
+        "state change visibility",
+        "next decision continuity"
+      ],
+      "experimentIds": [
+        "first-run-comprehension"
+      ],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-resolution-laptop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-resolution-laptop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\instant-resolution-laptop.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 1366,
+        "scrollWidth": 1366,
         "overflowPixels": 0,
         "unloadedImages": [],
         "clippedContainers": []

@@ -417,6 +417,42 @@ test('instant play stays contained on mobile and restores an active operation', 
   await expectNoSeriousA11yIssues(page);
 });
 
+test('instant play keeps the whole decision console in a laptop viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 768 });
+  await page.goto('/play?mode=tactical&seed=laptop-viewport-contract');
+  await page.getByRole('button', { name: /breach the vault/i }).click();
+
+  const controls = [
+    page.locator('.instant-action-option[data-action="pick"]'),
+    page.locator('.instant-action-option[data-action="search"]'),
+    page.locator('.instant-action-option[data-action="sabotage"]'),
+    page.getByRole('button', { name: 'Commit and reveal', exact: true }),
+  ];
+
+  for (const control of controls) {
+    await expect(control).toBeVisible();
+    const box = await control.boundingBox();
+    expect(box?.y).toBeGreaterThanOrEqual(0);
+    expect((box?.y || 0) + (box?.height || 0)).toBeLessThanOrEqual(768);
+  }
+
+  const layout = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+    viewportHeight: window.innerHeight,
+    decisionBottom: document.querySelector('#instant-actions')?.getBoundingClientRect().bottom,
+  }));
+  expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth);
+  expect(layout.decisionBottom).toBeLessThanOrEqual(layout.viewportHeight);
+
+  await page.getByRole('button', { name: 'Commit and reveal', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Round 2', exact: true })).toBeVisible();
+  await expect(page.getByText('Last resolution', { exact: true })).toBeVisible();
+  const nextDecisionBottom = await page.locator('#instant-actions').evaluate((element) => element.getBoundingClientRect().bottom);
+  expect(nextDecisionBottom).toBeLessThanOrEqual(768);
+  await expectNoSeriousA11yIssues(page);
+});
+
 test('gameplay trailer presents the complete vault race', async ({ page }) => {
   await page.goto('/trailer');
   await expect(page.getByRole('heading', { name: /one vault/i })).toBeVisible();

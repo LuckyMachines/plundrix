@@ -374,6 +374,7 @@ export default function InstantPlayPage() {
     setProfile(activeProfile);
     localStorage.setItem(PROFILE_KEY, JSON.stringify(activeProfile));
     trackProductEvent(isRematch ? 'Instant Rematch Started' : 'Instant Match Started', { mode, cohort });
+    window.requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }));
   };
 
   const abandon = () => {
