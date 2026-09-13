@@ -77,10 +77,21 @@
       "priority": "P0",
       "fixture": "instant-resolution",
       "viewports": ["desktop", "laptop", "mobile"],
-      "ready": { "type": "text", "name": "Last resolution" },
+      "ready": { "type": "css", "selector": ".instant-resolution-summary" },
       "focus": { "type": "css", "selector": ".instant-resolution-summary" },
       "experimentIds": ["first-run-comprehension"],
       "reviewFocus": ["result and cause", "world reaction matches the resolved action", "state change visibility", "next decision continuity"]
+    },
+    {
+      "id": "premium-theater",
+      "label": "Premium round impact",
+      "path": "/design-system?stress=premium-theater",
+      "priority": "P0",
+      "fixture": "none",
+      "viewports": ["desktop", "laptop", "mobile"],
+      "ready": { "type": "css", "selector": "[data-premium-theater]" },
+      "experimentIds": ["first-run-comprehension"],
+      "reviewFocus": ["cinematic focal control", "action-specific tool embodiment", "gadget arrival", "reduced-motion static clarity"]
     },
     {
       "id": "instant-final",

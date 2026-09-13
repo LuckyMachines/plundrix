@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-12T23:14:14.700Z",
-  "buildSha": "c9a79e7",
+  "generatedAt": "2026-09-13T09:19:29.070Z",
+  "buildSha": "db51f7a",
   "operatingMode": "solo",
   "health": {
     "processScore": 90,
@@ -145,8 +145,8 @@
         "tier": "T2",
         "source": "improve:verify",
         "artifact": "reports/improvement/latest.json",
-        "capturedAt": "2026-09-12T23:14:14.700Z",
-        "sampleSize": 14,
+        "capturedAt": "2026-09-13T09:19:29.070Z",
+        "sampleSize": 15,
         "value": 100
       },
       "pass": true
@@ -397,7 +397,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 507,
+      "durationMs": 956,
       "outputTail": ""
     },
     {
@@ -406,7 +406,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 473,
+      "durationMs": 902,
       "outputTail": ""
     },
     {
@@ -415,7 +415,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 459,
+      "durationMs": 822,
       "outputTail": ""
     },
     {
@@ -424,7 +424,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1041,
+      "durationMs": 1617,
       "outputTail": ""
     },
     {
@@ -433,7 +433,16 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 581,
+      "durationMs": 917,
+      "outputTail": ""
+    },
+    {
+      "id": "premium-presentation",
+      "label": "Premium presentation-system tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 847,
       "outputTail": ""
     },
     {
@@ -442,7 +451,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 543,
+      "durationMs": 772,
       "outputTail": ""
     },
     {
@@ -451,7 +460,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 550,
+      "durationMs": 940,
       "outputTail": ""
     },
     {
@@ -460,7 +469,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 504,
+      "durationMs": 832,
       "outputTail": ""
     },
     {
@@ -469,7 +478,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 772,
+      "durationMs": 861,
       "outputTail": ""
     },
     {
@@ -478,7 +487,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 782,
+      "durationMs": 849,
       "outputTail": ""
     },
     {
@@ -487,7 +496,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 774,
+      "durationMs": 1158,
       "outputTail": ""
     },
     {
@@ -496,7 +505,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 595,
+      "durationMs": 836,
       "outputTail": ""
     },
     {
@@ -505,7 +514,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 23392,
+      "durationMs": 12437,
       "outputTail": ""
     },
     {
@@ -514,7 +523,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 867,
+      "durationMs": 1255,
       "outputTail": ""
     }
   ],

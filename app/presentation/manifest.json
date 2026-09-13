@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "nightfall-round-theater",
+  "version": "1.0.0",
+  "phases": ["planning", "sealed", "revealing", "impact", "recovery"],
+  "timings": {
+    "standard": { "revealMs": 320, "impactMs": 760, "recoveryMs": 1380, "settleMs": 2180 },
+    "reduced": { "revealMs": 0, "impactMs": 20, "recoveryMs": 80, "settleMs": 120 }
+  },
+  "actions": {
+    "pick": {
+      "id": 1,
+      "label": "Pick",
+      "verb": "Pressure the lock",
+      "color": "#66C4D2",
+      "toolImage": "/images/parts/pick-tool.webp",
+      "intentCue": "intent.pick",
+      "successCue": "lock.crack",
+      "failureCue": "lock.resist"
+    },
+    "search": {
+      "id": 2,
+      "label": "Search",
+      "verb": "Sweep the signal",
+      "color": "#40A080",
+      "toolImage": "/images/parts/search-kit.webp",
+      "intentCue": "intent.search",
+      "successCue": "tool.found",
+      "failureCue": "signal.lost"
+    },
+    "sabotage": {
+      "id": 3,
+      "label": "Sabotage",
+      "verb": "Cross the circuit",
+      "color": "#F06A6A",
+      "toolImage": "/images/parts/sabotage-cable.webp",
+      "intentCue": "intent.sabotage",
+      "successCue": "sabotage.hit",
+      "failureCue": "sabotage.blocked"
+    }
+  },
+  "rivals": {
+    "player-2": { "name": "Rook", "archetype": "leader-hunter", "motif": "crosshair" },
+    "player-3": { "name": "Mara", "archetype": "tool-hoarder", "motif": "stack" },
+    "player-4": { "name": "Vesper", "archetype": "saboteur", "motif": "slash" }
+  },
+  "budgets": {
+    "maxConcurrentParticles": 18,
+    "maxConcurrentAudioVoices": 8,
+    "maxBlockingSequenceMs": 1400,
+    "maxDecorativeDomNodes": 72
+  },
+  "accessibility": {
+    "minTouchTargetPx": 44,
+    "reducedMotionKeepsStateCopy": true,
+    "audioNeverCarriesUniqueInformation": true,
+    "theaterCapturesPointerInput": false
+  }
+}

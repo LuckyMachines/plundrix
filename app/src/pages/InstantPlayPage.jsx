@@ -4,6 +4,7 @@ import Seo from '../components/seo/Seo';
 import SignatureMoment from '../components/game/SignatureMoment';
 import DecisionPlate from '../components/gameplay/DecisionPlate';
 import { CrewReadinessRail, MissionStatusPanel, OperationFile } from '../components/gameplay/HeistConsolePanels';
+import RoundTheater from '../components/gameplay/RoundTheater';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -15,6 +16,12 @@ import {
 } from '../data/gadgetInventory';
 import { latencyBucket, trackProductEvent } from '../lib/analytics';
 import { copyText } from '../lib/clipboard';
+import {
+  cuesForOutcome,
+  emitPresentationCues,
+  normalizePresentationAction,
+  presentationTimings,
+} from '../data/presentationDirector';
 import { getGadgetMastery, grantGadgetMasteryState, grantMatchSalvageState, readInventory, writeInventory } from '../lib/inventoryStore';
 import { recordLocalBalanceSample } from '../lib/gadgetTelemetry';
 import { readChronicle, recordRivalryMatch, writeChronicle } from '../lib/playerChronicle';
@@ -73,26 +80,6 @@ const RANKS = [
 
 function rankForXp(xp) {
   return RANKS.find(([threshold]) => xp >= threshold)?.[1] || 'Vault Rookie';
-}
-
-function playAudioCue(type, volume = 70) {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContext) return;
-  const context = new AudioContext();
-  const notes = type === 'win' ? [220, 330, 440, 660] : type === 'sabotage' ? [150, 95] : [180, 240];
-  notes.forEach((frequency, index) => {
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = type === 'sabotage' ? 'sawtooth' : 'triangle';
-    oscillator.frequency.value = frequency;
-    gain.gain.setValueAtTime(0.0001, context.currentTime + index * 0.08);
-    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, 0.06 * (volume / 100)), context.currentTime + index * 0.08 + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + index * 0.08 + 0.18);
-    oscillator.connect(gain).connect(context.destination);
-    oscillator.start(context.currentTime + index * 0.08);
-    oscillator.stop(context.currentTime + index * 0.08 + 0.2);
-  });
-  window.setTimeout(() => context.close(), 700);
 }
 
 const readProfile = readLocalProfile;
@@ -167,7 +154,7 @@ function actionPreview(state, action, target) {
 
 export default function InstantPlayPage() {
   const [params] = useSearchParams();
-  const { reducedMotion, soundEnabled, masterVolume, matchRecovery, setSoundEnabled } = useAccessibility();
+  const { reducedMotion, soundEnabled, masterVolume, hapticsEnabled, matchRecovery, setSoundEnabled } = useAccessibility();
   const [profile, setProfile] = useState(readProfile);
   const [restoredMatch] = useState(() => (
     !matchRecovery || params.has('seed') || params.has('target') ? null : readSavedMatch()
@@ -193,9 +180,13 @@ export default function InstantPlayPage() {
       : getGadgetConfiguration(gadget, 'brassbound', 'steady')
   ), [equippedBlueprint, gadget]);
   const [isResolving, setIsResolving] = useState(false);
+  const [theaterPhase, setTheaterPhase] = useState('planning');
+  const [theaterAction, setTheaterAction] = useState(selectedAction);
+  const [theaterOutcome, setTheaterOutcome] = useState(null);
+  const [theaterRound, setTheaterRound] = useState(state.currentRound);
   const [intelOpen, setIntelOpen] = useState(false);
   const recordedGame = useRef(null);
-  const resolveTimer = useRef(null);
+  const resolveTimers = useRef([]);
   const matchStartedAt = useRef(restoredMatch?.startedAt ? Date.parse(restoredMatch.startedAt) : null);
   const firstActionTracked = useRef(Boolean(restoredMatch?.state?.roundHistory?.length));
 
@@ -270,7 +261,12 @@ export default function InstantPlayPage() {
   const challengeTarget = Number(params.get('target')) || null;
   const rank = rankForXp(profile.xp);
 
-  useEffect(() => () => window.clearTimeout(resolveTimer.current), []);
+  const clearResolveTimers = () => {
+    resolveTimers.current.forEach((timer) => window.clearTimeout(timer));
+    resolveTimers.current = [];
+  };
+
+  useEffect(() => () => clearResolveTimers(), []);
 
   useEffect(() => {
     if (!intelOpen) return undefined;
@@ -366,6 +362,9 @@ export default function InstantPlayPage() {
     setSeed(nextSeed);
     setState(createMatch({ mode, gadget, seed: nextSeed, name: profile.name }));
     setSelectedAction(SIM_ACTION.PICK);
+    setTheaterAction(SIM_ACTION.PICK);
+    setTheaterOutcome(null);
+    setTheaterPhase('planning');
     setStarted(true);
     setShareStatus('');
     setSalvageReward(null);
@@ -378,15 +377,17 @@ export default function InstantPlayPage() {
   };
 
   const abandon = () => {
-    window.clearTimeout(resolveTimer.current);
+    clearResolveTimers();
     localStorage.removeItem(MATCH_KEY);
     setIsResolving(false);
+    setTheaterPhase('planning');
     setStarted(false);
     setShareStatus('');
   };
 
   const resolve = (spectate = false) => {
     if (isResolving) return;
+    clearResolveTimers();
     if (!spectate && !firstActionTracked.current) {
       firstActionTracked.current = true;
       trackProductEvent('First Meaningful Action', {
@@ -408,27 +409,61 @@ export default function InstantPlayPage() {
         sabotageTarget: selectedAction === SIM_ACTION.SABOTAGE ? target : null,
       };
     }
+    const committedAction = map['player-1']?.action || selectedAction;
+    const committedRoute = normalizePresentationAction(committedAction);
+    const timings = presentationTimings(reducedMotion);
     setIsResolving(true);
-    if (soundEnabled && masterVolume > 0) playAudioCue(selectedAction === SIM_ACTION.SABOTAGE ? 'sabotage' : 'resolve', masterVolume);
-    resolveTimer.current = window.setTimeout(() => {
+    setTheaterAction(committedAction);
+    setTheaterOutcome(null);
+    setTheaterRound(state.currentRound);
+    setTheaterPhase('sealed');
+    emitPresentationCues(['action.commit', `intent.${committedRoute}`, 'round.seal'], { action: committedRoute, round: state.currentRound });
+    resolveTimers.current.push(window.setTimeout(() => {
+      setTheaterPhase('revealing');
+      emitPresentationCues(['round.reveal'], { action: committedRoute, round: state.currentRound });
+    }, timings.revealMs));
+    resolveTimers.current.push(window.setTimeout(() => {
       const next = resolveSimulationRound(state, map);
+      const resolvedRound = next.roundHistory.at(-1);
+      const resolvedOutcomes = (resolvedRound?.events || []).filter((event) => event.type === 'ActionOutcome');
+      const playerOutcome = resolvedOutcomes.find((event) => event.actor === 'player-1') || resolvedOutcomes[0] || null;
+      const gadgetEvent = [...(resolvedRound?.events || [])].reverse().find((event) => event.type === 'GadgetActivated' && event.actor === 'player-1');
       setState(next);
       setSelectedAction(SIM_ACTION.PICK);
-      setIsResolving(false);
+      setTheaterOutcome(playerOutcome);
+      setTheaterPhase('impact');
       trackProductEvent('Round Resolved', {
         mode,
-        action: spectate ? 'auto' : selectedAction,
+        action: spectate ? 'auto' : committedAction,
         roundBucket: next.currentRound <= 5 ? '1-5' : next.currentRound <= 10 ? '6-10' : '11+',
       });
-      if (soundEnabled && masterVolume > 0 && next.winner) playAudioCue('win', masterVolume);
+      emitPresentationCues(cuesForOutcome(playerOutcome, committedRoute, {
+        winner: Boolean(next.winner),
+        gadget: Boolean(gadgetEvent),
+      }), { action: committedRoute, round: state.currentRound });
+      if (!reducedMotion && hapticsEnabled && navigator.vibrate) {
+        navigator.vibrate(playerOutcome?.success ? [18, 24, 34] : [12, 34, 12]);
+      }
       if (next.winner) trackProductEvent('Instant Match Completed', { mode, result: next.winner === 'player-1' ? 'win' : 'loss' });
-    }, reducedMotion ? 0 : 520);
+    }, timings.impactMs));
+    resolveTimers.current.push(window.setTimeout(() => {
+      setIsResolving(false);
+      setTheaterPhase('recovery');
+      emitPresentationCues(['round.ready'], { round: state.currentRound + 1 });
+    }, timings.recoveryMs));
+    resolveTimers.current.push(window.setTimeout(() => setTheaterPhase('planning'), timings.settleMs));
+  };
+
+  const selectAction = (action) => {
+    setSelectedAction(action);
+    setTheaterAction(action);
+    emitPresentationCues([`intent.${normalizePresentationAction(action)}`], { action: normalizePresentationAction(action) });
   };
 
   const toggleAudio = () => {
     const next = !soundEnabled;
     setSoundEnabled(next);
-    if (next && masterVolume > 0) playAudioCue('resolve', masterVolume);
+    if (next && masterVolume > 0) window.setTimeout(() => emitPresentationCues(['round.ready']), 40);
   };
 
   const share = async () => {
@@ -533,13 +568,21 @@ export default function InstantPlayPage() {
   }
 
   return (
-    <div className="caper-operation caper-workbench instant-play-active mx-auto max-w-7xl px-4 py-6 sm:px-6" data-match-state={state.state.toLowerCase()}>
+    <div className="caper-operation caper-workbench instant-play-active mx-auto max-w-7xl px-4 py-6 sm:px-6" data-match-state={state.state.toLowerCase()} data-theater-phase={theaterPhase}>
       <Seo
         title={`${MODES[mode].label} Operation - Plundrix`}
         description="Play a fast tactical Plundrix vault race against three labeled agents."
         path="/play"
         image="/images/og/plundrix-play.jpg"
         imageAlt="Plundrix instant play - Your table is ready. No wallet required."
+      />
+      <RoundTheater
+        phase={theaterPhase}
+        action={theaterAction}
+        outcome={theaterOutcome}
+        players={state.players}
+        round={theaterRound}
+        gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? latestSignature : null}
       />
       {state.state === 'ACTIVE' && (
         <div className="instant-mobile-command" role="region" aria-label="Selected action command">
@@ -617,7 +660,7 @@ export default function InstantPlayPage() {
                   actions={actionChoices}
                   players={state.players}
                   latestOutcome={latestOutcomes.find((event) => event.actor === player.id)}
-                  onSelectAction={setSelectedAction}
+                  onSelectAction={selectAction}
                   label="Nightfall vault"
                 />
                 <section className="instant-tool-rack" aria-label="Tools and gadgets">
@@ -648,7 +691,7 @@ export default function InstantPlayPage() {
               />
             </div>
 
-            {latestSignature && <div className="border-b border-vault-border p-4"><SignatureMoment event={latestSignature} actorName={state.players.find((candidate) => candidate.id === latestSignature.actor)?.name} reducedMotion={reducedMotion} soundEnabled={soundEnabled} /></div>}
+            {latestSignature && <div className="border-b border-vault-border p-4"><SignatureMoment event={latestSignature} actorName={state.players.find((candidate) => candidate.id === latestSignature.actor)?.name} reducedMotion={reducedMotion} /></div>}
           </section>
           )}
 
@@ -676,7 +719,7 @@ export default function InstantPlayPage() {
                       selected={selectedAction === action.id}
                       committed={isResolving && selectedAction === action.id}
                       disabled={isResolving}
-                      onSelect={() => setSelectedAction(action.id)}
+                      onSelect={() => selectAction(action.id)}
                     />
                   ))}
                 </div>
@@ -810,9 +853,10 @@ function Stat({ label, value }) {
 function ResolutionSummary({ outcomes }) {
   const playerOutcome = outcomes.find((event) => event.actor === 'player-1') || outcomes[0];
   const successful = Boolean(playerOutcome?.success);
+  const route = normalizePresentationAction(playerOutcome?.action);
   return (
-    <section className={`instant-resolution-summary border-l-2 p-4 ${successful ? 'border-oxide-green bg-oxide-green/10' : 'border-signal-red bg-signal-red/5'}`} aria-labelledby="instant-resolution-heading">
-      <p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Last resolution</p>
+    <section className={`instant-resolution-summary border-l-2 p-4 ${successful ? 'border-oxide-green bg-oxide-green/10' : 'border-signal-red bg-signal-red/5'}`} data-route={route} data-success={successful} aria-labelledby="instant-resolution-heading">
+      <p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Last resolution <span>/ {route}</span></p>
       <h2 id="instant-resolution-heading" className="mt-2 font-display text-3xl uppercase text-vault-text">{successful ? 'Your move landed.' : 'The vault held.'}</h2>
       <p className={`mt-1 text-sm ${successful ? 'text-oxide-green' : 'text-signal-red'}`}>{playerOutcome?.message}</p>
       <div className="mt-3 grid gap-2 sm:grid-cols-3">

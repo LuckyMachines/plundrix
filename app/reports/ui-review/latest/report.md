@@ -1,7 +1,7 @@
 # Plundrix UI Review
 
-Status: **PASS**
-Coverage: **29/29 canonical renders**
+Status: **FAIL**
+Coverage: **31/32 canonical renders**
 
 ## Review order
 
@@ -18,12 +18,15 @@ Composition -> hierarchy -> geometry -> typography/data -> state behavior -> res
 | Mobile navigation | mobile | pass | 0.000% |
 | Instant setup | desktop | pass | 0.000% |
 | Instant setup | mobile | pass | 0.000% |
-| Instant active round | desktop | pass | 0.007% |
-| Instant active round | laptop | pass | 0.015% |
-| Instant active round | mobile | pass | 0.003% |
-| Instant round resolution | desktop | pass | 0.000% |
+| Instant active round | desktop | pass | 0.000% |
+| Instant active round | laptop | pass | 0.000% |
+| Instant active round | mobile | pass | 0.000% |
+| Instant round resolution | desktop | fail | 0.345% |
 | Instant round resolution | laptop | pass | 0.000% |
-| Instant round resolution | mobile | pass | 0.003% |
+| Instant round resolution | mobile | pass | 0.005% |
+| Premium round impact | desktop | pass | 0.000% |
+| Premium round impact | laptop | pass | 0.000% |
+| Premium round impact | mobile | pass | 0.000% |
 | Instant final briefing | desktop | pass | 0.000% |
 | Instant final briefing | mobile | pass | 0.000% |
 | Vault Run route choice | desktop | pass | 0.000% |
@@ -56,8 +59,8 @@ Coverage: **4/4 stress renders**
 
 ## Acceptance checklist
 
-- [x] Every canonical reference and current render exists.
-- [x] Pixel differences stay within the declared per-surface threshold.
+- [ ] Every canonical reference and current render exists.
+- [ ] Pixel differences stay within the declared per-surface threshold.
 - [x] No serious or critical Axe findings.
 - [x] No horizontal overflow.
 - [x] Action controls do not clip their contents.

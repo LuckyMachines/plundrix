@@ -22,29 +22,9 @@ const SIGNATURE_COLORS = {
   'route-compass': '#79aee9',
 };
 
-function playSignatureCue(index, volume) {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContext) return;
-  const context = new AudioContext();
-  [0, 7].forEach((offset, step) => {
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = step ? 'triangle' : 'square';
-    oscillator.frequency.value = 190 + index * 23 + offset * 11;
-    gain.gain.setValueAtTime(0.0001, context.currentTime + step * 0.07);
-    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, 0.05 * (volume / 100)), context.currentTime + step * 0.07 + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + step * 0.07 + 0.16);
-    oscillator.connect(gain).connect(context.destination);
-    oscillator.start(context.currentTime + step * 0.07);
-    oscillator.stop(context.currentTime + step * 0.07 + 0.18);
-  });
-  window.setTimeout(() => context.close(), 500);
-}
-
-export default function SignatureMoment({ event, actorName = 'Operator', reducedMotion: reducedMotionOverride, soundEnabled: soundEnabledOverride }) {
+export default function SignatureMoment({ event, actorName = 'Operator', reducedMotion: reducedMotionOverride }) {
   const preferences = usePreferences();
   const reducedMotion = reducedMotionOverride ?? preferences.reducedMotion;
-  const soundEnabled = soundEnabledOverride ?? preferences.soundEnabled;
   const [visible, setVisible] = useState(Boolean(event));
   const announced = useRef(null);
   const gadget = event ? GADGET_CHASSIS_BY_ID[event.gadget] : null;
@@ -53,11 +33,10 @@ export default function SignatureMoment({ event, actorName = 'Operator', reduced
     if (!event || announced.current === event.id) return undefined;
     announced.current = event.id;
     setVisible(true);
-    if (soundEnabled && preferences.masterVolume > 0) playSignatureCue(gadget?.index || 0, preferences.masterVolume);
     if (!reducedMotion && preferences.hapticsEnabled && navigator.vibrate) navigator.vibrate([18, 28, 32]);
     const timer = window.setTimeout(() => setVisible(false), reducedMotion ? 3200 : 2400);
     return () => window.clearTimeout(timer);
-  }, [event, gadget?.index, preferences.hapticsEnabled, preferences.masterVolume, reducedMotion, soundEnabled]);
+  }, [event, preferences.hapticsEnabled, reducedMotion]);
 
   if (!event || !gadget || !visible) return null;
   return (

@@ -6,6 +6,7 @@ import { GameShell, QuietPanel, StatusPill } from '../components/gameplay/GameSh
 import { LatestEventSurface, MatchStatusStrip } from '../components/gameplay/ActiveMatchReadout';
 import DecisionPlate from '../components/gameplay/DecisionPlate';
 import OperatorDossier from '../components/gameplay/OperatorDossier';
+import RoundTheater from '../components/gameplay/RoundTheater';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
 import ActionPresenceField from '../components/actions/ActionPresenceField';
 import PickControl from '../components/actions/PickControl';
@@ -183,6 +184,50 @@ function TypeLayoutStress() {
   );
 }
 
+function PremiumTheaterLab({ phase = 'impact' }) {
+  const players = [
+    { id: 'player-1', name: 'Operator', locksCracked: 3, tools: 2, stunned: false },
+    { id: 'player-2', name: 'Rook', locksCracked: 4, tools: 1, stunned: true },
+    { id: 'player-3', name: 'Mara', locksCracked: 2, tools: 4, stunned: false },
+    { id: 'player-4', name: 'Vesper', locksCracked: 3, tools: 2, stunned: false },
+  ];
+  const outcome = {
+    id: 'premium-theater-impact',
+    actor: 'player-1',
+    target: 'player-2',
+    action: 3,
+    success: true,
+    message: 'Operator crossed Rook\'s circuit and stole the opening.',
+  };
+  const gadgetEvent = { id: 'premium-gadget', gadget: 'decoy-relay', actor: 'player-1' };
+  const actions = [
+    { id: 1, identity: 'pick', label: 'Pick', metric: '74% / 1 lock', shortDetail: 'Pressure the vault', detail: 'Attack the fourth lock.' },
+    { id: 2, identity: 'search', label: 'Search', metric: '60% / tools', shortDetail: 'Build future odds', detail: 'Sweep the room for a bypass.' },
+    { id: 3, identity: 'sabotage', label: 'Sabotage', metric: 'Rook / stun', shortDetail: 'Disrupt a rival', detail: 'Cross Rook\'s circuit.' },
+  ];
+
+  return (
+    <PageShell wide className="premium-theater-lab pb-5 pt-24" data-premium-theater>
+      <header className="premium-theater-lab__header">
+        <p className="type-label text-signal-red">Premium presentation lab / canonical impact</p>
+        <h1 className="type-page mt-3 text-vault-text">Sabotage should feel like a tiny, elegant crime.</h1>
+      </header>
+      <div className="premium-theater-lab__stage caper-operation caper-workbench">
+        <VaultMechanism
+          cracked={3}
+          total={5}
+          selectedAction={3}
+          actions={actions}
+          players={players}
+          latestOutcome={outcome}
+          label="Nightfall vault"
+        />
+      </div>
+      <RoundTheater phase={phase} action={3} outcome={outcome} players={players} round={7} gadgetEvent={gadgetEvent} />
+    </PageShell>
+  );
+}
+
 export default function DesignSystemPage() {
   const [target, setTarget] = useState(MOCK_PLAYERS[2]);
   const [actionState, setActionState] = useState('ready');
@@ -278,8 +323,11 @@ export default function DesignSystemPage() {
   const disabled = actionState === 'disabled';
   const stunned = actionState === 'stunned';
 
-  if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('stress') === 'type-layout') {
-    return <TypeLayoutStress />;
+  if (typeof window !== 'undefined') {
+    const search = new URLSearchParams(window.location.search);
+    const stress = search.get('stress');
+    if (stress === 'type-layout') return <TypeLayoutStress />;
+    if (stress === 'premium-theater') return <PremiumTheaterLab phase={search.get('phase') || 'impact'} />;
   }
 
   return (

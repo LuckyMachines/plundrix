@@ -7,6 +7,7 @@ import { Action } from '../../lib/constants';
 import { getOutcomeReasonLabel } from '../../lib/outcomes';
 import { truncateAddress } from '../../lib/formatting';
 import { useAccessibility } from '../../context/AccessibilityContext';
+import { cuesForOutcome, emitPresentationCues } from '../../data/presentationDirector';
 
 const PHASE_LABELS = [
   'PHASE 1: PICK & SEARCH',
@@ -33,7 +34,14 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
     if (phase >= maxPhase) return;
 
     const timer = setTimeout(() => {
-      setPhase((p) => p + 1);
+      const nextPhase = phase + 1;
+      if (nextPhase === 1) emitPresentationCues(['stun.clear']);
+      if (nextPhase === 2) {
+        const sabotageOutcome = roundEvents.find((event) => event.name === 'ActionOutcome' && Number(event.args?.action) === Action.SABOTAGE);
+        emitPresentationCues(cuesForOutcome({ action: Action.SABOTAGE, success: Boolean(sabotageOutcome?.args?.success) }, 'sabotage'));
+      }
+      if (nextPhase === 3) emitPresentationCues(['game.win']);
+      setPhase(nextPhase);
     }, reducedMotion ? 20 : PHASE_DURATIONS[phase]);
 
     return () => clearTimeout(timer);
@@ -42,7 +50,15 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
   // Reset phase when new round events arrive
   useEffect(() => {
     setPhase(0);
-  }, [roundEvents]);
+    if (!roundEvents?.length) return;
+    const outcomes = roundEvents.filter((event) => event.name === 'ActionOutcome');
+    const preferred = outcomes.find((event) => event.args?.player?.toLowerCase() === currentAddress?.toLowerCase()) || outcomes[0];
+    const action = Number(preferred?.args?.action) || Action.PICK;
+    emitPresentationCues([
+      'round.reveal',
+      ...cuesForOutcome({ action, success: Boolean(preferred?.args?.success) }, action),
+    ]);
+  }, [currentAddress, roundEvents]);
 
   if (!roundEvents || roundEvents.length === 0) return null;
 
@@ -78,7 +94,7 @@ export default function ResolveSequence({ roundEvents, currentAddress, onComplet
     .map((e) => e.args?.player);
 
   return (
-    <div className="border border-vault-border rounded bg-vault-panel p-4 space-y-4" role="region" aria-label="Round resolution">
+    <div className="premium-resolve-sequence border border-vault-border rounded bg-vault-panel p-4 space-y-4" data-resolution-phase={Math.min(phase, 3)} role="region" aria-label="Round resolution">
       {/* Phase label */}
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-vault-border" />

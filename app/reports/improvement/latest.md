@@ -1,7 +1,7 @@
 # Plundrix Improvement Loop
 
-Generated: 2026-09-12T23:14:14.700Z
-Build: c9a79e7
+Generated: 2026-09-13T09:19:29.070Z
+Build: db51f7a
 Mode: solo
 
 ## Do this next
@@ -34,7 +34,7 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 | Players who want another run or replay | missing | not measured | at-least 60% | T3 |
 | Seven-day returning-player rate | missing | not measured | at-least 20% | T4 |
 | Production client error rate | missing | not measured | at-most 2% | T4 |
-| Automated release gates passing | pass | 100% / n=14 | exactly 100% | T2 |
+| Automated release gates passing | pass | 100% / n=15 | exactly 100% | T2 |
 
 ## Experiment queue
 
@@ -56,17 +56,18 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 
 ## Automated checks
 
-- PASS Improvement-system tests (507ms)
-- PASS SEO and marketing-system tests (473ms)
-- PASS Menu and preference-system tests (459ms)
-- PASS UI review manifest and governance tests (1041ms)
-- PASS Art manifest validation (581ms)
-- PASS 3D world contract tests (543ms)
-- PASS 3D world render validation (550ms)
-- PASS Workshop inventory tests (504ms)
-- PASS Replay-system tests (772ms)
-- PASS Fun-system tests (782ms)
-- PASS Telemetry tests (774ms)
-- PASS Product-cohesion gate (595ms)
-- PASS Production build (23392ms)
-- PASS Static SEO and delivery tests (867ms)
+- PASS Improvement-system tests (956ms)
+- PASS SEO and marketing-system tests (902ms)
+- PASS Menu and preference-system tests (822ms)
+- PASS UI review manifest and governance tests (1617ms)
+- PASS Art manifest validation (917ms)
+- PASS Premium presentation-system tests (847ms)
+- PASS 3D world contract tests (772ms)
+- PASS 3D world render validation (940ms)
+- PASS Workshop inventory tests (832ms)
+- PASS Replay-system tests (861ms)
+- PASS Fun-system tests (849ms)
+- PASS Telemetry tests (1158ms)
+- PASS Product-cohesion gate (836ms)
+- PASS Production build (12437ms)
+- PASS Static SEO and delivery tests (1255ms)

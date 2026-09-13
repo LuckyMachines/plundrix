@@ -1,0 +1,58 @@
+{
+  "surfaceId": "premium-theater",
+  "label": "Premium round impact",
+  "priority": "P0",
+  "viewport": "mobile",
+  "dimensions": {
+    "width": 390,
+    "height": 844
+  },
+  "path": "/design-system?stress=premium-theater",
+  "reviewFocus": [
+    "cinematic focal control",
+    "action-specific tool embodiment",
+    "gadget arrival",
+    "reduced-motion static clarity"
+  ],
+  "experimentIds": [
+    "first-run-comprehension"
+  ],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 390,
+    "scrollWidth": 390,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  },
+  "world": [
+    {
+      "phase": "aftermath-success",
+      "route": "sabotage",
+      "selectedRoute": "sabotage",
+      "outcomeRoute": "sabotage",
+      "planeCount": 4,
+      "rivalStations": 3,
+      "pointerEvents": "none"
+    }
+  ]
+}

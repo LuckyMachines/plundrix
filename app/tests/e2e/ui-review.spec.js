@@ -64,7 +64,7 @@ async function prepareSurface(page, surface) {
     await beginInstantMatch(page);
     await page.getByRole('button', { name: /^Search/i }).click();
     await instantCommitControl(page).click();
-    await expect(page.getByText('Last resolution', { exact: true })).toBeVisible();
+    await expect(page.locator('.instant-resolution-summary')).toBeVisible({ timeout: 10_000 });
   } else if (surface.fixture === 'instant-final') {
     await beginInstantMatch(page);
     const finalBriefing = page.getByText('Final briefing', { exact: true });
@@ -79,7 +79,14 @@ async function prepareSurface(page, surface) {
           advanced = true;
           break;
         }
-        await expect(commit).toBeEnabled();
+        await expect.poll(async () => {
+          if (await finalBriefing.isVisible().catch(() => false)) return 'complete';
+          return await commit.isEnabled().catch(() => false) ? 'ready' : 'waiting';
+        }, { timeout: 10_000 }).not.toBe('waiting');
+        if (await finalBriefing.isVisible().catch(() => false)) {
+          advanced = true;
+          break;
+        }
         await commit.click();
         try {
           await expect.poll(async () => {
@@ -273,6 +280,16 @@ test.describe('canonical UI review matrix', () => {
           expect(inspection.world[0].phase).toMatch(/^aftermath-/);
           expect(inspection.world[0]).toMatchObject({ route: 'search', outcomeRoute: 'search', selectedRoute: 'pick' });
         }
+        if (surface.id === 'premium-theater') {
+          const theater = await page.locator('[data-theater-phase="impact"]').evaluate((element) => ({
+            route: element.dataset.route,
+            success: element.dataset.success,
+            pointerEvents: getComputedStyle(element).pointerEvents,
+            title: element.querySelector('.round-theater__slate strong')?.textContent,
+            gadgetVisible: Boolean(element.querySelector('.round-theater__gadget img')),
+          }));
+          expect(theater).toEqual({ route: 'sabotage', success: 'true', pointerEvents: 'none', title: 'Sabotage landed', gadgetVisible: true });
+        }
       });
     }
   }
@@ -308,4 +325,46 @@ test.describe('layout and typography stress matrix', () => {
       writeFileSync(resolve(resultRoot, `${screenshotName.replace('.png', '')}.json`), `${JSON.stringify({ name, viewport, ...inspection }, null, 2)}\n`, 'utf8');
     });
   }
+});
+
+test('premium theater exposes the complete canonical phase grammar', async ({ page }) => {
+  const expectations = {
+    sealed: 'Sabotage sealed',
+    revealing: 'The table reveals',
+    impact: 'Sabotage landed',
+    recovery: 'Next move armed',
+  };
+  for (const [phase, title] of Object.entries(expectations)) {
+    await page.goto(`/design-system?stress=premium-theater&phase=${phase}`, { waitUntil: 'domcontentloaded' });
+    const theater = page.locator(`[data-theater-phase="${phase}"]`);
+    await expect(theater).toBeVisible();
+    await expect(theater.locator('.round-theater__slate strong')).toHaveText(title);
+    await expect(theater).toHaveAttribute('data-route', 'sabotage');
+  }
+
+  await page.goto('/design-system?stress=premium-theater&phase=planning', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-theater-phase="planning"]')).toHaveAttribute('aria-hidden', 'true');
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/design-system?stress=premium-theater&phase=impact', { waitUntil: 'domcontentloaded' });
+  const reducedMotionContract = await page.locator('[data-theater-phase="impact"]').evaluate((element) => ({
+    ringAnimation: getComputedStyle(element.querySelector('.round-theater__impact-ring')).animationName,
+    particlesDisplay: getComputedStyle(element.querySelector('.round-theater__particles')).display,
+    title: element.querySelector('.round-theater__slate strong')?.textContent,
+  }));
+  expect(reducedMotionContract).toEqual({ ringAnimation: 'none', particlesDisplay: 'none', title: 'Sabotage landed' });
+});
+
+test('vault run keeps decisions sealed until recovery', async ({ page }) => {
+  const surface = manifest.surfaces.find(({ id }) => id === 'vault-active');
+  await page.setViewportSize(manifest.viewports.desktop);
+  await prepareSurface(page, surface);
+  const commit = page.getByRole('button', { name: /commit pick/i });
+  const action = page.getByRole('button', { name: /^Search/i });
+  await commit.click();
+  await expect(page.locator('[data-theater-phase="sealed"]')).toBeVisible();
+  await expect(action).toBeDisabled();
+  await expect(page.locator('[data-theater-phase="impact"]')).toBeVisible({ timeout: 2_000 });
+  await expect(action).toBeEnabled({ timeout: 2_000 });
+  await expect(page.locator('[data-theater-phase="planning"]')).toBeAttached({ timeout: 3_000 });
 });

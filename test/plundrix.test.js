@@ -1238,7 +1238,7 @@ describe('vault-run retention systems', () => {
   });
 
   it('settles a won vault and carries progress to the next route', () => {
-    let run = startVaultStage(createVaultRun({ seed: 'run-settle', gadget: 'precision-kit' }), 'inside-route');
+    let run = startVaultStage(createVaultRun({ seed: 'run-settle', gadget: 'precision-kit', runNonce: 'run-settle' }), 'inside-route');
     run.currentMatch.players[0].locksCracked = 2;
     run.currentMatch.players[0].tools = 5;
     for (let index = 0; index < 8 && run.status === 'ACTIVE'; index += 1) {
@@ -1326,7 +1326,21 @@ describe('vault-run retention systems', () => {
       { completedFirstAction: true, understoodGoal: true, noticedGadget: false, wantedReplay: true, secondsToFirstAction: 20 },
       { completedFirstAction: true, understoodGoal: false, noticedGadget: true, wantedReplay: false, secondsToFirstAction: 40 },
     ]);
-    expect(summary).toEqual({ count: 2, firstActionRate: 100, goalRate: 50, whyRate: 0, gadgetRate: 50, replayRate: 50, returningCount: 0, averageSeconds: 30, averageJoy: 3 });
+    expect(summary).toEqual({
+      count: 2,
+      firstActionRate: 100,
+      goalRate: 50,
+      whyRate: 0,
+      gadgetRate: 50,
+      replayRate: 50,
+      returningCount: 0,
+      averageSeconds: 30,
+      averageJoy: 3,
+      settingsDiscoveryRate: 0,
+      settingsTaskRate: 0,
+      settingsPersistenceRate: 0,
+      averageSettingsSeconds: 0,
+    });
   });
 
   it('stores only aggregate gadget balance samples', () => {

@@ -59,6 +59,7 @@
     "fun:check": "node scripts/fun-check.mjs",
     "test:autopilot": "node scripts/test-balance-autopilot.mjs",
     "test:art": "node scripts/test-art-pipeline.mjs",
+    "test:presentation": "node scripts/test-premium-presentation.mjs",
     "test:world": "node scripts/test-world-system.mjs",
     "test:inventory": "node scripts/test-gadget-inventory.mjs",
     "workshop:contact-sheet": "node scripts/build-workshop-contact-sheet.mjs",
