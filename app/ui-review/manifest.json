@@ -94,6 +94,56 @@
       "reviewFocus": ["cinematic focal control", "action-specific tool embodiment", "gadget arrival", "reduced-motion static clarity"]
     },
     {
+      "id": "premium-pick",
+      "label": "Premium Pick impact",
+      "path": "/design-system?stress=premium-theater&route=pick",
+      "priority": "P0",
+      "fixture": "none",
+      "viewports": ["desktop", "mobile"],
+      "ready": { "type": "css", "selector": "[data-premium-theater]" },
+      "reviewFocus": ["precision camera grammar", "mechanical Pick gesture", "tool and copy hierarchy"]
+    },
+    {
+      "id": "premium-search",
+      "label": "Premium Search impact",
+      "path": "/design-system?stress=premium-theater&route=search",
+      "priority": "P0",
+      "fixture": "none",
+      "viewports": ["desktop", "mobile"],
+      "ready": { "type": "css", "selector": "[data-premium-theater]" },
+      "reviewFocus": ["signal-sweep camera grammar", "Search identity", "gadget readability"]
+    },
+    {
+      "id": "premium-ceremony",
+      "label": "Breach ceremony",
+      "path": "/design-system?stress=premium-ceremony",
+      "priority": "P0",
+      "fixture": "none",
+      "viewports": ["desktop", "mobile"],
+      "ready": { "type": "css", "selector": "[data-premium-ceremony]" },
+      "reviewFocus": ["earned spectacle", "brief duration", "static reduced-motion meaning"]
+    },
+    {
+      "id": "transaction-theater",
+      "label": "On-chain transaction theater",
+      "path": "/design-system?stress=transaction-theater",
+      "priority": "P0",
+      "fixture": "none",
+      "viewports": ["desktop", "mobile"],
+      "ready": { "type": "css", "selector": "[data-transaction-theater]" },
+      "reviewFocus": ["truthful wait states", "wallet versus network distinction", "failure recovery"]
+    },
+    {
+      "id": "audio-preview",
+      "label": "Sound Locker",
+      "path": "/audio-preview.html",
+      "priority": "P1",
+      "fixture": "none",
+      "viewports": ["desktop", "mobile"],
+      "ready": { "type": "role", "role": "heading", "name": "Sound Locker" },
+      "reviewFocus": ["cue browsing hierarchy", "transport control clarity", "mobile audition usability"]
+    },
+    {
       "id": "instant-final",
       "label": "Instant final briefing",
       "path": "/play?mode=tactical&seed=ui-review-final",

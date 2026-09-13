@@ -20,13 +20,14 @@ export default function VaultMechanism({
   actions = [],
   players = [],
   latestOutcome = null,
+  round = 1,
   onSelectAction,
 }) {
   const remaining = Math.max(0, total - cracked);
   const selected = actions.find((action) => action.id === selectedAction) || actions[0];
   const leaderLocks = Math.max(0, ...players.map((candidate) => candidate.locksCracked));
   const outcomeState = latestOutcome ? (latestOutcome.success ? 'success' : 'failed') : 'idle';
-  const worldState = deriveVaultWorldState({ cracked, total, resolving, selectedAction: selected?.identity, latestOutcome, players });
+  const worldState = deriveVaultWorldState({ cracked, total, resolving, selectedAction: selected?.identity, latestOutcome, players, round });
   const statusCopy = resolving
     ? 'Moves sealed. The whole table is revealing.'
     : latestOutcome ? `Last reveal: ${latestOutcome.message}` : selected?.detail || `Crack ${remaining} more ${remaining === 1 ? 'lock' : 'locks'} before the table.`;
@@ -39,6 +40,7 @@ export default function VaultMechanism({
       data-outcome={outcomeState}
       data-world-state={worldState.phase}
       data-world-progress={`${worldState.locksOpen}/${worldState.lockTotal}`}
+      data-world-damage={worldState.damageLevel}
       aria-labelledby="instant-vault-heading"
     >
       <VaultWorldScene worldState={worldState} players={players} />

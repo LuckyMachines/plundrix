@@ -5,6 +5,7 @@ import SignatureMoment from '../components/game/SignatureMoment';
 import DecisionPlate from '../components/gameplay/DecisionPlate';
 import { CrewReadinessRail, MissionStatusPanel, OperationFile } from '../components/gameplay/HeistConsolePanels';
 import RoundTheater from '../components/gameplay/RoundTheater';
+import OperationCeremony from '../components/gameplay/OperationCeremony';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -185,6 +186,7 @@ export default function InstantPlayPage() {
   const [theaterOutcome, setTheaterOutcome] = useState(null);
   const [theaterRound, setTheaterRound] = useState(state.currentRound);
   const [intelOpen, setIntelOpen] = useState(false);
+  const [ceremonyEvent, setCeremonyEvent] = useState(null);
   const recordedGame = useRef(null);
   const resolveTimers = useRef([]);
   const matchStartedAt = useRef(restoredMatch?.startedAt ? Date.parse(restoredMatch.startedAt) : null);
@@ -366,6 +368,7 @@ export default function InstantPlayPage() {
     setTheaterOutcome(null);
     setTheaterPhase('planning');
     setStarted(true);
+    setCeremonyEvent({ key: `opening-${nextSeed}-${Date.now()}`, type: 'opening', durationMs: reducedMotion ? 180 : 1800 });
     setShareStatus('');
     setSalvageReward(null);
     matchStartedAt.current = Date.now();
@@ -444,7 +447,16 @@ export default function InstantPlayPage() {
       if (!reducedMotion && hapticsEnabled && navigator.vibrate) {
         navigator.vibrate(playerOutcome?.success ? [18, 24, 34] : [12, 34, 12]);
       }
-      if (next.winner) trackProductEvent('Instant Match Completed', { mode, result: next.winner === 'player-1' ? 'win' : 'loss' });
+      if (next.winner) {
+        trackProductEvent('Instant Match Completed', { mode, result: next.winner === 'player-1' ? 'win' : 'loss' });
+        setCeremonyEvent({
+          key: `final-${next.gameId}-${next.currentRound}`,
+          type: next.winner === 'player-1' ? 'victory' : 'defeat',
+          title: next.winner === 'player-1' ? 'You took the night' : `${next.players.find((candidate) => candidate.id === next.winner)?.name || 'A rival'} took the prize`,
+          delayMs: reducedMotion ? 20 : timings.recoveryMs,
+          durationMs: reducedMotion ? 180 : 2100,
+        });
+      }
     }, timings.impactMs));
     resolveTimers.current.push(window.setTimeout(() => {
       setIsResolving(false);
@@ -568,7 +580,7 @@ export default function InstantPlayPage() {
   }
 
   return (
-    <div className="caper-operation caper-workbench instant-play-active mx-auto max-w-7xl px-4 py-6 sm:px-6" data-match-state={state.state.toLowerCase()} data-theater-phase={theaterPhase}>
+    <div className="caper-operation caper-workbench instant-play-active mx-auto max-w-7xl px-4 py-6 sm:px-6" data-match-state={state.state.toLowerCase()} data-theater-phase={theaterPhase} data-active-route={normalizePresentationAction(theaterAction)} data-hud-density={intelOpen ? 'expanded' : 'essential'}>
       <Seo
         title={`${MODES[mode].label} Operation - Plundrix`}
         description="Play a fast tactical Plundrix vault race against three labeled agents."
@@ -584,6 +596,7 @@ export default function InstantPlayPage() {
         round={theaterRound}
         gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? latestSignature : null}
       />
+      <OperationCeremony event={ceremonyEvent} />
       {state.state === 'ACTIVE' && (
         <div className="instant-mobile-command" role="region" aria-label="Selected action command">
           <a href="#instant-vault-actions" className="instant-mobile-command__selection">
@@ -660,6 +673,7 @@ export default function InstantPlayPage() {
                   actions={actionChoices}
                   players={state.players}
                   latestOutcome={latestOutcomes.find((event) => event.actor === player.id)}
+                  round={state.currentRound}
                   onSelectAction={selectAction}
                   label="Nightfall vault"
                 />

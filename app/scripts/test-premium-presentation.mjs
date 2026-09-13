@@ -8,6 +8,8 @@ import {
   normalizePresentationAction,
   presentationTimings,
 } from '../src/data/presentationDirector.js';
+import { GADGET_CINEMATICS } from '../src/data/gadgetCinematics.js';
+import { GADGET_CHASSIS } from '../src/data/gadgetInventory.js';
 
 const appDir = resolve(process.cwd());
 assert.equal(PREMIUM_PRESENTATION.schemaVersion, 1);
@@ -18,6 +20,8 @@ assert.equal(normalizePresentationAction(2), 'search');
 assert.equal(normalizePresentationAction(3), 'sabotage');
 assert.ok(presentationTimings(false).recoveryMs <= PREMIUM_PRESENTATION.budgets.maxBlockingSequenceMs);
 assert.ok(presentationTimings(true).settleMs < presentationTimings(false).revealMs);
+assert.equal(Object.keys(GADGET_CINEMATICS).length, GADGET_CHASSIS.length);
+assert.ok(GADGET_CHASSIS.every(({ id }) => GADGET_CINEMATICS[id]), 'Every gadget needs bespoke cinematic direction');
 
 const players = [
   { id: 'player-1', name: 'Operator' },
@@ -31,7 +35,7 @@ const impact = deriveRoundPresentation({
   round: 4,
 });
 assert.equal(impact.route, 'sabotage');
-assert.equal(impact.title, 'Sabotage landed');
+assert.equal(impact.title, 'Circuit crossed');
 assert.equal(impact.actorName, 'Operator');
 assert.equal(impact.targetName, 'Rook');
 assert.deepEqual(cuesForOutcome({ action: 2, success: false }, 'pick'), ['round.impact', 'signal.lost']);
@@ -41,6 +45,7 @@ for (const path of [
   'presentation/manifest.json',
   'src/data/presentationDirector.js',
   'src/components/gameplay/RoundTheater.jsx',
+  'src/components/gameplay/OperationCeremony.jsx',
   '../docs/premium-aaa-roadmap.md',
 ]) assert.ok(existsSync(resolve(appDir, path)), `Missing premium-presentation file: ${path}`);
 
@@ -53,6 +58,8 @@ const liveResolution = readFileSync(resolve(appDir, 'src/components/resolution/R
 const styles = readFileSync(resolve(appDir, 'src/styles/caper.css'), 'utf8');
 assert.match(theater, /data-theater-phase/);
 assert.match(theater, /round-theater__gadget/);
+assert.match(theater, /round-theater__route-gesture/);
+assert.match(theater, /data-gadget-motion/);
 assert.match(audio, /round\.seal/);
 assert.match(audio, /sabotage\.blocked/);
 assert.doesNotMatch(signatureMoment, /emitPresentationCues/);
@@ -66,6 +73,9 @@ assert.match(vaultRun, /gadget: Boolean\(gadgetEvent\)/);
 assert.match(liveResolution, /premium-resolve-sequence/);
 assert.match(liveResolution, /emitPresentationCues/);
 assert.match(styles, /premium-camera-push/);
+assert.match(styles, /premium-camera-pick/);
+assert.match(styles, /operation-ceremony/);
+assert.match(styles, /transaction-theater/);
 assert.match(styles, /prefers-reduced-motion: reduce/);
 assert.match(styles, /pointer-events: none/);
 

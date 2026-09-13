@@ -28,6 +28,9 @@ async function documentFontsReady(page) {
 async function beginInstantMatch(page) {
   await page.getByRole('button', { name: /breach the vault/i }).click();
   await expect(page.getByRole('heading', { name: 'Round 1', exact: true })).toBeVisible();
+  const ceremony = page.locator('.operation-ceremony');
+  await expect(ceremony).toHaveAttribute('data-visible', 'true', { timeout: 2_000 });
+  await expect(ceremony).toHaveAttribute('data-visible', 'false', { timeout: 4_000 });
 }
 
 function instantCommitControl(page) {
@@ -100,6 +103,7 @@ async function prepareSurface(page, surface) {
       }
     }
     await expect(finalBriefing).toBeVisible();
+    await page.waitForTimeout(3_700);
   } else if (surface.fixture === 'vault-route' || surface.fixture === 'vault-active') {
     await page.evaluate(() => localStorage.removeItem('plundrix-vault-run-v1'));
     await page.reload({ waitUntil: 'domcontentloaded' });
@@ -108,6 +112,9 @@ async function prepareSurface(page, surface) {
     if (surface.fixture === 'vault-active') {
       await page.getByRole('button', { name: /kick the hinge/i }).click();
       await expect(page.getByRole('heading', { name: 'Outer Ring', exact: true })).toBeVisible();
+      const ceremony = page.locator('.operation-ceremony');
+      await expect(ceremony).toHaveAttribute('data-visible', 'true', { timeout: 2_000 });
+      await expect(ceremony).toHaveAttribute('data-visible', 'false', { timeout: 4_000 });
     }
   }
 
@@ -288,7 +295,7 @@ test.describe('canonical UI review matrix', () => {
             title: element.querySelector('.round-theater__slate strong')?.textContent,
             gadgetVisible: Boolean(element.querySelector('.round-theater__gadget img')),
           }));
-          expect(theater).toEqual({ route: 'sabotage', success: 'true', pointerEvents: 'none', title: 'Sabotage landed', gadgetVisible: true });
+          expect(theater).toEqual({ route: 'sabotage', success: 'true', pointerEvents: 'none', title: 'Circuit crossed', gadgetVisible: true });
         }
       });
     }
@@ -331,7 +338,7 @@ test('premium theater exposes the complete canonical phase grammar', async ({ pa
   const expectations = {
     sealed: 'Sabotage sealed',
     revealing: 'The table reveals',
-    impact: 'Sabotage landed',
+    impact: 'Circuit crossed',
     recovery: 'Next move armed',
   };
   for (const [phase, title] of Object.entries(expectations)) {
@@ -352,7 +359,7 @@ test('premium theater exposes the complete canonical phase grammar', async ({ pa
     particlesDisplay: getComputedStyle(element.querySelector('.round-theater__particles')).display,
     title: element.querySelector('.round-theater__slate strong')?.textContent,
   }));
-  expect(reducedMotionContract).toEqual({ ringAnimation: 'none', particlesDisplay: 'none', title: 'Sabotage landed' });
+  expect(reducedMotionContract).toEqual({ ringAnimation: 'none', particlesDisplay: 'none', title: 'Circuit crossed' });
 });
 
 test('vault run keeps decisions sealed until recovery', async ({ page }) => {

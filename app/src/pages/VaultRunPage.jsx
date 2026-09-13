@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SignatureMoment from '../components/game/SignatureMoment';
 import RoundTheater from '../components/gameplay/RoundTheater';
+import OperationCeremony from '../components/gameplay/OperationCeremony';
 import Seo from '../components/seo/Seo';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -105,6 +106,7 @@ export default function VaultRunPage() {
   const [notice, setNotice] = useState('');
   const [published, setPublished] = useState(false);
   const [runHistory, setRunHistory] = useState(readVaultRunHistory);
+  const [ceremonyEvent, setCeremonyEvent] = useState(null);
   const processedPaths = useRef(run?.path.length || 0);
   const resolveTimers = useRef([]);
 
@@ -178,7 +180,12 @@ export default function VaultRunPage() {
     setNotice(entry.won ? `Vault cleared. +${entry.score} score and salvage secured.` : 'The vault bit back. One life spent.');
     trackProductEvent('Vault Stage Completed', { stage: entry.stageId, result: entry.won ? 'win' : 'loss', weekly: run.weekly });
     trackProductEvent('Rivalry Updated', { rival: VAULT_RUN_STAGES.find((item) => item.id === entry.stageId)?.rival?.toLowerCase() || 'table', outcome: entry.won ? 'escaped' : 'bitten' });
-    if (['COMPLETE', 'FAILED'].includes(run.status)) trackProductEvent('Vault Run Completed', { outcome: run.status.toLowerCase(), weekly: run.weekly, gadget: run.gadget });
+    if (['COMPLETE', 'FAILED'].includes(run.status)) {
+      trackProductEvent('Vault Run Completed', { outcome: run.status.toLowerCase(), weekly: run.weekly, gadget: run.gadget });
+      setCeremonyEvent({ key: `vault-final-${run.runId}-${run.path.length}`, type: run.status === 'COMPLETE' ? 'victory' : 'defeat', delayMs: reducedMotion ? 20 : 1380, durationMs: reducedMotion ? 180 : 2100 });
+    } else if (run.status === 'LOOT') {
+      setCeremonyEvent({ key: `vault-reward-${run.runId}-${run.path.length}`, type: 'reward', delayMs: reducedMotion ? 20 : 1380, durationMs: reducedMotion ? 180 : 1700 });
+    }
   }, [run]);
 
   const beginRun = (weekly) => {
@@ -204,6 +211,7 @@ export default function VaultRunPage() {
     setTheaterAction(SIM_ACTION.PICK);
     setBargain(null);
     setNotice('Route locked. The vault has opinions.');
+    setCeremonyEvent({ key: `vault-stage-${run.runId}-${run.stageIndex}-${routeId}`, type: 'opening', title: `${stage.label} is live`, durationMs: reducedMotion ? 180 : 1600 });
     trackProductEvent('Vault Route Chosen', { stage: stage.id, bargain: routeId, weekly: run.weekly });
   };
 
@@ -324,6 +332,7 @@ export default function VaultRunPage() {
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
         <Seo title="Vault Run Result | Plundrix" description="Review a completed Plundrix Vault Run." path="/vault-run" />
         <RoundTheater phase={theaterPhase} action={theaterAction} outcome={theaterOutcome} players={match?.players || []} round={theaterRound} gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? signatureEvent : null} />
+        <OperationCeremony event={ceremonyEvent} />
         <section className={`border p-6 sm:p-10 ${run.status === 'COMPLETE' ? 'border-oxide-green/60 bg-oxide-green/5' : 'border-signal-red/50 bg-signal-red/5'}`}>
           <p className="font-mono text-micro uppercase tracking-beacon text-tungsten">Run complete / {run.path.length} breaches recorded</p>
           <h1 className="mt-4 font-display text-6xl uppercase leading-none text-vault-text sm:text-8xl">{run.status === 'COMPLETE' ? 'Vaults emptied.' : 'Caught beautifully.'}</h1>
@@ -346,6 +355,7 @@ export default function VaultRunPage() {
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <Seo title="Contraband Cache - Vault Run | Plundrix" description="Choose one persistent contraband upgrade before the next Plundrix vault." path="/vault-run" />
         <RoundTheater phase={theaterPhase} action={theaterAction} outcome={theaterOutcome} players={match?.players || []} round={theaterRound} gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? signatureEvent : null} />
+        <OperationCeremony event={ceremonyEvent} />
         <section className="border border-oxide-green/45 bg-vault-surface p-6 sm:p-10">
           <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">Vault cleared / contraband cache</p>
           <h1 className="mt-3 font-display text-5xl uppercase leading-none text-vault-text sm:text-7xl">Take one. Deny everything.</h1>
@@ -377,6 +387,7 @@ export default function VaultRunPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <Seo title={`${stage.label} - Vault Run | Plundrix`} description="Continue a three-stage Plundrix Vault Run." path="/vault-run" />
       <RoundTheater phase={theaterPhase} action={theaterAction} outcome={theaterOutcome} players={match?.players || []} round={theaterRound} gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? signatureEvent : null} />
+      <OperationCeremony event={ceremonyEvent} />
       <header className="flex flex-wrap items-end justify-between gap-5 border-b border-vault-border pb-6">
         <div><p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">{run.weekly ? board.challenge.title : 'Vault run'} / {stage.eyebrow}</p><h1 className="mt-2 font-display text-5xl uppercase leading-none text-vault-text sm:text-6xl">{stage.label}</h1><p className="mt-3 max-w-xl text-sm leading-6 text-vault-text-dim">{stage.note}</p></div>
         <div className="flex flex-wrap gap-5 font-mono text-xs uppercase text-vault-text-dim"><span>Lives <strong className="text-vault-text">{'X'.repeat(run.lives) || '0'}</strong></span><span>Heat <strong className="text-signal-red">{run.heat}/5 {heatState.label}</strong></span><span>Score <strong className="text-tungsten">{run.score}</strong></span></div>

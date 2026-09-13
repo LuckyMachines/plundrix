@@ -21,6 +21,7 @@ assert.equal(planning.activeRivals, 1);
 const reveal = deriveVaultWorldState({ cracked: 2, total: 5, resolving: true, selectedAction: 'sabotage' });
 assert.equal(reveal.phase, 'revealing');
 assert.equal(reveal.progress, 0.4);
+assert.equal(deriveVaultWorldState({ cracked: 1, round: 8 }).damageLevel, 4);
 
 const aftermath = deriveVaultWorldState({
   cracked: 3,
@@ -61,6 +62,11 @@ assert.match(scene, /data-plane="rivals"/);
 assert.match(scene, /data-plane="mechanism"/);
 assert.match(scene, /data-plane="workbench"/);
 assert.match(scene, /data-selected-route/);
+assert.match(scene, /vault-world__rival/);
+assert.match(scene, /vault-world__damage/);
+assert.match(scene, /vault-world__practicals/);
+assert.match(scene, /vault-world__reflections/);
+assert.match(scene, /vault-world__smoke/);
 assert.match(styles, /\.vault-world\[data-phase="breached"\]/);
 assert.match(styles, /prefers-reduced-motion: reduce/);
 

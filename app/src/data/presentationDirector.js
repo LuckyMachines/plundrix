@@ -34,7 +34,7 @@ export function deriveRoundPresentation({
     : phase === 'revealing'
       ? 'The table reveals'
       : phase === 'impact'
-        ? successful ? `${profile.label} landed` : `${profile.label} resisted`
+        ? successful ? profile.successTitle : profile.failureTitle
         : phase === 'recovery'
           ? 'Next move armed'
           : 'Choose the next move';

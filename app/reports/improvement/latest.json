@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-13T09:19:29.070Z",
-  "buildSha": "db51f7a",
+  "generatedAt": "2026-09-13T11:49:57.803Z",
+  "buildSha": "bf4dbd1",
   "operatingMode": "solo",
   "health": {
     "processScore": 90,
@@ -145,8 +145,8 @@
         "tier": "T2",
         "source": "improve:verify",
         "artifact": "reports/improvement/latest.json",
-        "capturedAt": "2026-09-13T09:19:29.070Z",
-        "sampleSize": 15,
+        "capturedAt": "2026-09-13T11:49:57.803Z",
+        "sampleSize": 16,
         "value": 100
       },
       "pass": true
@@ -397,7 +397,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 956,
+      "durationMs": 3344,
       "outputTail": ""
     },
     {
@@ -406,7 +406,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 902,
+      "durationMs": 1204,
       "outputTail": ""
     },
     {
@@ -415,7 +415,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 822,
+      "durationMs": 1422,
       "outputTail": ""
     },
     {
@@ -424,7 +424,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1617,
+      "durationMs": 3731,
       "outputTail": ""
     },
     {
@@ -433,7 +433,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 917,
+      "durationMs": 1796,
       "outputTail": ""
     },
     {
@@ -442,7 +442,16 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 847,
+      "durationMs": 1734,
+      "outputTail": ""
+    },
+    {
+      "id": "sound-library",
+      "label": "Licensed normalized sound-library tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 2071,
       "outputTail": ""
     },
     {
@@ -451,7 +460,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 772,
+      "durationMs": 1831,
       "outputTail": ""
     },
     {
@@ -460,7 +469,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 940,
+      "durationMs": 1308,
       "outputTail": ""
     },
     {
@@ -469,7 +478,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 832,
+      "durationMs": 1848,
       "outputTail": ""
     },
     {
@@ -478,7 +487,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 861,
+      "durationMs": 2222,
       "outputTail": ""
     },
     {
@@ -487,7 +496,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 849,
+      "durationMs": 5606,
       "outputTail": ""
     },
     {
@@ -496,7 +505,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1158,
+      "durationMs": 7622,
       "outputTail": ""
     },
     {
@@ -505,7 +514,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 836,
+      "durationMs": 12758,
       "outputTail": ""
     },
     {
@@ -514,7 +523,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 12437,
+      "durationMs": 64674,
       "outputTail": ""
     },
     {
@@ -523,7 +532,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1255,
+      "durationMs": 5349,
       "outputTail": ""
     }
   ],

@@ -1,0 +1,55 @@
+{
+  "surfaceId": "premium-pick",
+  "label": "Premium Pick impact",
+  "priority": "P0",
+  "viewport": "mobile",
+  "dimensions": {
+    "width": 390,
+    "height": 844
+  },
+  "path": "/design-system?stress=premium-theater&route=pick",
+  "reviewFocus": [
+    "precision camera grammar",
+    "mechanical Pick gesture",
+    "tool and copy hierarchy"
+  ],
+  "experimentIds": [],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 390,
+    "scrollWidth": 390,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  },
+  "world": [
+    {
+      "phase": "aftermath-success",
+      "route": "pick",
+      "selectedRoute": "pick",
+      "outcomeRoute": "pick",
+      "planeCount": 4,
+      "rivalStations": 3,
+      "pointerEvents": "none"
+    }
+  ]
+}

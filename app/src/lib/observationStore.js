@@ -10,7 +10,7 @@ export const SETTINGS_TASKS = Object.freeze([
 
 export function normalizeObservation(input = {}) {
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     id: String(input.id || `obs-${Date.now().toString(36)}`).slice(0, 40),
     createdAt: input.createdAt || new Date().toISOString(),
     participantCode: String(input.participantCode || 'P-01').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 12),
@@ -24,6 +24,13 @@ export function normalizeObservation(input = {}) {
     foundSettings: Boolean(input.foundSettings),
     completedSettingsTask: Boolean(input.completedSettingsTask),
     understoodSettingsPersistence: Boolean(input.understoodSettingsPersistence),
+    recognizedAction3s: Boolean(input.recognizedAction3s),
+    recognizedTarget3s: Boolean(input.recognizedTarget3s),
+    recognizedOutcome3s: Boolean(input.recognizedOutcome3s),
+    soundIdentityCorrect: Boolean(input.soundIdentityCorrect),
+    audioMode: ['hybrid', 'sampled', 'procedural'].includes(input.audioMode) ? input.audioMode : 'hybrid',
+    preferredAudio: ['hybrid', 'sampled', 'procedural', 'no-preference'].includes(input.preferredAudio) ? input.preferredAudio : 'no-preference',
+    impactScore: Math.max(1, Math.min(5, Math.floor(Number(input.impactScore) || 3))),
     settingsTask: SETTINGS_TASKS.includes(input.settingsTask) ? input.settingsTask : 'not-tested',
     joyScore: Math.max(1, Math.min(5, Math.floor(Number(input.joyScore) || 3))),
     delightMoment: DELIGHT_MOMENTS.includes(input.delightMoment) ? input.delightMoment : 'none-yet',
@@ -66,9 +73,15 @@ export function summarizeObservations(records = []) {
     settingsDiscoveryRate: rate('foundSettings'),
     settingsTaskRate: rate('completedSettingsTask'),
     settingsPersistenceRate: rate('understoodSettingsPersistence'),
+    actionRecognitionRate: rate('recognizedAction3s'),
+    targetRecognitionRate: rate('recognizedTarget3s'),
+    outcomeRecognitionRate: rate('recognizedOutcome3s'),
+    soundIdentityRate: rate('soundIdentityCorrect'),
     returningCount: normalized.filter((item) => item.returningPlayer).length,
     averageSeconds,
     averageSettingsSeconds: count ? Math.round(normalized.reduce((sum, item) => sum + item.secondsToSettings, 0) / count) : 0,
     averageJoy,
+    averageImpact: count ? Math.round((normalized.reduce((sum, item) => sum + item.impactScore, 0) / count) * 10) / 10 : 0,
+    audioPreference: normalized.reduce((totals, item) => ({ ...totals, [item.preferredAudio]: (totals[item.preferredAudio] || 0) + 1 }), {}),
   };
 }

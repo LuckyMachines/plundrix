@@ -1,57 +1,41 @@
-export default function TxStatus({ hash, isPending, isConfirming, isSuccess, error }) {
-  if (!isPending && !isConfirming && !isSuccess && !error) return null;
+import { useEffect, useRef } from 'react';
+import { emitPresentationCues } from '../../data/presentationDirector';
 
-  const truncateHash = (h) => h ? `${h.slice(0, 6)}...${h.slice(-4)}` : '';
+const STAGES = ['Sign', 'Seal', 'Final'];
+
+export default function TxStatus({ hash, isPending, isConfirming, isSuccess, error }) {
+  const lastCue = useRef('');
+  const state = error ? 'error' : isSuccess ? 'success' : isConfirming ? 'network' : isPending ? 'wallet' : 'idle';
+  const copy = {
+    wallet: ['Authorizing the move', 'Your wallet holds the only signing key. Nothing has changed yet.'],
+    network: ['Move sealed', 'Sepolia is etching the operation into its public ledger.'],
+    success: ['Operation recorded', 'The vault ledger accepted this move as immutable proof.'],
+    error: ['Seal rejected', 'No game action was changed. Review the reason and try again.'],
+  }[state];
+  const activeStage = state === 'wallet' ? 0 : state === 'network' ? 1 : 2;
+
+  useEffect(() => {
+    const cue = state === 'wallet' || state === 'network' ? 'tx.pending' : state === 'success' ? 'tx.confirmed' : '';
+    if (!cue || lastCue.current === cue) return;
+    lastCue.current = cue;
+    emitPresentationCues([cue], { transactionState: state });
+  }, [state]);
+
+  if (!copy) return null;
+  const truncateHash = (value) => value ? `${value.slice(0, 6)}...${value.slice(-4)}` : '';
 
   return (
-    <div className="font-mono text-xs border border-vault-border rounded bg-vault-dark/60 px-3 py-2 mt-3">
-      {isPending && (
-        <div className="flex items-center gap-2 text-tungsten">
-          <span className="w-1.5 h-1.5 rounded-full bg-tungsten animate-pulse" />
-          <span className="tracking-wider uppercase">Awaiting signature...</span>
-        </div>
-      )}
-
-      {isConfirming && (
-        <div className="flex items-center gap-2 text-tungsten">
-          <span className="w-1.5 h-1.5 rounded-full bg-tungsten animate-pulse" />
-          <span className="tracking-wider uppercase">Confirming...</span>
-          {hash && (
-            <span className="text-vault-text-dim ml-1">
-              tx {truncateHash(hash)}
-            </span>
-          )}
-        </div>
-      )}
-
-      {isSuccess && (
-        <div className="flex items-center gap-2 text-oxide-green">
-          <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="3 8 7 12 13 4" />
-          </svg>
-          <span className="tracking-wider uppercase">Confirmed</span>
-          {hash && (
-            <span className="text-vault-text-dim ml-1">
-              tx {truncateHash(hash)}
-            </span>
-          )}
-        </div>
-      )}
-
-      {error && (
-        <div className="text-signal-red">
-          <div className="flex items-center gap-2">
-            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="4" y1="4" x2="12" y2="12" />
-              <line x1="12" y1="4" x2="4" y2="12" />
-            </svg>
-            <span className="tracking-wider uppercase">Failed</span>
-          </div>
-          <p className="text-signal-red/70 mt-1 pl-5 break-all leading-relaxed">
-            {error.shortMessage || error.message}
-          </p>
-        </div>
-      )}
-    </div>
+    <section className="transaction-theater" data-state={state} role="status" aria-live="polite">
+      <div className="transaction-theater__seal" aria-hidden="true"><i /><i /><span>{state === 'error' ? '!' : activeStage + 1}</span></div>
+      <div className="transaction-theater__copy">
+        <p>On-chain operation / {state}</p>
+        <strong>{copy[0]}</strong>
+        <small>{error ? error.shortMessage || error.message : copy[1]}</small>
+        {hash && <code>Proof {truncateHash(hash)}</code>}
+      </div>
+      <ol className="transaction-theater__rail" aria-label="Transaction progress">
+        {STAGES.map((label, index) => <li key={label} data-state={index < activeStage || state === 'success' ? 'complete' : index === activeStage ? 'active' : 'waiting'}><i />{label}</li>)}
+      </ol>
+    </section>
   );
 }

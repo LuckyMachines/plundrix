@@ -7,6 +7,8 @@ const ACTION_TOOLS = [
   ['search', '/images/parts/search-kit.webp'],
   ['sabotage', '/images/parts/sabotage-cable.webp'],
 ];
+const DUST = Array.from({ length: 9 }, (_, index) => index);
+const DAMAGE = Array.from({ length: 5 }, (_, index) => index);
 
 function WorldRib({ side, index }) {
   return <span className={`vault-world__rib vault-world__rib--${side}`} data-rib={index} />;
@@ -26,6 +28,12 @@ function RivalStation({ player, index, affectedOperator, leaderLocks }) {
       <i className="vault-world__station-screen" />
       <i className="vault-world__station-body" />
       <i className="vault-world__station-signal" />
+      <span className="vault-world__rival" aria-hidden="true">
+        <i className="vault-world__rival-head" />
+        <i className="vault-world__rival-torso" />
+        <i className="vault-world__rival-hand vault-world__rival-hand--left" />
+        <i className="vault-world__rival-hand vault-world__rival-hand--right" />
+      </span>
     </span>
   );
 }
@@ -45,10 +53,13 @@ export default function VaultWorldScene({ worldState, players = [] }) {
       data-selected-route={worldState.selectedRoute}
       data-outcome-route={worldState.outcomeRoute}
       data-pressure={pressure}
+      data-damage={worldState.damageLevel}
+      data-round-age={Math.min(5, worldState.round)}
       style={{ '--vault-world-progress': worldState.progress }}
       aria-hidden="true"
     >
       <div className="vault-world__backdrop" data-plane="architecture" />
+      <div className="vault-world__practicals"><i /><i /><i /><i /></div>
       <div className="vault-world__room" data-plane="architecture">
         <div className="vault-world__ceiling"><i /><i /><i /></div>
         <div className="vault-world__wall vault-world__wall--left" />
@@ -81,6 +92,15 @@ export default function VaultWorldScene({ worldState, players = [] }) {
         <div className="vault-world__tool-set">
           {ACTION_TOOLS.map(([route, source]) => <img key={route} data-route={route} src={source} alt="" />)}
         </div>
+      </div>
+      <div className="vault-world__damage" aria-hidden="true">
+        {DAMAGE.map((mark) => <i key={mark} data-visible={mark < worldState.damageLevel} style={{ '--damage': mark }} />)}
+      </div>
+      <div className="vault-world__reflections" aria-hidden="true"><i /><i /><i /></div>
+      <div className="vault-world__debris" aria-hidden="true"><i /><i /><i /><i /></div>
+      <div className="vault-world__smoke" aria-hidden="true"><i /><i /></div>
+      <div className="vault-world__dust" aria-hidden="true">
+        {DUST.map((particle) => <i key={particle} style={{ '--dust': particle }} />)}
       </div>
       <div className="vault-world__wear" aria-hidden="true"><i /><i /><i /><i /><i /></div>
       <div className="vault-world__atmosphere" />

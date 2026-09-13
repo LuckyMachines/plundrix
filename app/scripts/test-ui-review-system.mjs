@@ -11,7 +11,7 @@ const tokens = readFileSync(resolve(appDir, 'src', 'styles', 'tokens.css'), 'utf
 const experimentIds = new Set(ledger.experiments.map((experiment) => experiment.id));
 
 assert.equal(manifest.schemaVersion, 1);
-assert.ok(manifest.surfaces.length >= 10 && manifest.surfaces.length <= 15, 'Keep the solo matrix between 10 and 15 surfaces');
+assert.ok(manifest.surfaces.length >= 10 && manifest.surfaces.length <= 20, 'Keep the solo matrix between 10 and 20 surfaces');
 assert.deepEqual(manifest.defaults.viewports, ['desktop', 'mobile']);
 assert.ok(manifest.defaults.maxDiffPixelRatio <= 0.005, 'Default visual threshold must remain strict');
 

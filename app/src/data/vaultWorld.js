@@ -17,6 +17,7 @@ export function deriveVaultWorldState({
   selectedAction = 'pick',
   latestOutcome = null,
   players = [],
+  round = 1,
 } = {}) {
   const lockTotal = Math.max(1, Number(total) || worldManifest.truths.lockCount);
   const locksOpen = Math.max(0, Math.min(lockTotal, Number(cracked) || 0));
@@ -41,6 +42,8 @@ export function deriveVaultWorldState({
     locksOpen,
     lockTotal,
     progress: locksOpen / lockTotal,
+    round: Math.max(1, Math.floor(Number(round) || 1)),
+    damageLevel: Math.max(0, Math.min(5, Math.max(locksOpen, Math.floor((Number(round) || 1) / 2)))),
     affectedOperator,
     activeRivals: players.filter((player) => player.id !== 'player-1').length,
   });

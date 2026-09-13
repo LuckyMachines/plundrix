@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Plundrix UI Review</title><style>
 :root{--ground:#090a0f;--panel:#14141f;--border:#2a2a3e;--text:#c8c8d4;--dim:#8b8a9e;--accent:#e8b078;--good:#40a080;--bad:#f06a6a}*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--text);font:16px/1.5 Arial,sans-serif}main{max-width:1600px;margin:auto;padding:32px}h1,h2{margin:.2em 0;text-transform:uppercase}.summary{border-left:4px solid var(--accent);padding:16px 20px;background:var(--panel)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;margin-top:24px}.card{border:1px solid var(--border);background:var(--panel)}.card[data-status=fail]{border-color:var(--bad)}img{display:block;width:100%;aspect-ratio:16/10;object-fit:contain;background:#05060a}.body{padding:16px}.meta{color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.12em}p,li{color:var(--dim)}a{color:var(--accent)}.links{display:flex;gap:18px}@media(max-width:600px){main{padding:16px}}
-</style></head><body><main><section class="summary"><p class="meta">Solo visual evidence loop</p><h1>Plundrix UI Review</h1><p>31/32 canonical renders and 4/4 type/layout stress renders pass. Approved reference stays on the left; current render stays on the right.</p><p><a href="contact-sheet.png">Open journey contact sheet</a> / <a href="type-layout-contact-sheet.png">Open type/layout contact sheet</a> / <a href="report.md">Open Markdown report</a></p></section><section class="grid">
+</style></head><body><main><section class="summary"><p class="meta">Solo visual evidence loop</p><h1>Plundrix UI Review</h1><p>42/42 canonical renders and 4/4 type/layout stress renders pass. Approved reference stays on the left; current render stays on the right.</p><p><a href="contact-sheet.png">Open journey contact sheet</a> / <a href="type-layout-contact-sheet.png">Open type/layout contact sheet</a> / <a href="report.md">Open Markdown report</a></p></section><section class="grid">
         <article class="card" data-status="pass" data-priority="P0">
           <a href="comparisons/player-hub-desktop.png"><img src="comparisons/player-hub-desktop.png" alt="Approved reference and current Player hub at desktop" loading="lazy"></a>
           <div class="body"><p class="meta">P0 / desktop / pass</p><h2>Player hub</h2>
@@ -63,10 +63,10 @@
           <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>decision owns the screen</li><li>world depth and physical grounding</li><li>selected action reaches the vault</li><li>affected rival remains identifiable</li></ul>
           <p class="links"><a href="../../../tests/e2e/__screenshots__/instant-active-mobile.png">Reference</a> <a href="actual/instant-active-mobile.png">Current</a></p></div>
         </article>
-        <article class="card" data-status="fail" data-priority="P0">
+        <article class="card" data-status="pass" data-priority="P0">
           <a href="comparisons/instant-resolution-desktop.png"><img src="comparisons/instant-resolution-desktop.png" alt="Approved reference and current Instant round resolution at desktop" loading="lazy"></a>
-          <div class="body"><p class="meta">P0 / desktop / fail</p><h2>Instant round resolution</h2>
-          <p>Pixel difference: 0.345% (limit 0.200%)</p><ul><li>result and cause</li><li>world reaction matches the resolved action</li><li>state change visibility</li><li>next decision continuity</li></ul>
+          <div class="body"><p class="meta">P0 / desktop / pass</p><h2>Instant round resolution</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>result and cause</li><li>world reaction matches the resolved action</li><li>state change visibility</li><li>next decision continuity</li></ul>
           <p class="links"><a href="../../../tests/e2e/__screenshots__/instant-resolution-desktop.png">Reference</a> <a href="actual/instant-resolution-desktop.png">Current</a></p></div>
         </article>
         <article class="card" data-status="pass" data-priority="P0">
@@ -78,7 +78,7 @@
         <article class="card" data-status="pass" data-priority="P0">
           <a href="comparisons/instant-resolution-mobile.png"><img src="comparisons/instant-resolution-mobile.png" alt="Approved reference and current Instant round resolution at mobile" loading="lazy"></a>
           <div class="body"><p class="meta">P0 / mobile / pass</p><h2>Instant round resolution</h2>
-          <p>Pixel difference: 0.005% (limit 0.200%)</p><ul><li>result and cause</li><li>world reaction matches the resolved action</li><li>state change visibility</li><li>next decision continuity</li></ul>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>result and cause</li><li>world reaction matches the resolved action</li><li>state change visibility</li><li>next decision continuity</li></ul>
           <p class="links"><a href="../../../tests/e2e/__screenshots__/instant-resolution-mobile.png">Reference</a> <a href="actual/instant-resolution-mobile.png">Current</a></p></div>
         </article>
         <article class="card" data-status="pass" data-priority="P0">
@@ -98,6 +98,66 @@
           <div class="body"><p class="meta">P0 / mobile / pass</p><h2>Premium round impact</h2>
           <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>cinematic focal control</li><li>action-specific tool embodiment</li><li>gadget arrival</li><li>reduced-motion static clarity</li></ul>
           <p class="links"><a href="../../../tests/e2e/__screenshots__/premium-theater-mobile.png">Reference</a> <a href="actual/premium-theater-mobile.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/premium-pick-desktop.png"><img src="comparisons/premium-pick-desktop.png" alt="Approved reference and current Premium Pick impact at desktop" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / desktop / pass</p><h2>Premium Pick impact</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>precision camera grammar</li><li>mechanical Pick gesture</li><li>tool and copy hierarchy</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/premium-pick-desktop.png">Reference</a> <a href="actual/premium-pick-desktop.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/premium-pick-mobile.png"><img src="comparisons/premium-pick-mobile.png" alt="Approved reference and current Premium Pick impact at mobile" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / mobile / pass</p><h2>Premium Pick impact</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>precision camera grammar</li><li>mechanical Pick gesture</li><li>tool and copy hierarchy</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/premium-pick-mobile.png">Reference</a> <a href="actual/premium-pick-mobile.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/premium-search-desktop.png"><img src="comparisons/premium-search-desktop.png" alt="Approved reference and current Premium Search impact at desktop" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / desktop / pass</p><h2>Premium Search impact</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>signal-sweep camera grammar</li><li>Search identity</li><li>gadget readability</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/premium-search-desktop.png">Reference</a> <a href="actual/premium-search-desktop.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/premium-search-mobile.png"><img src="comparisons/premium-search-mobile.png" alt="Approved reference and current Premium Search impact at mobile" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / mobile / pass</p><h2>Premium Search impact</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>signal-sweep camera grammar</li><li>Search identity</li><li>gadget readability</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/premium-search-mobile.png">Reference</a> <a href="actual/premium-search-mobile.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/premium-ceremony-desktop.png"><img src="comparisons/premium-ceremony-desktop.png" alt="Approved reference and current Breach ceremony at desktop" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / desktop / pass</p><h2>Breach ceremony</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>earned spectacle</li><li>brief duration</li><li>static reduced-motion meaning</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/premium-ceremony-desktop.png">Reference</a> <a href="actual/premium-ceremony-desktop.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/premium-ceremony-mobile.png"><img src="comparisons/premium-ceremony-mobile.png" alt="Approved reference and current Breach ceremony at mobile" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / mobile / pass</p><h2>Breach ceremony</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>earned spectacle</li><li>brief duration</li><li>static reduced-motion meaning</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/premium-ceremony-mobile.png">Reference</a> <a href="actual/premium-ceremony-mobile.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/transaction-theater-desktop.png"><img src="comparisons/transaction-theater-desktop.png" alt="Approved reference and current On-chain transaction theater at desktop" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / desktop / pass</p><h2>On-chain transaction theater</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>truthful wait states</li><li>wallet versus network distinction</li><li>failure recovery</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/transaction-theater-desktop.png">Reference</a> <a href="actual/transaction-theater-desktop.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P0">
+          <a href="comparisons/transaction-theater-mobile.png"><img src="comparisons/transaction-theater-mobile.png" alt="Approved reference and current On-chain transaction theater at mobile" loading="lazy"></a>
+          <div class="body"><p class="meta">P0 / mobile / pass</p><h2>On-chain transaction theater</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>truthful wait states</li><li>wallet versus network distinction</li><li>failure recovery</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/transaction-theater-mobile.png">Reference</a> <a href="actual/transaction-theater-mobile.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P1">
+          <a href="comparisons/audio-preview-desktop.png"><img src="comparisons/audio-preview-desktop.png" alt="Approved reference and current Sound Locker at desktop" loading="lazy"></a>
+          <div class="body"><p class="meta">P1 / desktop / pass</p><h2>Sound Locker</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>cue browsing hierarchy</li><li>transport control clarity</li><li>mobile audition usability</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/audio-preview-desktop.png">Reference</a> <a href="actual/audio-preview-desktop.png">Current</a></p></div>
+        </article>
+        <article class="card" data-status="pass" data-priority="P1">
+          <a href="comparisons/audio-preview-mobile.png"><img src="comparisons/audio-preview-mobile.png" alt="Approved reference and current Sound Locker at mobile" loading="lazy"></a>
+          <div class="body"><p class="meta">P1 / mobile / pass</p><h2>Sound Locker</h2>
+          <p>Pixel difference: 0.000% (limit 0.200%)</p><ul><li>cue browsing hierarchy</li><li>transport control clarity</li><li>mobile audition usability</li></ul>
+          <p class="links"><a href="../../../tests/e2e/__screenshots__/audio-preview-mobile.png">Reference</a> <a href="actual/audio-preview-mobile.png">Current</a></p></div>
         </article>
         <article class="card" data-status="pass" data-priority="P0">
           <a href="comparisons/instant-final-desktop.png"><img src="comparisons/instant-final-desktop.png" alt="Approved reference and current Instant final briefing at desktop" loading="lazy"></a>

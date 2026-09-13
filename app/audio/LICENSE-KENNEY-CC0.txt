@@ -1,0 +1,19 @@
+Interface Sounds (1.0) and Sci-Fi Sounds (1.0)
+
+Created and distributed by Kenney (https://kenney.nl/)
+Original creation dates: 2020-02-11 and 2020-10-11
+
+License: Creative Commons Zero 1.0 Universal (CC0-1.0)
+https://creativecommons.org/publicdomain/zero/1.0/
+
+The original pack notices state that the content is free to use in personal,
+educational, and commercial projects. Attribution to Kenney is appreciated but
+not required.
+
+Source pages verified and downloaded on 2026-09-13:
+- https://kenney.nl/assets/interface-sounds
+- https://kenney.nl/assets/sci-fi-sounds
+
+The Plundrix files under public/audio/sfx are transformed composite works made
+from the selected source fragments listed in audio/manifest.json. This notice
+is retained so every shipped derivative has an auditable source and license.

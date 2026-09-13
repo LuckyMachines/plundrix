@@ -12,6 +12,8 @@
     "build": "vite build && node scripts/postbuild-seo-pages.mjs",
     "build:social": "node scripts/art-pipeline.mjs build --family social-source",
     "build:trailers": "node scripts/build-social-trailers.mjs",
+    "sound:build": "node scripts/build-sound-library.mjs",
+    "test:sound": "node scripts/test-sound-library.mjs",
     "growth:audit": "node scripts/growth-audit.mjs",
     "growth:audit:check": "node scripts/growth-audit.mjs --check",
     "growth:fetch": "node scripts/growth-fetch.mjs",

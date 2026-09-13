@@ -86,3 +86,33 @@ Automated process quality is A. Human evidence remains intentionally unclaimed: 
 ## Solo-developer rule
 
 Polish one vertical slice first: choose action -> commit -> reveal -> consequence -> next decision. Reuse that grammar everywhere. Do not add a heavy real-time runtime unless player evidence proves that layered rendering cannot deliver the required interaction.
+
+## v0.3 authored AAA pass - implementation checklist
+
+- [x] Build a licensed, normalized, varied mechanical-foley library and retain source provenance.
+- [x] Add material lighting, contact shadows, dust, reflection, and pressure-responsive atmosphere.
+- [x] Give Pick, Search, and Sabotage distinct camera and impact grammar.
+- [x] Give all ten signature gadgets individual micro-cinematic behavior.
+- [x] Give Rook, Mara, and Vesper distinct physical poses and outcome reactions.
+- [x] Persist round wear, loose cables, debris, smoke, and breach preparation in the room.
+- [x] Reduce persistent HUD competition and preserve one dominant focal layer.
+- [x] Add non-blocking opening, breach, defeat, and reward ceremonies.
+- [x] Replace generic blockchain waits with a diegetic transaction theater.
+- [x] Add a facilitated three-second comprehension, sound-identity, impact, and replay-intent protocol.
+- [x] Verify identical canonical states across desktop, laptop, mobile, reduced motion, and live transaction fixtures.
+
+## v0.3 implementation result - 2026-09-13
+
+Overall presentation grade: **A**
+
+| Area | Grade | Evidence |
+|---|---:|---|
+| Sound direction | A | Sixteen retained CC0 source recordings produce 21 Plundrix composites and 63 normalized pitch variants through a deterministic build. |
+| World and material response | A | Practical light, contact shadow, reflection, dust, smoke, debris, scars, pressure, and breach state now share live world data. |
+| Action and gadget direction | A | Pick, Search, and Sabotage have distinct camera/impact grammar; all ten gadget chassis have individual activation direction. |
+| Rival and progression response | A | Rook, Mara, and Vesper carry personality poses, recoil, lead posture, and persistent round-aged world damage. |
+| Hierarchy and ceremonies | A | Essential HUD mode, non-blocking opening/end/reward ceremonies, and action-specific state copy protect the focal layer. |
+| Network experience | A | Wallet, network, success, and failure are distinct truthful Sign/Seal/Final theater states with matching audio cues. |
+| Production discipline | A | Sixteen improvement gates pass, 40 canonical renders pass, four type/layout stress renders pass, and the reduced-motion phase contract passes. |
+
+Human evidence remains deliberately unclaimed. The new ten-minute protocol records three-second action/target/outcome recognition, blind sound identity, perceived impact, replay intent, and joy without pretending an automated check is a player opinion.

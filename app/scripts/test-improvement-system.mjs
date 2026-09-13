@@ -32,7 +32,7 @@ assert.equal(evidenceIsValid({ tier: 'T4', source: 'analytics', capturedAt: fixe
 assert.equal(latencyBucket(29_000), '0-30s');
 assert.equal(latencyBucket(61_000), '61-120s');
 
-const normalizedObservation = normalizeObservation({ observerConfirmed: true, understoodWhy: true, foundSettings: true, completedSettingsTask: true, settingsTask: 'adjust-sound', joyScore: 9, secondsToFirstAction: 42, secondsToSettings: 18 });
+const normalizedObservation = normalizeObservation({ observerConfirmed: true, understoodWhy: true, foundSettings: true, completedSettingsTask: true, recognizedAction3s: true, recognizedTarget3s: true, recognizedOutcome3s: true, soundIdentityCorrect: true, preferredAudio: 'hybrid', impactScore: 5, settingsTask: 'adjust-sound', joyScore: 9, secondsToFirstAction: 42, secondsToSettings: 18 });
 assert.equal(normalizedObservation.joyScore, 5);
 assert.equal(normalizedObservation.understoodWhy, true);
 const observationSummary = summarizeObservations([normalizedObservation]);
@@ -41,6 +41,11 @@ assert.equal(observationSummary.settingsTaskRate, 100);
 assert.equal(observationSummary.averageSettingsSeconds, 18);
 assert.equal(observationSummary.whyRate, 100);
 assert.equal(observationSummary.averageJoy, 5);
+assert.equal(observationSummary.actionRecognitionRate, 100);
+assert.equal(observationSummary.targetRecognitionRate, 100);
+assert.equal(observationSummary.outcomeRecognitionRate, 100);
+assert.equal(observationSummary.soundIdentityRate, 100);
+assert.equal(observationSummary.averageImpact, 5);
 const firstProfile = markProfilePlayed(createLocalProfile(), '2026-09-01T00:00:00.000Z');
 assert.equal(playerCohort(firstProfile, '2026-09-01T00:00:00.000Z'), 'new');
 assert.equal(playerCohort({ ...firstProfile, games: 1 }, '2026-09-08T00:00:00.000Z'), 'returning-7d');

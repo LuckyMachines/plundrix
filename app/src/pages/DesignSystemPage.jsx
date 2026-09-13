@@ -7,6 +7,7 @@ import { LatestEventSurface, MatchStatusStrip } from '../components/gameplay/Act
 import DecisionPlate from '../components/gameplay/DecisionPlate';
 import OperatorDossier from '../components/gameplay/OperatorDossier';
 import RoundTheater from '../components/gameplay/RoundTheater';
+import OperationCeremony from '../components/gameplay/OperationCeremony';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
 import ActionPresenceField from '../components/actions/ActionPresenceField';
 import PickControl from '../components/actions/PickControl';
@@ -184,22 +185,30 @@ function TypeLayoutStress() {
   );
 }
 
-function PremiumTheaterLab({ phase = 'impact' }) {
+function PremiumTheaterLab({ phase = 'impact', route = 'sabotage' }) {
   const players = [
     { id: 'player-1', name: 'Operator', locksCracked: 3, tools: 2, stunned: false },
     { id: 'player-2', name: 'Rook', locksCracked: 4, tools: 1, stunned: true },
     { id: 'player-3', name: 'Mara', locksCracked: 2, tools: 4, stunned: false },
     { id: 'player-4', name: 'Vesper', locksCracked: 3, tools: 2, stunned: false },
   ];
+  const routeId = { pick: 1, search: 2, sabotage: 3 }[route] || 3;
+  const routeGadget = { pick: 'precision-kit', search: 'signal-scanner', sabotage: 'decoy-relay' }[route] || 'decoy-relay';
+  const routeCopy = { pick: 'Pick should feel like controlled mechanical precision.', search: 'Search should feel like tuning a forbidden frequency.', sabotage: 'Sabotage should feel like a tiny, elegant crime.' }[route];
+  const routeMessage = {
+    pick: 'Operator found the tolerance and cracked the fourth lock.',
+    search: 'Operator isolated a clean frequency and recovered a bypass tool.',
+    sabotage: 'Operator crossed Rook\'s circuit and stole the opening.',
+  }[route];
   const outcome = {
     id: 'premium-theater-impact',
     actor: 'player-1',
-    target: 'player-2',
-    action: 3,
+    target: route === 'sabotage' ? 'player-2' : null,
+    action: routeId,
     success: true,
-    message: 'Operator crossed Rook\'s circuit and stole the opening.',
+    message: routeMessage,
   };
-  const gadgetEvent = { id: 'premium-gadget', gadget: 'decoy-relay', actor: 'player-1' };
+  const gadgetEvent = { id: 'premium-gadget', gadget: routeGadget, actor: 'player-1' };
   const actions = [
     { id: 1, identity: 'pick', label: 'Pick', metric: '74% / 1 lock', shortDetail: 'Pressure the vault', detail: 'Attack the fourth lock.' },
     { id: 2, identity: 'search', label: 'Search', metric: '60% / tools', shortDetail: 'Build future odds', detail: 'Sweep the room for a bypass.' },
@@ -210,22 +219,32 @@ function PremiumTheaterLab({ phase = 'impact' }) {
     <PageShell wide className="premium-theater-lab pb-5 pt-24" data-premium-theater>
       <header className="premium-theater-lab__header">
         <p className="type-label text-signal-red">Premium presentation lab / canonical impact</p>
-        <h1 className="type-page mt-3 text-vault-text">Sabotage should feel like a tiny, elegant crime.</h1>
+        <h1 className="type-page mt-3 text-vault-text">{routeCopy}</h1>
       </header>
       <div className="premium-theater-lab__stage caper-operation caper-workbench">
         <VaultMechanism
           cracked={3}
           total={5}
-          selectedAction={3}
+          selectedAction={routeId}
           actions={actions}
           players={players}
           latestOutcome={outcome}
+          round={7}
           label="Nightfall vault"
         />
       </div>
-      <RoundTheater phase={phase} action={3} outcome={outcome} players={players} round={7} gadgetEvent={gadgetEvent} />
+      <RoundTheater phase={phase} action={routeId} outcome={outcome} players={players} round={7} gadgetEvent={gadgetEvent} />
     </PageShell>
   );
+}
+
+function CeremonyLab() {
+  const event = useMemo(() => ({ key: 'design-ceremony', type: 'victory', durationMs: 60_000 }), []);
+  return <PageShell wide className="premium-theater-lab pb-5 pt-24" data-premium-ceremony><OperationCeremony event={event} /></PageShell>;
+}
+
+function TransactionLab() {
+  return <PageShell className="pb-12 pt-24" data-transaction-theater><p className="label text-tungsten">Diegetic blockchain states</p><h1 className="type-page mt-3 text-vault-text">Every network wait tells the truth.</h1><div className="mt-8 grid gap-4"><TxStatus isPending /><TxStatus isConfirming hash="0x1234567890abcdef1234567890abcdef" /><TxStatus isSuccess hash="0x1234567890abcdef1234567890abcdef" /><TxStatus error={{ message: 'Wallet rejected the operation.' }} /></div></PageShell>;
 }
 
 export default function DesignSystemPage() {
@@ -327,7 +346,9 @@ export default function DesignSystemPage() {
     const search = new URLSearchParams(window.location.search);
     const stress = search.get('stress');
     if (stress === 'type-layout') return <TypeLayoutStress />;
-    if (stress === 'premium-theater') return <PremiumTheaterLab phase={search.get('phase') || 'impact'} />;
+    if (stress === 'premium-theater') return <PremiumTheaterLab phase={search.get('phase') || 'impact'} route={search.get('route') || 'sabotage'} />;
+    if (stress === 'premium-ceremony') return <CeremonyLab />;
+    if (stress === 'transaction-theater') return <TransactionLab />;
   }
 
   return (

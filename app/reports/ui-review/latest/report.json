@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "name": "Plundrix canonical UI review",
-  "status": "fail",
+  "status": "pass",
   "summary": {
-    "passed": 31,
-    "total": 32
+    "passed": 42,
+    "total": 42
   },
   "typeLayoutSummary": {
     "passed": 4,
@@ -357,7 +357,7 @@
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 1.388888888888889e-06,
+      "diffRatio": 0.0,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-active-desktop.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-active-desktop.png",
@@ -406,7 +406,7 @@
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 2.859626647144949e-06,
+      "diffRatio": 0.0,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-active-laptop.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-active-laptop.png",
@@ -503,8 +503,8 @@
       "experimentIds": [
         "first-run-comprehension"
       ],
-      "status": "fail",
-      "diffRatio": 0.0034520833333333335,
+      "status": "pass",
+      "diffRatio": 0.0,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-resolution-desktop.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-resolution-desktop.png",
@@ -602,7 +602,7 @@
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 5.164661562765828e-05,
+      "diffRatio": 0.0,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-resolution-mobile.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-resolution-mobile.png",
@@ -754,6 +754,466 @@
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\premium-theater-mobile.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\premium-theater-mobile.png",
       "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\premium-theater-mobile.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "premium-pick",
+      "label": "Premium Pick impact",
+      "priority": "P0",
+      "viewport": "desktop",
+      "path": "/design-system?stress=premium-theater&route=pick",
+      "reviewFocus": [
+        "precision camera grammar",
+        "mechanical Pick gesture",
+        "tool and copy hierarchy"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\premium-pick-desktop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\premium-pick-desktop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\premium-pick-desktop.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "premium-pick",
+      "label": "Premium Pick impact",
+      "priority": "P0",
+      "viewport": "mobile",
+      "path": "/design-system?stress=premium-theater&route=pick",
+      "reviewFocus": [
+        "precision camera grammar",
+        "mechanical Pick gesture",
+        "tool and copy hierarchy"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\premium-pick-mobile.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\premium-pick-mobile.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\premium-pick-mobile.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "premium-search",
+      "label": "Premium Search impact",
+      "priority": "P0",
+      "viewport": "desktop",
+      "path": "/design-system?stress=premium-theater&route=search",
+      "reviewFocus": [
+        "signal-sweep camera grammar",
+        "Search identity",
+        "gadget readability"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\premium-search-desktop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\premium-search-desktop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\premium-search-desktop.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "premium-search",
+      "label": "Premium Search impact",
+      "priority": "P0",
+      "viewport": "mobile",
+      "path": "/design-system?stress=premium-theater&route=search",
+      "reviewFocus": [
+        "signal-sweep camera grammar",
+        "Search identity",
+        "gadget readability"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\premium-search-mobile.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\premium-search-mobile.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\premium-search-mobile.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "premium-ceremony",
+      "label": "Breach ceremony",
+      "priority": "P0",
+      "viewport": "desktop",
+      "path": "/design-system?stress=premium-ceremony",
+      "reviewFocus": [
+        "earned spectacle",
+        "brief duration",
+        "static reduced-motion meaning"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\premium-ceremony-desktop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\premium-ceremony-desktop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\premium-ceremony-desktop.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "premium-ceremony",
+      "label": "Breach ceremony",
+      "priority": "P0",
+      "viewport": "mobile",
+      "path": "/design-system?stress=premium-ceremony",
+      "reviewFocus": [
+        "earned spectacle",
+        "brief duration",
+        "static reduced-motion meaning"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\premium-ceremony-mobile.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\premium-ceremony-mobile.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\premium-ceremony-mobile.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "transaction-theater",
+      "label": "On-chain transaction theater",
+      "priority": "P0",
+      "viewport": "desktop",
+      "path": "/design-system?stress=transaction-theater",
+      "reviewFocus": [
+        "truthful wait states",
+        "wallet versus network distinction",
+        "failure recovery"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\transaction-theater-desktop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\transaction-theater-desktop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\transaction-theater-desktop.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "transaction-theater",
+      "label": "On-chain transaction theater",
+      "priority": "P0",
+      "viewport": "mobile",
+      "path": "/design-system?stress=transaction-theater",
+      "reviewFocus": [
+        "truthful wait states",
+        "wallet versus network distinction",
+        "failure recovery"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\transaction-theater-mobile.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\transaction-theater-mobile.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\transaction-theater-mobile.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "audio-preview",
+      "label": "Sound Locker",
+      "priority": "P1",
+      "viewport": "desktop",
+      "path": "/audio-preview.html",
+      "reviewFocus": [
+        "cue browsing hierarchy",
+        "transport control clarity",
+        "mobile audition usability"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\audio-preview-desktop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\audio-preview-desktop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\audio-preview-desktop.png",
+      "accessibility": [],
+      "layout": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "overflowPixels": 0,
+        "unloadedImages": [],
+        "clippedContainers": []
+      },
+      "typography": {
+        "fonts": [
+          {
+            "family": "Barlow",
+            "loaded": true
+          },
+          {
+            "family": "Barlow Condensed",
+            "loaded": true
+          },
+          {
+            "family": "JetBrains Mono",
+            "loaded": true
+          }
+        ],
+        "undersized": [],
+        "overflowing": [],
+        "overlongMeasures": []
+      }
+    },
+    {
+      "id": "audio-preview",
+      "label": "Sound Locker",
+      "priority": "P1",
+      "viewport": "mobile",
+      "path": "/audio-preview.html",
+      "reviewFocus": [
+        "cue browsing hierarchy",
+        "transport control clarity",
+        "mobile audition usability"
+      ],
+      "experimentIds": [],
+      "status": "pass",
+      "diffRatio": 0.0,
+      "diffLimit": 0.002,
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\audio-preview-mobile.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\audio-preview-mobile.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\audio-preview-mobile.png",
       "accessibility": [],
       "layout": {
         "clientWidth": 390,

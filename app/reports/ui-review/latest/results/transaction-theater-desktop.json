@@ -1,0 +1,45 @@
+{
+  "surfaceId": "transaction-theater",
+  "label": "On-chain transaction theater",
+  "priority": "P0",
+  "viewport": "desktop",
+  "dimensions": {
+    "width": 1440,
+    "height": 1000
+  },
+  "path": "/design-system?stress=transaction-theater",
+  "reviewFocus": [
+    "truthful wait states",
+    "wallet versus network distinction",
+    "failure recovery"
+  ],
+  "experimentIds": [],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 1440,
+    "scrollWidth": 1440,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  },
+  "world": []
+}

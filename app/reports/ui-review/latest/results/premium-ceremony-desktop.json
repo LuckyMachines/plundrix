@@ -1,0 +1,45 @@
+{
+  "surfaceId": "premium-ceremony",
+  "label": "Breach ceremony",
+  "priority": "P0",
+  "viewport": "desktop",
+  "dimensions": {
+    "width": 1440,
+    "height": 1000
+  },
+  "path": "/design-system?stress=premium-ceremony",
+  "reviewFocus": [
+    "earned spectacle",
+    "brief duration",
+    "static reduced-motion meaning"
+  ],
+  "experimentIds": [],
+  "accessibility": [],
+  "layout": {
+    "clientWidth": 1440,
+    "scrollWidth": 1440,
+    "overflowPixels": 0,
+    "unloadedImages": [],
+    "clippedContainers": []
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Barlow",
+        "loaded": true
+      },
+      {
+        "family": "Barlow Condensed",
+        "loaded": true
+      },
+      {
+        "family": "JetBrains Mono",
+        "loaded": true
+      }
+    ],
+    "undersized": [],
+    "overflowing": [],
+    "overlongMeasures": []
+  },
+  "world": []
+}

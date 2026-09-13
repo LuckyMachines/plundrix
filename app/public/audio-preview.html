@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Plundrix Sound Locker</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ground: #05090e;
+      --panel: #09131d;
+      --panel-high: #101d28;
+      --line: #293945;
+      --paper: #d8ccb3;
+      --dim: #82919a;
+      --brass: #c4956a;
+      --cyan: #66c4d2;
+      --green: #40a080;
+      --red: #f06a6a;
+      --gold: #e8b078;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--ground); }
+    body {
+      min-width: 320px;
+      margin: 0;
+      background:
+        linear-gradient(rgba(102, 196, 210, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102, 196, 210, 0.025) 1px, transparent 1px),
+        radial-gradient(circle at 50% 0, #132531 0, var(--ground) 38rem);
+      background-size: 42px 42px, 42px 42px, auto;
+      color: var(--paper);
+      font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    .shell { width: min(1440px, calc(100% - 32px)); margin: auto; padding: 34px 0 70px; }
+    .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+    .eyebrow, .metric span, .family, .variation, .status, .license, .filter-button {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .eyebrow { margin: 0; color: var(--green); }
+    h1 { max-width: 800px; margin: 10px 0 0; color: #eee4ce; font-size: clamp(48px, 8vw, 104px); line-height: 0.82; letter-spacing: -0.045em; text-transform: uppercase; }
+    .intro { max-width: 650px; margin: 20px 0 0; color: var(--dim); font-size: 16px; line-height: 1.6; }
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(92px, 1fr)); border: 1px solid var(--line); background: rgba(5, 9, 14, 0.74); }
+    .metric { min-width: 102px; padding: 16px; border-left: 1px solid var(--line); }
+    .metric:first-child { border-left: 0; }
+    .metric span { display: block; color: var(--dim); }
+    .metric strong { display: block; margin-top: 6px; color: var(--gold); font-size: 26px; }
+    .console { position: sticky; z-index: 10; top: 0; display: grid; grid-template-columns: minmax(220px, 1fr) auto auto; gap: 12px; align-items: center; margin: 26px 0; padding: 12px; border: 1px solid var(--line); background: rgba(5, 9, 14, 0.94); backdrop-filter: blur(14px); box-shadow: 0 14px 40px rgba(0, 0, 0, 0.32); }
+    .search { width: 100%; min-height: 46px; padding: 0 14px; border: 1px solid var(--line); background: #071018; color: var(--paper); }
+    .transport { display: flex; flex-wrap: wrap; gap: 8px; }
+    .control { min-height: 46px; padding: 0 15px; border: 1px solid var(--brass); background: transparent; color: var(--brass); font-family: Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .control.primary { border-color: var(--gold); background: var(--gold); color: #071018; }
+    .control.stop { border-color: rgba(240, 106, 106, 0.65); color: var(--red); }
+    .volume { display: grid; grid-template-columns: auto 120px 34px; gap: 9px; align-items: center; color: var(--dim); font-family: Consolas, monospace; font-size: 12px; text-transform: uppercase; }
+    input[type="range"] { accent-color: var(--gold); }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .filter-button { min-height: 38px; padding: 0 12px; border: 1px solid var(--line); background: var(--panel); color: var(--dim); }
+    .filter-button[aria-pressed="true"] { border-color: var(--green); background: rgba(64, 160, 128, 0.12); color: #78d0af; }
+    .status-row { display: flex; justify-content: space-between; gap: 16px; margin: 0 0 14px; color: var(--dim); }
+    .status { margin: 0; }
+    .status[data-active="true"] { color: var(--cyan); }
+    .sound-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .sound-card { --accent: var(--cyan); position: relative; display: grid; min-width: 0; min-height: 266px; padding: 18px; overflow: hidden; border: 1px solid var(--line); background: linear-gradient(145deg, rgba(16, 29, 40, 0.96), rgba(5, 10, 15, 0.96)); }
+    .sound-card[hidden] { display: none; }
+    .sound-card[data-family="search"] { --accent: var(--green); }
+    .sound-card[data-family="sabotage"] { --accent: var(--red); }
+    .sound-card[data-family="gadget"], .sound-card[data-family="ceremony"] { --accent: var(--gold); }
+    .sound-card[data-family="transaction"] { --accent: var(--brass); }
+    .sound-card[data-playing="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 0 28px color-mix(in srgb, var(--accent) 10%, transparent); }
+    .sound-card::after { content: ""; position: absolute; right: -42px; top: -58px; width: 140px; height: 140px; border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent); transform: rotate(45deg); }
+    .card-head { position: relative; z-index: 1; display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+    .family { margin: 0; color: var(--accent); }
+    h2 { margin: 7px 0 0; color: #e8ddc5; font-size: 28px; line-height: 0.95; letter-spacing: -0.025em; text-transform: uppercase; }
+    .duration { padding: 5px 7px; border: 1px solid var(--line); color: var(--dim); font-family: Consolas, monospace; font-size: 12px; }
+    .wave { display: flex; height: 64px; align-items: center; gap: 3px; margin: 20px 0; opacity: 0.72; }
+    .wave i { flex: 1; min-width: 2px; height: calc(8px + (var(--bar) * 1px)); max-height: 58px; background: linear-gradient(var(--accent), color-mix(in srgb, var(--accent) 16%, transparent)); transform-origin: center; }
+    .sound-card[data-playing="true"] .wave i { animation: pulse 480ms ease-in-out infinite alternate; animation-delay: calc(var(--index) * -35ms); }
+    .audition { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-self: end; }
+    .play-main { min-height: 48px; border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 13%, transparent); color: var(--accent); font-family: Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+    .variations { display: flex; gap: 5px; }
+    .variation { width: 44px; min-height: 48px; border: 1px solid var(--line); background: #071018; color: var(--dim); }
+    .variation[data-playing="true"] { border-color: var(--accent); color: var(--accent); }
+    .file-links { grid-column: 1 / -1; display: flex; gap: 12px; margin-top: 3px; }
+    .file-links a { color: var(--dim); font: 12px/1.3 Consolas, monospace; text-decoration: none; text-transform: uppercase; }
+    .file-links a:hover { color: var(--paper); text-decoration: underline; }
+    footer { display: flex; justify-content: space-between; gap: 24px; margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--dim); line-height: 1.5; }
+    .license { margin: 0; }
+    footer a { color: var(--brass); }
+    .empty { grid-column: 1 / -1; padding: 70px 20px; border: 1px solid var(--line); color: var(--dim); text-align: center; }
+    @keyframes pulse { from { transform: scaleY(0.55); opacity: 0.44; } to { transform: scaleY(1); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; } }
+    @media (max-width: 1050px) {
+      .masthead { grid-template-columns: 1fr; }
+      .metrics { width: fit-content; }
+      .console { grid-template-columns: 1fr auto; }
+      .volume { grid-column: 1 / -1; }
+      .sound-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 20px, 1440px); padding-top: 22px; }
+      .masthead { gap: 18px; }
+      h1 { font-size: clamp(46px, 17vw, 72px); }
+      .metrics { width: 100%; }
+      .metric { min-width: 0; padding: 11px; }
+      .metric strong { font-size: 21px; }
+      .console { position: relative; grid-template-columns: 1fr; }
+      .volume { grid-column: auto; grid-template-columns: auto minmax(100px, 1fr) 34px; }
+      .sound-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Internal audition deck / CC0 source provenance retained</p>
+        <h1>Sound Locker</h1>
+        <p class="intro">Every authored Plundrix cue, with all restrained pitch variations. Compare action identity, impact, loudness, and how the mechanical language holds together as one mischievous system.</p>
+      </div>
+      <div class="metrics" aria-label="Sound library summary">
+        <div class="metric"><span>Cues</span><strong id="cue-count">21</strong></div>
+        <div class="metric"><span>Variations</span><strong id="variation-count">63</strong></div>
+        <div class="metric"><span>Target</span><strong>-18</strong></div>
+      </div>
+    </header>
+
+    <section class="console" aria-label="Audition controls">
+      <input id="search" class="search" type="search" placeholder="Filter sounds by name or family" aria-label="Filter sounds">
+      <div class="transport">
+        <button id="play-visible" class="control primary" type="button">Play visible</button>
+        <button id="shuffle" class="control" type="button">Surprise me</button>
+        <button id="stop" class="control stop" type="button">Stop all</button>
+      </div>
+      <label class="volume">Volume <input id="volume" type="range" min="0" max="100" value="72"><output id="volume-output">72%</output></label>
+    </section>
+
+    <nav id="filters" class="filters" aria-label="Sound families"></nav>
+    <div class="status-row"><p id="status" class="status" role="status" aria-live="polite">Ready to audition.</p><p id="visible-count" class="status"></p></div>
+    <section id="sound-grid" class="sound-grid" aria-label="Sound cue library"></section>
+
+    <footer>
+      <p class="license">Original source fragments: Kenney Interface Sounds and Sci-Fi Sounds, CC0 1.0. Plundrix cue composites are generated from layered, filtered, timed, and pitch-varied recipes.</p>
+      <p class="license"><a href="./audio/LICENSE-KENNEY-CC0.txt">License record</a> / <a href="/">Return to Plundrix</a></p>
+    </footer>
+  </main>
+
+  <script src="./audio/sfx/library.js"></script>
+  <script>
+    (() => {
+      const library = window.PLUNDRIX_SOUND_LIBRARY;
+      const grid = document.querySelector('#sound-grid');
+      const filters = document.querySelector('#filters');
+      const search = document.querySelector('#search');
+      const status = document.querySelector('#status');
+      const visibleCount = document.querySelector('#visible-count');
+      const volume = document.querySelector('#volume');
+      const volumeOutput = document.querySelector('#volume-output');
+      let activeFamily = 'all';
+      let currentAudio = null;
+      let currentButton = null;
+      let sequenceToken = 0;
+      let auditionIndex = 0;
+
+      if (!library || !Array.isArray(library.cues)) {
+        grid.innerHTML = '<p class="empty">The generated sound index is missing. Run npm run sound:build from app/.</p>';
+        status.textContent = 'Sound index unavailable.';
+        return;
+      }
+
+      document.querySelector('#cue-count').textContent = library.cues.length;
+      document.querySelector('#variation-count').textContent = library.cues.length * library.variations.length;
+
+      const title = (value) => value.split(/[.-]/).map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+      const pathFor = (file) => `./audio/sfx/${file}`;
+      const hash = (value) => [...value].reduce((total, character) => ((total * 31) + character.charCodeAt(0)) >>> 0, 17);
+      const waveform = (cue) => Array.from({ length: 32 }, (_, index) => {
+        const height = 6 + ((hash(`${cue.id}-${index}`) % 46));
+        return `<i style="--bar:${height};--index:${index}" aria-hidden="true"></i>`;
+      }).join('');
+
+      function stopAudio(message = 'Playback stopped.') {
+        sequenceToken += 1;
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
+        document.querySelectorAll('[data-playing="true"]').forEach((element) => element.removeAttribute('data-playing'));
+        currentAudio = null;
+        currentButton = null;
+        status.dataset.active = 'false';
+        status.textContent = message;
+      }
+
+      function play(cue, variantIndex, button, sequence = false) {
+        if (!sequence) stopAudio('Loading cue...');
+        else if (currentAudio) currentAudio.pause();
+        document.querySelectorAll('[data-playing="true"]').forEach((element) => element.removeAttribute('data-playing'));
+        const file = cue.files[variantIndex];
+        const audio = new Audio(pathFor(file));
+        audio.volume = Number(volume.value) / 100;
+        currentAudio = audio;
+        currentButton = button;
+        button?.setAttribute('data-playing', 'true');
+        button?.closest('.sound-card')?.setAttribute('data-playing', 'true');
+        status.dataset.active = 'true';
+        status.textContent = `Playing ${cue.label}, variation ${variantIndex + 1}.`;
+        const settled = new Promise((resolve) => {
+          audio.addEventListener('ended', () => resolve('ended'), { once: true });
+          audio.addEventListener('pause', () => resolve('stopped'), { once: true });
+          audio.addEventListener('error', () => resolve('error'), { once: true });
+        });
+        audio.play().catch(() => {
+          status.dataset.active = 'false';
+          status.textContent = 'Playback was blocked. Tap a cue to unlock audio.';
+        });
+        settled.then((result) => {
+          if (currentAudio !== audio) return;
+          button?.removeAttribute('data-playing');
+          button?.closest('.sound-card')?.removeAttribute('data-playing');
+          currentAudio = null;
+          currentButton = null;
+          status.dataset.active = 'false';
+          status.textContent = result === 'error' ? `Could not load ${file}.` : `${cue.label} complete.`;
+        });
+        return settled;
+      }
+
+      function cardMarkup(cue) {
+        return `<article class="sound-card" data-cue="${cue.id}" data-family="${cue.family}" data-search="${cue.label.toLowerCase()} ${cue.family}">
+          <div class="card-head"><div><p class="family">${title(cue.family)} / ${cue.id}</p><h2>${cue.label}</h2></div><span class="duration">${cue.duration.toFixed(2)}s</span></div>
+          <div class="wave">${waveform(cue)}</div>
+          <div class="audition">
+            <button class="play-main" type="button" data-audition="${cue.id}">Audition variations</button>
+            <div class="variations" aria-label="${cue.label} variations">${cue.files.map((file, index) => `<button class="variation" type="button" data-cue-id="${cue.id}" data-variant="${index}" title="Pitch ratio ${library.variations[index].pitchRatio}">${index + 1}</button>`).join('')}</div>
+            <div class="file-links">${cue.files.map((file, index) => `<a href="${pathFor(file)}" download>Save v${index + 1}</a>`).join('')}</div>
+          </div>
+        </article>`;
+      }
+
+      grid.innerHTML = library.cues.map(cardMarkup).join('');
+      const families = ['all', ...new Set(library.cues.map((cue) => cue.family))];
+      filters.innerHTML = families.map((family) => `<button class="filter-button" type="button" data-filter="${family}" aria-pressed="${family === 'all'}">${title(family)}</button>`).join('');
+
+      function applyFilters() {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        document.querySelectorAll('.sound-card').forEach((card) => {
+          const matchesFamily = activeFamily === 'all' || card.dataset.family === activeFamily;
+          const matchesSearch = !query || card.dataset.search.includes(query);
+          card.hidden = !(matchesFamily && matchesSearch);
+          if (!card.hidden) visible += 1;
+        });
+        visibleCount.textContent = `${visible} of ${library.cues.length} cues visible`;
+      }
+
+      filters.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-filter]');
+        if (!button) return;
+        activeFamily = button.dataset.filter;
+        filters.querySelectorAll('button').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        applyFilters();
+      });
+      search.addEventListener('input', applyFilters);
+      volume.addEventListener('input', () => {
+        volumeOutput.textContent = `${volume.value}%`;
+        if (currentAudio) currentAudio.volume = Number(volume.value) / 100;
+      });
+      grid.addEventListener('click', (event) => {
+        const variantButton = event.target.closest('[data-variant]');
+        const auditionButton = event.target.closest('[data-audition]');
+        if (!variantButton && !auditionButton) return;
+        const cueId = variantButton?.dataset.cueId || auditionButton.dataset.audition;
+        const cue = library.cues.find((item) => item.id === cueId);
+        const variant = variantButton ? Number(variantButton.dataset.variant) : auditionIndex++ % library.variations.length;
+        play(cue, variant, variantButton || auditionButton);
+      });
+      document.querySelector('#stop').addEventListener('click', () => stopAudio());
+      document.querySelector('#shuffle').addEventListener('click', () => {
+        const visible = library.cues.filter((cue) => !grid.querySelector(`[data-cue="${cue.id}"]`).hidden);
+        if (!visible.length) return;
+        const cue = visible[Math.floor(Math.random() * visible.length)];
+        const variant = Math.floor(Math.random() * library.variations.length);
+        play(cue, variant, grid.querySelector(`[data-cue="${cue.id}"] .play-main`));
+      });
+      document.querySelector('#play-visible').addEventListener('click', async () => {
+        stopAudio('Beginning visible sequence...');
+        const token = sequenceToken;
+        const visible = library.cues.filter((cue) => !grid.querySelector(`[data-cue="${cue.id}"]`).hidden);
+        for (const cue of visible) {
+          if (token !== sequenceToken) break;
+          const button = grid.querySelector(`[data-cue="${cue.id}"] .play-main`);
+          await play(cue, 1, button, true);
+          if (token !== sequenceToken) break;
+          await new Promise((resolve) => setTimeout(resolve, 90));
+        }
+        if (token === sequenceToken) stopAudio(`Sequence complete: ${visible.length} cues.`);
+      });
+
+      applyFilters();
+    })();
+  </script>
+</body>
+</html>

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "startedAt": "2026-09-13T09:24:21.617Z",
-  "completedAt": "2026-09-13T09:29:43.497Z",
-  "buildSha": "db51f7a",
-  "mode": "compare",
-  "reason": null,
-  "surface": "all",
+  "startedAt": "2026-09-13T20:20:54.944Z",
+  "completedAt": "2026-09-13T20:21:13.103Z",
+  "buildSha": "bf4dbd1",
+  "mode": "approve",
+  "reason": "Add complete responsive sound audition locker",
+  "surface": "audio-preview",
   "status": "pass",
   "playwrightExitCode": 0,
   "compositionExitCode": 0
