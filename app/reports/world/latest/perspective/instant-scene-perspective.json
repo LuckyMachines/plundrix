@@ -1,0 +1,55 @@
+{
+  "source": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\assets\\world-source\\renders\\preparing.png",
+  "segments": [
+    {
+      "p1": [
+        336.883,
+        630.634
+      ],
+      "p2": [
+        -33.973,
+        872.106
+      ]
+    },
+    {
+      "p1": [
+        488.441,
+        630.634
+      ],
+      "p2": [
+        303.014,
+        872.106
+      ]
+    },
+    {
+      "p1": [
+        791.559,
+        630.634
+      ],
+      "p2": [
+        976.986,
+        872.106
+      ]
+    },
+    {
+      "p1": [
+        943.117,
+        630.634
+      ],
+      "p2": [
+        1313.973,
+        872.106
+      ]
+    }
+  ],
+  "vanishingPointPixels": [
+    640.0,
+    433.268
+  ],
+  "vanishingPointNormalized": [
+    0.5,
+    0.54158
+  ],
+  "horizonAssumption": "horizontal line through the fitted vanishing point",
+  "fitResidualRmsPixels": 0.001
+}

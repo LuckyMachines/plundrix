@@ -349,14 +349,15 @@
       "path": "/play?mode=tactical&seed=ui-review-active",
       "reviewFocus": [
         "decision owns the screen",
-        "rival readability",
-        "action consequence preview"
+        "world depth and physical grounding",
+        "selected action reaches the vault",
+        "affected rival remains identifiable"
       ],
       "experimentIds": [
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 1.388888888888889e-06,
+      "diffRatio": 7.083333333333334e-05,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-active-desktop.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-active-desktop.png",
@@ -397,14 +398,15 @@
       "path": "/play?mode=tactical&seed=ui-review-active",
       "reviewFocus": [
         "decision owns the screen",
-        "rival readability",
-        "action consequence preview"
+        "world depth and physical grounding",
+        "selected action reaches the vault",
+        "affected rival remains identifiable"
       ],
       "experimentIds": [
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 0.0,
+      "diffRatio": 0.000149653794533919,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-active-laptop.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-active-laptop.png",
@@ -445,14 +447,15 @@
       "path": "/play?mode=tactical&seed=ui-review-active",
       "reviewFocus": [
         "decision owns the screen",
-        "rival readability",
-        "action consequence preview"
+        "world depth and physical grounding",
+        "selected action reaches the vault",
+        "affected rival remains identifiable"
       ],
       "experimentIds": [
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 0.0,
+      "diffRatio": 3.0380362133916635e-05,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-active-mobile.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-active-mobile.png",
@@ -493,6 +496,7 @@
       "path": "/play?mode=tactical&seed=ui-review-resolution",
       "reviewFocus": [
         "result and cause",
+        "world reaction matches the resolved action",
         "state change visibility",
         "next decision continuity"
       ],
@@ -500,7 +504,7 @@
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 0.0,
+      "diffRatio": 6.944444444444445e-07,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-resolution-desktop.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-resolution-desktop.png",
@@ -541,6 +545,7 @@
       "path": "/play?mode=tactical&seed=ui-review-resolution",
       "reviewFocus": [
         "result and cause",
+        "world reaction matches the resolved action",
         "state change visibility",
         "next decision continuity"
       ],
@@ -589,6 +594,7 @@
       "path": "/play?mode=tactical&seed=ui-review-resolution",
       "reviewFocus": [
         "result and cause",
+        "world reaction matches the resolved action",
         "state change visibility",
         "next decision continuity"
       ],
@@ -596,7 +602,7 @@
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 0.0,
+      "diffRatio": 3.0380362133916635e-05,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-resolution-mobile.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-resolution-mobile.png",

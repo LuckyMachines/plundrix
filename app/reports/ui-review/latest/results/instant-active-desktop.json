@@ -10,8 +10,9 @@
   "path": "/play?mode=tactical&seed=ui-review-active",
   "reviewFocus": [
     "decision owns the screen",
-    "rival readability",
-    "action consequence preview"
+    "world depth and physical grounding",
+    "selected action reaches the vault",
+    "affected rival remains identifiable"
   ],
   "experimentIds": [
     "first-run-comprehension"
@@ -42,5 +43,16 @@
     "undersized": [],
     "overflowing": [],
     "overlongMeasures": []
-  }
+  },
+  "world": [
+    {
+      "phase": "planning",
+      "route": "pick",
+      "selectedRoute": "pick",
+      "outcomeRoute": "pick",
+      "planeCount": 4,
+      "rivalStations": 3,
+      "pointerEvents": "none"
+    }
+  ]
 }

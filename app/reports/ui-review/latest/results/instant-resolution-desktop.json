@@ -10,6 +10,7 @@
   "path": "/play?mode=tactical&seed=ui-review-resolution",
   "reviewFocus": [
     "result and cause",
+    "world reaction matches the resolved action",
     "state change visibility",
     "next decision continuity"
   ],
@@ -42,5 +43,16 @@
     "undersized": [],
     "overflowing": [],
     "overlongMeasures": []
-  }
+  },
+  "world": [
+    {
+      "phase": "aftermath-failed",
+      "route": "search",
+      "selectedRoute": "pick",
+      "outcomeRoute": "search",
+      "planeCount": 4,
+      "rivalStations": 3,
+      "pointerEvents": "none"
+    }
+  ]
 }

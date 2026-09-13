@@ -1,3 +1,6 @@
+import VaultWorldScene from './VaultWorldScene';
+import { deriveVaultWorldState } from '../../data/vaultWorld';
+
 const OPERATOR_TONES = ['coral', 'cyan', 'green', 'gold'];
 
 function tumblerPosition(index, total) {
@@ -23,6 +26,7 @@ export default function VaultMechanism({
   const selected = actions.find((action) => action.id === selectedAction) || actions[0];
   const leaderLocks = Math.max(0, ...players.map((candidate) => candidate.locksCracked));
   const outcomeState = latestOutcome ? (latestOutcome.success ? 'success' : 'failed') : 'idle';
+  const worldState = deriveVaultWorldState({ cracked, total, resolving, selectedAction: selected?.identity, latestOutcome, players });
   const statusCopy = resolving
     ? 'Moves sealed. The whole table is revealing.'
     : latestOutcome ? `Last reveal: ${latestOutcome.message}` : selected?.detail || `Crack ${remaining} more ${remaining === 1 ? 'lock' : 'locks'} before the table.`;
@@ -33,8 +37,11 @@ export default function VaultMechanism({
       className="instant-vault-core caper-layer caper-layer-planning relative overflow-hidden text-center"
       data-route={selected?.identity || 'pick'}
       data-outcome={outcomeState}
+      data-world-state={worldState.phase}
+      data-world-progress={`${worldState.locksOpen}/${worldState.lockTotal}`}
       aria-labelledby="instant-vault-heading"
     >
+      <VaultWorldScene worldState={worldState} players={players} />
       <div className="caper-conflict-map" aria-hidden="true">
         <svg viewBox="0 0 760 500" preserveAspectRatio="none" focusable="false">
           <path className="caper-conflict-map__frame" d="M30 72h145l28 26h354l28-26h145M30 428h145l28-26h354l28 26h145" />

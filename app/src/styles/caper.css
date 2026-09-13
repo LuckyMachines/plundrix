@@ -2829,7 +2829,7 @@
 
   .instant-play-active[data-match-state="active"] .instant-operation-file dt,
   .instant-play-active[data-match-state="active"] .instant-operation-file dd {
-    font-size: 0.65rem;
+    font-size: var(--text-xs);
   }
 
   .instant-play-active[data-match-state="active"] .instant-potential-loot {
@@ -2936,4 +2936,357 @@ html.reduced-motion-ui .caper-conflict-map__line,
 html.reduced-motion-ui .instant-round-controls button {
   animation: none;
   transition: none;
+}
+
+/* Canonical Nightfall Vault world: authored depth planes with live game-state reactions. */
+.vault-world {
+  --vault-action: var(--caper-blueprint-bright);
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  perspective: 48rem;
+  perspective-origin: 50% 54.158%;
+  pointer-events: none;
+}
+
+.vault-world[data-route="search"] { --vault-action: var(--caper-search); }
+.vault-world[data-route="sabotage"] { --vault-action: var(--caper-coral); }
+
+.vault-world__backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5, 13, 20, 0.28), rgba(5, 13, 20, 0.72)),
+    radial-gradient(circle at 50% 48%, transparent 0 16%, rgba(4, 11, 17, 0.56) 50%),
+    url("/images/world/nightfall-vault-environment.webp") center / cover no-repeat;
+  opacity: 0.56;
+  filter: saturate(0.78) contrast(1.08);
+}
+
+.vault-world__room,
+.vault-world__stations,
+.vault-world__floor,
+.vault-world__bench,
+.vault-world__atmosphere {
+  position: absolute;
+  inset: 0;
+}
+
+.vault-world__ceiling {
+  position: absolute;
+  top: 0;
+  left: 16%;
+  width: 68%;
+  height: 31%;
+  transform: rotateX(-64deg);
+  transform-origin: 50% 0;
+  border-bottom: 1px solid rgba(196, 149, 106, 0.24);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 16%, rgba(196, 149, 106, 0.11) 16.3% 16.8%),
+    linear-gradient(180deg, rgba(10, 10, 15, 0.9), rgba(26, 26, 46, 0.34));
+}
+
+.vault-world__ceiling i {
+  position: absolute;
+  top: 35%;
+  width: 18%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(232, 176, 120, 0.6), transparent);
+  box-shadow: 0 0 1.1rem rgba(232, 176, 120, 0.3);
+}
+
+.vault-world__ceiling i:nth-child(1) { left: 8%; }
+.vault-world__ceiling i:nth-child(2) { left: 41%; }
+.vault-world__ceiling i:nth-child(3) { right: 8%; }
+
+.vault-world__wall {
+  position: absolute;
+  top: 8%;
+  bottom: 14%;
+  width: 35%;
+  border: 1px solid rgba(196, 149, 106, 0.15);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 17%, rgba(216, 204, 179, 0.05) 17.2% 17.6%),
+    linear-gradient(90deg, rgba(10, 10, 15, 0.92), rgba(26, 26, 46, 0.18));
+}
+
+.vault-world__wall--left {
+  left: 0;
+  clip-path: polygon(0 0, 100% 22%, 100% 82%, 0 100%);
+}
+
+.vault-world__wall--right {
+  right: 0;
+  clip-path: polygon(0 22%, 100% 0, 100% 100%, 0 82%);
+  transform: scaleX(-1);
+}
+
+.vault-world__rear-frame {
+  position: absolute;
+  top: 23%;
+  left: 50%;
+  width: min(40%, 18rem);
+  aspect-ratio: 1.58;
+  transform: translateX(-50%);
+  border: 1px solid rgba(196, 149, 106, 0.28);
+  clip-path: polygon(8% 0, 92% 0, 100% 14%, 100% 86%, 92% 100%, 8% 100%, 0 86%, 0 14%);
+  background: radial-gradient(circle at 50% 64%, rgba(102, 196, 210, 0.12), rgba(5, 12, 19, 0.72) 58%);
+  box-shadow: inset 0 0 2.4rem rgba(0, 0, 0, 0.78), 0 0 1.8rem rgba(196, 149, 106, 0.08);
+}
+
+.vault-world__rear-frame > i {
+  position: absolute;
+  top: 14%;
+  width: 0.34rem;
+  height: 0.34rem;
+  border: 1px solid rgba(196, 149, 106, 0.56);
+  border-radius: 50%;
+  background: #09131d;
+  box-shadow: inset 0 0 0.22rem #000;
+}
+
+.vault-world__rear-frame > i:nth-child(1) { left: 20%; }
+.vault-world__rear-frame > i:nth-child(2) { left: 35%; }
+.vault-world__rear-frame > i:nth-child(3) { left: 50%; }
+.vault-world__rear-frame > i:nth-child(4) { left: 65%; }
+.vault-world__rear-frame > i:nth-child(5) { left: 80%; }
+
+.vault-world__rear-frame > i[data-open="true"] {
+  border-color: var(--caper-search);
+  background: var(--caper-search);
+  box-shadow: 0 0 0.7rem rgba(64, 160, 128, 0.8);
+}
+
+.vault-world__rib {
+  position: absolute;
+  top: 12%;
+  width: 1px;
+  height: 62%;
+  background: linear-gradient(rgba(196, 149, 106, 0.32), rgba(102, 196, 210, 0.05));
+  transform-origin: 50% 100%;
+  opacity: calc(0.22 + (var(--rib-depth, 1) * 0.08));
+}
+
+.vault-world__rib--left { left: calc(9% + (var(--rib-depth, 1) * 7%)); transform: rotate(-15deg); }
+.vault-world__rib--right { right: calc(9% + (var(--rib-depth, 1) * 7%)); transform: rotate(15deg); }
+.vault-world__rib[data-rib="0"] { --rib-depth: 0; }
+.vault-world__rib[data-rib="1"] { --rib-depth: 1; }
+.vault-world__rib[data-rib="2"] { --rib-depth: 2; }
+.vault-world__rib[data-rib="3"] { --rib-depth: 3; }
+
+.vault-world__stations {
+  z-index: 1;
+}
+
+.vault-world__station {
+  --station-accent: rgba(102, 196, 210, 0.36);
+  position: absolute;
+  top: 37%;
+  left: 50%;
+  width: clamp(2.8rem, 7vw, 4.6rem);
+  height: clamp(3.2rem, 8vw, 5.2rem);
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0.6rem 0.65rem rgba(0, 0, 0, 0.62));
+}
+
+.vault-world__station[data-station="1"] { left: 22%; transform: translate(-50%, -50%) perspective(16rem) rotateY(22deg); }
+.vault-world__station[data-station="2"] { left: 50%; top: 29%; transform: translate(-50%, -50%) scale(0.76); }
+.vault-world__station[data-station="3"] { left: 78%; transform: translate(-50%, -50%) perspective(16rem) rotateY(-22deg); }
+.vault-world__station[data-stunned="true"],
+.vault-world__station[data-affected="true"] { --station-accent: rgba(240, 106, 106, 0.88); }
+
+.vault-world__station-screen {
+  position: absolute;
+  top: 0;
+  left: 15%;
+  width: 70%;
+  height: 42%;
+  border: 1px solid var(--station-accent);
+  background: linear-gradient(155deg, color-mix(in srgb, var(--station-accent) 28%, #07111a), #02070b);
+  box-shadow: 0 0 0.8rem color-mix(in srgb, var(--station-accent) 22%, transparent);
+  transform: skewX(-3deg);
+}
+
+.vault-world__station-body {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 62%;
+  clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
+  border-top: 1px solid rgba(196, 149, 106, 0.34);
+  background: linear-gradient(100deg, #07111a, #182632 48%, #050a0f);
+}
+
+.vault-world__floor {
+  z-index: 2;
+  top: 39%;
+  right: 6%;
+  bottom: -25%;
+  left: 6%;
+  transform: rotateX(62deg);
+  transform-origin: 50% 100%;
+  clip-path: polygon(33% 0, 67% 0, 100% 100%, 0 100%);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 11.7%, rgba(216, 204, 179, 0.07) 12% 12.3%),
+    repeating-linear-gradient(0deg, transparent 0 18%, rgba(216, 204, 179, 0.06) 18.3% 18.8%),
+    linear-gradient(180deg, rgba(18, 45, 63, 0.12), rgba(4, 9, 14, 0.9));
+}
+
+.vault-world__floor > i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 0.3rem;
+  transform-origin: 50% 0;
+  background: linear-gradient(180deg, transparent, var(--route-color) 45%, transparent 92%);
+  box-shadow: 0 0 0.85rem color-mix(in srgb, var(--route-color) 48%, transparent);
+  opacity: 0.12;
+  transition: opacity var(--motion-quick) ease, width var(--motion-quick) ease;
+}
+
+.vault-world__floor > i[data-route="pick"] { --route-color: var(--caper-blueprint-bright); transform: rotate(18deg); }
+.vault-world__floor > i[data-route="search"] { --route-color: var(--caper-search); }
+.vault-world__floor > i[data-route="sabotage"] { --route-color: var(--caper-coral); transform: rotate(-18deg); }
+
+.vault-world[data-route="pick"] .vault-world__floor > i[data-route="pick"],
+.vault-world[data-route="search"] .vault-world__floor > i[data-route="search"],
+.vault-world[data-route="sabotage"] .vault-world__floor > i[data-route="sabotage"] {
+  width: 0.5rem;
+  opacity: 0.86;
+}
+
+.vault-world__bench {
+  z-index: 3;
+  top: auto;
+  right: 5%;
+  bottom: -8%;
+  left: 5%;
+  height: 29%;
+  transform: perspective(20rem) rotateX(58deg);
+  transform-origin: 50% 100%;
+  clip-path: polygon(7% 0, 93% 0, 100% 100%, 0 100%);
+  border-top: 2px solid rgba(196, 149, 106, 0.38);
+  background:
+    linear-gradient(90deg, transparent 33%, rgba(196, 149, 106, 0.12) 33.3% 33.7%, transparent 34% 66%, rgba(196, 149, 106, 0.12) 66.3% 66.7%, transparent 67%),
+    linear-gradient(180deg, #1b2932, #050a0f 68%);
+  box-shadow: 0 -0.6rem 1.5rem rgba(0, 0, 0, 0.62);
+}
+
+.vault-world__bench i {
+  position: absolute;
+  top: 18%;
+  width: 9%;
+  height: 12%;
+  border: 1px solid color-mix(in srgb, var(--vault-action) 62%, #07111a);
+  background: color-mix(in srgb, var(--vault-action) 16%, #07111a);
+  box-shadow: 0 0 0.7rem color-mix(in srgb, var(--vault-action) 18%, transparent);
+}
+
+.vault-world__bench i:nth-child(1) { left: 17%; }
+.vault-world__bench i:nth-child(2) { left: 45.5%; }
+.vault-world__bench i:nth-child(3) { right: 17%; }
+
+.vault-world__atmosphere {
+  z-index: 4;
+  background:
+    radial-gradient(circle at 50% 47%, color-mix(in srgb, var(--vault-action) 16%, transparent), transparent 18%),
+    linear-gradient(90deg, rgba(5, 10, 15, 0.7), transparent 20% 80%, rgba(5, 10, 15, 0.7));
+  mix-blend-mode: screen;
+  opacity: 0.62;
+  transition: background var(--motion-slow) ease, opacity var(--motion-quick) ease;
+}
+
+.vault-world[data-phase="revealing"] .vault-world__floor > i {
+  animation: vault-world-signal 520ms linear infinite;
+}
+
+.vault-world[data-phase="aftermath-success"] .vault-world__atmosphere {
+  opacity: 0.88;
+}
+
+.vault-world[data-phase="aftermath-failed"] .vault-world__station[data-affected="true"] {
+  animation: vault-world-interference 240ms steps(2, end) 3;
+}
+
+.vault-world[data-phase="breached"] {
+  --vault-action: var(--caper-brass);
+}
+
+.vault-world[data-phase="breached"] .vault-world__backdrop {
+  opacity: 0.76;
+  filter: saturate(1.08) contrast(1.02);
+}
+
+.vault-world[data-phase="breached"] .vault-world__rear-frame {
+  background: radial-gradient(circle at 50% 62%, rgba(232, 176, 120, 0.72), rgba(107, 63, 32, 0.32) 35%, rgba(5, 12, 19, 0.78) 68%);
+  box-shadow: inset 0 0 2rem rgba(232, 176, 120, 0.32), 0 0 2.6rem rgba(232, 176, 120, 0.28);
+}
+
+.instant-vault-core > .instant-vault-title,
+.instant-vault-core > .instant-vault-operators,
+.instant-vault-core > .instant-vault-machine,
+.instant-vault-core > .instant-vault-conduits,
+.instant-vault-core > .instant-vault-copy {
+  z-index: 6;
+}
+
+.instant-vault-core > .caper-conflict-map {
+  z-index: 5;
+  opacity: 0.52;
+}
+
+.instant-vault-heart {
+  transform-style: preserve-3d;
+  background:
+    repeating-conic-gradient(from -8deg, rgba(196, 149, 106, 0.2) 0 2deg, transparent 2deg 15deg),
+    repeating-radial-gradient(circle, transparent 0 0.8rem, rgba(102, 196, 210, 0.07) 0.85rem 0.95rem),
+    radial-gradient(circle at 42% 34%, rgba(216, 204, 179, 0.14), rgba(9, 19, 29, 0.96) 64%);
+  box-shadow:
+    inset 0.5rem 0.7rem 1.3rem rgba(216, 204, 179, 0.07),
+    inset -0.7rem -0.8rem 1.5rem rgba(0, 0, 0, 0.86),
+    0 1.1rem 1.8rem rgba(0, 0, 0, 0.56),
+    0 0 2.5rem color-mix(in srgb, var(--vault-action, var(--caper-blueprint-bright)) 12%, transparent);
+}
+
+@keyframes vault-world-signal {
+  0% { opacity: 0.16; filter: brightness(0.8); }
+  50% { opacity: 0.92; filter: brightness(1.5); }
+  100% { opacity: 0.16; filter: brightness(0.8); }
+}
+
+@keyframes vault-world-interference {
+  0%, 100% { opacity: 1; filter: none; }
+  50% { opacity: 0.44; filter: saturate(1.5) brightness(1.35); }
+}
+
+@media (max-width: 700px) {
+  .vault-world__backdrop { opacity: 0.42; }
+  .vault-world__ceiling { left: 8%; width: 84%; }
+  .vault-world__wall { width: 26%; }
+  .vault-world__rear-frame { top: 28%; width: 58%; }
+  .vault-world__station { top: 41%; }
+  .vault-world__station[data-station="1"] { left: 14%; }
+  .vault-world__station[data-station="2"] { top: 32%; }
+  .vault-world__station[data-station="3"] { left: 86%; }
+  .vault-world__bench { bottom: -3%; height: 23%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vault-world *,
+  .vault-world *::before,
+  .vault-world *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+html.reduced-motion-ui .vault-world *,
+html.reduced-motion-ui .vault-world *::before,
+html.reduced-motion-ui .vault-world *::after {
+  animation: none !important;
+  transition: none !important;
 }

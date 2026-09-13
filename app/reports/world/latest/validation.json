@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-12T23:14:18.819Z",
+  "worldVersion": "1.0.0",
+  "status": "pass",
+  "deliveryMode": "layered-2.5d",
+  "states": [
+    "preparing",
+    "choose-pick",
+    "simultaneous-reveal",
+    "sabotage-impact",
+    "vault-breach"
+  ],
+  "renderSize": [
+    1280,
+    800
+  ],
+  "shippingBackdropBytes": 35774,
+  "sourceStats": {
+    "triangles": 6692,
+    "materials": 8,
+    "dynamicLights": 3,
+    "meshObjects": 53
+  },
+  "checks": [
+    "world truths",
+    "camera contract",
+    "fitted perspective",
+    "plane order",
+    "source budgets",
+    "state renders",
+    "depth/normal/object-id passes",
+    "shipping byte budget"
+  ]
+}

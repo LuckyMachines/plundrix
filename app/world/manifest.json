@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "nightfall-vault",
+  "version": "1.0.0",
+  "deliveryMode": "layered-2.5d",
+  "truths": {
+    "operatorCount": 4,
+    "rivalStationCount": 3,
+    "lockCount": 5,
+    "actions": ["pick", "search", "sabotage"]
+  },
+  "camera": {
+    "projection": "perspective",
+    "lensMm": 42,
+    "vanishingPointNormalized": [0.5, 0.54158],
+    "horizonNormalized": 0.54158,
+    "renderSize": [1280, 800],
+    "safeCrop": {
+      "desktop": [0.04, 0.05, 0.96, 0.96],
+      "mobile": [0.2, 0.04, 0.8, 0.96]
+    }
+  },
+  "planes": [
+    { "id": "architecture", "order": 0, "role": "rear vault wall and room shell" },
+    { "id": "rivals", "order": 1, "role": "three rival operator stations" },
+    { "id": "mechanism", "order": 2, "role": "five-lock vault door and physical action conduits" },
+    { "id": "workbench", "order": 3, "role": "foreground player bench and carried tools" },
+    { "id": "interface", "order": 4, "role": "live labels, controls, odds and status" }
+  ],
+  "materials": [
+    { "id": "blackened-steel", "color": "#0A0A0F", "roughness": 0.42, "metallic": 0.88 },
+    { "id": "vault-indigo", "color": "#1A1A2E", "roughness": 0.55, "metallic": 0.58 },
+    { "id": "oxidized-brass", "color": "#C4956A", "roughness": 0.48, "metallic": 0.78 },
+    { "id": "pick-blue", "color": "#66C4D2", "semanticAction": "pick" },
+    { "id": "search-green", "color": "#40A080", "semanticAction": "search" },
+    { "id": "sabotage-red", "color": "#F06A6A", "semanticAction": "sabotage" },
+    { "id": "breach-amber", "color": "#E8B078", "semanticState": "breached" }
+  ],
+  "states": [
+    { "id": "preparing", "locksOpen": 0, "route": "pick", "focalBeat": "sealed vault waiting for the first commitment" },
+    { "id": "choose-pick", "locksOpen": 0, "route": "pick", "focalBeat": "pick conduit energizes toward the first lock" },
+    { "id": "simultaneous-reveal", "locksOpen": 2, "route": "search", "focalBeat": "all stations pulse as intentions resolve together" },
+    { "id": "sabotage-impact", "locksOpen": 3, "route": "sabotage", "focalBeat": "one rival station visibly shorts while the vault remains readable" },
+    { "id": "vault-breach", "locksOpen": 5, "route": "pick", "focalBeat": "the door opens into warm relief after the fifth lock" }
+  ],
+  "captures": [
+    { "id": "desktop", "width": 1440, "height": 1000 },
+    { "id": "laptop", "width": 1366, "height": 768 },
+    { "id": "mobile", "width": 390, "height": 844 }
+  ],
+  "budgets": {
+    "maxShippingBackdropBytes": 360000,
+    "maxSourceTriangles": 150000,
+    "maxMaterials": 8,
+    "maxDynamicLights": 4,
+    "desktopTargetFps": 60,
+    "mobileTargetFps": 30,
+    "thumbnailWidth": 240
+  },
+  "source": {
+    "builder": "world/blender/build_vault_scene.py",
+    "blend": "assets/world-source/nightfall-vault.blend",
+    "renders": "assets/world-source/renders",
+    "shippingBackdrop": "public/images/world/nightfall-vault-environment.webp"
+  }
+}

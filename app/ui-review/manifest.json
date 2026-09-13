@@ -68,7 +68,7 @@
       "viewports": ["desktop", "laptop", "mobile"],
       "ready": { "type": "role", "role": "heading", "name": "Round 1" },
       "experimentIds": ["first-run-comprehension"],
-      "reviewFocus": ["decision owns the screen", "rival readability", "action consequence preview"]
+      "reviewFocus": ["decision owns the screen", "world depth and physical grounding", "selected action reaches the vault", "affected rival remains identifiable"]
     },
     {
       "id": "instant-resolution",
@@ -80,7 +80,7 @@
       "ready": { "type": "text", "name": "Last resolution" },
       "focus": { "type": "css", "selector": ".instant-resolution-summary" },
       "experimentIds": ["first-run-comprehension"],
-      "reviewFocus": ["result and cause", "state change visibility", "next decision continuity"]
+      "reviewFocus": ["result and cause", "world reaction matches the resolved action", "state change visibility", "next decision continuity"]
     },
     {
       "id": "instant-final",

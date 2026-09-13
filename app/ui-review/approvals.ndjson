@@ -22,3 +22,7 @@
 {"approvedAt":"2026-09-11T01:42:15.336Z","buildSha":"9dec568","reason":"Unified settings, durable preferences, accessible menus, and operator status semantics","surface":"all"}
 {"approvedAt":"2026-09-11T17:52:42.600Z","buildSha":"8ca75fb","reason":"Fit the complete turn decision and commit controls inside common laptop and desktop viewports","surface":"instant-active"}
 {"approvedAt":"2026-09-11T18:29:15.977Z","buildSha":"8ca75fb","reason":"Keep round results and the next complete decision visible in one active-game viewport","surface":"instant-resolution"}
+{"approvedAt":"2026-09-12T22:41:12.284Z","buildSha":"c9a79e7","reason":"Stabilize and approve canonical Nightfall Vault world render","surface":"instant-active"}
+{"approvedAt":"2026-09-12T23:00:07.469Z","buildSha":"c9a79e7","reason":"Calibrate Nightfall Vault camera and world depth to the canonical 42mm composition","surface":"instant-active"}
+{"approvedAt":"2026-09-12T23:02:07.057Z","buildSha":"c9a79e7","reason":"Align reveal and aftermath states with the calibrated Nightfall Vault world","surface":"instant-resolution"}
+{"approvedAt":"2026-09-12T23:08:04.609Z","buildSha":"c9a79e7","reason":"Show the resolved action in world feedback while preserving the next selected plan","surface":"instant-resolution"}

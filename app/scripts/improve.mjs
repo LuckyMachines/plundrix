@@ -26,6 +26,8 @@ const QUICK_CHECKS = Object.freeze([
   ['preferences', 'Menu and preference-system tests', ['run', 'test:preferences']],
   ['ui-review-system', 'UI review manifest and governance tests', ['run', 'test:ui-system']],
   ['art-manifest', 'Art manifest validation', ['run', 'art:validate']],
+  ['world-system', '3D world contract tests', ['run', 'test:world']],
+  ['world-render', '3D world render validation', ['run', 'world:validate']],
   ['inventory', 'Workshop inventory tests', ['run', 'test:inventory']],
   ['replay', 'Replay-system tests', ['run', 'test:replay']],
   ['fun', 'Fun-system tests', ['run', 'test:fun']],

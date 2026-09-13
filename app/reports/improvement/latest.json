@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-11T08:49:25.735Z",
-  "buildSha": "2c081b2",
+  "generatedAt": "2026-09-12T23:14:14.700Z",
+  "buildSha": "c9a79e7",
   "operatingMode": "solo",
   "health": {
     "processScore": 90,
@@ -145,8 +145,8 @@
         "tier": "T2",
         "source": "improve:verify",
         "artifact": "reports/improvement/latest.json",
-        "capturedAt": "2026-09-11T08:49:25.735Z",
-        "sampleSize": 12,
+        "capturedAt": "2026-09-12T23:14:14.700Z",
+        "sampleSize": 14,
         "value": 100
       },
       "pass": true
@@ -397,7 +397,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 547,
+      "durationMs": 507,
       "outputTail": ""
     },
     {
@@ -406,7 +406,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 526,
+      "durationMs": 473,
       "outputTail": ""
     },
     {
@@ -415,7 +415,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 519,
+      "durationMs": 459,
       "outputTail": ""
     },
     {
@@ -424,7 +424,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1277,
+      "durationMs": 1041,
       "outputTail": ""
     },
     {
@@ -433,7 +433,25 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 626,
+      "durationMs": 581,
+      "outputTail": ""
+    },
+    {
+      "id": "world-system",
+      "label": "3D world contract tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 543,
+      "outputTail": ""
+    },
+    {
+      "id": "world-render",
+      "label": "3D world render validation",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 550,
       "outputTail": ""
     },
     {
@@ -442,7 +460,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 874,
+      "durationMs": 504,
       "outputTail": ""
     },
     {
@@ -451,7 +469,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 759,
+      "durationMs": 772,
       "outputTail": ""
     },
     {
@@ -460,7 +478,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 772,
+      "durationMs": 782,
       "outputTail": ""
     },
     {
@@ -469,7 +487,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 991,
+      "durationMs": 774,
       "outputTail": ""
     },
     {
@@ -478,7 +496,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 699,
+      "durationMs": 595,
       "outputTail": ""
     },
     {
@@ -487,7 +505,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 8919,
+      "durationMs": 23392,
       "outputTail": ""
     },
     {
@@ -496,7 +514,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1444,
+      "durationMs": 867,
       "outputTail": ""
     }
   ],

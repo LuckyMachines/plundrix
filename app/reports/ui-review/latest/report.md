@@ -18,12 +18,12 @@ Composition -> hierarchy -> geometry -> typography/data -> state behavior -> res
 | Mobile navigation | mobile | pass | 0.000% |
 | Instant setup | desktop | pass | 0.000% |
 | Instant setup | mobile | pass | 0.000% |
-| Instant active round | desktop | pass | 0.000% |
-| Instant active round | laptop | pass | 0.000% |
-| Instant active round | mobile | pass | 0.000% |
+| Instant active round | desktop | pass | 0.007% |
+| Instant active round | laptop | pass | 0.015% |
+| Instant active round | mobile | pass | 0.003% |
 | Instant round resolution | desktop | pass | 0.000% |
 | Instant round resolution | laptop | pass | 0.000% |
-| Instant round resolution | mobile | pass | 0.000% |
+| Instant round resolution | mobile | pass | 0.003% |
 | Instant final briefing | desktop | pass | 0.000% |
 | Instant final briefing | mobile | pass | 0.000% |
 | Vault Run route choice | desktop | pass | 0.000% |

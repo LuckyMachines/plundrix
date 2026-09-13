@@ -66,6 +66,7 @@ assert.match(readFileSync(resolve(appDir, 'tests/e2e/ui-review.spec.js'), 'utf8'
 assert.match(readFileSync(resolve(appDir, 'tests/e2e/ui-review.spec.js'), 'utf8'), /at least 12px/);
 assert.match(readFileSync(resolve(appDir, 'tests/e2e/ui-review.spec.js'), 'utf8'), /Stress prose measure should remain readable/);
 assert.match(readFileSync(resolve(appDir, 'scripts/ui-review.mjs'), 'utf8'), /Baseline approval requires/);
+assert.match(readFileSync(resolve(appDir, 'scripts/ui-review.mjs'), 'utf8'), /if \(!args\.surface\) rmSync/, 'Targeted reviews must preserve unrelated evidence');
 assert.match(readFileSync(resolve(appDir, 'playwright.config.js'), 'utf8'), /snapshotPathTemplate/);
 const approvals = readFileSync(resolve(appDir, 'ui-review', 'approvals.ndjson'), 'utf8')
   .trim()

@@ -93,7 +93,7 @@ const resolvedLatest = resolve(latestDir);
 if (!resolvedLatest.startsWith(`${resolve(reportRoot)}${sep}`) && resolvedLatest !== resolve(reportRoot)) {
   throw new Error(`Refusing to clear unexpected report path: ${resolvedLatest}`);
 }
-rmSync(resolvedLatest, { recursive: true, force: true });
+if (!args.surface) rmSync(resolvedLatest, { recursive: true, force: true });
 mkdirSync(resolvedLatest, { recursive: true });
 
 const startedAt = new Date().toISOString();

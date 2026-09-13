@@ -202,7 +202,16 @@ async function inspectPage(page) {
       overlongMeasures,
     };
   });
-  return { accessibility, layout, typography };
+  const world = await page.evaluate(() => [...document.querySelectorAll('[data-world="nightfall-vault"]')].map((element) => ({
+    phase: element.dataset.phase,
+    route: element.dataset.route,
+    selectedRoute: element.dataset.selectedRoute,
+    outcomeRoute: element.dataset.outcomeRoute,
+    planeCount: new Set([...element.querySelectorAll('[data-plane]')].map((plane) => plane.dataset.plane)).size,
+    rivalStations: element.querySelectorAll('.vault-world__station').length,
+    pointerEvents: getComputedStyle(element).pointerEvents,
+  })));
+  return { accessibility, layout, typography, world };
 }
 
 test.describe('canonical UI review matrix', () => {
@@ -243,6 +252,7 @@ test.describe('canonical UI review matrix', () => {
 
         await expect(page).toHaveScreenshot(screenshotName, {
           ...screenshotOptions,
+          timeout: 10_000,
           maxDiffPixelRatio: surface.maxDiffPixelRatio ?? manifest.defaults.maxDiffPixelRatio,
           threshold: surface.pixelThreshold ?? manifest.defaults.pixelThreshold,
         });
@@ -254,6 +264,15 @@ test.describe('canonical UI review matrix', () => {
         expect(inspection.typography.undersized, 'Contract text should remain at least 12px').toEqual([]);
         expect(inspection.typography.overflowing, 'Contract text should not clip').toEqual([]);
         expect(inspection.typography.overlongMeasures, 'Prose measure should remain readable').toEqual([]);
+        if (surface.id === 'instant-active') {
+          expect(inspection.world, 'Active play should expose one canonical world').toHaveLength(1);
+          expect(inspection.world[0]).toMatchObject({ phase: 'planning', route: 'pick', selectedRoute: 'pick', planeCount: 4, rivalStations: 3, pointerEvents: 'none' });
+        }
+        if (surface.id === 'instant-resolution') {
+          expect(inspection.world, 'Resolution should preserve the canonical world').toHaveLength(1);
+          expect(inspection.world[0].phase).toMatch(/^aftermath-/);
+          expect(inspection.world[0]).toMatchObject({ route: 'search', outcomeRoute: 'search', selectedRoute: 'pick' });
+        }
       });
     }
   }

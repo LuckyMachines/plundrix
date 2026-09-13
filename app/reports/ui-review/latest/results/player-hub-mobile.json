@@ -42,5 +42,6 @@
     "undersized": [],
     "overflowing": [],
     "overlongMeasures": []
-  }
+  },
+  "world": []
 }
