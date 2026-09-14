@@ -600,7 +600,7 @@ export default function InstantPlayPage() {
       <OperationCeremony event={ceremonyEvent} />
       {state.state === 'ACTIVE' && (
         <div className="instant-mobile-command" role="region" aria-label="Selected action command">
-          <a href="#instant-vault-actions" className="instant-mobile-command__selection">
+          <a href="#instant-actions" className="instant-mobile-command__selection">
             <span>{selectedActionChoice.metric}</span>
             <strong>{ACTION_LABELS[selectedAction]} / change</strong>
           </a>
@@ -714,11 +714,14 @@ export default function InstantPlayPage() {
           {state.state === 'ACTIVE' ? (
             <UnifiedActionDeck
               id="instant-actions"
+              modeLabel={MODES[mode].label}
+              round={state.currentRound}
               actions={actionChoices}
               selectedAction={selectedAction}
               busy={isResolving}
               onSelect={selectAction}
               onCommit={() => resolve(false)}
+              commitLabel={`Commit ${ACTION_LABELS[selectedAction]}`}
               onAuto={() => resolve(true)}
               targets={state.players.slice(1)}
               selectedTarget={target}

@@ -206,6 +206,10 @@ function RouteMetadata() {
       description={meta.description}
       path={pathname}
       image={meta.image}
+      imageAlt={meta.imageAlt}
+      imageType={meta.imageType}
+      imageWidth={meta.imageWidth}
+      imageHeight={meta.imageHeight}
       noIndex={noIndex || meta.public === false}
     />
   );

@@ -699,3 +699,27 @@ Overall grade: **A for the implemented and deployed discovery system; behavioral
 - Connect read-only Search Console and Plausible access, then collect four complete weekly snapshots.
 - Confirm that organic and campaign visitors can be followed in aggregate from landing to match completion.
 - Select one experiment from evidence, run it to its declared sample threshold, and record a ship, iterate, revert, or stop decision.
+
+## v0.31.0 - Unified gameplay and route-proof SEO
+
+Date: 2026-09-14
+
+Overall grade: **A for implementation and deterministic evidence; search-performance and observed-player evidence remain ungraded.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| Gameplay consistency | A+ | Instant Play, Vault Run, and Live Table expose the same shared action deck, mode-and-round grammar, Pick/Search/Sabotage plates, target selection, and explicit `Commit [action]` control. Mode-specific stakes remain contextual layers rather than separate interaction systems. |
+| Navigation integrity | A+ | The mobile change-action shortcut now targets the real shared action deck instead of a stale fragment identifier. |
+| Feedback reliability | A | Player-facing action feedback remains staged and truthful. The design-system specimen now pins representative stages, preventing timer races from weakening visual regression evidence. |
+| Crawlable mode proof | A | Every public game route now ships route-specific pre-JavaScript evidence and three concrete proof points instead of one generic paragraph. |
+| Structured data | A | Every public route identifies the same `VideoGame`, `WebSite`, and publisher entities; playable routes add `PlayAction`, and non-home pages add breadcrumbs. Claims remain grounded in implemented play. |
+| Social metadata | A | Vault Run now uses a correctly sized 1200x630 JPEG card with matching MIME metadata and useful alt text. Runtime metadata derives WebP/JPEG types safely. |
+| Automated evidence | A+ | Production build, SEO suite, gameplay presentation contract, targeted browser journeys, and the complete 42-render plus four-stress visual matrix pass. |
+| External search evidence | B- | Technical discovery is ready, but Search Console and privacy-safe analytics aggregates are still required before claiming ranking, click-through, or retention improvement. |
+
+### Stricter A+ bar
+
+- Import four weekly Search Console and privacy-safe funnel snapshots.
+- Measure search impressions and click-through separately for Player Hub, Instant Play, and Vault Run.
+- Observe four first-time players and verify that the shared action grammar transfers between all three modes without reteaching.
+- Create a dedicated Vault Run social card only after real share data shows that route attracts meaningful discovery traffic.

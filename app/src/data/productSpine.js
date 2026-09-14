@@ -73,6 +73,7 @@ export const ROUTE_META = Object.freeze({
     title: 'Plundrix Player Hub - Choose Your Table',
     description: 'Play instantly against three agents or join a hosted live multiplayer operation.',
     image: '/images/og/plundrix-home.jpg',
+    imageAlt: 'Plundrix Player Hub with Instant Play, Vault Run, and live table choices',
     primaryCta: 'Play',
     nextRoutes: ['/play', '/replays'],
   },
@@ -85,6 +86,7 @@ export const ROUTE_META = Object.freeze({
     title: 'Play Plundrix Instantly',
     description: 'Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup.',
     image: '/images/og/plundrix-play.jpg',
+    imageAlt: 'Plundrix Instant Play showing the shared Pick, Search, and Sabotage interface',
     primaryCta: 'Play',
     nextRoutes: ['/workshop', '/replays'],
   },
@@ -96,7 +98,8 @@ export const ROUTE_META = Object.freeze({
     purpose: 'Take one gadget through three escalating practice vaults.',
     title: 'Vault Run - Three Vault Roguelite | Plundrix',
     description: 'Choose risky routes, outwit persistent rivals, and carry one workshop gadget through a three-stage Plundrix run.',
-    image: '/images/victory-breach.webp',
+    image: '/images/og/plundrix-play.jpg',
+    imageAlt: 'Plundrix Vault Run using the shared vault-race gameplay interface',
     primaryCta: 'Run',
     nextRoutes: ['/workshop', '/replays'],
   },
@@ -120,6 +123,7 @@ export const ROUTE_META = Object.freeze({
     title: 'Operator Workshop - 10 Signature Gadgets, 1,200 Builds | Plundrix',
     description: 'Choose one of ten gameplay-distinct gadgets, then assemble a visible material and calibration configuration for your next Plundrix operation.',
     image: '/images/og/plundrix-play.jpg',
+    imageAlt: 'Plundrix gameplay with modular vault tools and tactical actions',
     primaryCta: 'Assemble',
     nextRoutes: ['/play', '/replays'],
   },
@@ -132,6 +136,7 @@ export const ROUTE_META = Object.freeze({
     title: 'Plundrix Gameplay Trailer - 32 Seconds',
     description: 'Watch a four-player vault race swing from first move to final lock in 32 seconds.',
     image: '/images/og/plundrix-trailer.jpg',
+    imageAlt: 'Plundrix gameplay trailer showing a four-operator vault race',
     primaryCta: 'Watch',
     nextRoutes: ['/play', '/replays'],
   },
@@ -366,8 +371,63 @@ export const ROUTE_META = Object.freeze({
   },
 });
 
+export const ROUTE_DISCOVERY = Object.freeze({
+  '/': {
+    summary: 'Choose Instant Play for a complete browser match against three tactical agents, start a three-vault solo run, or enter a hosted live table. All three modes use the same Pick, Search, and Sabotage decision interface.',
+    highlights: ['Complete matches with a real ending', 'One shared ruleset across solo and live play', 'No signup required for Instant Play'],
+  },
+  '/play': {
+    summary: 'Instant Play starts a complete Plundrix match against three clearly labeled tactical agents. Every round, all four operators secretly choose Pick, Search, or Sabotage and reveal together.',
+    highlights: ['Pick attempts the next vault lock', 'Search builds tools and future odds', 'Sabotage disrupts a chosen rival'],
+  },
+  '/vault-run': {
+    summary: 'Vault Run carries one equipped gadget through three escalating practice vaults. Route choices change heat and rewards while persistent rivals remember the run.',
+    highlights: ['Three-stage solo run', 'Branching risk and reward routes', 'Persistent gadget and contraband choices'],
+  },
+  '/career': {
+    summary: 'Career turns completed play on this device into a compact operator record with rival history, collection progress, Vault Run results, and a clear next objective.',
+    highlights: ['Local progress without an account', 'Rival and replay history', 'Next objective based on completed play'],
+  },
+  '/workshop': {
+    summary: 'The Workshop contains ten gameplay-distinct gadget chassis and 1,200 deterministic builds assembled from visible materials, finishes, and calibrations.',
+    highlights: ['Ten signature gadget chassis', '1,200 stable blueprint combinations', 'Equip one build for the next operation'],
+  },
+  '/trailer': {
+    summary: 'The 32-second Plundrix gameplay trailer uses real product captures to show the vault race, simultaneous reveal, tactical tools, sabotage, and final breach.',
+    highlights: ['Real gameplay captures', 'Complete match arc in 32 seconds', 'Instant Play available after the trailer'],
+  },
+  '/leaderboard': {
+    summary: 'The operator ladder shows available competitive standings and labels the source and unavailable state instead of inventing player activity.',
+    highlights: ['Current operator standings', 'Labeled data source', 'Honest unavailable state'],
+  },
+  '/sessions': {
+    summary: 'Operation History exposes available public match records with operator results and session context, plus a clear unavailable state when the feed cannot be reached.',
+    highlights: ['Recent public operation records', 'Operator and result context', 'Transparent service state'],
+  },
+  '/replays': {
+    summary: 'Stories from the Vault collects deterministic replay records that explain the round, action, and consequence behind a close finish or table-changing turn.',
+    highlights: ['Round-by-round operation records', 'Curated turning points', 'Direct path back into Instant Play'],
+  },
+  '/glossary': {
+    summary: 'The Plundrix glossary defines the current game language for operations, rounds, vaults, operators, tools, sabotage, and replays.',
+    highlights: ['Current rules terminology', 'Plain-language definitions', 'Links back to playable modes'],
+  },
+  '/terms': {
+    summary: 'The game terms explain eligibility, playable beta behavior, hosted processing, acceptable use, and the current service posture.',
+    highlights: ['Versioned service terms', 'Plain-language beta posture', 'Hosted game responsibilities'],
+  },
+  '/privacy': {
+    summary: 'The privacy notice explains local preferences, anonymous product analytics, managed player sessions, and the controls available to players.',
+    highlights: ['Local preference storage', 'Anonymous aggregate analytics', 'Player controls and contact details'],
+  },
+});
+
 export function routeMeta(path) {
   return ROUTE_META[path] || null;
+}
+
+export function routeDiscovery(path) {
+  return ROUTE_DISCOVERY[path] || null;
 }
 
 export function loopStep(id) {

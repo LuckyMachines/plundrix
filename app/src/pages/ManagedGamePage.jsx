@@ -127,7 +127,7 @@ export default function ManagedGamePage() {
             </div>
           </section>
 
-          {data.participant ? <UnifiedActionDeck id="live-table-actions" kicker="Live table / choose one concealed action" actions={actionChoices} selectedAction={selectedAction} busy={waitingForTable} onSelect={setSelectedAction} onCommit={submitAction} commitLabel={`Commit ${selectedChoice.label}`} targets={opponents.map((player) => ({ id: String(player.seat), name: player.label, locksCracked: player.locksCracked }))} selectedTarget={targetSeat} onTarget={setTargetSeat} preview={selectedChoice.detail} guidance="Pick races now. Search improves future Pick odds. Sabotage disrupts a rival. Everyone reveals together." /> : <p className="border border-vault-border bg-vault-surface p-5 text-sm text-vault-text-dim">This operation is already active. You can watch the table resolve.</p>}
+          {data.participant ? <UnifiedActionDeck id="live-table-actions" modeLabel="Live table" round={data.currentRound} actions={actionChoices} selectedAction={selectedAction} busy={waitingForTable} onSelect={setSelectedAction} onCommit={submitAction} commitLabel={`Commit ${selectedChoice.label}`} targets={opponents.map((player) => ({ id: String(player.seat), name: player.label, locksCracked: player.locksCracked }))} selectedTarget={targetSeat} onTarget={setTargetSeat} preview={selectedChoice.detail} guidance="Pick races now. Search improves future Pick odds. Sabotage disrupts a rival. Everyone reveals together." /> : <p className="border border-vault-border bg-vault-surface p-5 text-sm text-vault-text-dim">This operation is already active. You can watch the table resolve.</p>}
         </div>
       )}
 

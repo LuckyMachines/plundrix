@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { SITE_ORIGIN } from '../src/data/comparisonPages.js';
-import { ROUTE_META, publicStaticRoutes } from '../src/data/productSpine.js';
+import { ROUTE_DISCOVERY, ROUTE_META, publicStaticRoutes } from '../src/data/productSpine.js';
 
 const distRoot = join(process.cwd(), 'dist');
 const publicRoot = join(process.cwd(), 'public');
@@ -43,6 +43,9 @@ function injectSeo(shell, {
   jsonLd,
   image = defaultImage,
   imageAlt = defaultImageAlt,
+  imageType = 'image/jpeg',
+  imageWidth = 1200,
+  imageHeight = 630,
   video,
 }) {
   const tags = [
@@ -56,9 +59,9 @@ function injectSeo(shell, {
     `<meta property="og:url" content="${escapeHtml(canonical)}" />`,
     `<meta property="og:image" content="${escapeHtml(image)}" />`,
     `<meta property="og:image:secure_url" content="${escapeHtml(image)}" />`,
-    '<meta property="og:image:type" content="image/jpeg" />',
-    '<meta property="og:image:width" content="1200" />',
-    '<meta property="og:image:height" content="630" />',
+    `<meta property="og:image:type" content="${escapeHtml(imageType)}" />`,
+    `<meta property="og:image:width" content="${escapeHtml(imageWidth)}" />`,
+    `<meta property="og:image:height" content="${escapeHtml(imageHeight)}" />`,
     `<meta property="og:image:alt" content="${escapeHtml(imageAlt)}" />`,
     '<meta name="twitter:card" content="summary_large_image" />',
     `<meta name="twitter:title" content="${escapeHtml(title)}" />`,
@@ -92,21 +95,27 @@ function publicNextRoutes(meta) {
 }
 
 function staticRouteBody(route, meta) {
+  const discovery = ROUTE_DISCOVERY[route];
   const links = publicNextRoutes(meta);
   if (!links.includes('/play') && route !== '/play') links.unshift('/play');
   const linkHtml = links.slice(0, 2).map((path) => {
     const destination = ROUTE_META[path];
     return `<a href="${escapeHtml(path)}">${escapeHtml(destination?.title || 'Play Plundrix')}</a>`;
   }).join('\n        ');
-  const context = route === '/'
-    ? 'Choose a complete instant match against three labeled agents or enter a hosted live multiplayer table. Every round resolves Pick, Search, and Sabotage together.'
-    : 'Plundrix is a free-play simultaneous-action vault race. Players read the table, build tools, pressure rivals, and try to crack five locks first.';
+  const context = discovery?.summary || 'Plundrix is a free-play simultaneous-action vault race. Players read the table, build tools, pressure rivals, and try to crack five locks first.';
+  const highlights = discovery?.highlights?.length
+    ? `<section data-discovery-proof="true" aria-labelledby="discovery-proof-heading">
+        <h2 id="discovery-proof-heading">What this page proves</h2>
+        <ul>${discovery.highlights.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+      </section>`
+    : '';
   return `<main data-static-discovery="true">
       <nav aria-label="Discovery"><a href="${marketingOrigin}">About Plundrix</a> <a href="${SITE_ORIGIN}/">Player Hub</a></nav>
       <p>${escapeHtml(meta.label)}</p>
       <h1>${escapeHtml(meta.title)}</h1>
       <p>${escapeHtml(meta.description)}</p>
       <p>${escapeHtml(context)}</p>
+      ${highlights}
       <div>${linkHtml}</div>
     </main>`;
 }
@@ -140,6 +149,24 @@ function sharedNodes() {
       url: `${marketingOrigin}/`,
       sameAs: [`${SITE_ORIGIN}/`, 'https://github.com/LuckyMachines/plundrix'],
     },
+    {
+      '@type': 'VideoGame',
+      '@id': `${SITE_ORIGIN}/#game`,
+      name: 'Plundrix',
+      description: 'A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.',
+      url: `${SITE_ORIGIN}/`,
+      image: defaultImage,
+      genre: ['Strategy', 'Turn-based strategy', 'Vault heist'],
+      gamePlatform: 'Web browser',
+      playMode: ['SinglePlayer', 'MultiPlayer'],
+      numberOfPlayers: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 4 },
+      operatingSystem: 'Any modern web browser',
+      applicationCategory: 'Game',
+      isAccessibleForFree: true,
+      author: { '@id': `${SITE_ORIGIN}/#organization` },
+      potentialAction: { '@type': 'PlayAction', target: `${SITE_ORIGIN}/play` },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
   ];
 }
 
@@ -153,29 +180,29 @@ function routeJsonLd(route, meta) {
     url,
     isPartOf: { '@id': `${SITE_ORIGIN}/#website` },
     about: { '@id': `${SITE_ORIGIN}/#game` },
+    mainEntity: { '@id': `${SITE_ORIGIN}/#game` },
     inLanguage: 'en',
     dateModified: lastModified,
   };
 
+  if (['/', '/play', '/vault-run'].includes(route)) {
+    webPage.potentialAction = {
+      '@type': 'PlayAction',
+      target: url,
+      object: { '@id': `${SITE_ORIGIN}/#game` },
+    };
+  }
+
   const graph = [...sharedNodes(), webPage];
-  if (route === '/') {
+  if (route !== '/') {
     graph.push({
-        '@type': 'VideoGame',
-        '@id': `${SITE_ORIGIN}/#game`,
-        name: 'Plundrix',
-        description: 'A simultaneous-action vault-heist strategy game for 2-4 players.',
-        url: `${SITE_ORIGIN}/`,
-        image: defaultImage,
-        gamePlatform: 'Web browser',
-        playMode: ['SinglePlayer', 'MultiPlayer'],
-        numberOfPlayers: '2-4',
-        operatingSystem: 'Any modern web browser',
-        applicationCategory: 'Game',
-        isAccessibleForFree: true,
-        author: { '@id': `${SITE_ORIGIN}/#organization` },
-        potentialAction: { '@type': 'PlayAction', target: `${SITE_ORIGIN}/play` },
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-      });
+      '@type': 'BreadcrumbList',
+      '@id': `${url}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Player Hub', item: `${SITE_ORIGIN}/` },
+        { '@type': 'ListItem', position: 2, name: meta.label, item: url },
+      ],
+    });
   }
   if (route === '/trailer') {
     graph.push({
@@ -206,11 +233,14 @@ for (const route of publicStaticRoutes()) {
     canonical: `${SITE_ORIGIN}${route === '/' ? '/' : route}`,
     jsonLd,
     image,
-    imageAlt: route === '/play'
+    imageAlt: meta.imageAlt || (route === '/play'
       ? 'Plundrix instant play - Your table is ready.'
       : route === '/trailer'
         ? 'Plundrix gameplay trailer - One vault. No safe turn.'
-        : defaultImageAlt,
+        : defaultImageAlt),
+    imageType: meta.imageType || (image.endsWith('.webp') ? 'image/webp' : 'image/jpeg'),
+    imageWidth: meta.imageWidth || 1200,
+    imageHeight: meta.imageHeight || 630,
     video: route === '/trailer' ? `${SITE_ORIGIN}/video/plundrix-gameplay-trailer.mp4` : undefined,
   });
   await writeRouteHtml(route, injectStaticBody(pageHtml, staticRouteBody(route, meta)));

@@ -45,6 +45,14 @@ import {
 } from '../lib/vaultRun';
 import { loadWeeklyBoard, localWeeklyChallenge, submitWeeklyScore } from '../lib/weeklyChallenge';
 
+const VAULT_RUN_SEO = Object.freeze({
+  title: 'Vault Run - Three Vault Roguelite | Plundrix',
+  description: 'Take one gadget through three escalating Plundrix vaults with risky routes, persistent rivals, and a weekly seeded challenge.',
+  path: '/vault-run',
+  image: '/images/og/plundrix-play.jpg',
+  imageAlt: 'Plundrix Vault Run using the shared vault-race gameplay interface',
+});
+
 const ACTIONS = [
   { id: SIM_ACTION.PICK, label: 'Pick', detail: 'Pressure the next lock.' },
   { id: SIM_ACTION.SEARCH, label: 'Search', detail: 'Find tools and improve later odds.' },
@@ -312,7 +320,7 @@ export default function VaultRunPage() {
   if (!run) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-16">
-        <Seo title="Vault Run - Three Vault Roguelite | Plundrix" description="Take one gadget through three escalating Plundrix vaults with risky routes, persistent rivals, and a weekly seeded challenge." path="/vault-run" image="/images/victory-breach.webp" />
+        <Seo {...VAULT_RUN_SEO} />
         <section className="relative min-h-[540px] overflow-hidden border border-tungsten/50 bg-vault-dark">
           <img src="/images/victory-breach.webp" alt="" width="1536" height="1024" className="absolute inset-0 h-full w-full object-cover opacity-40" />
           <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/20" />
@@ -347,7 +355,7 @@ export default function VaultRunPage() {
     const bestScore = Math.max(run.score, ...runHistory.map((item) => Number(item.score) || 0));
     return (
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        <Seo title="Vault Run Result | Plundrix" description="Review a completed Plundrix Vault Run." path="/vault-run" />
+        <Seo {...VAULT_RUN_SEO} />
         <RoundTheater phase={theaterPhase} action={theaterAction} outcome={theaterOutcome} players={match?.players || []} round={theaterRound} gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? signatureEvent : null} />
         <OperationCeremony event={ceremonyEvent} />
         <section className={`border p-6 sm:p-10 ${run.status === 'COMPLETE' ? 'border-oxide-green/60 bg-oxide-green/5' : 'border-signal-red/50 bg-signal-red/5'}`}>
@@ -370,7 +378,7 @@ export default function VaultRunPage() {
   if (run.status === 'LOOT') {
     return (
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <Seo title="Contraband Cache - Vault Run | Plundrix" description="Choose one persistent contraband upgrade before the next Plundrix vault." path="/vault-run" />
+        <Seo {...VAULT_RUN_SEO} />
         <RoundTheater phase={theaterPhase} action={theaterAction} outcome={theaterOutcome} players={match?.players || []} round={theaterRound} gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? signatureEvent : null} />
         <OperationCeremony event={ceremonyEvent} />
         <section className="border border-oxide-green/45 bg-vault-surface p-6 sm:p-10">
@@ -402,7 +410,7 @@ export default function VaultRunPage() {
 
   return (
     <div className={`${run.status === 'ACTIVE' ? 'caper-operation caper-workbench instant-play-active ' : ''}mx-auto max-w-7xl px-4 py-8 sm:px-6`} data-match-state={run.status === 'ACTIVE' ? 'vault-active' : 'route'} data-presentation-phase={theaterPhase} data-active-route={normalizePresentationAction(theaterAction)}>
-      <Seo title={`${stage.label} - Vault Run | Plundrix`} description="Continue a three-stage Plundrix Vault Run." path="/vault-run" />
+      <Seo {...VAULT_RUN_SEO} />
       <RoundTheater phase={theaterPhase} action={theaterAction} outcome={theaterOutcome} players={match?.players || []} round={theaterRound} gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? signatureEvent : null} />
       <OperationCeremony event={ceremonyEvent} />
       <header className="flex flex-wrap items-end justify-between gap-5 border-b border-vault-border pb-6">
@@ -448,7 +456,8 @@ export default function VaultRunPage() {
             {lastRound && <div className="vault-last-round border border-vault-border bg-vault-dark/55 p-4"><p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Last round</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{lastRound.events.filter((event) => event.type === 'ActionOutcome').map((event) => <p key={event.id} className={`text-sm ${event.success ? 'text-oxide-green' : 'text-vault-text-dim'}`}>{event.message}</p>)}</div></div>}
             <UnifiedActionDeck
               id="vault-run-actions"
-              kicker={`Round ${match.currentRound} / choose one concealed action`}
+              modeLabel="Vault run"
+              round={match.currentRound}
               heading="Make the next move."
               guidance={pressure?.pickBonus > 0 ? `Table pressure adds ${pressure.pickBonus}% to Pick${pressure.locksOnSuccess > 1 ? ' and cracks two locks on success' : ''}.` : null}
               actions={actionChoices}

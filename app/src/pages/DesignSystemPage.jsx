@@ -255,9 +255,9 @@ function ActionLoaderLab() {
       <h1 className="type-page mt-3 text-vault-text">Every wait feels alive and trustworthy.</h1>
       <p className="mt-4 max-w-2xl text-vault-text-dim">Immediate acknowledgment, contextual stages, honest indefinite progress, and reassurance without exposing infrastructure.</p>
       <div className="mt-8 grid gap-5">
-        <ActionWaitPanel eyebrow="Starting live operation" stages={ACTION_STAGE_PRESETS.start} detail="Your request was received. The table will open automatically when it is ready." />
-        <ActionWaitPanel eyebrow="Move committed" stages={ACTION_STAGE_PRESETS.reveal} detail="The table is resolving. Your move is safe." compact />
-        <button type="button" disabled aria-busy="true" className="min-h-[54px] max-w-sm bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark disabled:cursor-wait disabled:opacity-80"><ActionButtonContent active idle="Start operation" stages={ACTION_STAGE_PRESETS.start} /></button>
+        <ActionWaitPanel eyebrow="Starting live operation" stages={ACTION_STAGE_PRESETS.start} fixedStageIndex={0} detail="Your request was received. The table will open automatically when it is ready." />
+        <ActionWaitPanel eyebrow="Move committed" stages={ACTION_STAGE_PRESETS.reveal} fixedStageIndex={2} detail="The table is resolving. Your move is safe." compact />
+        <button type="button" disabled aria-busy="true" className="min-h-[54px] max-w-sm bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark disabled:cursor-wait disabled:opacity-80"><ActionButtonContent active idle="Start operation" stages={ACTION_STAGE_PRESETS.start} fixedStageIndex={1} /></button>
       </div>
     </PageShell>
   );

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "startedAt": "2026-09-14T20:26:11.3839954Z",
-  "completedAt": "2026-09-14T20:27:58.2202364Z",
-  "buildSha": "43384fc",
+  "startedAt": "2026-09-14T22:40:00.0000000Z",
+  "completedAt": "2026-09-14T22:56:41.3562305Z",
+  "buildSha": "39f0779",
   "mode": "approve",
-  "reason": "Unify Instant, Vault Run, and Live Table gameplay; add contextual action feedback and long-wait reassurance after full contact-sheet review",
-  "surface": "all",
+  "reason": "Standardize mode and round action grammar, commit labels, deterministic loader evidence, and reduced-motion capture stability after original-resolution review",
+  "surface": "instant-active,instant-resolution,action-loader",
   "status": "pass",
   "playwrightExitCode": 0,
   "compositionExitCode": 0

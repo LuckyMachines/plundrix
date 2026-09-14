@@ -9,7 +9,9 @@ export const GAMEPLAY_ACTION_ART = Object.freeze({
 
 export default function UnifiedActionDeck({
   id = 'gameplay-actions',
-  kicker = 'Choose one concealed action',
+  modeLabel = 'Operation',
+  round,
+  kicker,
   heading = 'Make the next move.',
   guidance,
   actions,
@@ -27,9 +29,11 @@ export default function UnifiedActionDeck({
   preview,
   children,
 }) {
+  const resolvedKicker = kicker || `${modeLabel}${round ? ` / R${round}` : ''} / concealed move`;
+
   return (
-    <section id={id} className="instant-decision-board caper-layer caper-layer-control p-5 sm:p-7" aria-labelledby={`${id}-heading`} aria-busy={busy}>
-      <p className="font-mono text-micro uppercase tracking-brand text-tungsten">{kicker}</p>
+    <section id={id} className="instant-decision-board caper-layer caper-layer-control p-5 sm:p-7" aria-labelledby={`${id}-heading`} aria-busy={busy} data-gameplay-interface="unified" data-gameplay-mode={modeLabel.toLowerCase().replaceAll(' ', '-')}>
+      <p className="font-mono text-micro uppercase tracking-brand text-tungsten">{resolvedKicker}</p>
       <h2 id={`${id}-heading`} className="instant-decision-heading">{heading}</h2>
       {guidance && <p className="instant-first-move mt-3 border-l-2 border-oxide-green bg-oxide-green/10 px-4 py-3 text-sm leading-6 text-vault-text">{guidance}</p>}
 

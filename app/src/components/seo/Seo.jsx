@@ -46,7 +46,7 @@ export default function Seo({
   imageAlt = 'Plundrix simultaneous-action vault-heist strategy game',
   imageWidth = 1200,
   imageHeight = 630,
-  imageType = 'image/jpeg',
+  imageType,
   video,
   noIndex = false,
   jsonLd,
@@ -55,6 +55,7 @@ export default function Seo({
   const canonicalPath = path || location.pathname;
   const canonical = `${SITE_ORIGIN}${canonicalPath}`;
   const fullTitle = title.includes('Plundrix') || title === 'PLUNDRIX' ? title : `${title} | Plundrix`;
+  const resolvedImageType = imageType || (image?.toLowerCase().endsWith('.webp') ? 'image/webp' : 'image/jpeg');
 
   useEffect(() => {
     document.title = fullTitle;
@@ -77,7 +78,7 @@ export default function Seo({
       const imageUrl = image.startsWith('http') ? image : `${SITE_ORIGIN}${image}`;
       upsertMeta('meta[property="og:image"]', { property: 'og:image' }, { content: imageUrl });
       upsertMeta('meta[property="og:image:secure_url"]', { property: 'og:image:secure_url' }, { content: imageUrl });
-      upsertMeta('meta[property="og:image:type"]', { property: 'og:image:type' }, { content: imageType });
+      upsertMeta('meta[property="og:image:type"]', { property: 'og:image:type' }, { content: resolvedImageType });
       upsertMeta('meta[property="og:image:width"]', { property: 'og:image:width' }, { content: String(imageWidth) });
       upsertMeta('meta[property="og:image:height"]', { property: 'og:image:height' }, { content: String(imageHeight) });
       upsertMeta('meta[property="og:image:alt"]', { property: 'og:image:alt' }, { content: imageAlt });
@@ -122,7 +123,7 @@ export default function Seo({
         inLanguage: 'en',
       });
     }
-  }, [canonical, description, fullTitle, image, imageAlt, imageHeight, imageType, imageWidth, jsonLd, noIndex, type, video]);
+  }, [canonical, description, fullTitle, image, imageAlt, imageHeight, imageWidth, jsonLd, noIndex, resolvedImageType, type, video]);
 
   return null;
 }

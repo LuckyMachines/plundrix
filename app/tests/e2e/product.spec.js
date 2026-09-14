@@ -167,6 +167,10 @@ test('client navigation keeps canonical and crawler metadata route-specific', as
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://game.plundrix.com/leaderboard');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /index,follow/);
 
+  await page.goto('/vault-run');
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /plundrix-play\.jpg$/);
+  await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute('content', 'image/jpeg');
+
   await page.goto('/ops');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
 });
@@ -251,6 +255,8 @@ test('vault run starts, exposes a meaningful route tradeoff, and resolves a gamb
   await page.getByRole('button', { name: /kick the hinge/i }).click();
   await expect(page.getByRole('heading', { name: 'Outer Ring' })).toBeVisible();
   await expect(page.getByText('Round 1', { exact: true })).toBeVisible();
+  await expect(page.locator('[data-gameplay-interface="unified"]')).toHaveAttribute('data-gameplay-mode', 'vault-run');
+  await expect(page.getByText('Vault run / R1 / concealed move', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: /double or nothing/i }).click();
   await page.getByRole('button', { name: 'Commit Pick' }).click();
   await expect(page.getByText('Last round')).toBeVisible();
@@ -274,6 +280,7 @@ test('tactical art reinforces gadgets, actions, and rival identities', async ({ 
   await expect(page.getByText('One build, one visible signature, one use per operation.')).toBeVisible();
   await page.getByRole('button', { name: /breach the vault/i }).click();
   await expect(page.getByRole('heading', { name: 'Round 1' })).toBeVisible();
+  await expect(page.locator('[data-gameplay-interface="unified"]')).toHaveAttribute('data-gameplay-mode', 'tactical');
   await expect(page.locator('img[src$="-device.webp"]')).toHaveCount(3);
   expect(await page.locator('img[src="/images/parts/pick-tool.webp"]').count()).toBeGreaterThan(0);
   expect(await page.locator('img[src="/images/parts/search-kit.webp"]').count()).toBeGreaterThan(0);
@@ -338,7 +345,7 @@ test('instant play keeps the whole decision console in a laptop viewport', async
     page.locator('.instant-action-option[data-action="pick"]'),
     page.locator('.instant-action-option[data-action="search"]'),
     page.locator('.instant-action-option[data-action="sabotage"]'),
-    page.getByRole('button', { name: 'Commit and reveal', exact: true }),
+    page.getByRole('button', { name: 'Commit Pick', exact: true }),
   ];
 
   for (const control of controls) {
@@ -357,7 +364,7 @@ test('instant play keeps the whole decision console in a laptop viewport', async
   expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth);
   expect(layout.decisionBottom).toBeLessThanOrEqual(layout.viewportHeight);
 
-  await page.getByRole('button', { name: 'Commit and reveal', exact: true }).click();
+  await page.getByRole('button', { name: 'Commit Pick', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Round 2', exact: true })).toBeVisible();
   await expect(page.getByText(/Last resolution/).first()).toBeVisible();
   const nextDecisionBottom = await page.locator('#instant-actions').evaluate((element) => element.getBoundingClientRect().bottom);
@@ -532,6 +539,8 @@ test('two anonymous players can create, join, start, and commit a hosted operati
     await expect(page.getByText('Preparing the operation', { exact: true }).first()).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Make the next move.' })).toBeVisible({ timeout: 30_000 });
     await expect(secondPlayer.getByRole('heading', { name: 'Make the next move.' })).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('[data-gameplay-interface="unified"]')).toHaveAttribute('data-gameplay-mode', 'live-table');
+    await expect(page.getByText('Live table / R1 / concealed move', { exact: true })).toBeVisible();
 
     await page.locator('#live-table-actions .instant-action-option[data-action="search"]').click();
     await page.getByRole('button', { name: 'Commit Search' }).click();

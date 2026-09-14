@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { spawn } from 'node:child_process';
-import { publicStaticRoutes } from '../src/data/productSpine.js';
+import { ROUTE_DISCOVERY, publicStaticRoutes } from '../src/data/productSpine.js';
 import { extractHtmlFacts, extractSitemapEntries } from '../src/lib/seoAudit.js';
 
 const appDir = process.cwd();
@@ -26,6 +26,7 @@ async function waitForServer() {
 
 const homeHtml = await readFile(resolve(appDir, 'dist', 'index.html'), 'utf8');
 const playHtml = await readFile(resolve(appDir, 'dist', 'play', 'index.html'), 'utf8');
+const vaultRunHtml = await readFile(resolve(appDir, 'dist', 'vault-run', 'index.html'), 'utf8');
 const trailerHtml = await readFile(resolve(appDir, 'dist', 'trailer', 'index.html'), 'utf8');
 const sitemap = await readFile(resolve(appDir, 'dist', 'sitemap.xml'), 'utf8');
 const publicSitemap = await readFile(resolve(appDir, 'public', 'sitemap.xml'), 'utf8');
@@ -51,6 +52,15 @@ for (const route of publicStaticRoutes()) {
   assert.ok(facts.textLength >= 160, `${route} should ship useful crawlable body copy`);
   assert.ok(facts.linkCount >= 2, `${route} should ship crawlable internal links`);
   expectIncludes(routeHtml, 'data-static-discovery="true"', `${route} static discovery body`);
+  expectIncludes(routeHtml, 'data-discovery-proof="true"', `${route} route-specific proof`);
+  for (const proofPoint of ROUTE_DISCOVERY[route]?.highlights || []) {
+    expectIncludes(routeHtml, proofPoint, `${route} route-specific proof`);
+  }
+
+  const structuredData = routeHtml.match(/<script id="plundrix-static-jsonld" type="application\/ld\+json">(.*?)<\/script>/s);
+  const graph = JSON.parse(structuredData[1])['@graph'];
+  assert.ok(graph.some((node) => node['@type'] === 'VideoGame'), `${route} should identify the game entity`);
+  if (route !== '/') assert.ok(graph.some((node) => node['@type'] === 'BreadcrumbList'), `${route} should include breadcrumbs`);
 }
 
 for (const filename of socialCards) {
@@ -65,6 +75,10 @@ expectIncludes(homeHtml, '"@type":"VideoGame"', 'home structured data');
 assert.ok(!homeHtml.includes('"@type":"FAQPage"'), 'game home must not claim FAQ content that only exists on marketing');
 expectIncludes(playHtml, 'https://game.plundrix.com/play', 'play canonical');
 expectIncludes(playHtml, 'images/og/plundrix-play.jpg', 'play social image');
+expectIncludes(playHtml, '"@type":"PlayAction"', 'play structured data');
+expectIncludes(vaultRunHtml, 'images/og/plundrix-play.jpg', 'vault run social image');
+expectIncludes(vaultRunHtml, 'property="og:image:type" content="image/jpeg"', 'vault run social image type');
+expectIncludes(vaultRunHtml, 'Vault Run carries one equipped gadget through three escalating practice vaults', 'vault run discovery copy');
 expectIncludes(trailerHtml, '"@type":"VideoObject"', 'trailer structured data');
 expectIncludes(trailerHtml, 'property="og:video"', 'trailer Open Graph tags');
 expectIncludes(sitemap, '<loc>https://game.plundrix.com/play</loc>', 'sitemap');

@@ -8,11 +8,11 @@ const DEFAULT_STAGES = [
   { after: 8000, label: 'Still working - keep this window open' },
 ];
 
-export function useActionStage(active, stages = DEFAULT_STAGES) {
+export function useActionStage(active, stages = DEFAULT_STAGES, fixedStageIndex) {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    if (!active) {
+    if (!active || Number.isInteger(fixedStageIndex)) {
       setElapsed(0);
       return undefined;
     }
@@ -21,17 +21,20 @@ export function useActionStage(active, stages = DEFAULT_STAGES) {
     tick();
     const timer = window.setInterval(tick, 250);
     return () => window.clearInterval(timer);
-  }, [active]);
+  }, [active, fixedStageIndex]);
 
-  const activeIndex = active
+  const timedIndex = active
     ? Math.max(0, stages.findLastIndex((stage) => elapsed >= stage.after))
     : 0;
+  const activeIndex = Number.isInteger(fixedStageIndex)
+    ? Math.max(0, Math.min(stages.length - 1, fixedStageIndex))
+    : timedIndex;
 
   return { activeIndex, elapsed, label: stages[activeIndex]?.label || stages[0]?.label || 'Working' };
 }
 
-export function ActionButtonContent({ active, idle, stages = DEFAULT_STAGES }) {
-  const stage = useActionStage(active, stages);
+export function ActionButtonContent({ active, idle, stages = DEFAULT_STAGES, fixedStageIndex }) {
+  const stage = useActionStage(active, stages, fixedStageIndex);
   if (!active) return idle;
 
   return (
@@ -50,8 +53,9 @@ export function ActionWaitPanel({
   detail = 'Your command is safe. This panel will update as soon as the next state is ready.',
   compact = false,
   className = '',
+  fixedStageIndex,
 }) {
-  const stage = useActionStage(active, stages);
+  const stage = useActionStage(active, stages, fixedStageIndex);
   const progress = [22, 54, 78, 92][Math.min(stage.activeIndex, 3)];
 
   return (

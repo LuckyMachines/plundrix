@@ -29,7 +29,7 @@ async function beginInstantMatch(page) {
   await page.getByRole('button', { name: /breach the vault/i }).click();
   await expect(page.getByRole('heading', { name: 'Round 1', exact: true })).toBeVisible();
   const ceremony = page.locator('.operation-ceremony');
-  await expect(ceremony).toHaveAttribute('data-visible', 'true', { timeout: 2_000 });
+  await expect(ceremony).toHaveAttribute('data-kind', 'opening');
   await expect(ceremony).toHaveAttribute('data-visible', 'false', { timeout: 4_000 });
 }
 
@@ -113,7 +113,7 @@ async function prepareSurface(page, surface) {
       await page.getByRole('button', { name: /kick the hinge/i }).click();
       await expect(page.getByRole('heading', { name: 'Outer Ring', exact: true })).toBeVisible();
       const ceremony = page.locator('.operation-ceremony');
-      await expect(ceremony).toHaveAttribute('data-visible', 'true', { timeout: 2_000 });
+      await expect(ceremony).toHaveAttribute('data-kind', 'opening');
       await expect(ceremony).toHaveAttribute('data-visible', 'false', { timeout: 4_000 });
     }
   }
@@ -250,6 +250,12 @@ test.describe('canonical UI review matrix', () => {
           scale: 'css',
         };
 
+        await expect(page).toHaveScreenshot(screenshotName, {
+          ...screenshotOptions,
+          timeout: 10_000,
+          maxDiffPixelRatio: surface.maxDiffPixelRatio ?? manifest.defaults.maxDiffPixelRatio,
+          threshold: surface.pixelThreshold ?? manifest.defaults.pixelThreshold,
+        });
         await page.screenshot({ path: actualPath, ...screenshotOptions });
         const inspection = await inspectPage(page);
         writeFileSync(resolve(resultRoot, `${surface.id}-${viewportName}.json`), `${JSON.stringify({
@@ -264,12 +270,6 @@ test.describe('canonical UI review matrix', () => {
           ...inspection,
         }, null, 2)}\n`, 'utf8');
 
-        await expect(page).toHaveScreenshot(screenshotName, {
-          ...screenshotOptions,
-          timeout: 10_000,
-          maxDiffPixelRatio: surface.maxDiffPixelRatio ?? manifest.defaults.maxDiffPixelRatio,
-          threshold: surface.pixelThreshold ?? manifest.defaults.pixelThreshold,
-        });
         expect(inspection.layout.overflowPixels, 'Page should not overflow horizontally').toBe(0);
         expect(inspection.layout.clippedContainers, 'Action controls should not clip their contents').toEqual([]);
         expect(inspection.layout.unloadedImages, 'Every visible image should load').toEqual([]);
