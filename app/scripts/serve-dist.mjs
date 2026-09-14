@@ -77,7 +77,7 @@ async function serveFile(req, res, filePath, fallbackContentType = 'application/
   const headers = {
     'Content-Type': mimeByExt[ext] || fallbackContentType,
     'Cache-Control': cacheControl,
-    'Content-Security-Policy': "default-src 'self'; connect-src 'self' https: wss:; img-src 'self' data:; media-src 'self'; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' https://plausible.racerverse.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+    'Content-Security-Policy': "default-src 'self'; connect-src 'self' https: wss:; img-src 'self' data:; media-src 'self'; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' https://plausible.racerverse.com https://static.cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
