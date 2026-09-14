@@ -124,14 +124,14 @@
       "reviewFocus": ["earned spectacle", "brief duration", "static reduced-motion meaning"]
     },
     {
-      "id": "transaction-theater",
-      "label": "On-chain transaction theater",
-      "path": "/design-system?stress=transaction-theater",
+      "id": "action-loader",
+      "label": "Action loading system",
+      "path": "/design-system?stress=action-loader",
       "priority": "P0",
       "fixture": "none",
       "viewports": ["desktop", "mobile"],
-      "ready": { "type": "css", "selector": "[data-transaction-theater]" },
-      "reviewFocus": ["truthful wait states", "wallet versus network distinction", "failure recovery"]
+      "ready": { "type": "css", "selector": "[data-action-loader]" },
+      "reviewFocus": ["immediate acknowledgment", "contextual stage language", "long-wait reassurance", "reduced-motion clarity"]
     },
     {
       "id": "audio-preview",
@@ -215,8 +215,8 @@
       "path": "/game/2",
       "priority": "P0",
       "fixture": "live-active",
-      "ready": { "type": "role", "role": "heading", "name": "Choose the pressure" },
-      "reviewFocus": ["decision hierarchy", "round state", "table pressure"]
+      "ready": { "type": "css", "selector": ".instant-round-board" },
+      "reviewFocus": ["shared gameplay grammar", "decision hierarchy", "round state", "table pressure"]
     }
   ]
 }

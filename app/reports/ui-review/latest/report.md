@@ -33,8 +33,8 @@ Composition -> hierarchy -> geometry -> typography/data -> state behavior -> res
 | Premium Search impact | mobile | pass | 0.000% |
 | Breach ceremony | desktop | pass | 0.000% |
 | Breach ceremony | mobile | pass | 0.000% |
-| On-chain transaction theater | desktop | pass | 0.000% |
-| On-chain transaction theater | mobile | pass | 0.000% |
+| Action loading system | desktop | pass | 0.000% |
+| Action loading system | mobile | pass | 0.000% |
 | Sound Locker | desktop | pass | 0.000% |
 | Sound Locker | mobile | pass | 0.000% |
 | Instant final briefing | desktop | pass | 0.000% |

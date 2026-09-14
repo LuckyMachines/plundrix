@@ -1,17 +1,18 @@
 {
-  "surfaceId": "transaction-theater",
-  "label": "On-chain transaction theater",
+  "surfaceId": "action-loader",
+  "label": "Action loading system",
   "priority": "P0",
   "viewport": "desktop",
   "dimensions": {
     "width": 1440,
     "height": 1000
   },
-  "path": "/design-system?stress=transaction-theater",
+  "path": "/design-system?stress=action-loader",
   "reviewFocus": [
-    "truthful wait states",
-    "wallet versus network distinction",
-    "failure recovery"
+    "immediate acknowledgment",
+    "contextual stage language",
+    "long-wait reassurance",
+    "reduced-motion clarity"
   ],
   "experimentIds": [],
   "accessibility": [],

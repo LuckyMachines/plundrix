@@ -113,7 +113,7 @@ export default function VaultMechanism({
             data-action={action.identity}
             data-selected={selectedAction === action.id}
             aria-pressed={selectedAction === action.id}
-            aria-label={`Select ${action.label}: ${action.metric}. ${action.shortDetail}`}
+            aria-label={`Select ${action.label}: ${action.metric}. ${action.shortDetail || action.detail || ''}`}
             disabled={resolving}
             onClick={() => onSelectAction?.(action.id)}
           >

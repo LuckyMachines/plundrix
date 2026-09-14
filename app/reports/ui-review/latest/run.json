@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "startedAt": "2026-09-13T22:53:08.604Z",
-  "completedAt": "2026-09-13T22:54:28.732Z",
-  "buildSha": "9b8eef1",
+  "startedAt": "2026-09-14T20:26:11.3839954Z",
+  "completedAt": "2026-09-14T20:27:58.2202364Z",
+  "buildSha": "43384fc",
   "mode": "approve",
-  "reason": "Add licensed background music audition",
-  "surface": "audio-preview",
+  "reason": "Unify Instant, Vault Run, and Live Table gameplay; add contextual action feedback and long-wait reassurance after full contact-sheet review",
+  "surface": "all",
   "status": "pass",
   "playwrightExitCode": 0,
   "compositionExitCode": 0

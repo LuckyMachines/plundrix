@@ -36,8 +36,17 @@ Review state is stored locally under `plundrix-design-system-review-v1`; it is n
 - Use generated artwork for atmosphere and real UI captures or replays for product proof.
 - Treat `app/art/` as the art source of truth. Every image needs a family, reusable parts, joy target, gameplay-truth constraints, delivery budget, alt treatment, and review state.
 
+## Action feedback contract
+
+- A click must acknowledge immediately by preserving the button footprint, disabling duplicate submission, setting `aria-busy`, and showing the shared vault spinner.
+- Use contextual stage language from `ACTION_STAGE_PRESETS`; do not leave players with a generic `Loading...`, `Processing...`, or unexplained disabled control.
+- After a long wait, reassure the player that the command is safe and tell them whether to remain on the screen. Never invent a completion percentage or time estimate.
+- Use `ActionButtonContent` inside the initiating control and `ActionWaitPanel` when the result changes a page, table, round, or saved collection.
+- All gameplay modes use `UnifiedActionDeck` so Pick, Search, Sabotage, targets, tactical preview, commit, and reveal feedback behave consistently.
+- Verify the canonical loader at `/design-system?stress=action-loader` on desktop, mobile, and reduced motion.
+
 The complete asset-generation and delivery workflow lives in [art-pipeline.md](art-pipeline.md). The asset section of the living Design System reads that same manifest and exposes accepted, revision-needed, and reusable-part counts. The ten-signature, 1,200-configuration workshop model is documented in [gadget-inventory.md](gadget-inventory.md).
 
 ## Release gate
 
-The design-system browser test verifies all 15 review sections, review persistence and filtering, the responsive preview, serious/critical accessibility findings, and mobile horizontal overflow. Responsive specimens use their own container width, so the mobile preview remains truthful even on a desktop review screen.
+The design-system browser test verifies all 16 review sections, review persistence and filtering, the responsive preview, serious/critical accessibility findings, and mobile horizontal overflow. Responsive specimens use their own container width, so the mobile preview remains truthful even on a desktop review screen.

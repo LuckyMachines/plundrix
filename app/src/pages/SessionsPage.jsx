@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import SessionCard from '../components/competition/SessionCard';
-import Spinner from '../components/shared/Spinner';
+import { ActionWaitPanel } from '../components/shared/ActionFeedback';
 import { useCompetitionSessions } from '../hooks/useCompetitionSessions';
 import { AGENT_SERVICE_CONFIGURED } from '../config/service';
 
@@ -111,14 +111,7 @@ function UnavailableState() {
 }
 
 function LoadingState() {
-  return (
-    <div className="border border-vault-border rounded bg-vault-surface p-10 flex items-center gap-3 justify-center">
-      <Spinner size="w-5 h-5" />
-      <span className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
-        Scanning sessions...
-      </span>
-    </div>
-  );
+  return <ActionWaitPanel eyebrow="Live session index" detail="Scanning open, active, and recently completed operations." />;
 }
 
 function ErrorState({ error }) {

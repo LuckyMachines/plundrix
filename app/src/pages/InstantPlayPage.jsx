@@ -2,11 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
 import SignatureMoment from '../components/game/SignatureMoment';
-import DecisionPlate from '../components/gameplay/DecisionPlate';
 import { CrewReadinessRail, MissionStatusPanel, OperationFile } from '../components/gameplay/HeistConsolePanels';
 import RoundTheater from '../components/gameplay/RoundTheater';
 import OperationCeremony from '../components/gameplay/OperationCeremony';
+import UnifiedActionDeck from '../components/gameplay/UnifiedActionDeck';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
+import { ACTION_STAGE_PRESETS, ActionButtonContent } from '../components/shared/ActionFeedback';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
 import {
@@ -608,9 +609,10 @@ export default function InstantPlayPage() {
             disabled={isResolving}
             onClick={() => resolve(false)}
             aria-label={`Commit ${ACTION_LABELS[selectedAction]}`}
+            aria-busy={isResolving}
             className="instant-mobile-command__commit"
           >
-            {isResolving ? 'Revealing...' : `Commit ${ACTION_LABELS[selectedAction]}`}
+            <ActionButtonContent active={isResolving} idle={`Commit ${ACTION_LABELS[selectedAction]}`} stages={ACTION_STAGE_PRESETS.reveal} />
           </button>
           <button
             type="button"
@@ -710,53 +712,20 @@ export default function InstantPlayPage() {
           )}
 
           {state.state === 'ACTIVE' ? (
-            <section id="instant-actions" className="instant-decision-board caper-layer caper-layer-control p-5 sm:p-7" aria-labelledby="instant-actions-heading">
-              <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Choose one concealed action</p>
-              <h2 id="instant-actions-heading" className="instant-decision-heading">Make the next move.</h2>
-              {state.roundHistory.length === 0 && (
-                <p className="instant-first-move mt-3 border-l-2 border-oxide-green bg-oxide-green/10 px-4 py-3 text-sm leading-6 text-vault-text">
-                  Pick races now. Search improves future Pick odds. Sabotage costs a rival their next turn. Everyone reveals together.
-                </p>
-              )}
-              <div className="instant-action-row">
-                <div className="instant-action-options mt-4 grid gap-3 md:grid-cols-3">
-                  {actionChoices.map((action, index) => (
-                    <DecisionPlate
-                      key={action.id}
-                      action={action.id}
-                      identity={action.identity}
-                      label={action.label}
-                      metric={action.metric}
-                      detail={action.detail}
-                      image={action.image}
-                      index={index}
-                      selected={selectedAction === action.id}
-                      committed={isResolving && selectedAction === action.id}
-                      disabled={isResolving}
-                      onSelect={() => selectAction(action.id)}
-                    />
-                  ))}
-                </div>
-
-                <div className="instant-action-commit">
-                  <button type="button" disabled={isResolving} onClick={() => resolve(false)} aria-label="Commit and reveal" className="min-h-[52px] flex-1 bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark disabled:cursor-wait disabled:opacity-60">{isResolving ? 'Revealing...' : 'Confirm move'}</button>
-                  <button type="button" disabled={isResolving} onClick={() => resolve(true)} title="The game chooses a recommended move for you this round." aria-label="Auto-play this round" className="min-h-[52px] border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text-dim disabled:opacity-50"><span className="hidden sm:inline">Auto-play this round</span><span className="sm:hidden">Auto</span></button>
-                </div>
-              </div>
-
-              {selectedAction === SIM_ACTION.SABOTAGE && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {state.players.slice(1).map((candidate) => (
-                    <button key={candidate.id} type="button" onClick={() => setTarget(candidate.id)} className={`min-h-[44px] border px-4 font-mono text-xs uppercase ${target === candidate.id ? 'border-signal-red bg-signal-red/10 text-signal-red' : 'border-vault-border text-vault-text'}`}>{candidate.name} / {candidate.locksCracked} locks</button>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-5 border-l-2 border-tungsten bg-vault-dark/50 p-4" aria-live="polite">
-                <p className="font-mono text-micro uppercase tracking-label text-tungsten">Tactical preview</p>
-                <p className="mt-2 text-sm leading-6 text-vault-text">{preview}</p>
-              </div>
-            </section>
+            <UnifiedActionDeck
+              id="instant-actions"
+              actions={actionChoices}
+              selectedAction={selectedAction}
+              busy={isResolving}
+              onSelect={selectAction}
+              onCommit={() => resolve(false)}
+              onAuto={() => resolve(true)}
+              targets={state.players.slice(1)}
+              selectedTarget={target}
+              onTarget={setTarget}
+              preview={preview}
+              guidance={state.roundHistory.length === 0 ? 'Pick races now. Search improves future Pick odds. Sabotage costs a rival their next turn. Everyone reveals together.' : null}
+            />
           ) : (
             <section className="instant-complete relative overflow-hidden border border-tungsten/45 bg-vault-dark px-7 py-10 text-left sm:px-10">
               <img src="/images/victory-breach.webp" alt="" width="1024" height="420" className="absolute inset-0 h-full w-full object-cover object-center" />

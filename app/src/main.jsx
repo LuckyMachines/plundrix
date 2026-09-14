@@ -5,6 +5,7 @@ import App from './App';
 import { AccessibilityProvider } from './context/AccessibilityContext';
 import { ToastProvider } from './context/ToastContext';
 import AppErrorBoundary from './components/shared/AppErrorBoundary';
+import { ActionWaitPanel } from './components/shared/ActionFeedback';
 import { analyticsRoute, trackProductEvent } from './lib/analytics';
 import './index.css';
 import './styles/caper.css';
@@ -22,7 +23,7 @@ function RouteRuntime() {
 
   if (!dataEnabled) return application;
   return (
-    <Suspense fallback={<div className="min-h-screen bg-vault-dark p-8 font-mono text-xs uppercase tracking-wider text-vault-text-dim">Loading live vault...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-vault-dark p-8"><div className="mx-auto max-w-4xl pt-20"><ActionWaitPanel eyebrow="Opening Plundrix" detail="Starting the game service and restoring your saved state." /></div></div>}>
       <DataProvider>
         {application}
       </DataProvider>

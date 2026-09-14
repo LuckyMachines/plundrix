@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Spinner from '../components/shared/Spinner';
+import { ActionWaitPanel } from '../components/shared/ActionFeedback';
 import LeaderboardTable from '../components/competition/LeaderboardTable';
 import PlaystyleStats from '../components/competition/PlaystyleStats';
 import { useLeaderboard } from '../hooks/useLeaderboard';
@@ -102,14 +102,7 @@ function UnavailableState() {
 }
 
 function LoadingState({ label }) {
-  return (
-    <div className="border border-vault-border rounded bg-vault-surface p-10 flex items-center gap-3 justify-center">
-      <Spinner size="w-5 h-5" />
-      <span className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
-        {label}
-      </span>
-    </div>
-  );
+  return <ActionWaitPanel eyebrow="Season standings" stages={[{ after: 0, label }, { after: 1800, label: 'Comparing operator records' }, { after: 5000, label: 'Sorting the final table' }, { after: 9000, label: 'Still compiling - keep this window open' }]} detail="Loading verified scores and current rankings." />;
 }
 
 function ErrorState({ error }) {

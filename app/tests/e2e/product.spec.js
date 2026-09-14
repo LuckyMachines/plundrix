@@ -459,7 +459,7 @@ test('hosted lobby renders a sanitized crew and lets the player join', async ({ 
   await expect(page.getByRole('heading', { name: 'Operation 1' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Assemble the crew' })).toBeVisible();
   await page.getByRole('button', { name: 'Join operation' }).click();
-  await expect(page.getByText('You', { exact: true })).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText(/^You \/ /).first()).toBeVisible({ timeout: 20_000 });
   await expect(page.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);
   await expectNoSeriousA11yIssues(page);
 });
@@ -511,7 +511,7 @@ test('two anonymous players can create, join, start, and commit a hosted operati
   await page.goto('/');
   await page.getByRole('button', { name: 'Create operation' }).click();
   await expect(page).toHaveURL(/\/game\/\d+$/, { timeout: 30_000 });
-  await expect(page.getByText('You', { exact: true })).toBeVisible();
+  await expect(page.getByText(/^You \/ /).first()).toBeVisible();
   const operationUrl = page.url();
   const operationId = operationUrl.match(/\/game\/(\d+)$/)?.[1];
 
@@ -520,16 +520,24 @@ test('two anonymous players can create, join, start, and commit a hosted operati
   try {
     await secondPlayer.goto(operationUrl);
     await secondPlayer.getByRole('button', { name: 'Join operation' }).click();
-    await expect(secondPlayer.getByText('You', { exact: true })).toBeVisible({ timeout: 30_000 });
+    await expect(secondPlayer.getByText(/^You \/ /).first()).toBeVisible({ timeout: 30_000 });
 
     await expect(page.getByRole('button', { name: 'Start operation' })).toBeVisible({ timeout: 15_000 });
+    await page.route(`**/api/play/operations/${operationId}/start`, async (route) => {
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, 900));
+      await route.continue();
+    }, { times: 1 });
     await page.getByRole('button', { name: 'Start operation' }).click();
-    await expect(page.getByRole('heading', { name: 'Choose the pressure' })).toBeVisible({ timeout: 30_000 });
-    await expect(secondPlayer.getByRole('heading', { name: 'Choose the pressure' })).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByText('Starting live operation', { exact: true })).toBeVisible();
+    await expect(page.getByText('Preparing the operation', { exact: true }).first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Make the next move.' })).toBeVisible({ timeout: 30_000 });
+    await expect(secondPlayer.getByRole('heading', { name: 'Make the next move.' })).toBeVisible({ timeout: 30_000 });
 
-    await page.getByRole('button', { name: 'Choose Search' }).click();
+    await page.locator('#live-table-actions .instant-action-option[data-action="search"]').click();
+    await page.getByRole('button', { name: 'Commit Search' }).click();
     await expect(page.getByText(/action locked/i).first()).toBeVisible({ timeout: 30_000 });
-    await secondPlayer.getByRole('button', { name: 'Choose Search' }).click();
+    await secondPlayer.locator('#live-table-actions .instant-action-option[data-action="search"]').click();
+    await secondPlayer.getByRole('button', { name: 'Commit Search' }).click();
     await expect(secondPlayer.getByText(/action locked|round/i).first()).toBeVisible({ timeout: 30_000 });
     await expect.poll(async () => {
       const response = await page.request.get(`/api/play/operations/${operationId}`);

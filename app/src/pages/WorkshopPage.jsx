@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
+import { ACTION_STAGE_PRESETS, ActionButtonContent, ActionWaitPanel } from '../components/shared/ActionFeedback';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import {
   CALIBRATIONS,
@@ -219,6 +220,7 @@ export default function WorkshopPage() {
           <div><p className="label text-tungsten">Salvage locker</p><h2 id="salvage-heading" className="mt-2 font-display text-3xl uppercase text-vault-text">Materials with a visible purpose</h2></div>
           <p className="font-mono text-xs uppercase text-vault-text-dim">{workshop.isLoading && managedMode ? 'Syncing locker...' : `${inventory.craftedCount} custom builds assembled`}</p>
         </div>
+        {workshop.isLoading && managedMode && <ActionWaitPanel eyebrow="Syncing salvage locker" stages={ACTION_STAGE_PRESETS.workshop} detail="Loading your materials, crafted builds, and equipped gadget." compact className="mt-4" />}
         <div className="mt-5 grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
           {CRAFTING_MATERIALS.map((material) => (
             <article key={material.id} className="grid min-w-0 grid-cols-[52px_minmax(0,1fr)] items-center gap-3 border border-vault-border bg-vault-dark/45 p-3">
@@ -298,11 +300,11 @@ export default function WorkshopPage() {
               </div>
             </section>
 
-            <p className={`min-h-6 text-sm ${workshop.error && managedMode ? 'text-signal-red' : 'text-oxide-green'}`} role="status" aria-live="polite">{workshop.error && managedMode ? workshop.error.message : status}</p>
+            {workshop.pendingAction ? <ActionWaitPanel active stages={ACTION_STAGE_PRESETS.workshop} eyebrow={`${workshop.pendingAction.operation} build`} detail="Your collection is updating. This panel will close when the new state is saved." compact /> : <p className={`min-h-6 text-sm ${workshop.error && managedMode ? 'text-signal-red' : 'text-oxide-green'}`} role="status" aria-live="polite">{workshop.error && managedMode ? workshop.error.message : status}</p>}
 
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-              <button type="button" onClick={craft} disabled={transactionPending || selectedOwned || !selectedCraftable} className="min-h-[48px] border border-tungsten/45 px-3 font-mono text-xs uppercase text-tungsten disabled:cursor-not-allowed disabled:border-vault-border disabled:text-vault-text-dim">{workshop.pendingAction?.operation === 'craft' ? 'Assembling...' : selectedOwned ? 'Assembled' : selectedCraftable ? 'Assemble' : 'Need salvage'}</button>
-              <button type="button" onClick={equip} disabled={transactionPending || !selectedOwned || inventory.equippedId === selected.id} className="min-h-[48px] bg-tungsten-bright px-3 font-mono text-xs font-semibold uppercase text-vault-dark disabled:cursor-not-allowed disabled:bg-vault-border disabled:text-vault-text-dim">{workshop.pendingAction?.operation === 'equip' ? 'Equipping...' : inventory.equippedId === selected.id ? 'Equipped' : 'Equip'}</button>
+              <button type="button" onClick={craft} disabled={transactionPending || selectedOwned || !selectedCraftable} aria-busy={workshop.pendingAction?.operation === 'craft'} className="min-h-[48px] border border-tungsten/45 px-3 font-mono text-xs uppercase text-tungsten disabled:cursor-not-allowed disabled:border-vault-border disabled:text-vault-text-dim"><ActionButtonContent active={workshop.pendingAction?.operation === 'craft'} idle={selectedOwned ? 'Assembled' : selectedCraftable ? 'Assemble' : 'Need salvage'} stages={ACTION_STAGE_PRESETS.workshop} /></button>
+              <button type="button" onClick={equip} disabled={transactionPending || !selectedOwned || inventory.equippedId === selected.id} aria-busy={workshop.pendingAction?.operation === 'equip'} className="min-h-[48px] bg-tungsten-bright px-3 font-mono text-xs font-semibold uppercase text-vault-dark disabled:cursor-not-allowed disabled:bg-vault-border disabled:text-vault-text-dim"><ActionButtonContent active={workshop.pendingAction?.operation === 'equip'} idle={inventory.equippedId === selected.id ? 'Equipped' : 'Equip'} stages={ACTION_STAGE_PRESETS.workshop} /></button>
               <button type="button" onClick={toggleFavorite} aria-pressed={favoriteIds.includes(selected.id)} className="min-h-[48px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text">{favoriteIds.includes(selected.id) ? 'Saved favorite' : 'Save favorite'}</button>
               <button type="button" onClick={toggleCompare} aria-pressed={compareIds.includes(selected.id)} className="min-h-[48px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text">{compareIds.includes(selected.id) ? 'Remove compare' : 'Add to compare'}</button>
             </div>

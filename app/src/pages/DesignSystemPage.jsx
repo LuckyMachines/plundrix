@@ -31,6 +31,7 @@ import SabotageResult from '../components/resolution/SabotageResult';
 import EventLog from '../components/shared/EventLog';
 import OutcomeBadge from '../components/shared/OutcomeBadge';
 import Spinner from '../components/shared/Spinner';
+import { ACTION_STAGE_PRESETS, ActionButtonContent, ActionWaitPanel } from '../components/shared/ActionFeedback';
 import TxStatus from '../components/shared/TxStatus';
 import BadgeChip from '../components/competition/BadgeChip';
 import QueuePill from '../components/competition/QueuePill';
@@ -247,6 +248,21 @@ function TransactionLab() {
   return <PageShell className="pb-12 pt-24" data-transaction-theater><p className="label text-tungsten">Diegetic blockchain states</p><h1 className="type-page mt-3 text-vault-text">Every network wait tells the truth.</h1><div className="mt-8 grid gap-4"><TxStatus isPending /><TxStatus isConfirming hash="0x1234567890abcdef1234567890abcdef" /><TxStatus isSuccess hash="0x1234567890abcdef1234567890abcdef" /><TxStatus error={{ message: 'Wallet rejected the operation.' }} /></div></PageShell>;
 }
 
+function ActionLoaderLab() {
+  return (
+    <PageShell className="pb-12 pt-24" data-action-loader>
+      <p className="label text-tungsten">Action feedback system</p>
+      <h1 className="type-page mt-3 text-vault-text">Every wait feels alive and trustworthy.</h1>
+      <p className="mt-4 max-w-2xl text-vault-text-dim">Immediate acknowledgment, contextual stages, honest indefinite progress, and reassurance without exposing infrastructure.</p>
+      <div className="mt-8 grid gap-5">
+        <ActionWaitPanel eyebrow="Starting live operation" stages={ACTION_STAGE_PRESETS.start} detail="Your request was received. The table will open automatically when it is ready." />
+        <ActionWaitPanel eyebrow="Move committed" stages={ACTION_STAGE_PRESETS.reveal} detail="The table is resolving. Your move is safe." compact />
+        <button type="button" disabled aria-busy="true" className="min-h-[54px] max-w-sm bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark disabled:cursor-wait disabled:opacity-80"><ActionButtonContent active idle="Start operation" stages={ACTION_STAGE_PRESETS.start} /></button>
+      </div>
+    </PageShell>
+  );
+}
+
 export default function DesignSystemPage() {
   const [target, setTarget] = useState(MOCK_PLAYERS[2]);
   const [actionState, setActionState] = useState('ready');
@@ -348,6 +364,7 @@ export default function DesignSystemPage() {
     if (stress === 'type-layout') return <TypeLayoutStress />;
     if (stress === 'premium-theater') return <PremiumTheaterLab phase={search.get('phase') || 'impact'} route={search.get('route') || 'sabotage'} />;
     if (stress === 'premium-ceremony') return <CeremonyLab />;
+    if (stress === 'action-loader') return <ActionLoaderLab />;
     if (stress === 'transaction-theater') return <TransactionLab />;
   }
 

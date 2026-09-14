@@ -9,6 +9,7 @@
   },
   "path": "/game/2",
   "reviewFocus": [
+    "shared gameplay grammar",
     "decision hierarchy",
     "round state",
     "table pressure"
@@ -41,5 +42,15 @@
     "overflowing": [],
     "overlongMeasures": []
   },
-  "world": []
+  "world": [
+    {
+      "phase": "planning",
+      "route": "pick",
+      "selectedRoute": "pick",
+      "outcomeRoute": "pick",
+      "planeCount": 4,
+      "rivalStations": 3,
+      "pointerEvents": "none"
+    }
+  ]
 }

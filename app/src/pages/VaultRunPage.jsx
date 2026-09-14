@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SignatureMoment from '../components/game/SignatureMoment';
+import { CrewReadinessRail, MissionStatusPanel, OperationFile } from '../components/gameplay/HeistConsolePanels';
 import RoundTheater from '../components/gameplay/RoundTheater';
 import OperationCeremony from '../components/gameplay/OperationCeremony';
+import UnifiedActionDeck from '../components/gameplay/UnifiedActionDeck';
+import VaultMechanism from '../components/gameplay/VaultMechanism';
 import Seo from '../components/seo/Seo';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -123,6 +126,20 @@ export default function VaultRunPage() {
   const pressure = match && player ? getTablePressure(player, match, match.rules) : null;
   const availableBargains = BARGAINS.filter((item) => item.action === 'any' || item.action === selectedAction)
     .filter((item) => item.id !== 'hotwire' || (player?.tools || 0) > 0);
+  const actionChoices = match ? ACTIONS.map((action) => {
+    const chance = actionChance(match, action.id, action.id === selectedAction ? bargain : null);
+    return {
+      ...action,
+      identity: action.id,
+      metric: chance === null ? 'Disrupt one rival' : `${chance}% success chance`,
+    };
+  }) : [];
+  const leader = match?.players.reduce((current, candidate) => candidate.locksCracked > current.locksCracked ? candidate : current, match.players[0]);
+  const leaderLocks = leader?.locksCracked || 0;
+  const leadersAtTop = match?.players.filter((candidate) => candidate.locksCracked === leaderLocks) || [];
+  const tablePosition = !leaderLocks || leadersAtTop.length > 1 ? 'Table even' : leader?.id === player?.id ? 'You lead' : `${Math.max(0, leaderLocks - (player?.locksCracked || 0))} locks behind`;
+  const selectedChoice = actionChoices.find((action) => action.id === selectedAction) || actionChoices[0];
+  const latestPlayerOutcome = lastRound?.events?.find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1') || null;
 
   const clearResolveTimers = () => {
     resolveTimers.current.forEach((activeTimer) => window.clearTimeout(activeTimer));
@@ -384,7 +401,7 @@ export default function VaultRunPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+    <div className={`${run.status === 'ACTIVE' ? 'caper-operation caper-workbench instant-play-active ' : ''}mx-auto max-w-7xl px-4 py-8 sm:px-6`} data-match-state={run.status === 'ACTIVE' ? 'vault-active' : 'route'} data-presentation-phase={theaterPhase} data-active-route={normalizePresentationAction(theaterAction)}>
       <Seo title={`${stage.label} - Vault Run | Plundrix`} description="Continue a three-stage Plundrix Vault Run." path="/vault-run" />
       <RoundTheater phase={theaterPhase} action={theaterAction} outcome={theaterOutcome} players={match?.players || []} round={theaterRound} gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? signatureEvent : null} />
       <OperationCeremony event={ceremonyEvent} />
@@ -412,17 +429,41 @@ export default function VaultRunPage() {
       ) : (
         <main className="mt-7 grid min-w-0 gap-6 xl:grid-cols-[1fr_330px]">
           <section className="vault-active-stack min-w-0 space-y-5">
-            <div className="vault-player-rail grid gap-3 sm:grid-cols-2 lg:grid-cols-4" role="region" aria-label="Vault Run player status" tabIndex={0}>{match.players.map((candidate) => <article key={candidate.id} className={`vault-player-chip border p-4 ${candidate.id === 'player-1' ? 'border-tungsten/55 bg-tungsten/5' : candidate.stunned ? 'border-signal-red/45 bg-signal-red/5' : 'border-vault-border bg-vault-surface'}`}><div className="flex items-center justify-between"><p className="font-display text-xl uppercase text-vault-text">{candidate.name}</p><span className={`h-2 w-2 rounded-full ${candidate.stunned ? 'bg-signal-red' : 'bg-oxide-green'}`} /></div><p className="mt-3 font-mono text-micro uppercase text-vault-text-dim">Locks {candidate.locksCracked}/{match.rules.totalLocks} / Tools {candidate.tools}</p><div className="mt-3 flex gap-1">{Array.from({ length: match.rules.totalLocks }, (_, index) => <i key={index} className={`h-1.5 flex-1 ${index < candidate.locksCracked ? 'bg-tungsten' : 'bg-vault-border'}`} />)}</div></article>)}</div>
-            <SignatureMoment event={signatureEvent} actorName={match.players.find((candidate) => candidate.id === signatureEvent?.actor)?.name} reducedMotion={reducedMotion} />
-            {notice && <p className="vault-stage-notice border-l-2 border-oxide-green bg-oxide-green/10 p-3 text-sm text-vault-text" role="status">{notice}</p>}
-            {lastRound && <div className="vault-last-round border border-vault-border bg-vault-dark/55 p-4"><p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Last round</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{lastRound.events.filter((event) => event.type === 'ActionOutcome').map((event) => <p key={event.id} className={`text-sm ${event.success ? 'text-oxide-green' : 'text-vault-text-dim'}`}>{event.message}</p>)}</div></div>}
-            <section className="vault-action-stage border border-vault-border bg-vault-surface p-5 sm:p-6">
-              <div className="flex items-center justify-between gap-4"><div><p className="font-mono text-micro uppercase tracking-brand text-tungsten">Round {match.currentRound}</p><h2 className="mt-2 font-display text-3xl uppercase text-vault-text">Choose the next offense.</h2>{pressure?.pickBonus > 0 && <p className="mt-2 font-mono text-micro uppercase tracking-interface text-oxide-green">Table pressure +{pressure.pickBonus}%{pressure.locksOnSuccess > 1 ? ' / Pick cracks 2 locks' : ''}</p>}</div>{actionChance(match, selectedAction, bargain) !== null && <div className="shrink-0 text-right"><span className="block font-mono text-micro uppercase text-vault-text-dim">{ACTIONS.find((item) => item.id === selectedAction)?.label} chance</span><strong className="font-display text-4xl text-tungsten">{actionChance(match, selectedAction, bargain)}%</strong></div>}</div>
-              <div className="vault-action-options mt-5 grid gap-3 sm:grid-cols-3">{ACTIONS.map((action) => <button key={action.id} type="button" disabled={resolving} aria-pressed={selectedAction === action.id} onClick={() => { setSelectedAction(action.id); setTheaterAction(action.id); setBargain(null); emitPresentationCues([`intent.${normalizePresentationAction(action.id)}`]); }} className={`vault-action-option min-h-[94px] border p-4 text-left disabled:cursor-wait disabled:opacity-50 ${selectedAction === action.id ? 'border-tungsten bg-tungsten/10' : 'border-vault-border bg-vault-dark/40'}`}><span className="font-display text-2xl uppercase text-vault-text">{action.label}</span><span className="vault-action-detail mt-2 block text-xs leading-5 text-vault-text-dim">{action.detail}</span></button>)}</div>
-              {selectedAction === SIM_ACTION.SABOTAGE && <div className="mt-4 flex flex-wrap gap-2">{match.players.slice(1).map((candidate) => <button key={candidate.id} type="button" disabled={resolving} onClick={() => setTarget(candidate.id)} className={`min-h-[44px] border px-4 font-mono text-micro uppercase disabled:cursor-wait disabled:opacity-50 ${target === candidate.id ? 'border-signal-red bg-signal-red/10 text-signal-red' : 'border-vault-border text-vault-text-dim'}`}>{candidate.name} / {candidate.locksCracked} locks</button>)}</div>}
-              {selectedAction !== SIM_ACTION.SABOTAGE && <div className="mt-5"><p className="font-mono text-micro uppercase tracking-brand text-signal-red">Optional round bargain</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{availableBargains.map((item) => <button key={item.id || 'straight'} type="button" disabled={resolving} aria-pressed={bargain === item.id} onClick={() => setBargain(item.id)} className={`min-h-[68px] border px-3 py-2 text-left disabled:cursor-wait disabled:opacity-50 ${bargain === item.id ? (item.id ? 'border-signal-red bg-signal-red/10' : 'border-tungsten bg-tungsten/10') : 'border-vault-border'}`}><span className="font-mono text-micro uppercase text-vault-text">{item.label}</span><span className="mt-1 block text-xs text-vault-text-dim">{item.detail}</span></button>)}</div></div>}
-              <button type="button" disabled={resolving} onClick={resolve} className="mt-6 min-h-[54px] w-full bg-tungsten-bright px-6 font-mono text-xs font-bold uppercase tracking-label text-vault-dark disabled:opacity-50">{resolving ? 'The vault is considering it...' : `Commit ${ACTIONS.find((item) => item.id === selectedAction).label}`}</button>
+            <section className={`instant-round-board instant-heist-console caper-layer ${resolving ? 'instant-resolving' : ''}`} aria-live="polite">
+              <header className="instant-round-header flex flex-wrap items-center justify-between gap-3 border-b border-vault-border px-5 py-4">
+                <div><p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Vault run / R{match.currentRound} / {player.locksCracked} of {match.rules.totalLocks} locks / {tablePosition}</p><p className="mt-1 font-display text-2xl uppercase text-vault-text">{stage.label}</p></div>
+                <dl className="instant-operation-metrics" aria-label="Vault Run status"><div><dt>Operator</dt><dd>{player.name}</dd></div><div><dt>Heat</dt><dd>{run.heat}/5</dd></div><div><dt>Tools</dt><dd>{player.tools}/{match.rules.maxTools}</dd></div></dl>
+              </header>
+              {notice && <p className="border-b border-vault-border bg-oxide-green/5 px-5 py-2 font-mono text-xs text-oxide-green" role="status">{notice}</p>}
+              <div className="instant-heist-grid">
+                <div className="instant-heist-left">
+                  <MissionStatusPanel round={match.currentRound} modeLabel="Vault run" objectives={[{ label: `Crack ${match.rules.totalLocks} vault locks`, complete: player.locksCracked >= match.rules.totalLocks }, { label: 'Keep at least one life', complete: run.lives > 0 }, { label: 'Beat every rival to the breach', complete: player.locksCracked > Math.max(...match.players.slice(1).map((candidate) => candidate.locksCracked)) }]} pressurePercent={Math.round((leaderLocks / match.rules.totalLocks) * 100)} pressureValue={leaderLocks} pressureMax={match.rules.totalLocks} pressureLabel={tablePosition} pressureDetail={!leaderLocks ? 'No locks cracked yet' : `${leader.name} sets the pace / ${leaderLocks} of ${match.rules.totalLocks}`} />
+                  <CrewReadinessRail players={match.players} totalLocks={match.rules.totalLocks} />
+                </div>
+                <div className="instant-vault-column"><VaultMechanism cracked={player.locksCracked} total={match.rules.totalLocks} resolving={resolving} selectedAction={selectedAction} actions={actionChoices} players={match.players} latestOutcome={latestPlayerOutcome} round={match.currentRound} onSelectAction={(action) => { setSelectedAction(action); setTheaterAction(action); setBargain(null); }} label={stage.label} /></div>
+                <OperationFile player={player} leader={leader} tablePosition={tablePosition} totalLocks={match.rules.totalLocks} maxTools={match.rules.maxTools} selectedActionLabel={selectedChoice.label} selectedActionMetric={selectedChoice.metric} selectedActionPreview={selectedChoice.detail} round={match.currentRound} />
+              </div>
+              {signatureEvent && <div className="border-t border-vault-border p-4"><SignatureMoment event={signatureEvent} actorName={match.players.find((candidate) => candidate.id === signatureEvent?.actor)?.name} reducedMotion={reducedMotion} /></div>}
             </section>
+            {lastRound && <div className="vault-last-round border border-vault-border bg-vault-dark/55 p-4"><p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Last round</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{lastRound.events.filter((event) => event.type === 'ActionOutcome').map((event) => <p key={event.id} className={`text-sm ${event.success ? 'text-oxide-green' : 'text-vault-text-dim'}`}>{event.message}</p>)}</div></div>}
+            <UnifiedActionDeck
+              id="vault-run-actions"
+              kicker={`Round ${match.currentRound} / choose one concealed action`}
+              heading="Make the next move."
+              guidance={pressure?.pickBonus > 0 ? `Table pressure adds ${pressure.pickBonus}% to Pick${pressure.locksOnSuccess > 1 ? ' and cracks two locks on success' : ''}.` : null}
+              actions={actionChoices}
+              selectedAction={selectedAction}
+              busy={resolving}
+              onSelect={(action) => { setSelectedAction(action); setTheaterAction(action); setBargain(null); emitPresentationCues([`intent.${normalizePresentationAction(action)}`]); }}
+              onCommit={resolve}
+              commitLabel={`Commit ${ACTIONS.find((item) => item.id === selectedAction).label}`}
+              targets={match.players.slice(1)}
+              selectedTarget={target}
+              onTarget={setTarget}
+              preview={selectedAction === SIM_ACTION.SABOTAGE ? `Disrupt ${match.players.find((candidate) => candidate.id === target)?.name || 'a rival'} on the next reveal.` : ACTIONS.find((item) => item.id === selectedAction)?.detail}
+            >
+              {selectedAction !== SIM_ACTION.SABOTAGE && <div className="mt-5"><p className="font-mono text-micro uppercase tracking-brand text-signal-red">Optional round bargain</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{availableBargains.map((item) => <button key={item.id || 'straight'} type="button" disabled={resolving} aria-pressed={bargain === item.id} onClick={() => setBargain(item.id)} className={`min-h-[68px] border px-3 py-2 text-left disabled:cursor-wait disabled:opacity-50 ${bargain === item.id ? (item.id ? 'border-signal-red bg-signal-red/10' : 'border-tungsten bg-tungsten/10') : 'border-vault-border'}`}><span className="font-mono text-micro uppercase text-vault-text">{item.label}</span><span className="mt-1 block text-xs text-vault-text-dim">{item.detail}</span></button>)}</div></div>}
+            </UnifiedActionDeck>
           </section>
           <RivalSidebar chronicle={chronicle} board={board} run={run} />
         </main>

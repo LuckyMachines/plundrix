@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import ProfileSummary from '../components/competition/ProfileSummary';
 import ProfileIntegrationStats from '../components/competition/ProfileIntegrationStats';
 import SessionCard from '../components/competition/SessionCard';
-import Spinner from '../components/shared/Spinner';
+import { ActionWaitPanel } from '../components/shared/ActionFeedback';
 import { useCompetitionProfile } from '../hooks/useCompetitionProfile';
 import { useCompetitionSessions } from '../hooks/useCompetitionSessions';
 import { AGENT_SERVICE_CONFIGURED } from '../config/service';
@@ -81,14 +81,7 @@ function UnavailableState() {
 }
 
 function LoadingState({ label = 'Loading profile...' }) {
-  return (
-    <div className="border border-vault-border rounded bg-vault-surface p-10 flex items-center gap-3 justify-center">
-      <Spinner size="w-5 h-5" />
-      <span className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
-        {label}
-      </span>
-    </div>
-  );
+  return <ActionWaitPanel eyebrow="Operator dossier" stages={[{ after: 0, label }, { after: 1800, label: 'Loading recent operations' }, { after: 5000, label: 'Finishing the dossier' }, { after: 9000, label: 'Still working - keep this window open' }]} detail="Loading verified career and session records." />;
 }
 
 function ErrorState({ error }) {

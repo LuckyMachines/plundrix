@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import Modal from './components/shared/Modal';
-import Spinner from './components/shared/Spinner';
+import { ActionWaitPanel } from './components/shared/ActionFeedback';
 import SessionAudioBridge from './components/shared/SessionAudioBridge';
 import SessionMusicBridge from './components/shared/SessionMusicBridge';
 import Seo from './components/seo/Seo';
@@ -98,12 +98,7 @@ export default function App() {
       <main className="min-w-0 flex-1" id="main-content" tabIndex="-1">
         <Suspense
           fallback={
-            <div className="max-w-6xl mx-auto px-6 py-10 flex items-center gap-3">
-              <Spinner size="w-5 h-5" />
-              <span className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">
-                Loading interface...
-              </span>
-            </div>
+            <div className="mx-auto max-w-6xl px-6 py-10"><ActionWaitPanel eyebrow="Opening Plundrix" detail="Loading the interface and restoring your last safe state." /></div>
           }
         >
           <Routes>
@@ -151,12 +146,7 @@ export default function App() {
       <Modal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} ariaLabel="Plundrix field manual">
         <Suspense
           fallback={
-            <div className="p-8 flex items-center gap-3">
-              <Spinner size="w-5 h-5" />
-              <span className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">
-                Loading field manual...
-              </span>
-            </div>
+            <div className="p-8"><ActionWaitPanel eyebrow="Opening field manual" detail="Indexing controls, rules, and tactical guidance." compact /></div>
           }
         >
           <FieldManual initialTab={helpInitialTab} />

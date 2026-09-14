@@ -41,5 +41,15 @@
     "overflowing": [],
     "overlongMeasures": []
   },
-  "world": []
+  "world": [
+    {
+      "phase": "planning",
+      "route": "pick",
+      "selectedRoute": "pick",
+      "outcomeRoute": "pick",
+      "planeCount": 4,
+      "rivalStations": 3,
+      "pointerEvents": "none"
+    }
+  ]
 }

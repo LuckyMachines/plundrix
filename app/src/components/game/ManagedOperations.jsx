@@ -7,7 +7,7 @@ import {
   ensureManagedPlayer,
   listManagedOperations,
 } from '../../lib/managedService';
-import Spinner from '../shared/Spinner';
+import { ACTION_STAGE_PRESETS, ActionButtonContent, ActionWaitPanel } from '../shared/ActionFeedback';
 
 const STATE_TONE = {
   OPEN: 'border-oxide-green/35 bg-oxide-green/5 text-oxide-green',
@@ -64,9 +64,10 @@ export default function ManagedOperations() {
             type="button"
             onClick={() => create.mutate()}
             disabled={!player.isSuccess || create.isPending}
+            aria-busy={create.isPending}
             className="min-h-[44px] border border-tungsten/50 bg-tungsten/10 px-5 font-mono text-xs uppercase tracking-label text-tungsten disabled:cursor-not-allowed disabled:opacity-45"
           >
-            {create.isPending ? 'Opening table...' : 'Create operation'}
+            <ActionButtonContent active={create.isPending} idle="Create operation" stages={ACTION_STAGE_PRESETS.create} />
           </button>
         </div>
       </div>
@@ -79,11 +80,10 @@ export default function ManagedOperations() {
       )}
 
       {AGENT_SERVICE_CONFIGURED && (player.isLoading || catalog.isLoading) && (
-        <div className="flex items-center justify-center gap-3 p-12">
-          <Spinner size="w-5 h-5" />
-          <span className="font-mono text-xs uppercase tracking-label text-vault-text-dim">Opening the operations desk...</span>
-        </div>
+        <ActionWaitPanel eyebrow="Opening operations desk" stages={ACTION_STAGE_PRESETS.join} detail="Loading your operator record and available live tables." className="m-5" />
       )}
+
+      {create.isPending && <ActionWaitPanel eyebrow="Creating live operation" stages={ACTION_STAGE_PRESETS.create} detail="Your table is being prepared. You will enter it automatically when it is ready." compact className="m-5" />}
 
       {(player.error || catalog.error || create.error) && (
         <p className="m-5 border border-signal-red/35 bg-signal-red/5 p-4 text-sm text-vault-text-dim" role="status">

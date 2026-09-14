@@ -1059,23 +1059,24 @@
       }
     },
     {
-      "id": "transaction-theater",
-      "label": "On-chain transaction theater",
+      "id": "action-loader",
+      "label": "Action loading system",
       "priority": "P0",
       "viewport": "desktop",
-      "path": "/design-system?stress=transaction-theater",
+      "path": "/design-system?stress=action-loader",
       "reviewFocus": [
-        "truthful wait states",
-        "wallet versus network distinction",
-        "failure recovery"
+        "immediate acknowledgment",
+        "contextual stage language",
+        "long-wait reassurance",
+        "reduced-motion clarity"
       ],
       "experimentIds": [],
       "status": "pass",
       "diffRatio": 0.0,
       "diffLimit": 0.002,
-      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\transaction-theater-desktop.png",
-      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\transaction-theater-desktop.png",
-      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\transaction-theater-desktop.png",
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\action-loader-desktop.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\action-loader-desktop.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\action-loader-desktop.png",
       "accessibility": [],
       "layout": {
         "clientWidth": 1440,
@@ -1105,23 +1106,24 @@
       }
     },
     {
-      "id": "transaction-theater",
-      "label": "On-chain transaction theater",
+      "id": "action-loader",
+      "label": "Action loading system",
       "priority": "P0",
       "viewport": "mobile",
-      "path": "/design-system?stress=transaction-theater",
+      "path": "/design-system?stress=action-loader",
       "reviewFocus": [
-        "truthful wait states",
-        "wallet versus network distinction",
-        "failure recovery"
+        "immediate acknowledgment",
+        "contextual stage language",
+        "long-wait reassurance",
+        "reduced-motion clarity"
       ],
       "experimentIds": [],
       "status": "pass",
       "diffRatio": 0.0,
       "diffLimit": 0.002,
-      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\transaction-theater-mobile.png",
-      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\transaction-theater-mobile.png",
-      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\transaction-theater-mobile.png",
+      "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\action-loader-mobile.png",
+      "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\action-loader-mobile.png",
+      "comparisonPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\comparisons\\action-loader-mobile.png",
       "accessibility": [],
       "layout": {
         "clientWidth": 390,
@@ -1806,7 +1808,7 @@
       "path": "/game/1",
       "reviewFocus": [
         "crew readiness",
-        "wallet context",
+        "joining clarity",
         "waiting continuity"
       ],
       "experimentIds": [],
@@ -1852,7 +1854,7 @@
       "path": "/game/1",
       "reviewFocus": [
         "crew readiness",
-        "wallet context",
+        "joining clarity",
         "waiting continuity"
       ],
       "experimentIds": [],
@@ -1897,8 +1899,9 @@
       "viewport": "desktop",
       "path": "/game/2",
       "reviewFocus": [
+        "shared gameplay grammar",
         "decision hierarchy",
-        "on-chain state",
+        "round state",
         "table pressure"
       ],
       "experimentIds": [],
@@ -1943,8 +1946,9 @@
       "viewport": "mobile",
       "path": "/game/2",
       "reviewFocus": [
+        "shared gameplay grammar",
         "decision hierarchy",
-        "on-chain state",
+        "round state",
         "table pressure"
       ],
       "experimentIds": [],
