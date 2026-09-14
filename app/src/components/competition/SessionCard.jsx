@@ -36,12 +36,11 @@ export default function SessionCard({ session }) {
 
       <div className="grid gap-2 font-mono text-sm text-vault-text-dim">
         <div>Started: {formatTimestamp(session.startedAt || session.createdAt)}</div>
-        <div>{session.completedAt ? `${session.completedAtEstimated ? 'Last on-chain round' : 'Finished'}: ${formatTimestamp(session.completedAt)}` : 'Finish time: Not indexed'}</div>
+        <div>{session.completedAt ? `${session.completedAtEstimated ? 'Last recorded round' : 'Finished'}: ${formatTimestamp(session.completedAt)}` : 'Finish time: Not indexed'}</div>
         <div>
           Winner:{' '}
-          {session.winner && session.winner !== '0x0000000000000000000000000000000000000000'
-            ? session.players.find((player) => player.address.toLowerCase() === session.winner.toLowerCase())?.displayName ||
-              session.winner
+          {session.winnerOperatorId
+            ? session.players.find((player) => player.operatorId === session.winnerOperatorId)?.displayName || 'Recorded operator'
             : 'Pending'}
         </div>
       </div>
@@ -49,13 +48,13 @@ export default function SessionCard({ session }) {
       <div className="grid gap-2">
         {session.players.map((player) => (
           <div
-            key={player.address}
+            key={player.operatorId}
             className="flex items-center justify-between gap-3 rounded border border-vault-border/70 bg-vault-surface/70 px-3 py-2"
           >
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <Link
-                  to={`/profile/${player.address}`}
+                  to={`/profile/${player.operatorId}`}
                   className="truncate font-mono text-sm uppercase tracking-label text-vault-text hover:text-tungsten"
                 >
                   {player.displayName}

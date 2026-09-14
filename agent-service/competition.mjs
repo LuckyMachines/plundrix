@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { agentConfig } from './config.mjs';
 import {
   getGameHistory,
@@ -640,4 +641,65 @@ export async function getBadgeCatalog() {
   return {
     badges: BADGE_CATALOG,
   };
+}
+
+export function publicOperatorId(address) {
+  return `op-${createHash('sha256').update(`plundrix-operator:${String(address).toLowerCase()}`).digest('hex').slice(0, 12)}`;
+}
+
+function publicPlayer(player) {
+  const { address, ...safe } = player;
+  const operatorId = publicOperatorId(address);
+  const displayName = /^0x/i.test(safe.displayName || '')
+    ? `Operator ${operatorId.slice(-5).toUpperCase()}`
+    : safe.displayName;
+  return { ...safe, displayName, operatorId };
+}
+
+function publicProfile(profile) {
+  const { address, ...safe } = profile;
+  const operatorId = publicOperatorId(address);
+  const displayName = /^0x/i.test(safe.displayName || '')
+    ? `Operator ${operatorId.slice(-5).toUpperCase()}`
+    : safe.displayName;
+  return { ...safe, displayName, operatorId };
+}
+
+function publicSession(session) {
+  return {
+    ...session,
+    winnerOperatorId: session.winner && session.winner !== '0x0000000000000000000000000000000000000000'
+      ? publicOperatorId(session.winner)
+      : null,
+    winner: undefined,
+    players: session.players.map(publicPlayer),
+  };
+}
+
+export async function getPublicCompetitionOverview() {
+  const result = await getCompetitionOverview();
+  return {
+    ...result,
+    featuredLeaderboard: result.featuredLeaderboard.map(publicProfile),
+    featuredAgentLadder: result.featuredAgentLadder.map(publicProfile),
+    featuredSessions: result.featuredSessions.map(publicSession),
+  };
+}
+
+export async function getPublicLeaderboard(options = {}) {
+  const result = await getLeaderboard(options);
+  return { ...result, entries: result.entries.map(publicProfile) };
+}
+
+export async function getPublicCompetitionSessions(options = {}) {
+  const result = await getCompetitionSessions(options);
+  return { ...result, sessions: result.sessions.map(publicSession) };
+}
+
+export async function getPublicCompetitionProfile(operatorId) {
+  const index = await getCompetitionIndex();
+  const profile = index.profiles.find((entry) => publicOperatorId(entry.address) === operatorId);
+  if (!profile) throw new Error('Profile not found');
+  const raw = await getCompetitionProfile(profile.address);
+  return { ...raw, profile: publicProfile(raw.profile) };
 }

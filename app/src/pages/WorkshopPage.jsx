@@ -25,7 +25,7 @@ import {
   writeInventory,
 } from '../lib/inventoryStore';
 import { trackProductEvent } from '../lib/analytics';
-import { useWorkshopContract } from '../hooks/useWorkshopContract';
+import { useManagedWorkshop } from '../hooks/useManagedWorkshop';
 
 const RARITY_TONES = {
   field: 'border-vault-border text-vault-text-dim',
@@ -34,7 +34,7 @@ const RARITY_TONES = {
   masterwork: 'border-tungsten/70 text-tungsten-bright',
 };
 
-const EMPTY_ONCHAIN_INVENTORY = Object.freeze({
+const EMPTY_SYNCED_INVENTORY = Object.freeze({
   ownedIds: STARTER_GADGET_IDS,
   equippedId: null,
   craftedCount: 0,
@@ -49,11 +49,11 @@ function selectFromGadget(gadget, setters) {
 
 export default function WorkshopPage() {
   const [localInventory, setLocalInventory] = useState(readInventory);
-  const workshop = useWorkshopContract();
-  const onchainMode = workshop.isConnected && workshop.isConfigured;
-  const onchainReady = onchainMode && workshop.isLinked;
-  const chainInventory = workshop.inventory || EMPTY_ONCHAIN_INVENTORY;
-  const inventory = onchainMode ? { ...chainInventory, favoriteIds: localInventory.favoriteIds || [] } : localInventory;
+  const workshop = useManagedWorkshop();
+  const managedMode = workshop.isConnected && workshop.isConfigured;
+  const managedReady = managedMode && workshop.isLinked;
+  const chainInventory = workshop.inventory || EMPTY_SYNCED_INVENTORY;
+  const inventory = managedMode ? { ...chainInventory, favoriteIds: localInventory.favoriteIds || [] } : localInventory;
   const equipped = inventory.equippedId ? getGadgetById(inventory.equippedId) : null;
   const [chassisId, setChassis] = useState(equipped?.chassisId || GADGET_CHASSIS[0].id);
   const [finishId, setFinish] = useState(equipped?.finishId || MATERIAL_FINISHES[0].id);
@@ -67,14 +67,14 @@ export default function WorkshopPage() {
   const favoriteIds = inventory.favoriteIds || [];
   const selectedOwned = inventory.ownedIds.includes(selected.id);
   const selectedCraftable = canCraftGadget(inventory, selected);
-  const transactionPending = Boolean(workshop.pendingAction) || (onchainMode && !onchainReady);
+  const transactionPending = Boolean(workshop.pendingAction) || (managedMode && !managedReady);
   const selectedMastery = getGadgetMastery(localInventory, selected.chassisId);
   const equippedMastery = equipped ? getGadgetMastery(localInventory, equipped.chassisId) : null;
   const setters = { setChassis, setFinish, setCalibration };
 
   useEffect(() => {
-    trackProductEvent('Workshop Viewed', { mode: onchainMode ? 'onchain' : 'local' });
-  }, [onchainMode]);
+    trackProductEvent('Workshop Viewed', { mode: managedMode ? 'managed' : 'local' });
+  }, [managedMode]);
 
   const families = useMemo(() => GADGET_CHASSIS.filter((chassis) => (
     protocolFilter === 'all' || chassis.protocol === protocolFilter
@@ -108,14 +108,14 @@ export default function WorkshopPage() {
   };
 
   const craft = async () => {
-    if (onchainMode) {
-      setStatus(`Confirm assembly of ${selected.name} in your wallet.`);
+    if (managedMode) {
+      setStatus(`Assembling ${selected.name}...`);
       try {
         await workshop.craftBlueprint(selected.id);
-        setStatus(`${selected.name} assembled onchain. It is ready to equip.`);
-        trackProductEvent('Gadget Crafted', { chassis: selected.chassisId, rarity: selected.rarity, mode: 'onchain' });
+        setStatus(`${selected.name} assembled. It is ready to equip.`);
+        trackProductEvent('Gadget Crafted', { chassis: selected.chassisId, rarity: selected.rarity, mode: 'managed' });
       } catch (error) {
-        setStatus(error.shortMessage || error.message || 'Onchain assembly failed.');
+        setStatus(error.message || 'Assembly failed.');
       }
       return;
     }
@@ -128,14 +128,14 @@ export default function WorkshopPage() {
   };
 
   const equip = async () => {
-    if (onchainMode) {
-      setStatus(`Confirm ${selected.name} as your next match loadout.`);
+    if (managedMode) {
+      setStatus(`Equipping ${selected.name} for your next operation...`);
       try {
         await workshop.equipBlueprint(selected.id);
-        setStatus(`${selected.name} equipped onchain. Its ${selected.effectName} signature will lock at match start.`);
-        trackProductEvent('Gadget Equipped', { chassis: selected.chassisId, protocol: selected.protocol, mode: 'onchain' });
+        setStatus(`${selected.name} equipped. Its ${selected.effectName} signature will lock at match start.`);
+        trackProductEvent('Gadget Equipped', { chassis: selected.chassisId, protocol: selected.protocol, mode: 'managed' });
       } catch (error) {
-        setStatus(error.shortMessage || error.message || 'Onchain equip failed.');
+        setStatus(error.message || 'Equip failed.');
       }
       return;
     }
@@ -146,13 +146,13 @@ export default function WorkshopPage() {
 
   const reclaim = async () => {
     if (!window.confirm(`Reclaim ${selected.name}? Half of each recipe material will return to your locker.`)) return;
-    if (onchainMode) {
-      setStatus(`Confirm reclamation of ${selected.name} in your wallet.`);
+    if (managedMode) {
+      setStatus(`Reclaiming ${selected.name}...`);
       try {
         await workshop.reclaimBlueprint(selected.id);
-        setStatus(`${selected.name} reclaimed onchain. Half its salvage returned.`);
+        setStatus(`${selected.name} reclaimed. Half its salvage returned.`);
       } catch (error) {
-        setStatus(error.shortMessage || error.message || 'Onchain reclamation failed.');
+        setStatus(error.message || 'Reclamation failed.');
       }
       return;
     }
@@ -189,8 +189,8 @@ export default function WorkshopPage() {
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <p className="font-mono text-xs uppercase tracking-beacon text-oxide-green">Operator workshop</p>
-              <span className={`border px-2 py-1 font-mono text-xs uppercase tracking-interface ${onchainMode ? 'border-oxide-green/50 text-oxide-green' : 'border-blueprint/50 text-[#79AEE9]'}`}>
-                {onchainReady ? 'Onchain collection' : onchainMode ? 'Checking onchain link' : 'Local practice collection'}
+              <span className={`border px-2 py-1 font-mono text-xs uppercase tracking-interface ${managedMode ? 'border-oxide-green/50 text-oxide-green' : 'border-blueprint/50 text-[#79AEE9]'}`}>
+                {managedReady ? 'Synced collection' : managedMode ? 'Syncing collection' : 'Practice collection'}
               </span>
             </div>
             <h1 className="mt-4 max-w-4xl font-display text-4xl font-bold uppercase leading-display text-vault-text sm:text-7xl">Ten signature gadgets. Your build.</h1>
@@ -199,7 +199,7 @@ export default function WorkshopPage() {
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <a href="#families" className="inline-flex min-h-[50px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">Choose a chassis</a>
-              <Link to={onchainMode ? '/' : '/play?mode=tactical'} className="inline-flex min-h-[50px] items-center border border-tungsten/50 px-5 font-mono text-xs uppercase tracking-label text-tungsten">{onchainMode ? 'Enter live vault' : 'Test equipped build'}</Link>
+              <Link to={managedMode ? '/' : '/play?mode=tactical'} className="inline-flex min-h-[50px] items-center border border-tungsten/50 px-5 font-mono text-xs uppercase tracking-label text-tungsten">{managedMode ? 'Enter live vault' : 'Test equipped build'}</Link>
             </div>
           </div>
 
@@ -217,7 +217,7 @@ export default function WorkshopPage() {
       <section className="mt-6 border border-vault-border bg-vault-surface p-5 sm:p-7" aria-labelledby="salvage-heading">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div><p className="label text-tungsten">Salvage locker</p><h2 id="salvage-heading" className="mt-2 font-display text-3xl uppercase text-vault-text">Materials with a visible purpose</h2></div>
-          <p className="font-mono text-xs uppercase text-vault-text-dim">{workshop.isLoading && onchainMode ? 'Reading chain...' : `${inventory.craftedCount} custom builds assembled`}</p>
+          <p className="font-mono text-xs uppercase text-vault-text-dim">{workshop.isLoading && managedMode ? 'Syncing locker...' : `${inventory.craftedCount} custom builds assembled`}</p>
         </div>
         <div className="mt-5 grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
           {CRAFTING_MATERIALS.map((material) => (
@@ -227,7 +227,7 @@ export default function WorkshopPage() {
             </article>
           ))}
         </div>
-        {!onchainMode && inventory.craftedCount === 0 && <p className="mt-4 border-l-2 border-oxide-green bg-oxide-green/5 px-4 py-3 text-sm leading-6 text-vault-text-dim">Your starter salvage supports a deliberate first build, while every one of the 1,200 configurations remains available to preview. Play operations to target more material: Pick favors cogs, Search favors glass, and Sabotage favors catalyst.</p>}
+        {!managedMode && inventory.craftedCount === 0 && <p className="mt-4 border-l-2 border-oxide-green bg-oxide-green/5 px-4 py-3 text-sm leading-6 text-vault-text-dim">Your starter salvage supports a deliberate first build, while every one of the 1,200 configurations remains available to preview. Play operations to target more material: Pick favors cogs, Search favors glass, and Sabotage favors catalyst.</p>}
       </section>
 
       <section id="families" className="mt-6 scroll-mt-24 border border-vault-border bg-vault-surface p-5 sm:p-7">
@@ -298,11 +298,11 @@ export default function WorkshopPage() {
               </div>
             </section>
 
-            <p className={`min-h-6 text-sm ${workshop.error && onchainMode ? 'text-signal-red' : 'text-oxide-green'}`} role="status" aria-live="polite">{workshop.error && onchainMode ? (workshop.error.shortMessage || workshop.error.message) : status}</p>
+            <p className={`min-h-6 text-sm ${workshop.error && managedMode ? 'text-signal-red' : 'text-oxide-green'}`} role="status" aria-live="polite">{workshop.error && managedMode ? workshop.error.message : status}</p>
 
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-              <button type="button" onClick={craft} disabled={transactionPending || selectedOwned || !selectedCraftable} className="min-h-[48px] border border-tungsten/45 px-3 font-mono text-xs uppercase text-tungsten disabled:cursor-not-allowed disabled:border-vault-border disabled:text-vault-text-dim">{workshop.pendingAction?.functionName === 'craftBlueprint' ? 'Confirming...' : selectedOwned ? 'Assembled' : selectedCraftable ? 'Assemble' : 'Need salvage'}</button>
-              <button type="button" onClick={equip} disabled={transactionPending || !selectedOwned || inventory.equippedId === selected.id} className="min-h-[48px] bg-tungsten-bright px-3 font-mono text-xs font-semibold uppercase text-vault-dark disabled:cursor-not-allowed disabled:bg-vault-border disabled:text-vault-text-dim">{workshop.pendingAction?.functionName === 'equipBlueprint' ? 'Confirming...' : inventory.equippedId === selected.id ? 'Equipped' : 'Equip'}</button>
+              <button type="button" onClick={craft} disabled={transactionPending || selectedOwned || !selectedCraftable} className="min-h-[48px] border border-tungsten/45 px-3 font-mono text-xs uppercase text-tungsten disabled:cursor-not-allowed disabled:border-vault-border disabled:text-vault-text-dim">{workshop.pendingAction?.operation === 'craft' ? 'Assembling...' : selectedOwned ? 'Assembled' : selectedCraftable ? 'Assemble' : 'Need salvage'}</button>
+              <button type="button" onClick={equip} disabled={transactionPending || !selectedOwned || inventory.equippedId === selected.id} className="min-h-[48px] bg-tungsten-bright px-3 font-mono text-xs font-semibold uppercase text-vault-dark disabled:cursor-not-allowed disabled:bg-vault-border disabled:text-vault-text-dim">{workshop.pendingAction?.operation === 'equip' ? 'Equipping...' : inventory.equippedId === selected.id ? 'Equipped' : 'Equip'}</button>
               <button type="button" onClick={toggleFavorite} aria-pressed={favoriteIds.includes(selected.id)} className="min-h-[48px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text">{favoriteIds.includes(selected.id) ? 'Saved favorite' : 'Save favorite'}</button>
               <button type="button" onClick={toggleCompare} aria-pressed={compareIds.includes(selected.id)} className="min-h-[48px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text">{compareIds.includes(selected.id) ? 'Remove compare' : 'Add to compare'}</button>
             </div>

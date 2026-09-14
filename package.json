@@ -1,7 +1,7 @@
 {
   "name": "plundrix",
   "version": "0.1.0",
-  "description": "On-chain multiplayer heist game — crack the vault before your rivals.",
+  "description": "Hosted multiplayer vault-heist game - crack the vault before your rivals.",
   "engines": {
     "node": ">=20.19.0"
   },

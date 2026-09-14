@@ -29,6 +29,9 @@ const mimeByExt = {
 const publicClientRoutes = new Set([
   '/',
   '/play',
+  '/vault-run',
+  '/career',
+  '/workshop',
   '/trailer',
   '/leaderboard',
   '/sessions',
@@ -41,7 +44,7 @@ const publicClientRoutes = new Set([
 function isKnownClientPath(pathname) {
   return publicClientRoutes.has(pathname) ||
     /^\/game\/\d+$/.test(pathname) ||
-    /^\/profile\/0x[a-fA-F0-9]{40}$/.test(pathname) ||
+    /^\/profile\/op-[a-f0-9]{12}$/.test(pathname) ||
     /^\/replay\/[a-zA-Z0-9-]+$/.test(pathname);
 }
 

@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { PREFERENCE_DEFINITIONS, PREFERENCE_GROUPS, exportPreferenceBundle } from '../../data/preferences';
+import { PREFERENCE_BY_ID, PREFERENCE_DEFINITIONS, PREFERENCE_GROUPS, exportPreferenceBundle } from '../../data/preferences';
 import { usePreferences } from '../../context/AccessibilityContext';
 import { copyText } from '../../lib/clipboard';
 import { useToast } from '../../context/ToastContext';
@@ -27,12 +27,69 @@ function PreferenceControl({ definition, preferences, onChange }) {
   const capability = capabilityState(definition, preferences);
   const value = preferences[definition.id];
   if (definition.type === 'range') {
-    return <PreferenceSlider {...definition} value={value} disabled={!preferences.soundEnabled} onChange={onChange} />;
+    const channelToggle = definition.id === 'soundVolume'
+      ? 'soundEnabled'
+      : definition.id === 'musicVolume' ? 'musicEnabled' : null;
+    return <PreferenceSlider {...definition} value={value} disabled={channelToggle ? !preferences[channelToggle] : false} onChange={onChange} />;
   }
   if (definition.type === 'select') {
     return <PreferenceSelect {...definition} value={value} onChange={onChange} />;
   }
   return <PreferenceSwitch id={`preference-${definition.id}`} label={definition.label} checked={value} disabled={capability.disabled} onChange={onChange} />;
+}
+
+const AUDIO_PREFERENCE_IDS = new Set(['soundEnabled', 'soundVolume', 'musicEnabled', 'musicVolume']);
+
+function AudioChannel({ id, label, description, enabled, volume, onChange }) {
+  return (
+    <article className="audio-channel" data-muted={!enabled}>
+      <div className="audio-channel__heading">
+        <div>
+          <p>{id === 'sound' ? 'Gameplay channel' : 'Score channel'}</p>
+          <h3>{label}</h3>
+        </div>
+        <button
+          type="button"
+          className="audio-channel__mute"
+          aria-label={`${enabled ? 'Mute' : 'Unmute'} ${label.toLowerCase()}`}
+          aria-pressed={!enabled}
+          onClick={() => onChange(`${id}Enabled`, !enabled)}
+        >
+          {enabled ? 'Mute' : 'Unmute'}
+        </button>
+      </div>
+      <p className="audio-channel__description">{description}</p>
+      <PreferenceSlider
+        {...PREFERENCE_BY_ID[`${id}Volume`]}
+        value={volume}
+        disabled={!enabled}
+        onChange={(next) => onChange(`${id}Volume`, next)}
+      />
+    </article>
+  );
+}
+
+function AudioMixer({ preferences, onChange }) {
+  return (
+    <section className="settings-audio-mixer" aria-label="Sound and music mixer">
+      <AudioChannel
+        id="sound"
+        label="Sound effects"
+        description="Actions, gadgets, interface feedback, and ceremonies."
+        enabled={preferences.soundEnabled}
+        volume={preferences.soundVolume}
+        onChange={onChange}
+      />
+      <AudioChannel
+        id="music"
+        label="Music"
+        description="The soundtrack layer, controlled independently from play cues."
+        enabled={preferences.musicEnabled}
+        volume={preferences.musicVolume}
+        onChange={onChange}
+      />
+    </section>
+  );
 }
 
 function PreferenceRow({ definition, preferences, onChange }) {
@@ -63,6 +120,9 @@ export default function SettingsDrawer({ isOpen, onClose }) {
     return [definition.label, definition.description, ...(definition.searchTerms || [])]
       .some((value) => value.toLowerCase().includes(normalizedQuery));
   }), [activeGroup, normalizedQuery]);
+  const listedDefinitions = activeGroup === 'feedback' && !normalizedQuery
+    ? visibleDefinitions.filter((definition) => !AUDIO_PREFERENCE_IDS.has(definition.id))
+    : visibleDefinitions;
 
   const changePreference = async (definition, next) => {
     if (definition.id === 'backgroundTurnAlerts') {
@@ -72,7 +132,7 @@ export default function SettingsDrawer({ isOpen, onClose }) {
     }
     preferences.setPreference(definition.id, next);
     if (definition.id === 'soundEnabled' && next) {
-      window.dispatchEvent(new CustomEvent('plundrix:sound-cues', { detail: { cues: ['tx.confirmed'] } }));
+      window.setTimeout(() => window.dispatchEvent(new CustomEvent('plundrix:sound-cues', { detail: { cues: ['tx.confirmed'] } })), 40);
     }
   };
 
@@ -153,8 +213,14 @@ export default function SettingsDrawer({ isOpen, onClose }) {
             <h2>{normalizedQuery ? `Matching "${query.trim()}"` : currentGroup.label}</h2>
             <span>{normalizedQuery ? `${visibleDefinitions.length} found` : currentGroup.description}</span>
           </div>
+          {activeGroup === 'feedback' && !normalizedQuery && (
+            <AudioMixer
+              preferences={preferences}
+              onChange={(id, next) => changePreference(PREFERENCE_BY_ID[id], next)}
+            />
+          )}
           <div className="preference-list">
-            {visibleDefinitions.map((definition) => (
+            {listedDefinitions.map((definition) => (
               <PreferenceRow
                 key={definition.id}
                 definition={definition}
@@ -162,7 +228,7 @@ export default function SettingsDrawer({ isOpen, onClose }) {
                 onChange={(next) => changePreference(definition, next)}
               />
             ))}
-            {!visibleDefinitions.length && (
+            {!listedDefinitions.length && (
               <div className="settings-empty" role="status">
                 <strong>No matching control.</strong>
                 <span>Try sound, motion, text, alerts, or privacy.</span>
@@ -173,7 +239,7 @@ export default function SettingsDrawer({ isOpen, onClose }) {
             <button
               type="button"
               className="settings-test-cue"
-              disabled={!preferences.soundEnabled || preferences.masterVolume === 0}
+              disabled={!preferences.soundEnabled || preferences.soundVolume === 0}
               onClick={() => window.dispatchEvent(new CustomEvent('plundrix:sound-cues', { detail: { cues: ['lock.crack', 'tool.found'] } }))}
             >
               Test current sound

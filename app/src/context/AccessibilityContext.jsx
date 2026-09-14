@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   PREFERENCE_BY_ID,
+  PREFERENCE_SCHEMA_VERSION,
   PREFERENCE_STORAGE_KEY,
   importPreferenceBundle,
   loadPreferences,
@@ -81,8 +82,22 @@ export function AccessibilityProvider({ children }) {
     root.classList.toggle('high-contrast-ui', preferences.highContrast);
     root.classList.toggle('compact-ui', preferences.interfaceDensity === 'compact');
     root.classList.toggle('keyboard-hints-ui', preferences.keyboardHints);
-    root.dataset.preferenceSchema = '2';
+    root.dataset.preferenceSchema = String(PREFERENCE_SCHEMA_VERSION);
   }, [preferences]);
+
+  useEffect(() => {
+    const detail = {
+      soundEnabled: preferences.soundEnabled,
+      soundVolume: preferences.soundVolume,
+      musicEnabled: preferences.musicEnabled,
+      musicVolume: preferences.musicVolume,
+    };
+    document.querySelectorAll('audio[data-audio-channel="music"]').forEach((element) => {
+      element.muted = !preferences.musicEnabled;
+      element.volume = preferences.musicVolume / 100;
+    });
+    window.dispatchEvent(new CustomEvent('plundrix:audio-preferences', { detail }));
+  }, [preferences.musicEnabled, preferences.musicVolume, preferences.soundEnabled, preferences.soundVolume]);
 
   useEffect(() => {
     const onStorage = (event) => {
@@ -99,6 +114,7 @@ export function AccessibilityProvider({ children }) {
     setReadabilityMode: (value) => setPreference('readabilityMode', value),
     setReducedMotion: (value) => setPreference('reducedMotion', value),
     setSoundEnabled: (value) => setPreference('soundEnabled', value),
+    setMusicEnabled: (value) => setPreference('musicEnabled', value),
   }), [setPreference]);
 
   const value = useMemo(() => ({

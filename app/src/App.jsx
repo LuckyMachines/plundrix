@@ -5,12 +5,13 @@ import Footer from './components/layout/Footer';
 import Modal from './components/shared/Modal';
 import Spinner from './components/shared/Spinner';
 import SessionAudioBridge from './components/shared/SessionAudioBridge';
+import SessionMusicBridge from './components/shared/SessionMusicBridge';
 import Seo from './components/seo/Seo';
 import { routeMeta } from './data/productSpine';
 import { analyticsRoute, trackProductEvent } from './lib/analytics';
 
+const INTERNAL_TOOLS_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 const PlayerHubPage = lazy(() => import('./pages/PlayerHubPage'));
-const NetworkSwitchBanner = lazy(() => import('./components/wallet/NetworkSwitchBanner'));
 const InstantPlayPage = lazy(() => import('./pages/InstantPlayPage'));
 const VaultRunPage = lazy(() => import('./pages/VaultRunPage'));
 const CareerPage = lazy(() => import('./pages/CareerPage'));
@@ -22,27 +23,26 @@ const SessionsPage = lazy(() => import('./pages/SessionsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
-const SnapshotPage = lazy(() => import('./pages/SnapshotPage'));
-const SimulatorPage = lazy(() => import('./pages/SimulatorPage'));
+const SnapshotPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/SnapshotPage')) : null;
+const SimulatorPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/SimulatorPage')) : null;
 const ReplaysPage = lazy(() => import('./pages/ReplaysPage'));
 const ReplayPage = lazy(() => import('./pages/ReplayPage'));
-const OpsPage = lazy(() => import('./pages/OpsPage'));
-const LaunchPage = lazy(() => import('./pages/LaunchPage'));
-const GhostsPage = lazy(() => import('./pages/GhostsPage'));
-const MutationsPage = lazy(() => import('./pages/MutationsPage'));
-const PlaytestPage = lazy(() => import('./pages/PlaytestPage'));
-const DesignTowerPage = lazy(() => import('./pages/DesignTowerPage'));
+const OpsPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/OpsPage')) : null;
+const LaunchPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/LaunchPage')) : null;
+const GhostsPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/GhostsPage')) : null;
+const MutationsPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/MutationsPage')) : null;
+const PlaytestPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/PlaytestPage')) : null;
+const DesignTowerPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/DesignTowerPage')) : null;
 const CompareIndexPage = lazy(() => import('./pages/CompareIndexPage'));
 const CompareDetailPage = lazy(() => import('./pages/CompareDetailPage'));
 const GlossaryPage = lazy(() => import('./pages/GlossaryPage'));
-const ProductMapPage = lazy(() => import('./pages/ProductMapPage'));
-const DesignSystemPage = lazy(() => import('./pages/DesignSystemPage'));
+const ProductMapPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/ProductMapPage')) : null;
+const DesignSystemPage = INTERNAL_TOOLS_ENABLED ? lazy(() => import('./pages/DesignSystemPage')) : null;
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
 const SettingsDrawer = lazy(() => import('./components/settings/SettingsDrawer'));
-const INTERNAL_TOOLS_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 
-export default function App({ web3Enabled = false }) {
+export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(() => (
     typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('settings') === 'open'
@@ -94,8 +94,7 @@ export default function App({ web3Enabled = false }) {
       <RouteMetadata />
       <ScrollToTop />
       <RouteAnalytics />
-      <Header onHelpClick={openHelp} onSettingsClick={openSettings} web3Enabled={web3Enabled} />
-      {web3Enabled && <Suspense fallback={null}><NetworkSwitchBanner /></Suspense>}
+      <Header onHelpClick={openHelp} onSettingsClick={openSettings} />
       <main className="min-w-0 flex-1" id="main-content" tabIndex="-1">
         <Suspense
           fallback={
@@ -116,7 +115,7 @@ export default function App({ web3Enabled = false }) {
             <Route path="/trailer" element={<TrailerPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/sessions" element={<SessionsPage />} />
-            <Route path="/profile/:address" element={<ProfilePage />} />
+            <Route path="/profile/:operatorId" element={<ProfilePage />} />
             <Route path="/game/:gameId" element={<GamePage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
@@ -143,8 +142,9 @@ export default function App({ web3Enabled = false }) {
           </Routes>
         </Suspense>
       </main>
-      <Footer web3Enabled={web3Enabled} />
+      <Footer />
       <SessionAudioBridge />
+      <SessionMusicBridge />
       <Suspense fallback={null}>
         <SettingsDrawer isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       </Suspense>
@@ -198,7 +198,7 @@ function RouteMetadata() {
     metaPath = '/game/:gameId';
     noIndex = true;
   } else if (pathname.startsWith('/profile/')) {
-    metaPath = '/profile/:address';
+    metaPath = '/profile/:operatorId';
     noIndex = true;
   } else if (pathname.startsWith('/replay/')) {
     metaPath = '/replay/:replayId';

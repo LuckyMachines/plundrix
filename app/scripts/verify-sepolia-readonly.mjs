@@ -1,12 +1,16 @@
 import { spawn } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { resolve } from 'node:path';
 import { chromium } from '@playwright/test';
 
 const proxyAddress = process.env.VITE_CONTRACT_ADDRESS || '0x1FF715D46470B4024D88A12838e08A60855f0AE2';
+const workshopAddress = process.env.VITE_WORKSHOP_ADDRESS || '0x74CAbD34B2E29A914025CeB598DF4e3652C418F5';
 const rpcUrl = process.env.VITE_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com';
 const port = Number(process.env.PLUNDRIX_SEPOLIA_PREVIEW_PORT || 5503);
 const agentPort = Number(process.env.PLUNDRIX_SEPOLIA_AGENT_PORT || 5504);
 const baseUrl = `http://127.0.0.1:${port}`;
 const agentBaseUrl = `http://127.0.0.1:${agentPort}`;
+const verificationStateRoot = resolve(tmpdir(), `plundrix-sepolia-readonly-${process.pid}`);
 
 function run(file, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -35,24 +39,27 @@ async function waitForUrl(url, timeoutMs = 20_000) {
   throw new Error(`Timed out waiting for ${url}`);
 }
 
-const buildEnv = {
-  ...process.env,
-  VITE_CONTRACT_ADDRESS: proxyAddress,
-  VITE_RPC_URL: rpcUrl,
-  VITE_ENABLE_FOUNDRY: 'false',
-};
-
 const npmCli = process.env.npm_execpath;
 if (!npmCli) throw new Error('npm_execpath is required to run the production build');
-await run(process.execPath, [npmCli, 'run', 'build'], { env: buildEnv });
+await run(process.execPath, [npmCli, 'run', 'build'], { env: process.env });
 
 const agentServer = spawn(process.execPath, ['agent-service/server.mjs'], {
   cwd: new URL('../..', import.meta.url),
   env: {
     ...process.env,
     AGENT_CONTRACT_ADDRESS: proxyAddress,
+    AGENT_WORKSHOP_ADDRESS: workshopAddress,
     AGENT_RPC_URL: rpcUrl,
     AGENT_PORT: String(agentPort),
+    AGENT_ALLOW_ORIGIN: baseUrl,
+    AGENT_ENABLE_MANAGED_PLAY: 'true',
+    AGENT_ENABLE_RAW_API: 'false',
+    AGENT_MANAGED_CHAIN_ID: '11155111',
+    AGENT_SPONSOR_PRIVATE_KEY: `0x${'11'.repeat(32)}`,
+    AGENT_CUSTODY_SECRET: 'sepolia-readonly-custody-secret-do-not-use-in-production',
+    AGENT_SESSION_SECRET: 'sepolia-readonly-session-secret-do-not-use-in-production',
+    AGENT_SPONSOR_BUDGET_PATH: resolve(verificationStateRoot, 'budget.json'),
+    AGENT_MANAGED_OPERATIONS_PATH: resolve(verificationStateRoot, 'operations.json'),
   },
   stdio: ['ignore', 'inherit', 'inherit'],
   windowsHide: true,
@@ -90,7 +97,7 @@ try {
   await page.locator('#live-operations').waitFor();
   await page.waitForFunction(
     () => document.querySelectorAll('.alive-game-card').length > 0
-      || document.body.textContent?.includes('No operations found. Create one to begin.'),
+      || document.body.textContent?.includes('The first table is yours'),
     undefined,
     { timeout: 30_000 },
   );

@@ -1,27 +1,20 @@
 import { Link } from 'react-router-dom';
-import { useAccount } from 'wagmi';
 
 const STEPS = [
-  ['Connect', 'Connect a wallet, then create a free operation or open an existing table.'],
+  ['Enter', 'Create a free operation or open a table that is waiting for another operator.'],
   ['Assemble', 'Join with 2-4 operators. Any registered player can start when the crew is ready.'],
   ['Commit', 'Choose Pick, Search, or Sabotage. All choices resolve together each round.'],
 ];
 
 export default function QuickStartPanel() {
-  const { isConnected } = useAccount();
-
   return (
     <section className="border border-vault-border bg-vault-surface">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-vault-border px-5 py-4">
         <div>
           <p className="font-mono text-micro uppercase tracking-brand text-tungsten">First operation</p>
-          <h2 className="mt-1 font-display text-2xl uppercase tracking-heading text-vault-text">From wallet to vault in three steps</h2>
+          <h2 className="mt-1 font-display text-2xl uppercase tracking-heading text-vault-text">From lobby to vault in three steps</h2>
         </div>
-        <span className={`border px-2.5 py-1 font-mono text-micro uppercase tracking-label ${
-          isConnected ? 'border-oxide-green/40 bg-oxide-green/10 text-oxide-green' : 'border-vault-border text-vault-text-dim'
-        }`}>
-          {isConnected ? 'Wallet ready' : 'Wallet not connected'}
-        </span>
+        <span className="border border-oxide-green/40 bg-oxide-green/10 px-2.5 py-1 font-mono text-micro uppercase tracking-label text-oxide-green">Service ready</span>
       </div>
 
       <ol className="grid gap-px bg-vault-border md:grid-cols-3">
@@ -40,7 +33,7 @@ export default function QuickStartPanel() {
         </Link>
         <button
           type="button"
-          onClick={() => window.dispatchEvent(new CustomEvent('plundrix:open-help', { detail: { tab: 'how-to' } }))}
+          onClick={() => window.dispatchEvent(new CustomEvent('plundrix:open-help', { detail: { tab: 'howto' } }))}
           className="min-h-[44px] px-3 font-mono text-xs uppercase tracking-label text-vault-text-dim hover:text-vault-text"
         >
           Read field manual

@@ -28,6 +28,7 @@ const QUICK_CHECKS = Object.freeze([
   ['art-manifest', 'Art manifest validation', ['run', 'art:validate']],
   ['premium-presentation', 'Premium presentation-system tests', ['run', 'test:presentation']],
   ['sound-library', 'Licensed normalized sound-library tests', ['run', 'test:sound']],
+  ['music-library', 'Licensed normalized music-library tests', ['run', 'test:music']],
   ['world-system', '3D world contract tests', ['run', 'test:world']],
   ['world-render', '3D world render validation', ['run', 'world:validate']],
   ['inventory', 'Workshop inventory tests', ['run', 'test:inventory']],

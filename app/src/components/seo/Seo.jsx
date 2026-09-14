@@ -39,7 +39,7 @@ function removeElement(selector) {
 
 export default function Seo({
   title = 'PLUNDRIX',
-  description = 'Plundrix is an onchain vault-heist strategy game with short turn-based sessions, sabotage, replays, and explicit bot play.',
+  description = 'Plundrix is a vault-heist strategy game with short turn-based sessions, sabotage, replays, and explicit bot play.',
   path,
   type = 'website',
   image = '/images/og/plundrix-home.jpg',

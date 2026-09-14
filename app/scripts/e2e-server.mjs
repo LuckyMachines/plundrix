@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import {
   createPublicClient,
@@ -77,10 +78,10 @@ function runToCompletion(command, args, options = {}) {
   });
 }
 
-function contractAddressFromEnv() {
+function addressFromEnv(key) {
   const content = readFileSync(resolve(appDir, '.env.local'), 'utf8');
-  const match = content.match(/^VITE_CONTRACT_ADDRESS=(0x[a-fA-F0-9]{40})$/m);
-  if (!match) throw new Error('Local deployment did not write a contract address');
+  const match = content.match(new RegExp(`^${key}=(0x[a-fA-F0-9]{40})$`, 'm'));
+  if (!match) throw new Error(`Local deployment did not write ${key}`);
   return match[1];
 }
 
@@ -185,8 +186,35 @@ try {
     env: { ANVIL_RPC_URL: rpcUrl },
   });
   console.log('Contracts deployed; preparing fixtures...');
-  await seedGames(contractAddressFromEnv());
-  launch(process.execPath, [resolve(appDir, 'node_modules/vite/bin/vite.js'), '--host', '127.0.0.1', '--port', '5502'], { cwd: appDir });
+  const contractAddress = addressFromEnv('VITE_CONTRACT_ADDRESS');
+  const workshopAddress = addressFromEnv('VITE_WORKSHOP_ADDRESS');
+  await seedGames(contractAddress);
+  const agentUrl = 'http://127.0.0.1:8788';
+  launch(process.execPath, ['agent-service/server.mjs'], {
+    cwd: root,
+    env: {
+      AGENT_PORT: '8788',
+      AGENT_RPC_URL: rpcUrl,
+      AGENT_CONTRACT_ADDRESS: contractAddress,
+      AGENT_WORKSHOP_ADDRESS: workshopAddress,
+      AGENT_ALLOW_ORIGIN: appUrl,
+      AGENT_ENABLE_MANAGED_PLAY: 'true',
+      AGENT_MANAGED_CHAIN_ID: '31337',
+      AGENT_SPONSOR_PRIVATE_KEY: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+      AGENT_CUSTODY_SECRET: 'plundrix-e2e-custody-secret-32-characters',
+      AGENT_SESSION_SECRET: 'plundrix-e2e-session-secret-32-characters',
+      AGENT_MAX_GAS_PRICE_WEI: '100000000000',
+      AGENT_DAILY_BUDGET_WEI: '1000000000000000000',
+      AGENT_SPONSOR_RESERVE_WEI: '1000000000000000000',
+      AGENT_SPONSOR_BUDGET_PATH: resolve(tmpdir(), `plundrix-e2e-sponsor-${process.pid}.json`),
+      AGENT_MANAGED_OPERATIONS_PATH: resolve(tmpdir(), `plundrix-e2e-operations-${process.pid}.json`),
+    },
+  });
+  await waitForUrl(`${agentUrl}/health`);
+  launch(process.execPath, [resolve(appDir, 'node_modules/vite/bin/vite.js'), '--host', '127.0.0.1', '--port', '5502'], {
+    cwd: appDir,
+    env: { VITE_AGENT_PROXY_TARGET: agentUrl },
+  });
   await waitForUrl(appUrl);
   console.log(`Plundrix E2E environment ready at ${appUrl}`);
 } catch (error) {

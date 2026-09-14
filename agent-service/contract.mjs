@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createPublicClient, http, isAddress } from 'viem';
-import { sepolia } from 'viem/chains';
 import { agentConfig } from './config.mjs';
 import {
   normalizeActionCode,
@@ -12,7 +11,6 @@ const abiPath = resolve(process.cwd(), 'abi', 'PlundrixGame.json');
 const abi = JSON.parse(readFileSync(abiPath, 'utf8'));
 const client = createPublicClient({
   batch: { multicall: true },
-  chain: sepolia,
   transport: http(agentConfig.rpcUrl),
 });
 

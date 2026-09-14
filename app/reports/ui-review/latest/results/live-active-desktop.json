@@ -10,7 +10,7 @@
   "path": "/game/2",
   "reviewFocus": [
     "decision hierarchy",
-    "on-chain state",
+    "round state",
     "table pressure"
   ],
   "experimentIds": [],

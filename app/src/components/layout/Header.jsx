@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import HelpButton from '../help/HelpButton';
 import { usePreferences } from '../../context/AccessibilityContext';
@@ -12,8 +12,6 @@ const NAV_ITEMS = [
   { to: '/replays', label: 'Replays' },
   { to: '/career', label: 'Career' },
 ];
-const ConnectButton = lazy(() => import('../wallet/ConnectButton'));
-const NetworkBadge = lazy(() => import('../wallet/NetworkBadge'));
 const FOCUSABLE = 'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 function SettingsButton({ onClick, iconOnly = false, keyboardHints = false }) {
@@ -36,13 +34,12 @@ function SettingsButton({ onClick, iconOnly = false, keyboardHints = false }) {
   );
 }
 
-export default function Header({ onHelpClick, onSettingsClick, web3Enabled = false }) {
+export default function Header({ onHelpClick, onSettingsClick }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const menuTriggerRef = useRef(null);
   const location = useLocation();
   const { keyboardHints } = usePreferences();
-  const walletOptional = !web3Enabled;
   const isActive = (to) => (to === '/' ? location.pathname === '/' : location.pathname === to || location.pathname.startsWith(`${to}/`));
 
   useEffect(() => setMenuOpen(false), [location.pathname]);
@@ -118,13 +115,10 @@ export default function Header({ onHelpClick, onSettingsClick, web3Enabled = fal
         <div className="ml-auto hidden shrink-0 items-center gap-2 min-[1600px]:ml-0 min-[1600px]:flex">
           <SettingsButton onClick={onSettingsClick} keyboardHints={keyboardHints} />
           <HelpButton onClick={onHelpClick} />
-          {!walletOptional && <Suspense fallback={null}><NetworkBadge /></Suspense>}
-          {!walletOptional && <Suspense fallback={null}><ConnectButton /></Suspense>}
-          {walletOptional && <Link to="/#live-operations" className="inline-flex min-h-[44px] items-center border border-vault-border px-3 font-mono text-xs uppercase tracking-interface text-vault-text-dim hover:text-tungsten">Live tables</Link>}
+          <Link to="/#live-operations" className="inline-flex min-h-[44px] items-center border border-vault-border px-3 font-mono text-xs uppercase tracking-interface text-vault-text-dim hover:text-tungsten">Live tables</Link>
         </div>
 
         <div className="ml-auto flex items-center gap-2 min-[1600px]:hidden">
-          {!walletOptional && <Suspense fallback={null}><ConnectButton /></Suspense>}
           <SettingsButton onClick={onSettingsClick} iconOnly />
           <button
             ref={menuTriggerRef}
@@ -167,9 +161,8 @@ export default function Header({ onHelpClick, onSettingsClick, web3Enabled = fal
               <SettingsButton onClick={() => leaveMenuFor(onSettingsClick)} />
               <HelpButton onClick={() => leaveMenuFor(onHelpClick)} showLabel />
             </div>
-            {!walletOptional && <Suspense fallback={null}><NetworkBadge /></Suspense>}
           </div>
-          <p className="mt-6 font-mono text-micro uppercase tracking-label text-oxide-green">Sepolia beta live / free play</p>
+          <p className="mt-6 font-mono text-micro uppercase tracking-label text-oxide-green">Live beta / free play</p>
         </div>
       )}
     </header>

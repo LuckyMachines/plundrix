@@ -12,7 +12,7 @@ export default function CompareIndexPage() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'Plundrix game comparisons',
-    description: 'Comparison pages for players looking for Plundrix alternatives to raid games, online board games, sabotage games, and onchain games.',
+    description: 'Comparison pages for players looking for Plundrix alternatives to raid games, online board games, sabotage games, and session strategy games.',
     url: `${SITE_ORIGIN}/compare`,
     hasPart: COMPARISON_PAGES.map((page) => ({
       '@type': 'WebPage',
@@ -26,7 +26,7 @@ export default function CompareIndexPage() {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
       <Seo
         title="Game Comparisons and Alternatives | Plundrix"
-        description="Compare Plundrix with raid games, online board games, sabotage games, and onchain strategy games to find the right short-session vault-heist game."
+        description="Compare Plundrix with raid games, online board games, sabotage games, and session strategy games to find the right short-session vault-heist game."
         path="/compare"
         jsonLd={jsonLd}
       />
@@ -35,7 +35,7 @@ export default function CompareIndexPage() {
         <PageIntro
           route="/compare"
           title="Find the right Plundrix comparison by player craving."
-          description="Compare Plundrix against adjacent games by intent: raid pressure, board-game strategy, sabotage, and onchain play."
+          description="Compare Plundrix against adjacent games by intent: raid pressure, board-game strategy, sabotage, and short-session play."
         />
 
         <aside className="border border-vault-border bg-vault-surface p-5">

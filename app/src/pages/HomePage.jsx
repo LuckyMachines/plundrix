@@ -75,10 +75,10 @@ const REPLAY_PROOF = [
 ];
 
 const FAQ = [
-  ['Can I play without a wallet?', 'Yes. Instant Play starts a four-operator match against three clearly labeled agents in your browser. No signup, wallet, or test ETH is required.'],
-  ['What is actually onchain?', 'The live multiplayer beta runs through the published Plundrix contract on Ethereum Sepolia. Instant Play is a fast local version of the same Pick, Search, and Sabotage decision loop.'],
-  ['Does the beta cost money?', 'Plundrix has no cash prizes or paid public mode. Instant Play is free. Live Sepolia games may require free test ETH for network gas.'],
-  ['Are bots hidden as players?', 'No. Agents and bots are labeled wherever they participate. Live session state, outcomes, and the verified contract can be inspected publicly.'],
+  ['Can I play immediately?', 'Yes. Instant Play starts a four-operator match against three clearly labeled agents. No signup or setup is required.'],
+  ['How does live multiplayer work?', 'Create a free operation or join an open table. Plundrix handles the game service while you focus on Pick, Search, and Sabotage.'],
+  ['Does the beta cost money?', 'No. Plundrix has no cash prizes or paid public mode, and both practice and live tables are free to play.'],
+  ['Are bots hidden as players?', 'No. Agents and bots are labeled wherever they participate.'],
 ];
 
 export default function HomePage() {
@@ -88,7 +88,7 @@ export default function HomePage() {
     <>
       <Seo
         title="Plundrix - Crack the Vault. Break the Table."
-        description="Race through five locks, build better odds, and sabotage rivals in Plundrix. Start instantly with no wallet or join the live Sepolia beta."
+        description="Race through five locks, build better odds, and sabotage rivals in Plundrix. Start instantly or join a live multiplayer table."
         path="/"
         image="/images/og/plundrix-home.jpg"
         imageAlt="Plundrix - Crack the Vault. Break the Table."
@@ -155,10 +155,10 @@ export default function HomePage() {
             <div className="mb-7 flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full border border-oxide-green/35 bg-oxide-green/10 px-3 py-1.5 font-mono text-micro uppercase tracking-brand text-oxide-green">
                 <span className="h-1.5 w-1.5 rounded-full bg-oxide-green shadow-[0_0_12px_rgba(64,160,128,0.9)]" />
-                Instant play / no wallet
+                Instant play / no signup
               </span>
               <span className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">
-                Live multiplayer beta on Sepolia
+                Live multiplayer beta
               </span>
             </div>
 
@@ -305,9 +305,9 @@ export default function HomePage() {
 
         <section id="live-operations" className="mx-auto max-w-7xl scroll-mt-20 px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <SectionHeading
-            eyebrow="Live on Sepolia"
+            eyebrow="Hosted live play"
             title="Choose your table."
-            copy="Connect a wallet to create an operation, or join an open vault. The beta is free to play; normal network gas may apply."
+            copy="Create a free operation or join an open vault. Plundrix handles setup and saves every move."
           />
           <div className="mt-10 space-y-6">
             {data && <SeasonOverview overview={data.overview} season={data.season} />}
@@ -386,16 +386,16 @@ function TrustAndFaq() {
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-24">
         <div>
           <SectionHeading
-            eyebrow="Inspect the operation"
+            eyebrow="Know the operation"
             title="The beta tells you what is real."
-            copy="Play locally with labeled agents, or take the same decision loop to the public Sepolia contract. The network, limitations, and proof stay explicit."
+            copy="Practice with labeled agents or take the same decision loop to a hosted live table. The rules and beta limitations stay explicit."
           />
           <div className="mt-8 grid gap-px border border-vault-border bg-vault-border sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             {[
               ['Free beta', 'No cash prizes or paid public mode'],
-              ['Public contract', 'Verified implementation source'],
+              ['Hosted tables', 'No setup or payment prompts'],
               ['Labeled agents', 'No bots presented as people'],
-              ['Real proof', 'Funded Sepolia game completed'],
+              ['Saved rounds', 'Live operation state persists'],
             ].map(([title, detail]) => (
               <div key={title} className="bg-vault-surface p-4">
                 <p className="font-mono text-micro uppercase tracking-label text-oxide-green">{title}</p>
@@ -403,14 +403,7 @@ function TrustAndFaq() {
               </div>
             ))}
           </div>
-          <a
-            href="https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract"
-            target="_blank"
-            rel="noreferrer"
-            className="mt-6 inline-flex min-h-[44px] items-center font-mono text-micro uppercase tracking-label text-tungsten hover:text-tungsten-bright"
-          >
-            Inspect verified source -&gt;
-          </a>
+          <Link to="/sessions" className="mt-6 inline-flex min-h-[44px] items-center font-mono text-micro uppercase tracking-label text-tungsten hover:text-tungsten-bright">Review recent operations -&gt;</Link>
         </div>
 
         <div>
@@ -444,7 +437,7 @@ function TurnDemo() {
     <section className="mx-auto max-w-7xl px-5 pb-20 sm:px-8 lg:px-10 lg:pb-28">
       <div className="overflow-hidden border border-vault-border bg-vault-surface lg:grid lg:grid-cols-[0.78fr_1.22fr]">
         <div className="border-b border-vault-border p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-10">
-          <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">No wallet needed</p>
+          <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">No setup needed</p>
           <h2 className="mt-4 font-display text-4xl font-semibold uppercase leading-heading text-vault-text sm:text-5xl">Make the call.</h2>
           <p className="mt-5 max-w-md text-base leading-7 text-vault-text-dim">
             You have two locks open and one tool. Rook is ahead at four locks. What do you do?

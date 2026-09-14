@@ -5,9 +5,13 @@ export default function AccessibilityToggle() {
     readabilityMode,
     reducedMotion,
     soundEnabled,
+    soundVolume,
+    musicEnabled,
+    musicVolume,
     setReadabilityMode,
     setReducedMotion,
     setSoundEnabled,
+    setMusicEnabled,
   } = useAccessibility();
 
   return (
@@ -46,7 +50,19 @@ export default function AccessibilityToggle() {
         }`}
         aria-pressed={soundEnabled}
       >
-        Sound {soundEnabled ? 'On' : 'Off'}
+        SFX {soundEnabled ? `${soundVolume}%` : 'Muted'}
+      </button>
+      <button
+        type="button"
+        onClick={() => setMusicEnabled(!musicEnabled)}
+        className={`px-3 py-2 min-h-[44px] rounded border font-mono text-xs uppercase tracking-wider transition-colors ${
+          musicEnabled
+            ? 'border-oxide-green/50 text-oxide-green bg-oxide-green/10'
+            : 'border-vault-border text-vault-text-dim hover:text-vault-text'
+        }`}
+        aria-pressed={musicEnabled}
+      >
+        Music {musicEnabled ? `${musicVolume}%` : 'Muted'}
       </button>
     </div>
   );

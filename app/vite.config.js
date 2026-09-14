@@ -25,6 +25,16 @@ export default defineConfig({
         '**/tests/e2e/__screenshots__/**',
       ],
     },
+    proxy: process.env.VITE_AGENT_PROXY_TARGET ? {
+      '/api': {
+        target: process.env.VITE_AGENT_PROXY_TARGET,
+        changeOrigin: true,
+      },
+      '/health': {
+        target: process.env.VITE_AGENT_PROXY_TARGET,
+        changeOrigin: true,
+      },
+    } : undefined,
   },
   preview: {
     port: 4501,

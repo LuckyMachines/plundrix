@@ -1,15 +1,14 @@
 import { Link } from 'react-router-dom';
-import GameBrowser from '../components/game/GameBrowser';
+import ManagedOperations from '../components/game/ManagedOperations';
 import QuickStartPanel from '../components/game/QuickStartPanel';
 import Seo from '../components/seo/Seo';
-import { RUNTIME_CAPABILITIES } from '../config/contract';
 
 export default function PlayerHubPage() {
   return (
     <>
       <Seo
         title="Plundrix Player Hub - Choose Your Table"
-        description="Play Plundrix instantly against three agents or connect a wallet for live multiplayer operations on Sepolia."
+        description="Play Plundrix instantly against three agents or join a live multiplayer vault operation."
         path="/"
         image="/images/og/plundrix-home.jpg"
         imageAlt="Plundrix player hub with instant and live play options"
@@ -23,7 +22,7 @@ export default function PlayerHubPage() {
               Choose your breach.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-vault-text-dim">
-              Race three rivals now, carry a gadget through a Vault Run, or join a live Sepolia table.
+              Race three rivals now, carry a gadget through a Vault Run, or join a live table.
             </p>
           </div>
 
@@ -32,7 +31,7 @@ export default function PlayerHubPage() {
               <img src="/images/plundrix-instant-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-55" />
               <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/35" />
               <div className="relative flex h-full flex-col items-start">
-              <p className="font-mono text-micro uppercase tracking-brand text-tungsten">No wallet</p>
+              <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Instant table</p>
               <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Play instantly</h2>
               <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">
                 Pick, Search, and Sabotage through a complete match. Choose a pace, face three distinct agents, and learn by playing.
@@ -58,10 +57,10 @@ export default function PlayerHubPage() {
               <img src="/images/plundrix-live-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-52" />
               <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/35" />
               <div className="relative flex h-full flex-col items-start">
-              <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Wallet + Sepolia</p>
+              <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Hosted live play</p>
               <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Join a live table</h2>
               <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">
-                Create or enter a 2-4 player operation. Your moves resolve together onchain, so every round is a read on the table.
+                Create or enter a 2-4 player operation. The game service saves every move while you focus on reading the table.
               </p>
               <a href="#live-operations" className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/50 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-label text-oxide-green">
                 Open live operations -&gt;
@@ -75,17 +74,13 @@ export default function PlayerHubPage() {
       <section id="live-operations" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-14 sm:px-8 lg:px-10 lg:py-20">
         <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
           <div>
-            <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">Live on Sepolia</p>
+            <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">Hosted multiplayer</p>
             <h2 className="mt-3 font-display text-4xl font-semibold uppercase text-vault-text sm:text-5xl">Live operations</h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-vault-text-dim">
-              Connect your wallet, create a free operation, or open a table that is waiting for another operator.
+              Create a free operation or open a table waiting for another operator. No setup, account, or payment is required.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2" aria-label="Sepolia beta capabilities">
-              <Capability label="Core game" ready={RUNTIME_CAPABILITIES.game} />
-              <Capability label="Onchain workshop" ready={RUNTIME_CAPABILITIES.workshop} />
-              <Capability label="Paced rules" ready={RUNTIME_CAPABILITIES.pacedGames} />
-              <Capability label="Table pressure" ready={RUNTIME_CAPABILITIES.tablePressure} />
-              <Capability label="One-confirmation turns" ready={RUNTIME_CAPABILITIES.sessionActions} />
+            <div className="mt-4 flex flex-wrap gap-2" aria-label="Live play capabilities">
+              {['Free play', 'Saved progress', 'Paced rounds', 'Persistent workshop'].map((label) => <span key={label} className="border border-oxide-green/40 bg-oxide-green/5 px-2 py-1 font-mono text-micro uppercase tracking-interface text-oxide-green">{label}</span>)}
             </div>
           </div>
           <a href="https://plundrix.com/#how-it-works" className="font-mono text-xs uppercase tracking-label text-tungsten hover:text-tungsten-bright">
@@ -94,7 +89,7 @@ export default function PlayerHubPage() {
         </div>
 
         <div className="space-y-5">
-          <GameBrowser />
+          <ManagedOperations />
           <QuickStartPanel />
         </div>
       </section>
@@ -115,8 +110,4 @@ export default function PlayerHubPage() {
       </section>
     </>
   );
-}
-
-function Capability({ label, ready }) {
-  return <span className={`border px-2 py-1 font-mono text-micro uppercase tracking-interface ${ready ? 'border-oxide-green/40 bg-oxide-green/5 text-oxide-green' : 'border-vault-border bg-vault-dark/40 text-vault-text-dim'}`}>{label}: {ready ? 'ready' : 'preview only'}</span>;
 }

@@ -237,6 +237,84 @@
   line-height: var(--leading-copy);
 }
 
+.settings-audio-mixer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.audio-channel {
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--caper-brass) 42%, var(--color-vault-border));
+  background: linear-gradient(145deg, rgba(20, 31, 40, 0.98), rgba(6, 14, 22, 0.98));
+  padding: 1rem;
+}
+
+.audio-channel[data-muted="true"] {
+  border-color: var(--color-vault-border);
+}
+
+.audio-channel__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.audio-channel__heading p {
+  color: var(--caper-brass);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-interface);
+  text-transform: uppercase;
+}
+
+.audio-channel__heading h3 {
+  margin-top: 0.2rem;
+  color: var(--caper-paper);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+}
+
+.audio-channel__mute {
+  min-width: 5.5rem;
+  border: 1px solid var(--color-vault-border);
+  padding: 0 0.7rem;
+  color: var(--color-vault-text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-interface);
+  text-transform: uppercase;
+}
+
+.audio-channel__mute:hover,
+.audio-channel__mute:focus-visible {
+  border-color: var(--caper-brass);
+  color: var(--caper-paper);
+}
+
+.audio-channel__mute[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--color-signal-red) 64%, transparent);
+  color: var(--color-signal-red);
+}
+
+.audio-channel__description {
+  min-height: 2.5rem;
+  margin-top: 0.7rem;
+  color: var(--color-vault-text-dim);
+  font-size: var(--text-xs);
+  line-height: var(--leading-copy);
+}
+
+.audio-channel .preference-slider {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
 .preference-list {
   display: grid;
   gap: 1px;
@@ -595,6 +673,10 @@
     width: 100%;
     min-width: 0;
     padding: 1rem;
+  }
+
+  .settings-audio-mixer {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .preference-row {

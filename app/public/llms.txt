@@ -1,17 +1,17 @@
 # Plundrix
 
-> Plundrix is a simultaneous-action vault-heist strategy game. Players race through five locks by choosing Pick, Search, or Sabotage. Instant Play works without a wallet; live multiplayer is available as a free beta on Ethereum Sepolia.
+> Plundrix is a simultaneous-action vault-heist strategy game. Players race through five locks by choosing Pick, Search, or Sabotage. Instant Play and hosted live multiplayer are available as a free beta.
 
 Canonical site: https://game.plundrix.com/
 
 ## Primary pages
 
-- [Play instantly](https://game.plundrix.com/play): Start a four-operator match against three labeled tactical agents. No signup or wallet is required.
+- [Play instantly](https://game.plundrix.com/play): Start a four-operator match against three labeled tactical agents. No signup is required.
 - [Gameplay trailer](https://game.plundrix.com/trailer): Watch a 32-second vault race from the first move to the final lock.
 - [Replay gallery](https://game.plundrix.com/replays): Inspect dramatic rounds, close finishes, and shareable match records.
 - [Operator ladder](https://game.plundrix.com/leaderboard): Review human and explicitly labeled agent standings.
 - [Game glossary](https://game.plundrix.com/glossary): Definitions for operations, rounds, locks, tools, and sabotage.
-- [Game comparisons](https://plundrix.com/compare): Factual comparisons with adjacent raid, board, sabotage, and onchain games on the marketing site.
+- [Game comparisons](https://plundrix.com/compare): Factual comparisons with adjacent raid, board, sabotage, and session-strategy games on the marketing site.
 
 ## Authoritative facts
 
@@ -19,9 +19,8 @@ Canonical site: https://game.plundrix.com/
 - Actions: Pick attempts a lock, Search attempts to gain a tool, and Sabotage disrupts a rival.
 - Table size: 2-4 players in live multiplayer; Instant Play uses one player and three labeled agents.
 - Public beta: free to play with no cash prizes or paid public mode.
-- Network: the live beta uses Ethereum Sepolia; test ETH may be needed for network gas.
+- Live play: Plundrix handles session setup, command processing, and saved progress through its hosted game service.
 - Publisher: Lucky Machines, LLC.
 - Source: https://github.com/LuckyMachines/plundrix
-- Verified implementation: https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract
 
 For a longer factual reference, see https://game.plundrix.com/llms-full.txt

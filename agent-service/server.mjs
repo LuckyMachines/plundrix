@@ -2,10 +2,10 @@ import { createServer } from 'node:http';
 import { agentConfig, validateAgentConfig } from './config.mjs';
 import {
   getBadgeCatalog,
-  getCompetitionOverview,
-  getCompetitionProfile,
-  getCompetitionSessions,
-  getLeaderboard,
+  getPublicCompetitionOverview,
+  getPublicCompetitionProfile,
+  getPublicCompetitionSessions,
+  getPublicLeaderboard,
 } from './competition.mjs';
 import {
   getGameHistory,
@@ -14,33 +14,68 @@ import {
   parsePlayerAddress,
 } from './contract.mjs';
 import { buildAvailableActions, recommendAction } from './strategy.mjs';
-import { getSessionRelayStatus, relaySessionAction } from './session-relay.mjs';
+import { relaySessionAction } from './session-relay.mjs';
 import { getWeeklyVaultBoard, submitWeeklyVaultScore } from './weekly-challenge.mjs';
+import {
+  createManagedOperation,
+  createManagedSession,
+  getManagedOperation,
+  getManagedWorkshop,
+  joinManagedOperation,
+  listManagedOperations,
+  managedCookie,
+  managedError,
+  managedPlayStatus,
+  ManagedPlayError,
+  readManagedSession,
+  startManagedOperation,
+  startManagedPlayMaintenance,
+  submitManagedAction,
+  updateManagedWorkshop,
+} from './managed-play.mjs';
 
 validateAgentConfig();
+startManagedPlayMaintenance();
 
-const relayRequests = new Map();
+const requestBuckets = new Map();
 
-function enforceRelayRateLimit(req) {
+function clientAddress(req) {
+  const cloudflare = String(req.headers['cf-connecting-ip'] || '').trim();
   const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
-  const client = forwarded || req.socket.remoteAddress || 'unknown';
-  const now = Date.now();
-  const recent = (relayRequests.get(client) || []).filter((time) => now - time < 60_000);
-  if (recent.length >= 10) throw new Error('Session relay rate limit exceeded');
-  recent.push(now);
-  relayRequests.set(client, recent);
+  return cloudflare || forwarded || req.socket.remoteAddress || 'unknown';
 }
 
-function writeJson(res, statusCode, payload) {
+function enforceRateLimit(req, { scope = 'write', identity = '', limit = 10, windowMs = 60_000 } = {}) {
+  const client = identity || clientAddress(req);
+  const key = `${scope}:${client}`;
+  const now = Date.now();
+  const recent = (requestBuckets.get(key) || []).filter((time) => now - time < windowMs);
+  if (recent.length >= limit) throw new Error('Game service rate limit exceeded');
+  recent.push(now);
+  requestBuckets.set(key, recent);
+}
+
+function enforceManagedOrigin(req) {
+  const origin = String(req.headers.origin || '').replace(/\/$/, '');
+  const allowed = String(agentConfig.allowOrigin || '').replace(/\/$/, '');
+  if (origin && allowed !== '*' && origin !== allowed) {
+    throw new ManagedPlayError('Request origin is not allowed.', 403);
+  }
+}
+
+function writeJson(res, statusCode, payload, extraHeaders = {}) {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
     'Access-Control-Allow-Origin': agentConfig.allowOrigin,
     'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    ...(agentConfig.allowOrigin === '*' ? {} : { 'Access-Control-Allow-Credentials': 'true' }),
     'Cache-Control': 'no-store',
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'no-referrer',
+    Vary: 'Origin',
+    ...extraHeaders,
   });
   res.end(JSON.stringify(payload, null, 2));
 }
@@ -95,10 +130,12 @@ function parseCompetitionQuery(url) {
 }
 
 const server = createServer(async (req, res) => {
+  let requestPath = '/';
   try {
     const method = req.method || 'GET';
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
     const path = url.pathname;
+    requestPath = path;
 
     if (method === 'OPTIONS') {
       writeJson(res, 204, {});
@@ -108,40 +145,112 @@ const server = createServer(async (req, res) => {
     if (method === 'GET' && path === '/health') {
       writeJson(res, 200, {
         ok: true,
-        service: 'plundrix-agent-service',
-        rpcUrl: agentConfig.rpcUrl,
-        contractAddress: agentConfig.contractAddress,
-        sessionRelay: getSessionRelayStatus(),
+        service: 'plundrix-game-service',
+        play: managedPlayStatus(),
       });
       return;
     }
 
-    if (method === 'GET' && path === '/api/games') {
+    if (method === 'POST' && path === '/api/player/session') {
+      enforceManagedOrigin(req);
+      let player;
+      let cookie;
+      try {
+        const session = readManagedSession(req.headers.cookie);
+        player = { displayName: session.displayName };
+      } catch {
+        enforceRateLimit(req, { scope: 'session', limit: 60, windowMs: 60 * 60_000 });
+        const created = createManagedSession();
+        player = created.player;
+        cookie = managedCookie(created.token);
+      }
+      writeJson(res, 201, { player }, cookie ? { 'Set-Cookie': cookie } : {});
+      return;
+    }
+
+    if (method === 'GET' && path === '/api/player/session') {
+      const session = readManagedSession(req.headers.cookie);
+      writeJson(res, 200, { player: { displayName: session.displayName } });
+      return;
+    }
+
+    if (method === 'GET' && path === '/api/play/operations') {
+      readManagedSession(req.headers.cookie);
+      writeJson(res, 200, await listManagedOperations());
+      return;
+    }
+
+    if (method === 'POST' && path === '/api/play/operations') {
+      enforceManagedOrigin(req);
+      const session = readManagedSession(req.headers.cookie);
+      enforceRateLimit(req, { scope: 'managed-write', identity: session.id });
+      writeJson(res, 201, { operation: await createManagedOperation(session, await readBody(req)) });
+      return;
+    }
+
+    const managedOperationMatch = path.match(/^\/api\/play\/operations\/(\d+)$/);
+    if (method === 'GET' && managedOperationMatch) {
+      const session = readManagedSession(req.headers.cookie);
+      writeJson(res, 200, { operation: await getManagedOperation(managedOperationMatch[1], session) });
+      return;
+    }
+
+    const managedCommandMatch = path.match(/^\/api\/play\/operations\/(\d+)\/(join|start|actions)$/);
+    if (method === 'POST' && managedCommandMatch) {
+      enforceManagedOrigin(req);
+      const session = readManagedSession(req.headers.cookie);
+      enforceRateLimit(req, { scope: 'managed-write', identity: session.id });
+      const [, gameId, command] = managedCommandMatch;
+      const body = await readBody(req);
+      const operation = command === 'join'
+        ? await joinManagedOperation(gameId, session)
+        : command === 'start'
+          ? await startManagedOperation(gameId, session)
+          : await submitManagedAction(gameId, session, body);
+      writeJson(res, 200, { operation });
+      return;
+    }
+
+    if (method === 'GET' && path === '/api/play/workshop') {
+      const session = readManagedSession(req.headers.cookie);
+      writeJson(res, 200, { workshop: await getManagedWorkshop(session) });
+      return;
+    }
+
+    if (method === 'POST' && path === '/api/play/workshop') {
+      enforceManagedOrigin(req);
+      const session = readManagedSession(req.headers.cookie);
+      enforceRateLimit(req, { scope: 'managed-write', identity: session.id });
+      writeJson(res, 200, { workshop: await updateManagedWorkshop(session, await readBody(req)) });
+      return;
+    }
+
+    if (agentConfig.rawApiEnabled && method === 'GET' && path === '/api/games') {
       const result = await listGames(...Object.values(parseListQuery(url)));
       writeJson(res, 200, result);
       return;
     }
 
     if (method === 'GET' && path === '/api/competition/overview') {
-      writeJson(res, 200, await getCompetitionOverview());
+      writeJson(res, 200, await getPublicCompetitionOverview());
       return;
     }
 
     if (method === 'GET' && path === '/api/competition/leaderboard') {
       const { limit, queue } = parseCompetitionQuery(url);
-      writeJson(res, 200, await getLeaderboard({ limit, queue }));
+      writeJson(res, 200, await getPublicLeaderboard({ limit, queue }));
       return;
     }
 
     if (method === 'GET' && path === '/api/competition/agent-ladder') {
       const { limit } = parseCompetitionQuery(url);
-      writeJson(res, 200, await getLeaderboard({ limit, queue: 'agent_ladder' }));
+      writeJson(res, 200, await getPublicLeaderboard({ limit, queue: 'agent_ladder' }));
       return;
     }
 
     if (method === 'GET' && path === '/api/competition/sessions') {
       const { limit, queue, state } = parseCompetitionQuery(url);
-      writeJson(res, 200, await getCompetitionSessions({ limit, queue, state }));
+      writeJson(res, 200, await getPublicCompetitionSessions({ limit, queue, state }));
       return;
     }
 
@@ -150,20 +259,18 @@ const server = createServer(async (req, res) => {
       return;
     }
 
-    const profileRouteMatch = path.match(
-      /^\/api\/competition\/profiles\/(0x[a-fA-F0-9]{40})$/
-    );
+    const profileRouteMatch = path.match(/^\/api\/competition\/profiles\/(op-[a-f0-9]{12})$/);
     if (method === 'GET' && profileRouteMatch) {
       writeJson(
         res,
         200,
-        await getCompetitionProfile(parsePlayerAddress(profileRouteMatch[1]))
+        await getPublicCompetitionProfile(profileRouteMatch[1])
       );
       return;
     }
 
     const gameRouteMatch = path.match(/^\/api\/games\/(\d+)$/);
-    if (method === 'GET' && gameRouteMatch) {
+    if (agentConfig.rawApiEnabled && method === 'GET' && gameRouteMatch) {
       const snapshot = await getGameSnapshot(gameRouteMatch[1]);
       writeJson(res, 200, snapshot);
       return;
@@ -172,7 +279,7 @@ const server = createServer(async (req, res) => {
     const availableActionsRouteMatch = path.match(
       /^\/api\/games\/(\d+)\/available-actions\/(0x[a-fA-F0-9]{40})$/
     );
-    if (method === 'GET' && availableActionsRouteMatch) {
+    if (agentConfig.rawApiEnabled && method === 'GET' && availableActionsRouteMatch) {
       const snapshot = await getGameSnapshot(availableActionsRouteMatch[1]);
       const playerAddress = parsePlayerAddress(availableActionsRouteMatch[2]);
       const availableActions = buildAvailableActions(snapshot, playerAddress);
@@ -185,7 +292,7 @@ const server = createServer(async (req, res) => {
     }
 
     const historyRouteMatch = path.match(/^\/api\/games\/(\d+)\/history$/);
-    if (method === 'GET' && historyRouteMatch) {
+    if (agentConfig.rawApiEnabled && method === 'GET' && historyRouteMatch) {
       const fromBlock = url.searchParams.get('fromBlock');
       const toBlock = url.searchParams.get('toBlock');
       const history = await getGameHistory(historyRouteMatch[1], {
@@ -196,7 +303,7 @@ const server = createServer(async (req, res) => {
       return;
     }
 
-    if (method === 'POST' && path === '/api/recommend-action') {
+    if (agentConfig.rawApiEnabled && method === 'POST' && path === '/api/recommend-action') {
       const body = await readBody(req);
       const snapshot = await getGameSnapshot(body.gameId);
       const playerAddress = parsePlayerAddress(body.playerAddress);
@@ -215,14 +322,14 @@ const server = createServer(async (req, res) => {
     }
 
     if (method === 'POST' && path === '/api/weekly-vault/scores') {
-      enforceRelayRateLimit(req);
+      enforceRateLimit(req);
       const body = await readBody(req);
       writeJson(res, 201, submitWeeklyVaultScore(body));
       return;
     }
 
-    if (method === 'POST' && path === '/api/session-actions') {
-      enforceRelayRateLimit(req);
+    if (agentConfig.rawApiEnabled && method === 'POST' && path === '/api/session-actions') {
+      enforceRateLimit(req, { scope: 'relay' });
       const body = await readBody(req);
       writeJson(res, 201, await relaySessionAction(body));
       return;
@@ -232,7 +339,16 @@ const server = createServer(async (req, res) => {
       error: 'Not found',
       routes: [
         'GET /health',
-        'GET /api/games',
+        'POST /api/player/session',
+        'GET /api/player/session',
+        'GET /api/play/operations',
+        'POST /api/play/operations',
+        'GET /api/play/operations/:operationId',
+        'POST /api/play/operations/:operationId/join',
+        'POST /api/play/operations/:operationId/start',
+        'POST /api/play/operations/:operationId/actions',
+        'GET /api/play/workshop',
+        'POST /api/play/workshop',
         'GET /api/weekly-vault',
         'POST /api/weekly-vault/scores',
         'GET /api/competition/overview',
@@ -240,17 +356,16 @@ const server = createServer(async (req, res) => {
         'GET /api/competition/agent-ladder',
         'GET /api/competition/sessions',
         'GET /api/competition/badges',
-        'GET /api/competition/profiles/:playerAddress',
-        'GET /api/games/:gameId',
-        'GET /api/games/:gameId/available-actions/:playerAddress',
-        'GET /api/games/:gameId/history',
-        'POST /api/recommend-action',
-        'POST /api/session-actions',
+        'GET /api/competition/profiles/:operatorId',
       ],
     });
   } catch (error) {
-    writeJson(res, 400, {
-      error: error instanceof Error ? error.message : 'Unknown error',
+    console.error('[plundrix-game-service]', requestPath, error?.shortMessage || error?.message || error);
+    const safeError = requestPath.startsWith('/api/play/') || requestPath === '/api/player/session'
+      ? managedError(error)
+      : error;
+    writeJson(res, safeError?.statusCode || 400, {
+      error: safeError instanceof Error ? safeError.message : 'Unknown error',
     });
   }
 });

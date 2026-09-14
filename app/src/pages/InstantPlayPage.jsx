@@ -155,7 +155,7 @@ function actionPreview(state, action, target) {
 
 export default function InstantPlayPage() {
   const [params] = useSearchParams();
-  const { reducedMotion, soundEnabled, masterVolume, hapticsEnabled, matchRecovery, setSoundEnabled } = useAccessibility();
+  const { reducedMotion, soundEnabled, soundVolume, hapticsEnabled, matchRecovery, setSoundEnabled } = useAccessibility();
   const [profile, setProfile] = useState(readProfile);
   const [restoredMatch] = useState(() => (
     !matchRecovery || params.has('seed') || params.has('target') ? null : readSavedMatch()
@@ -475,7 +475,7 @@ export default function InstantPlayPage() {
   const toggleAudio = () => {
     const next = !soundEnabled;
     setSoundEnabled(next);
-    if (next && masterVolume > 0) window.setTimeout(() => emitPresentationCues(['round.ready']), 40);
+    if (next && soundVolume > 0) window.setTimeout(() => emitPresentationCues(['round.ready']), 40);
   };
 
   const share = async () => {
@@ -501,17 +501,17 @@ export default function InstantPlayPage() {
     return (
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <Seo
-          title="Play Plundrix Instantly - No Wallet Required"
-          description="Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup or wallet."
+          title="Play Plundrix Instantly - Your Table Is Ready"
+          description="Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup."
           path="/play"
           image="/images/og/plundrix-play.jpg"
-          imageAlt="Plundrix instant play - Your table is ready. No wallet required."
+          imageAlt="Plundrix instant play - Your table is ready."
         />
         <section className="instant-setup-shell overflow-hidden border border-vault-border bg-vault-surface lg:grid lg:grid-cols-[1.05fr_0.95fr]">
           <div className="instant-setup-copy p-6 sm:p-9 lg:p-12">
             <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">Instant operation</p>
             <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-display text-vault-text sm:text-7xl">Your table is ready.</h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-vault-text-dim">Play immediately against three distinct agents. Learn the pressure loop here, then take the same instincts onchain.</p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-vault-text-dim">Play immediately against three distinct agents. Learn the pressure loop here, then take the same instincts to a live table.</p>
 
             {challengeTarget && (
               <div className="mt-6 border-l-2 border-oxide-green bg-oxide-green/10 px-4 py-3 text-sm text-vault-text" role="status">
@@ -555,9 +555,9 @@ export default function InstantPlayPage() {
                 Practice and live rules
               </summary>
               <p className="mt-3 text-sm leading-6 text-vault-text-dim">
-                Instant Play is a local practice ruleset. Pick, Search, Sabotage, tools, and simultaneous
-                reveals match the live game's core loop; gadgets and anti-chain-stun protection are practice
-                features. Table pressure is included in the next audited Sepolia contract release and may differ until that upgrade is deployed.
+                Instant Play is a practice ruleset. Pick, Search, Sabotage, tools, and simultaneous
+                reveals match the live game's core loop; experimental gadgets and pressure tuning may differ
+                from the current live-table balance.
               </p>
             </details>
           </div>
@@ -586,7 +586,7 @@ export default function InstantPlayPage() {
         description="Play a fast tactical Plundrix vault race against three labeled agents."
         path="/play"
         image="/images/og/plundrix-play.jpg"
-        imageAlt="Plundrix instant play - Your table is ready. No wallet required."
+        imageAlt="Plundrix instant play - Your table is ready."
       />
       <RoundTheater
         phase={theaterPhase}
@@ -844,7 +844,7 @@ export default function InstantPlayPage() {
           {state.state === 'COMPLETE' && <section className="border border-vault-border bg-vault-surface p-5">
             <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Next operation</p>
             <div className="mt-3 grid gap-2">
-              <Link to="/#live-operations" className="min-h-[44px] border border-tungsten/45 px-3 py-3 font-mono text-micro uppercase text-tungsten">Take it onchain</Link>
+              <Link to="/#live-operations" className="min-h-[44px] border border-tungsten/45 px-3 py-3 font-mono text-micro uppercase text-tungsten">Join a live table</Link>
               <Link to="/trailer" className="min-h-[44px] border border-vault-border px-3 py-3 font-mono text-micro uppercase text-vault-text">Watch gameplay trailer</Link>
               <Link to="/sessions" className="min-h-[44px] border border-vault-border px-3 py-3 font-mono text-micro uppercase text-vault-text">Spectate live sessions</Link>
             </div>

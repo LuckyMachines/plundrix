@@ -1,7 +1,7 @@
 const SECTIONS = [
   {
     title: '1. Overview',
-    body: 'Plundrix is a multiplayer strategy game built on the Ethereum blockchain and operated by Lucky Machines, LLC ("we", "us", "our"). By using game.plundrix.com or interacting with the Plundrix smart contract, you agree to these Terms.',
+    body: 'Plundrix is a hosted multiplayer strategy game operated by Lucky Machines, LLC ("we", "us", "our"). By using game.plundrix.com, you agree to these Terms.',
   },
   {
     title: '2. Eligibility',
@@ -9,19 +9,19 @@ const SECTIONS = [
   },
   {
     title: '3. Current Game Mode',
-    body: 'The public beta is free to play, with no entry fees and no prizes. Standard blockchain gas fees may apply. The smart contract contains dormant paid-competition code, but that mode is not offered through the public beta. If it is ever offered, these Terms and the product disclosures will be updated before launch.',
+    body: 'The public beta is free to play, with no entry fees, purchases, or prizes. Plundrix pays the infrastructure costs for hosted play. Dormant paid-competition code is not offered through the public beta. If paid play is ever offered, these Terms and the product disclosures will be updated before launch.',
   },
   {
     title: '4. Strategy and Variable Outcomes',
-    body: 'Each round, players choose Pick, Search, or Sabotage. Those decisions affect lock-cracking probabilities, tool collection, and opponent disruption. Pick and Search include variable onchain resolution. Player decisions materially affect position and probabilities, but no particular result is guaranteed.',
+    body: 'Each round, players choose Pick, Search, or Sabotage. Those decisions affect lock-cracking probabilities, tool collection, and opponent disruption. Pick and Search include variable resolution. Player decisions materially affect position and probabilities, but no particular result is guaranteed.',
   },
   {
-    title: '5. Blockchain Transactions',
-    body: 'Game actions are recorded on a public blockchain. You are responsible for wallet security, transaction review, and gas fees. Blockchain transactions are irreversible. Never share a private key or seed phrase with Plundrix or anyone claiming to represent Plundrix.',
+    title: '5. Managed Game Processing',
+    body: 'Plundrix submits hosted game commands through service-controlled pseudonymous game accounts. Players do not connect a wallet, sign network transactions, manage cryptographic keys, or pay network fees. Some game records are written to a public blockchain and may be permanent, but those records are not intended to include your name, email address, IP address, or browser session token.',
   },
   {
-    title: '6. Smart Contract Risk',
-    body: 'The Plundrix contract uses an upgradeable proxy and may contain bugs or unforeseen behavior. The beta is provided as is. Interact only with the published proxy address and do not send funds to unsupported contract paths.',
+    title: '6. Service and Protocol Risk',
+    body: 'The hosted service and its underlying smart-contract protocol may contain bugs, delays, outages, or unforeseen behavior. The beta is provided as is. Do not send money or digital assets to any address claiming to be part of Plundrix.',
   },
   {
     title: '7. Agents and Bots',
@@ -29,11 +29,11 @@ const SECTIONS = [
   },
   {
     title: '8. Beta Changes',
-    body: 'Features, mechanics, networks, and availability may change during beta. Sepolia is a test network and test-only fee settings do not represent a live production economy. Withdrawals and paid competition are not part of the current public beta.',
+    body: 'Features, mechanics, infrastructure, and availability may change during beta. The current test environment and test-only fee settings do not represent a live production economy. Withdrawals and paid competition are not part of the current public beta.',
   },
   {
     title: '9. Limitation of Liability',
-    body: 'To the maximum extent permitted by law, Lucky Machines, LLC is not liable for indirect, incidental, special, consequential, or punitive damages arising from use of Plundrix, including loss caused by wallet mistakes, network failures, or smart contract behavior.',
+    body: 'To the maximum extent permitted by law, Lucky Machines, LLC is not liable for indirect, incidental, special, consequential, or punitive damages arising from use of Plundrix, including loss caused by service failures, network failures, or smart-contract behavior.',
   },
   {
     title: '10. Changes and Contact',

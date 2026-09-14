@@ -5,21 +5,16 @@ import SessionCard from '../components/competition/SessionCard';
 import Spinner from '../components/shared/Spinner';
 import { useCompetitionProfile } from '../hooks/useCompetitionProfile';
 import { useCompetitionSessions } from '../hooks/useCompetitionSessions';
-import { useSessionHistory } from '../hooks/useSessionHistory';
 import { AGENT_SERVICE_CONFIGURED } from '../config/service';
 
 export default function ProfilePage() {
-  const { address } = useParams();
-  const profileQuery = useCompetitionProfile(address);
+  const { operatorId } = useParams();
+  const profileQuery = useCompetitionProfile(operatorId);
   const sessionsQuery = useCompetitionSessions({ limit: 30 });
-  const { summary } = useSessionHistory();
-  const localProfileStats = summary.profiles.find(
-    (profile) => profile.address?.toLowerCase?.() === address?.toLowerCase?.()
-  );
 
   const profileSessions =
     sessionsQuery.data?.sessions?.filter((session) =>
-      session.players.some((player) => player.address.toLowerCase() === address?.toLowerCase())
+      session.players.some((player) => player.operatorId === operatorId)
     ) || [];
 
   return (
@@ -35,7 +30,7 @@ export default function ProfilePage() {
 
       <div>
         <p className="label">Competition profile</p>
-        <h1 className="mt-2 break-all font-display text-3xl uppercase text-tungsten">{address}</h1>
+        <h1 className="mt-2 font-display text-3xl uppercase text-tungsten">{profileQuery.data?.profile?.displayName || 'Operator profile'}</h1>
       </div>
 
       {!AGENT_SERVICE_CONFIGURED ? (
@@ -47,7 +42,7 @@ export default function ProfilePage() {
       ) : (
         <>
           <ProfileSummary data={profileQuery.data} />
-          <ProfileIntegrationStats stats={localProfileStats} />
+          <ProfileIntegrationStats stats={null} />
           <section className="space-y-4">
             <h2 className="font-mono text-xs uppercase tracking-beacon text-vault-text-dim">
               Recent Sessions

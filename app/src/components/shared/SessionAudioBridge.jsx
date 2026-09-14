@@ -159,7 +159,7 @@ function readAudioMode() {
 }
 
 export default function SessionAudioBridge() {
-  const { soundEnabled, masterVolume } = useAccessibility();
+  const { soundEnabled, soundVolume } = useAccessibility();
   const contextRef = useRef(null);
   const mixerRef = useRef(null);
   const buffersRef = useRef(new Map());
@@ -195,9 +195,9 @@ export default function SessionAudioBridge() {
 
   useEffect(() => {
     const onCues = (event) => {
-      if (!armedRef.current || !soundEnabled || masterVolume <= 0 || !contextRef.current || !mixerRef.current) return;
+      if (!armedRef.current || !soundEnabled || soundVolume <= 0 || !contextRef.current || !mixerRef.current) return;
       const cues = (event.detail?.cues || []).slice(-4);
-      const level = masterVolume / 100;
+      const level = soundVolume / 100;
       mixerRef.current.master.gain.setTargetAtTime(level, contextRef.current.currentTime, 0.015);
       sequenceRef.current += 1;
       cues.forEach((cue, index) => playCue({
@@ -215,7 +215,7 @@ export default function SessionAudioBridge() {
 
     window.addEventListener('plundrix:sound-cues', onCues);
     return () => window.removeEventListener('plundrix:sound-cues', onCues);
-  }, [masterVolume, soundEnabled]);
+  }, [soundEnabled, soundVolume]);
 
   return null;
 }

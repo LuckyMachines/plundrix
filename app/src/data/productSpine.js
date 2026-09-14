@@ -1,5 +1,5 @@
 export const PRODUCT_STATEMENT =
-  'Plundrix is a short-session onchain vault-heist strategy game where players Pick, Search, Sabotage, and replay the table drama.';
+  'Plundrix is a short-session vault-heist strategy game where players Pick, Search, Sabotage, and replay the table drama.';
 
 export const CANONICAL_TERMS = Object.freeze([
   ['Operation', 'A game instance.'],
@@ -27,7 +27,7 @@ export const PRODUCT_LOOP = Object.freeze([
     id: 'play',
     label: 'Play',
     route: '/play',
-    summary: 'Start a no-wallet vault race.',
+    summary: 'Start an instant vault race.',
   },
   {
     id: 'craft',
@@ -51,7 +51,7 @@ export const PRODUCT_LOOP = Object.freeze([
     id: 'live',
     label: 'Live',
     route: '/#live-operations',
-    summary: 'Join a Sepolia multiplayer table.',
+    summary: 'Join a hosted multiplayer table.',
   },
 ]);
 
@@ -71,7 +71,7 @@ export const ROUTE_META = Object.freeze({
     loopStep: 'play',
     purpose: 'Choose instant play or enter a live Plundrix operation.',
     title: 'Plundrix Player Hub - Choose Your Table',
-    description: 'Play instantly against three agents or connect a wallet for live multiplayer operations on Sepolia.',
+    description: 'Play instantly against three agents or join a hosted live multiplayer operation.',
     image: '/images/og/plundrix-home.jpg',
     primaryCta: 'Play',
     nextRoutes: ['/play', '/replays'],
@@ -81,9 +81,9 @@ export const ROUTE_META = Object.freeze({
     navGroup: 'Play',
     routeClass: 'game',
     loopStep: 'live',
-    purpose: 'Start a Plundrix vault race without a wallet.',
-    title: 'Play Plundrix Instantly - No Wallet Required',
-    description: 'Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup or wallet.',
+    purpose: 'Start a Plundrix vault race instantly.',
+    title: 'Play Plundrix Instantly',
+    description: 'Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup.',
     image: '/images/og/plundrix-play.jpg',
     primaryCta: 'Play',
     nextRoutes: ['/workshop', '/replays'],
@@ -168,7 +168,7 @@ export const ROUTE_META = Object.freeze({
     primaryCta: 'Play',
     nextRoutes: ['/replays', '/sessions'],
   },
-  '/profile/:address': {
+  '/profile/:operatorId': {
     label: 'Profile',
     navGroup: 'Play',
     routeClass: 'workbench',
@@ -304,7 +304,7 @@ export const ROUTE_META = Object.freeze({
     loopStep: 'play',
     purpose: 'Explain adjacent game fit.',
     title: 'Plundrix Game Comparisons',
-    description: 'Compare Plundrix with raid games, online board games, sabotage games, and onchain strategy games.',
+    description: 'Compare Plundrix with raid games, online board games, sabotage games, and session strategy games.',
     primaryCta: 'Compare',
     nextRoutes: ['/', '/map'],
     public: false,
@@ -350,7 +350,7 @@ export const ROUTE_META = Object.freeze({
     routeClass: 'legal',
     purpose: 'State the service terms.',
     title: 'Plundrix Terms of Service',
-    description: 'Terms of Service for Plundrix, including eligibility, game modes, blockchain interactions, and beta posture.',
+    description: 'Terms of Service for Plundrix, including eligibility, game modes, hosted processing, and beta posture.',
     primaryCta: 'Review',
     nextRoutes: ['/privacy'],
   },
@@ -360,7 +360,7 @@ export const ROUTE_META = Object.freeze({
     routeClass: 'legal',
     purpose: 'State the privacy policy.',
     title: 'Plundrix Privacy Policy',
-    description: 'Privacy Policy for Plundrix, including data handling, wallet interactions, analytics, and service operations.',
+    description: 'Privacy Policy for Plundrix, including data handling, managed player sessions, analytics, and service operations.',
     primaryCta: 'Review',
     nextRoutes: ['/terms'],
   },

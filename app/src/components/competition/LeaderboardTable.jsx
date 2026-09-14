@@ -19,7 +19,7 @@ export default function LeaderboardTable({
         <div className="divide-y divide-vault-border">
           {entries.map((entry) => (
             <div
-              key={entry.address}
+              key={entry.operatorId}
               className="px-5 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="flex items-start gap-4">
@@ -31,7 +31,7 @@ export default function LeaderboardTable({
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
-                      to={`/profile/${entry.address}`}
+                      to={`/profile/${entry.operatorId}`}
                       className="font-display text-xl tracking-interface uppercase text-vault-text hover:text-tungsten"
                     >
                       {entry.displayName}

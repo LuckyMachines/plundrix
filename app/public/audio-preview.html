@@ -67,6 +67,23 @@
     .status-row { display: flex; justify-content: space-between; gap: 16px; margin: 0 0 14px; color: var(--dim); }
     .status { margin: 0; }
     .status[data-active="true"] { color: var(--cyan); }
+    .music-section { margin: 28px 0; padding: 22px; border: 1px solid var(--line); background: linear-gradient(135deg, rgba(196, 149, 106, 0.08), rgba(9, 19, 29, 0.94) 46%, rgba(102, 196, 210, 0.07)); }
+    .section-heading { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 16px; }
+    .section-heading h2 { margin: 5px 0 0; font-size: clamp(30px, 5vw, 48px); }
+    .section-note { max-width: 540px; margin: 0; color: var(--dim); line-height: 1.5; }
+    .music-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .music-card { --accent: var(--gold); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; min-height: 190px; padding: 18px; overflow: hidden; border: 1px solid var(--line); background: rgba(5, 10, 15, 0.8); }
+    .music-card:nth-child(2) { --accent: var(--cyan); }
+    .music-card[data-playing="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 0 28px color-mix(in srgb, var(--accent) 10%, transparent); }
+    .music-copy { position: relative; z-index: 1; min-width: 0; }
+    .music-copy h3 { margin: 7px 0 8px; color: #e8ddc5; font-size: 28px; line-height: 0.95; letter-spacing: -0.025em; text-transform: uppercase; }
+    .music-copy p { max-width: 480px; margin: 0; color: var(--dim); line-height: 1.5; }
+    .music-source { display: block; margin-top: 12px; color: var(--accent); font: 11px/1.4 Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+    .music-actions { position: relative; z-index: 1; display: grid; min-width: 150px; align-content: center; gap: 8px; }
+    .music-play { min-height: 50px; border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); font-family: Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .music-actions a { color: var(--dim); font: 11px/1.4 Consolas, monospace; text-align: center; text-decoration: none; text-transform: uppercase; }
+    .music-actions a:hover { color: var(--paper); text-decoration: underline; }
+    .music-card::after { content: ""; position: absolute; right: 94px; bottom: -80px; width: 180px; height: 180px; border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); border-radius: 50%; box-shadow: 0 0 0 22px color-mix(in srgb, var(--accent) 4%, transparent), 0 0 0 46px color-mix(in srgb, var(--accent) 3%, transparent); }
     .sound-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
     .sound-card { --accent: var(--cyan); position: relative; display: grid; min-width: 0; min-height: 266px; padding: 18px; overflow: hidden; border: 1px solid var(--line); background: linear-gradient(145deg, rgba(16, 29, 40, 0.96), rgba(5, 10, 15, 0.96)); }
     .sound-card[hidden] { display: none; }
@@ -83,6 +100,7 @@
     .wave { display: flex; height: 64px; align-items: center; gap: 3px; margin: 20px 0; opacity: 0.72; }
     .wave i { flex: 1; min-width: 2px; height: calc(8px + (var(--bar) * 1px)); max-height: 58px; background: linear-gradient(var(--accent), color-mix(in srgb, var(--accent) 16%, transparent)); transform-origin: center; }
     .sound-card[data-playing="true"] .wave i { animation: pulse 480ms ease-in-out infinite alternate; animation-delay: calc(var(--index) * -35ms); }
+    .music-card[data-playing="true"]::after { animation: music-pulse 2.4s ease-in-out infinite alternate; }
     .audition { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-self: end; }
     .play-main { min-height: 48px; border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 13%, transparent); color: var(--accent); font-family: Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
     .variations { display: flex; gap: 5px; }
@@ -96,12 +114,14 @@
     footer a { color: var(--brass); }
     .empty { grid-column: 1 / -1; padding: 70px 20px; border: 1px solid var(--line); color: var(--dim); text-align: center; }
     @keyframes pulse { from { transform: scaleY(0.55); opacity: 0.44; } to { transform: scaleY(1); opacity: 1; } }
+    @keyframes music-pulse { from { transform: scale(0.96); opacity: 0.55; } to { transform: scale(1.04); opacity: 1; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; } }
     @media (max-width: 1050px) {
       .masthead { grid-template-columns: 1fr; }
       .metrics { width: fit-content; }
       .console { grid-template-columns: 1fr auto; }
       .volume { grid-column: 1 / -1; }
+      .music-grid { grid-template-columns: 1fr; }
       .sound-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 680px) {
@@ -113,6 +133,10 @@
       .metric strong { font-size: 21px; }
       .console { position: relative; grid-template-columns: 1fr; }
       .volume { grid-column: auto; grid-template-columns: auto minmax(100px, 1fr) 34px; }
+      .music-section { padding: 15px; }
+      .section-heading { align-items: start; flex-direction: column; }
+      .music-card { grid-template-columns: 1fr; }
+      .music-actions { grid-template-columns: 1fr auto; }
       .sound-grid { grid-template-columns: 1fr; }
       footer { flex-direction: column; }
     }
@@ -124,12 +148,12 @@
       <div>
         <p class="eyebrow">Internal audition deck / CC0 source provenance retained</p>
         <h1>Sound Locker</h1>
-        <p class="intro">Every authored Plundrix cue, with all restrained pitch variations. Compare action identity, impact, loudness, and how the mechanical language holds together as one mischievous system.</p>
+        <p class="intro">The complete Plundrix audio system: background score candidates plus every authored mechanical cue. Audition the mix, compare action identity, and test how the whole mischievous language holds together.</p>
       </div>
       <div class="metrics" aria-label="Sound library summary">
         <div class="metric"><span>Cues</span><strong id="cue-count">21</strong></div>
         <div class="metric"><span>Variations</span><strong id="variation-count">63</strong></div>
-        <div class="metric"><span>Target</span><strong>-18</strong></div>
+        <div class="metric"><span>Score</span><strong id="music-count">2</strong></div>
       </div>
     </header>
 
@@ -140,7 +164,15 @@
         <button id="shuffle" class="control" type="button">Surprise me</button>
         <button id="stop" class="control stop" type="button">Stop all</button>
       </div>
-      <label class="volume">Volume <input id="volume" type="range" min="0" max="100" value="72"><output id="volume-output">72%</output></label>
+      <label class="volume">Volume <input id="volume" type="range" min="0" max="100" value="50"><output id="volume-output">50%</output></label>
+    </section>
+
+    <section class="music-section" aria-labelledby="music-heading">
+      <div class="section-heading">
+        <div><p class="eyebrow">CC0 / normalized to -24 LUFS</p><h2 id="music-heading">Background score</h2></div>
+        <p class="section-note">Two restrained, full-length candidates for planning, route selection, and quiet tension. Both are independently muted and mixed in game settings.</p>
+      </div>
+      <div id="music-grid" class="music-grid"></div>
     </section>
 
     <nav id="filters" class="filters" aria-label="Sound families"></nav>
@@ -148,16 +180,19 @@
     <section id="sound-grid" class="sound-grid" aria-label="Sound cue library"></section>
 
     <footer>
-      <p class="license">Original source fragments: Kenney Interface Sounds and Sci-Fi Sounds, CC0 1.0. Plundrix cue composites are generated from layered, filtered, timed, and pitch-varied recipes.</p>
-      <p class="license"><a href="./audio/LICENSE-KENNEY-CC0.txt">License record</a> / <a href="/">Return to Plundrix</a></p>
+      <p class="license">Music: Beatscribe Homebrew VGM. Sound fragments: Kenney Interface Sounds and Sci-Fi Sounds. Every source is CC0 1.0; provenance and pinned source records are retained.</p>
+      <p class="license"><a href="./audio/LICENSE-BEATSCRIBE-CC0.txt">Music license</a> / <a href="./audio/LICENSE-KENNEY-CC0.txt">Sound license</a> / <a href="/">Return to Plundrix</a></p>
     </footer>
   </main>
 
+  <script src="./audio/music/library.js"></script>
   <script src="./audio/sfx/library.js"></script>
   <script>
     (() => {
       const library = window.PLUNDRIX_SOUND_LIBRARY;
+      const musicLibrary = window.PLUNDRIX_MUSIC_LIBRARY;
       const grid = document.querySelector('#sound-grid');
+      const musicGrid = document.querySelector('#music-grid');
       const filters = document.querySelector('#filters');
       const search = document.querySelector('#search');
       const status = document.querySelector('#status');
@@ -178,6 +213,7 @@
 
       document.querySelector('#cue-count').textContent = library.cues.length;
       document.querySelector('#variation-count').textContent = library.cues.length * library.variations.length;
+      document.querySelector('#music-count').textContent = musicLibrary?.tracks?.length || 0;
 
       const title = (value) => value.split(/[.-]/).map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
       const pathFor = (file) => `./audio/sfx/${file}`;
@@ -234,6 +270,35 @@
         return settled;
       }
 
+      function playMusic(track, button) {
+        stopAudio('Loading score...');
+        const audio = new Audio(`./audio/music/${track.outputFile}`);
+        audio.volume = Number(volume.value) / 100;
+        currentAudio = audio;
+        currentButton = button;
+        button.setAttribute('data-playing', 'true');
+        button.closest('.music-card').setAttribute('data-playing', 'true');
+        status.dataset.active = 'true';
+        status.textContent = `Playing ${track.title}.`;
+        audio.addEventListener('ended', () => {
+          if (currentAudio !== audio) return;
+          button.removeAttribute('data-playing');
+          button.closest('.music-card').removeAttribute('data-playing');
+          currentAudio = null;
+          currentButton = null;
+          status.dataset.active = 'false';
+          status.textContent = `${track.title} complete.`;
+        }, { once: true });
+        audio.addEventListener('error', () => {
+          if (currentAudio !== audio) return;
+          stopAudio(`Could not load ${track.outputFile}.`);
+        }, { once: true });
+        audio.play().catch(() => {
+          status.dataset.active = 'false';
+          status.textContent = 'Playback was blocked. Tap the track again to unlock audio.';
+        });
+      }
+
       function cardMarkup(cue) {
         return `<article class="sound-card" data-cue="${cue.id}" data-family="${cue.family}" data-search="${cue.label.toLowerCase()} ${cue.family}">
           <div class="card-head"><div><p class="family">${title(cue.family)} / ${cue.id}</p><h2>${cue.label}</h2></div><span class="duration">${cue.duration.toFixed(2)}s</span></div>
@@ -246,7 +311,19 @@
         </article>`;
       }
 
+      function musicCardMarkup(track) {
+        const minutes = Math.floor(track.duration / 60);
+        const seconds = String(Math.round(track.duration % 60)).padStart(2, '0');
+        return `<article class="music-card" data-track-card="${track.id}">
+          <div class="music-copy"><p class="family">${minutes}:${seconds} / full-length loop</p><h3>${track.title}</h3><p>${track.mood}</p><span class="music-source">Source: ${track.sourceTitle} by ${musicLibrary.source.creator}</span></div>
+          <div class="music-actions"><button class="music-play" type="button" data-track="${track.id}" aria-label="Preview ${track.title}">Preview track</button><a href="./audio/music/${track.outputFile}" download>Save MP3</a></div>
+        </article>`;
+      }
+
       grid.innerHTML = library.cues.map(cardMarkup).join('');
+      musicGrid.innerHTML = musicLibrary?.tracks?.length
+        ? musicLibrary.tracks.map(musicCardMarkup).join('')
+        : '<p class="empty">The background score is missing. Run npm run music:build from app/.</p>';
       const families = ['all', ...new Set(library.cues.map((cue) => cue.family))];
       filters.innerHTML = families.map((family) => `<button class="filter-button" type="button" data-filter="${family}" aria-pressed="${family === 'all'}">${title(family)}</button>`).join('');
 
@@ -282,6 +359,12 @@
         const cue = library.cues.find((item) => item.id === cueId);
         const variant = variantButton ? Number(variantButton.dataset.variant) : auditionIndex++ % library.variations.length;
         play(cue, variant, variantButton || auditionButton);
+      });
+      musicGrid.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-track]');
+        if (!button || !musicLibrary?.tracks) return;
+        const track = musicLibrary.tracks.find((item) => item.id === button.dataset.track);
+        if (track) playMusic(track, button);
       });
       document.querySelector('#stop').addEventListener('click', () => stopAudio());
       document.querySelector('#shuffle').addEventListener('click', () => {

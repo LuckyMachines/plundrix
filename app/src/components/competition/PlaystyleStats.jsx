@@ -1,7 +1,4 @@
-import { Link } from 'react-router-dom';
-import { truncateAddress } from '../../lib/formatting';
-
-export default function PlaystyleStats({ profiles = [], currentAddress }) {
+export default function PlaystyleStats({ profiles = [], currentOperatorId }) {
   const rows = profiles.slice(0, 8);
 
   return (
@@ -14,22 +11,17 @@ export default function PlaystyleStats({ profiles = [], currentAddress }) {
       {rows.length ? (
         <div className="divide-y divide-vault-border">
           {rows.map((profile, index) => {
-            const isCurrent = profile.address?.toLowerCase?.() === currentAddress?.toLowerCase?.();
+            const isCurrent = profile.operatorId === currentOperatorId;
             return (
               <div
-                key={profile.address}
+                key={profile.operatorId || `local-${index}`}
                 className={`px-5 py-4 grid gap-3 md:grid-cols-[4rem_1fr_18rem] md:items-center ${
                   isCurrent ? 'bg-tungsten/5' : ''
                 }`}
               >
                 <div className="font-display text-2xl text-tungsten">#{index + 1}</div>
                 <div>
-                  <Link
-                    to={`/profile/${profile.address}`}
-                    className="font-mono text-sm uppercase tracking-label text-vault-text hover:text-tungsten"
-                  >
-                    {truncateAddress(profile.address)}
-                  </Link>
+                  <p className="font-mono text-sm uppercase tracking-label text-vault-text">Local operator {index + 1}</p>
                   <p className="font-mono text-xs uppercase tracking-brand text-vault-text-dim mt-1">
                     Score {profile.playstyleScore} // {profile.gamesPlayed} observed game{profile.gamesPlayed === 1 ? '' : 's'}
                   </p>

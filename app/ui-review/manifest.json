@@ -206,8 +206,8 @@
       "path": "/game/1",
       "priority": "P0",
       "fixture": "none",
-      "ready": { "type": "role", "role": "heading", "name": "Operation Briefing" },
-      "reviewFocus": ["crew readiness", "wallet context", "waiting continuity"]
+      "ready": { "type": "role", "role": "heading", "name": "Assemble the crew" },
+      "reviewFocus": ["crew readiness", "joining clarity", "waiting continuity"]
     },
     {
       "id": "live-active",
@@ -215,8 +215,8 @@
       "path": "/game/2",
       "priority": "P0",
       "fixture": "live-active",
-      "ready": { "type": "role", "role": "region", "name": "Current action" },
-      "reviewFocus": ["decision hierarchy", "on-chain state", "table pressure"]
+      "ready": { "type": "role", "role": "heading", "name": "Choose the pressure" },
+      "reviewFocus": ["decision hierarchy", "round state", "table pressure"]
     }
   ]
 }

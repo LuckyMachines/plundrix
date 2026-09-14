@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import library from '../../public/audio/sfx/library.json' with { type: 'json' };
+import musicLibrary from '../../public/audio/music/library.json' with { type: 'json' };
 
 test('sound locker exposes and plays the complete generated library', async ({ page, request }) => {
   await page.goto('/audio-preview.html', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: 'Sound Locker' })).toBeVisible();
+  await expect(page.getByRole('slider', { name: 'Volume' })).toHaveValue('50');
+  await expect(page.locator('.music-card')).toHaveCount(musicLibrary.tracks.length);
   await expect(page.locator('.sound-card')).toHaveCount(library.cues.length);
   await expect(page.locator('.variation')).toHaveCount(library.cues.length * library.variations.length);
 
@@ -14,6 +17,13 @@ test('sound locker exposes and plays the complete generated library', async ({ p
       expect(response.ok(), `Missing preview file ${file}`).toBe(true);
     }
   }
+  for (const track of musicLibrary.tracks) {
+    const response = await request.get(`/audio/music/${track.outputFile}`);
+    expect(response.ok(), `Missing preview track ${track.outputFile}`).toBe(true);
+  }
+
+  await page.getByRole('button', { name: `Preview ${musicLibrary.tracks[0].title}` }).click();
+  await expect(page.locator('#status')).toContainText(`Playing ${musicLibrary.tracks[0].title}`);
 
   await page.getByRole('button', { name: 'Sabotage' }).click();
   await expect(page.locator('.sound-card:visible')).toHaveCount(library.cues.filter((cue) => cue.family === 'sabotage').length);

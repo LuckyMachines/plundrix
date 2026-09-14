@@ -1,8 +1,8 @@
 const STEPS = [
   {
     num: 1,
-    title: 'Connect Wallet',
-    desc: 'Connect a Web3 wallet (MetaMask, WalletConnect, etc.) on the Sepolia staging network. Mainnet production is not live yet.',
+    title: 'Choose a Table',
+    desc: 'Create a free operation or open a table that is waiting for another operator.',
   },
   {
     num: 2,
@@ -21,13 +21,13 @@ const STEPS = [
   },
   {
     num: 5,
-    title: 'Submit On-Chain',
-    desc: 'Confirm the transaction in your wallet. Your action is committed to the smart contract.',
+    title: 'Lock Your Move',
+    desc: 'Confirm your choice. The game service saves it while the rest of the table decides.',
   },
   {
     num: 6,
     title: 'Watch Resolution',
-    desc: 'Once all players submit (or the timer expires), trigger resolution to reveal outcomes.',
+    desc: 'Once all players submit (or the timer expires), the operation resolves and reveals every outcome.',
   },
   {
     num: 7,

@@ -1,5 +1,6 @@
-export const PREFERENCE_SCHEMA_VERSION = 2;
-export const PREFERENCE_STORAGE_KEY = 'plundrix-preferences-v2';
+export const PREFERENCE_SCHEMA_VERSION = 3;
+export const PREFERENCE_STORAGE_KEY = 'plundrix-preferences-v3';
+export const PREVIOUS_PREFERENCE_STORAGE_KEY = 'plundrix-preferences-v2';
 
 export const LEGACY_PREFERENCE_KEYS = Object.freeze({
   readabilityMode: 'plundrix_readability_mode',
@@ -10,16 +11,16 @@ export const LEGACY_PREFERENCE_KEYS = Object.freeze({
 
 export const PREFERENCE_GROUPS = Object.freeze([
   {
+    id: 'feedback',
+    label: 'Audio',
+    eyebrow: 'Sound and music',
+    description: 'Mute and mix sound effects and music independently, then tune motion and tactile cues.',
+  },
+  {
     id: 'display',
     label: 'Display',
     eyebrow: 'Clarity',
     description: 'Tune density, contrast, and reading comfort without changing the rules.',
-  },
-  {
-    id: 'feedback',
-    label: 'Feedback',
-    eyebrow: 'Feel',
-    description: 'Control motion, sound, volume, and tactile cues.',
   },
   {
     id: 'gameplay',
@@ -80,23 +81,45 @@ export const PREFERENCE_DEFINITIONS = Object.freeze([
     id: 'soundEnabled',
     group: 'feedback',
     type: 'switch',
-    label: 'Interface sound',
+    label: 'Sound effects',
     description: 'Plays concise cues for commits, reveals, tools, and wins.',
     defaultValue: true,
     searchTerms: ['audio', 'mute', 'effects'],
   },
   {
-    id: 'masterVolume',
+    id: 'soundVolume',
     group: 'feedback',
     type: 'range',
-    label: 'Cue volume',
-    description: 'Adjusts every generated interface and signature sound.',
-    defaultValue: 70,
+    label: 'Sound volume',
+    description: 'Adjusts every interface, action, gadget, and ceremony cue.',
+    defaultValue: 50,
     min: 0,
     max: 100,
     step: 5,
     suffix: '%',
     searchTerms: ['audio', 'sound', 'loudness'],
+  },
+  {
+    id: 'musicEnabled',
+    group: 'feedback',
+    type: 'switch',
+    label: 'Music',
+    description: 'Mutes or restores the score without changing game sounds.',
+    defaultValue: true,
+    searchTerms: ['audio', 'mute', 'score', 'soundtrack'],
+  },
+  {
+    id: 'musicVolume',
+    group: 'feedback',
+    type: 'range',
+    label: 'Music volume',
+    description: 'Sets the soundtrack level independently from sound effects.',
+    defaultValue: 50,
+    min: 0,
+    max: 100,
+    step: 5,
+    suffix: '%',
+    searchTerms: ['audio', 'music', 'score', 'soundtrack', 'loudness'],
   },
   {
     id: 'hapticsEnabled',
@@ -140,7 +163,7 @@ export const PREFERENCE_DEFINITIONS = Object.freeze([
     group: 'privacy',
     type: 'switch',
     label: 'Anonymous product signals',
-    description: 'Allows bounded interaction events with no names, wallet addresses, seeds, or free text.',
+    description: 'Allows bounded interaction events with no names, player identifiers, seeds, or free text.',
     defaultValue: true,
     searchTerms: ['analytics', 'telemetry', 'tracking', 'privacy'],
   },
@@ -196,9 +219,11 @@ export function preferenceDefaults({ prefersReducedMotion = false } = {}) {
 
 export function normalizePreferences(candidate = {}, environment = {}) {
   const defaults = preferenceDefaults(environment);
+  const source = { ...candidate };
+  if (source.soundVolume === undefined && source.masterVolume !== undefined) source.soundVolume = source.masterVolume;
   return Object.fromEntries(PREFERENCE_DEFINITIONS.map((definition) => [
     definition.id,
-    sanitizeValue(definition, candidate[definition.id] ?? defaults[definition.id]),
+    sanitizeValue(definition, source[definition.id] ?? defaults[definition.id]),
   ]));
 }
 
@@ -216,7 +241,9 @@ function legacyPreferences(storage, environment) {
 }
 
 export function loadPreferences(storage, environment = {}) {
-  const raw = safeGet(storage, PREFERENCE_STORAGE_KEY);
+  const currentRaw = safeGet(storage, PREFERENCE_STORAGE_KEY);
+  const previousRaw = currentRaw === null ? safeGet(storage, PREVIOUS_PREFERENCE_STORAGE_KEY) : null;
+  const raw = currentRaw ?? previousRaw;
   if (raw === null) {
     const legacy = legacyPreferences(storage, environment);
     return { values: normalizePreferences(legacy.values, environment), status: legacy.migrated ? 'migrated' : 'ready' };
@@ -228,7 +255,7 @@ export function loadPreferences(storage, environment = {}) {
     if (Number(payload.schemaVersion) > PREFERENCE_SCHEMA_VERSION) throw new Error('Preference payload is newer than this build');
     return {
       values: normalizePreferences(payload.values, environment),
-      status: Number(payload.schemaVersion) === PREFERENCE_SCHEMA_VERSION ? 'ready' : 'migrated',
+      status: currentRaw !== null && Number(payload.schemaVersion) === PREFERENCE_SCHEMA_VERSION ? 'ready' : 'migrated',
     };
   } catch {
     return { values: preferenceDefaults(environment), status: 'recovered' };

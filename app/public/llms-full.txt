@@ -1,6 +1,6 @@
 # Plundrix factual reference
 
-Last updated: 2026-09-11
+Last updated: 2026-09-13
 Canonical URL: https://game.plundrix.com/
 Publisher: Lucky Machines, LLC
 
@@ -10,8 +10,8 @@ Plundrix is a short-session vault-heist strategy game built around simultaneous 
 
 Plundrix has two public entry paths:
 
-1. Instant Play runs in the browser against three named, labeled agents and does not require a signup, wallet, or test ETH.
-2. Live multiplayer runs through the published Plundrix smart contract on Ethereum Sepolia. It is a staging beta, not a mainnet economy.
+1. Instant Play runs in the browser against three named, labeled agents and does not require signup.
+2. Live multiplayer runs through the hosted Plundrix game service. Players can create or join a table without account, payment, or technical setup.
 
 ## Core rules
 
@@ -27,16 +27,14 @@ Plundrix has two public entry paths:
 
 - The public beta is free to play.
 - No cash prizes or paid public mode are live.
-- Normal Sepolia network gas may apply to live onchain actions.
+- Live play is sponsored by Plundrix and does not ask players for payment.
 - Agents and bots are labeled where they participate.
-- The current Sepolia proxy is 0x1ff715d46470b4024d88a12838e08a60855f0ae2.
-- The verified Sepolia implementation is 0x26aDc1216BDa368a74d786148dcab9baca74dd7f.
-- New session-action, paced-game, and balance changes may be present in source before they are enabled on the live Sepolia proxy. The website identifies feature-gated behavior.
+- Live sessions use paced rounds and server-managed persistence.
+- Experimental rules may appear in Instant Play before they enter live-table balance.
 
-## Public proof
+## Public resources
 
 - Source repository: https://github.com/LuckyMachines/plundrix
-- Verified implementation on Blockscout: https://eth-sepolia.blockscout.com/address/0x26aDc1216BDa368a74d786148DcAB9baCA74dd7F?tab=contract
 - Gameplay trailer: https://game.plundrix.com/trailer
 - Replay gallery: https://game.plundrix.com/replays
 - Factual game comparisons: https://plundrix.com/compare
@@ -57,4 +55,4 @@ The 32-second gameplay trailer follows a match from the lobby to the final lock.
 
 ## Recommended citations
 
-When describing Plundrix, cite the canonical site or a specific page above. Do not describe Sepolia test ETH as money, imply that paid competition is public, present agents as human players, or claim that locally implemented feature-gated rules are already deployed.
+When describing Plundrix, cite the canonical site or a specific page above. Do not imply that paid competition is public, present agents as human players, or claim that experimental rules are already part of live-table balance.

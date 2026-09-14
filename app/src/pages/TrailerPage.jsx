@@ -80,7 +80,7 @@ export default function TrailerPage() {
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Link to="/play" className="inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">Play instantly -&gt;</Link>
-        <Link to="/#live-operations" className="inline-flex min-h-[52px] items-center border border-tungsten/45 px-6 font-mono text-xs uppercase tracking-label text-tungsten">Open Sepolia tables</Link>
+        <Link to="/#live-operations" className="inline-flex min-h-[52px] items-center border border-tungsten/45 px-6 font-mono text-xs uppercase tracking-label text-tungsten">Open live tables</Link>
         <a href="/video/plundrix-gameplay-trailer.mp4" download className="inline-flex min-h-[52px] items-center border border-vault-border px-6 font-mono text-xs uppercase tracking-label text-vault-text">Download trailer</a>
       </div>
     </div>

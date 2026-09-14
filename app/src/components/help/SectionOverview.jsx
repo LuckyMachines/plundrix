@@ -24,13 +24,12 @@ export default function SectionOverview() {
         <li>
           <span className="text-vault-text-dim">Submit Phase</span> &mdash;
           Every player secretly chooses one action (Pick, Search, or Sabotage)
-          and submits it on-chain.
+          and locks it in.
         </li>
         <li>
           <span className="text-vault-text-dim">Resolve Phase</span> &mdash;
           Once all actions are in (or the {ROUND_TIMEOUT / 60}-minute timer expires),
-          anyone can trigger resolution. The contract evaluates each action using
-          on-chain randomness.
+          the operation resolves every action and reveals the changed table.
         </li>
         <li>
           <span className="text-vault-text-dim">Next Round</span> &mdash;

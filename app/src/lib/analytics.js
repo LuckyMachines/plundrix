@@ -50,7 +50,7 @@ export function latencyBucket(milliseconds) {
 
 export function analyticsRoute(pathname) {
   if (pathname.startsWith('/game/')) return '/game/:id';
-  if (pathname.startsWith('/profile/')) return '/profile/:address';
+  if (pathname.startsWith('/profile/')) return '/profile/:operatorId';
   if (pathname.startsWith('/replay/')) return '/replay/:id';
   if (pathname.startsWith('/compare/')) return '/compare/:slug';
   return pathname;

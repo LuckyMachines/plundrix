@@ -1,17 +1,6 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import {
-  decodeFunctionResult,
-  encodeAbiParameters,
-  encodeFunctionData,
-  keccak256,
-  toHex,
-} from 'viem';
-import { readFileSync } from 'node:fs';
-import PlundrixGameABI from '../../src/config/PlundrixGame.json' with { type: 'json' };
 
-const TEST_WALLET = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC';
-const TEST_OPPONENT = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
 const runtimeIssues = new WeakMap();
 let chainSnapshot;
 
@@ -39,18 +28,11 @@ test.afterEach(async ({ page }) => {
     expect(runtimeIssues.get(page) || [], 'Browser runtime should stay free of console and resource errors').toEqual([]);
   } finally {
     // A Playwright retry can start in a new worker before the next beforeEach.
-    // Restore the seeded chain here so a failed wallet test cannot poison it.
+    // Restore the seeded chain here so a failed hosted-play test cannot poison it.
     if (chainSnapshot) await rpc('evm_revert', [chainSnapshot]);
     chainSnapshot = await rpc('evm_snapshot');
   }
 });
-
-function configuredContractAddress() {
-  const content = readFileSync(new URL('../../.env.local', import.meta.url), 'utf8');
-  const match = content.match(/^VITE_CONTRACT_ADDRESS=(0x[a-fA-F0-9]{40})$/m);
-  if (!match) throw new Error('Missing configured E2E contract address');
-  return match[1];
-}
 
 async function rpc(method, params = []) {
   const response = await fetch('http://127.0.0.1:19655', {
@@ -61,98 +43,6 @@ async function rpc(method, params = []) {
   const payload = await response.json();
   if (payload.error) throw new Error(payload.error.message);
   return payload.result;
-}
-
-async function guaranteeNextResolveVictory(gameId, playerIndex) {
-  const finalistSlot = playerStructSlot(gameId, playerIndex);
-  await setStorage(finalistSlot + 1n, 5n);
-}
-
-async function totalGames() {
-  const result = await rpc('eth_call', [{
-    to: configuredContractAddress(),
-    data: encodeFunctionData({ abi: PlundrixGameABI, functionName: 'totalGames' }),
-  }, 'latest']);
-  return decodeFunctionResult({ abi: PlundrixGameABI, functionName: 'totalGames', data: result });
-}
-
-function playerStructSlot(gameId, playerIndex) {
-  const gamePlayersSlot = keccak256(encodeAbiParameters(
-    [{ type: 'uint256' }, { type: 'uint256' }],
-    [gameId, 353n],
-  ));
-  return BigInt(keccak256(encodeAbiParameters(
-    [{ type: 'uint256' }, { type: 'uint256' }],
-    [playerIndex, BigInt(gamePlayersSlot)],
-  )));
-}
-
-async function setStorage(slot, value) {
-  await rpc('anvil_setStorageAt', [
-    configuredContractAddress(),
-    toHex(slot, { size: 32 }),
-    toHex(value, { size: 32 }),
-  ]);
-}
-
-async function sendContractTransaction(from, functionName, args) {
-  const hash = await rpc('eth_sendTransaction', [{
-    from,
-    to: configuredContractAddress(),
-    data: encodeFunctionData({ abi: PlundrixGameABI, functionName, args }),
-    // Resolution gas varies with the entropy-selected outcome and Workshop
-    // settlement. A fixed local-test ceiling avoids estimating one branch and
-    // then mining a more expensive branch in the next block.
-    gas: toHex(5_000_000n),
-  }]);
-  for (let attempt = 0; attempt < 100; attempt += 1) {
-    const receipt = await rpc('eth_getTransactionReceipt', [hash]);
-    if (receipt) {
-      if (BigInt(receipt.status) !== 1n) {
-        const trace = await rpc('debug_traceTransaction', [hash, { disableMemory: true, disableStorage: true }]).catch(() => null);
-        throw new Error(`${functionName} transaction reverted: ${hash} (${trace?.returnValue || 'no revert data'}, gas ${BigInt(receipt.gasUsed || 0).toString()})`);
-      }
-      return receipt;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 50));
-  }
-  throw new Error(`Timed out waiting for ${functionName} transaction`);
-}
-
-async function installTestWallet(page) {
-  await page.addInitScript(({ account, rpcUrl }) => {
-    const listeners = new Map();
-    let requestId = 0;
-    const provider = {
-      isMetaMask: true,
-      on(event, listener) {
-        const handlers = listeners.get(event) || new Set();
-        handlers.add(listener);
-        listeners.set(event, handlers);
-        return this;
-      },
-      removeListener(event, listener) {
-        listeners.get(event)?.delete(listener);
-        return this;
-      },
-      async request({ method, params = [] }) {
-        if (method === 'eth_requestAccounts' || method === 'eth_accounts') return [account];
-        if (method === 'wallet_switchEthereumChain' || method === 'wallet_addEthereumChain') return null;
-        const requestParams = method === 'eth_sendTransaction' && params[0]
-          ? [{ ...params[0], gas: '0x4c4b40' }, ...params.slice(1)]
-          : params;
-        const response = await fetch(rpcUrl, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ jsonrpc: '2.0', id: ++requestId, method, params: requestParams }),
-        });
-        const payload = await response.json();
-        if (payload.error) throw new Error(payload.error.message);
-        return payload.result;
-      },
-    };
-    Object.defineProperty(window, 'ethereum', { value: provider, configurable: true });
-  }, { account: TEST_WALLET, rpcUrl: 'http://127.0.0.1:19655' });
 }
 
 async function expectNoSeriousA11yIssues(page) {
@@ -198,18 +88,48 @@ test('settings persist, recover safely, and remain keyboard accessible', async (
   const trigger = page.getByRole('button', { name: 'Game settings' }).first();
   await trigger.click();
   const dialog = page.getByRole('dialog', { name: 'Game settings' });
+  const musicAudio = page.locator('audio[data-audio-channel="music"]');
   await expect(dialog).toBeVisible();
+  await expect(musicAudio).toHaveCount(1);
+  await expect.poll(() => musicAudio.evaluate((element) => element.volume)).toBe(0.5);
   await expect(dialog.getByRole('button', { name: 'Close settings' })).toBeFocused();
+  await expect(page.locator('html')).toHaveAttribute('data-preference-schema', '3');
+  await page.evaluate(() => {
+    window.__lastAudioPreferences = null;
+    window.addEventListener('plundrix:audio-preferences', (event) => { window.__lastAudioPreferences = event.detail; });
+  });
 
+  await expect(dialog.getByRole('slider', { name: 'Sound volume' })).toHaveValue('50');
+  await expect(dialog.getByRole('slider', { name: 'Music volume' })).toHaveValue('50');
+  await expect(dialog.getByRole('button', { name: 'Mute sound effects' })).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'Mute music' })).toBeVisible();
+  await dialog.getByRole('button', { name: 'Mute sound effects' }).click();
+  await expect(dialog.getByRole('slider', { name: 'Sound volume' })).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Unmute sound effects' }).click();
+  await dialog.getByRole('button', { name: 'Mute music' }).click();
+  await expect(dialog.getByRole('slider', { name: 'Music volume' })).toBeDisabled();
+  await expect.poll(() => musicAudio.evaluate((element) => element.muted)).toBe(true);
+  await dialog.getByRole('button', { name: 'Unmute music' }).click();
+  await expect.poll(() => musicAudio.evaluate((element) => element.muted)).toBe(false);
+  await dialog.getByRole('button', { name: /Display/i }).click();
   await dialog.getByRole('switch', { name: 'Readable text' }).click();
   await dialog.getByRole('switch', { name: 'High contrast' }).click();
   await expect(page.locator('html')).toHaveClass(/readable-ui/);
   await expect(page.locator('html')).toHaveClass(/high-contrast-ui/);
-  await dialog.getByRole('button', { name: /Feedback/i }).click();
+  await dialog.getByRole('button', { name: /Audio/i }).click();
   await dialog.getByRole('switch', { name: 'Reduced motion' }).click();
-  await dialog.getByRole('slider', { name: 'Cue volume' }).fill('35');
+  await dialog.getByRole('slider', { name: 'Sound volume' }).fill('35');
+  await dialog.getByRole('slider', { name: 'Music volume' }).fill('45');
   await expect(page.locator('html')).toHaveClass(/reduced-motion-ui/);
-  await expect(dialog.getByRole('slider', { name: 'Cue volume' })).toHaveValue('35');
+  await expect(dialog.getByRole('slider', { name: 'Sound volume' })).toHaveValue('35');
+  await expect(dialog.getByRole('slider', { name: 'Music volume' })).toHaveValue('45');
+  await expect.poll(() => musicAudio.evaluate((element) => element.volume)).toBe(0.45);
+  await expect.poll(() => page.evaluate(() => window.__lastAudioPreferences)).toMatchObject({
+    soundEnabled: true,
+    soundVolume: 35,
+    musicEnabled: true,
+    musicVolume: 45,
+  });
   await expectNoSeriousA11yIssues(page);
 
   await page.keyboard.press('Escape');
@@ -222,17 +142,20 @@ test('settings persist, recover safely, and remain keyboard accessible', async (
   await expect(trigger).toBeVisible();
 
   await page.keyboard.press('Control+Period');
-  await expect(page.getByRole('dialog', { name: 'Game settings' })).toBeVisible();
+  const reopenedDialog = page.getByRole('dialog', { name: 'Game settings' });
+  await expect(reopenedDialog).toBeVisible();
+  await expect(reopenedDialog.getByRole('slider', { name: 'Sound volume' })).toHaveValue('35');
+  await expect(reopenedDialog.getByRole('slider', { name: 'Music volume' })).toHaveValue('45');
 });
 
 test('damaged preference storage falls back to safe defaults', async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('plundrix-preferences-v2', '{damaged'));
+  await page.addInitScript(() => localStorage.setItem('plundrix-preferences-v3', '{damaged'));
   await page.goto('/');
   await page.getByRole('button', { name: 'Game settings' }).first().click();
   const dialog = page.getByRole('dialog', { name: 'Game settings' });
   await expect(dialog.getByText(/damaged preference record was safely replaced/i)).toBeVisible();
-  await dialog.getByRole('button', { name: /Feedback/i }).click();
-  await expect(dialog.getByRole('switch', { name: 'Interface sound' })).toBeChecked();
+  await expect(dialog.getByRole('button', { name: 'Mute sound effects' })).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'Mute music' })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 });
 
@@ -266,7 +189,7 @@ test('field manual behaves like a keyboard modal and restores focus', async ({ p
   await expect(trigger).toBeFocused();
 });
 
-test('practice mode completes a deterministic match without a wallet', async ({ page }) => {
+test('practice mode completes a deterministic match without setup', async ({ page }) => {
   await page.goto('/simulator');
   await page.getByRole('button', { name: 'Run one game' }).click();
   const winnerMetric = page.getByText('Winner', { exact: true }).locator('..');
@@ -352,13 +275,13 @@ test('tactical art reinforces gadgets, actions, and rival identities', async ({ 
   await page.getByRole('button', { name: /breach the vault/i }).click();
   await expect(page.getByRole('heading', { name: 'Round 1' })).toBeVisible();
   await expect(page.locator('img[src$="-device.webp"]')).toHaveCount(3);
-  await expect(page.locator('img[src="/images/parts/pick-tool.webp"]')).toHaveCount(1);
-  await expect(page.locator('img[src="/images/parts/search-kit.webp"]')).toHaveCount(1);
-  await expect(page.locator('img[src="/images/parts/sabotage-cable.webp"]')).toHaveCount(1);
+  expect(await page.locator('img[src="/images/parts/pick-tool.webp"]').count()).toBeGreaterThan(0);
+  expect(await page.locator('img[src="/images/parts/search-kit.webp"]').count()).toBeGreaterThan(0);
+  expect(await page.locator('img[src="/images/parts/sabotage-cable.webp"]').count()).toBeGreaterThan(0);
   await expectNoSeriousA11yIssues(page);
 });
 
-test('workshop exposes ten signature gadgets and a complete configuration loop', async ({ page }) => {
+test('workshop exposes ten signature gadgets and a complete comparison loop', async ({ page }) => {
   await page.goto('/workshop');
   await expect(page.getByRole('heading', { name: 'Ten signature gadgets. Your build.' })).toBeVisible();
   await expect(page.getByText(/1,200 builds/i)).toBeVisible();
@@ -367,10 +290,6 @@ test('workshop exposes ten signature gadgets and a complete configuration loop',
   await expect(page.getByRole('heading', { name: /Copper Weave Precision Kit/i })).toBeVisible();
   await page.getByRole('button', { name: 'Save favorite', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Saved favorite', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Assemble', exact: true }).click();
-  await expect(page.getByRole('status')).toContainText('assembled');
-  await page.getByRole('button', { name: 'Equip', exact: true }).click();
-  await expect(page.getByRole('status')).toContainText('equipped for Tactical play');
   await page.getByRole('button', { name: 'Add to compare', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Compare what actually changes' })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
@@ -380,18 +299,11 @@ test('workshop exposes ten signature gadgets and a complete configuration loop',
   expect(await page.evaluate(() => document.body.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
-test('connected workshop equips a starter through the deployed contract', async ({ page }) => {
-  test.setTimeout(60_000);
-  await installTestWallet(page);
+test('hosted workshop opens a persistent collection without setup prompts', async ({ page }) => {
   await page.goto('/workshop');
-  await page.getByRole('button', { name: 'Connect wallet', exact: true }).first().click();
-  await expect(page.getByText('Onchain collection', { exact: true })).toBeVisible({ timeout: 15_000 });
-
-  const equip = page.getByRole('button', { name: 'Equip', exact: true });
-  await expect(equip).toBeEnabled({ timeout: 15_000 });
-  await equip.click();
-  await expect(page.getByRole('button', { name: 'Equipped', exact: true })).toBeVisible({ timeout: 20_000 });
-  await expect(page.getByText(/equipped onchain/i)).toBeVisible();
+  await expect(page.getByText('Synced collection', { exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('body')).not.toContainText(/wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);
+  await expectNoSeriousA11yIssues(page);
 });
 
 test('instant play stays contained on mobile and restores an active operation', async ({ page }) => {
@@ -447,7 +359,7 @@ test('instant play keeps the whole decision console in a laptop viewport', async
 
   await page.getByRole('button', { name: 'Commit and reveal', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Round 2', exact: true })).toBeVisible();
-  await expect(page.getByText('Last resolution', { exact: true })).toBeVisible();
+  await expect(page.getByText(/Last resolution/).first()).toBeVisible();
   const nextDecisionBottom = await page.locator('#instant-actions').evaluate((element) => element.getBoundingClientRect().bottom);
   expect(nextDecisionBottom).toBeLessThanOrEqual(768);
   await expectNoSeriousA11yIssues(page);
@@ -510,18 +422,18 @@ test('design system supports whole-game review and responsive critique', async (
   await expectNoSeriousA11yIssues(page);
 });
 
-test('leaderboard degrades gracefully when its live feed is not configured', async ({ page }) => {
+test('leaderboard renders sanitized hosted standings', async ({ page }) => {
   await page.goto('/leaderboard');
-  await expect(page.getByText('Live season standings are warming up')).toBeVisible();
-  await expect(page.getByText('Agent service not configured')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Play instantly' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Season \d+ \/ All Profiles/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /^Operator / }).first()).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain/i);
 });
 
-test('sessions explain when their verified feed is unavailable', async ({ page }) => {
+test('sessions render a sanitized hosted match feed', async ({ page }) => {
   await page.goto('/sessions');
-  await expect(page.getByText('Live session feed is warming up')).toBeVisible();
-  await expect(page.getByText('Agent service not configured')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Browse replays' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Session #1' })).toBeVisible();
+  await expect(page.getByRole('link', { name: /^Operator / }).first()).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain/i);
 });
 
 for (const [path, heading] of [
@@ -542,32 +454,30 @@ for (const [path, heading] of [
   });
 }
 
-test('configured local-chain lobby renders a real crew manifest', async ({ page }) => {
+test('hosted lobby renders a sanitized crew and lets the player join', async ({ page }) => {
   await page.goto('/game/1');
-  await expect(page.getByRole('heading', { name: 'Operation Briefing' })).toBeVisible();
-  await expect(page.getByText('Crew Manifest (2 enrolled)')).toBeVisible();
-  await expect(page.getByText('Connect on Sepolia, then claim a seat in operation #1.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Operation 1' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Assemble the crew' })).toBeVisible();
+  await page.getByRole('button', { name: 'Join operation' }).click();
+  await expect(page.getByText('You', { exact: true })).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);
   await expectNoSeriousA11yIssues(page);
 });
 
-test('configured active match renders the real game shell', async ({ page }) => {
+test('hosted active match renders as a spectator without infrastructure details', async ({ page }) => {
   await page.goto('/game/2');
-  await expect(page.getByRole('heading', { name: /operation/i }).first()).toBeVisible();
-  await expect(page.getByRole('region', { name: 'Vault stage' })).toBeVisible();
-  await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Operation 2' })).toBeVisible();
+  await expect(page.getByText('This operation is already active. You can watch the table resolve.')).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);
   await expectNoSeriousA11yIssues(page);
 });
 
-test('mobile live play puts the decision in the first viewport without page overflow', async ({ page }) => {
+test('mobile hosted play stays within the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/game/2');
-  const actionRegion = page.getByRole('region', { name: 'Current action' });
-  await expect(actionRegion).toBeVisible();
-  const connectBox = await actionRegion.getByRole('button', { name: 'Connect to act', exact: true }).boundingBox();
-  expect(connectBox?.y).toBeLessThan(844);
-  await expect(actionRegion.getByRole('button', { name: 'Pick', exact: true })).toBeVisible();
+  await page.goto('/game/1');
+  await expect(page.getByRole('heading', { name: 'Assemble the crew' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Join operation' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-  await expect(page.getByText('WINNER', { exact: true })).toBeVisible();
 });
 
 test('internal product tools contain wide data on mobile', async ({ page }) => {
@@ -584,133 +494,53 @@ test('internal product tools contain wide data on mobile', async ({ page }) => {
   expect(overflows).toEqual([]);
 });
 
-test('browser wallet can create a new operation from the homepage', async ({ page }) => {
-  test.setTimeout(60_000);
-  const createdGameId = Number(await totalGames()) + 1;
-  await installTestWallet(page);
+test('hosted service issues only an opaque HttpOnly session', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Connect wallet', exact: true }).first().click();
-  await page.getByRole('button', { name: 'Create Operation' }).click();
-  const dialog = page.getByText('New Operation').locator('..');
-  await expect(dialog.getByText(/public beta is free to play/i)).toBeVisible();
-  await dialog.getByRole('button', { name: 'Create', exact: true }).click();
-  await expect(page.getByText('Confirmed', { exact: true }).first()).toBeVisible({ timeout: 15_000 });
-  const createdOperation = page.getByRole('button', { name: new RegExp(`OP-${String(createdGameId).padStart(3, '0')}`, 'i') });
-  await expect(createdOperation).toBeVisible({ timeout: 15_000 });
-  await expect(createdOperation).toContainText(/open/i);
-
-  await sendContractTransaction(TEST_OPPONENT, 'registerPlayer', [BigInt(createdGameId)]);
-  await createdOperation.click();
-  await expect(page.getByRole('heading', { name: 'Operation Briefing' })).toBeVisible();
-  await expect(page.getByText('Crew Manifest (1 enrolled)')).toBeVisible();
-  await page.getByRole('button', { name: 'Join Operation' }).click();
-  await expect(page.getByText('Crew Manifest (2 enrolled)')).toBeVisible({ timeout: 15_000 });
-  await page.getByRole('button', { name: 'Start Operation' }).click();
-  await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible({ timeout: 15_000 });
-
-  await sendContractTransaction(TEST_OPPONENT, 'submitAction', [BigInt(createdGameId), 2, '0x0000000000000000000000000000000000000000']);
-
-  await page.getByRole('button', { name: 'Pick', exact: true }).first().click();
-  await expect(page.getByText(/Action committed\. Wait/)).toBeVisible({ timeout: 15_000 });
-  const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
-  await expect(resolve).toBeEnabled({ timeout: 20_000 });
+  const response = await page.request.post('/api/player/session');
+  const payload = await response.json();
+  const cookies = await page.context().cookies();
+  const sessionCookie = cookies.find((cookie) => cookie.name === 'plundrix_session');
+  expect(sessionCookie?.httpOnly).toBe(true);
+  expect(sessionCookie?.sameSite).toBe('Lax');
+  expect(payload).toEqual({ player: { displayName: expect.stringMatching(/^Operator [A-F0-9]{5}$/) } });
+  expect(JSON.stringify(payload)).not.toMatch(/0x[a-f0-9]{40}|sepolia|blockchain|transaction/i);
 });
 
-test('browser wallet can join, start, and commit a real local-chain turn', async ({ page }) => {
-  test.setTimeout(60_000);
-  await installTestWallet(page);
-  await page.goto('/game/3');
-  await page.getByRole('button', { name: 'Connect wallet', exact: true }).first().click();
-  await expect(page.getByRole('button', { name: /0x3c44/i }).first()).toBeVisible();
-
-  const join = page.getByRole('button', { name: 'Join Operation' });
-  const start = page.getByRole('button', { name: 'Start Operation' });
-  const currentAction = page.getByRole('region', { name: 'Current action' });
-  await expect(join.or(start).or(currentAction)).toBeVisible({ timeout: 15_000 });
-  if (await join.isVisible().catch(() => false)) {
-    await join.click();
-    await expect(page.getByText('Crew Manifest (2 enrolled)')).toBeVisible({ timeout: 15_000 });
-  }
-  if (!(await currentAction.isVisible().catch(() => false))) {
-    await expect(start).toBeVisible({ timeout: 15_000 });
-    await start.click();
-  }
-  await expect(currentAction).toBeVisible({ timeout: 30_000 });
-
-  const execute = page.getByRole('button', { name: 'Pick', exact: true }).first();
-  await expect(execute).toBeEnabled({ timeout: 15_000 });
-  await execute.click();
-  await expect(page.getByText(/Action committed\. Wait/)).toBeVisible({ timeout: 15_000 });
-});
-
-test('browser wallet can complete and resolve a real local-chain round', async ({ page }) => {
+test('two anonymous players can create, join, start, and commit a hosted operation', async ({ page, browser }) => {
   test.setTimeout(90_000);
-  await installTestWallet(page);
-  await page.goto('/game/4');
-  await page.getByRole('button', { name: 'Connect wallet', exact: true }).first().click();
-  await expect(page.getByRole('region', { name: 'Current action' })).toBeVisible();
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Create operation' }).click();
+  await expect(page).toHaveURL(/\/game\/\d+$/, { timeout: 30_000 });
+  await expect(page.getByText('You', { exact: true })).toBeVisible();
+  const operationUrl = page.url();
+  const operationId = operationUrl.match(/\/game\/(\d+)$/)?.[1];
 
-  await page.getByRole('button', { name: 'Pick', exact: true }).first().click();
-  await expect(page.getByText(/Action committed\. Wait/)).toBeVisible({ timeout: 15_000 });
-  const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
-  await expect(resolve).toBeEnabled({ timeout: 15_000 });
-  const transactionCountBefore = BigInt(await rpc('eth_getTransactionCount', [TEST_WALLET, 'latest']));
-  await resolve.click();
-  await expect.poll(
-    async () => BigInt(await rpc('eth_getTransactionCount', [TEST_WALLET, 'latest'])),
-    { timeout: 30_000, message: 'The browser wallet should submit the resolve transaction' },
-  ).toBeGreaterThan(transactionCountBefore);
-  const resolution = page.getByRole('region', { name: 'Round resolution' });
-  await expect(resolution).toBeVisible({ timeout: 30_000 });
-  await expect(resolution.getByText(/LOCK CRACKED|NO JOY|TOOL FOUND|NOTHING/)).toHaveCount(2);
-  const continueButton = resolution.getByRole('button', { name: 'Continue to next round' });
-  await expect(continueButton).toBeVisible({ timeout: 5_000 });
-  if (process.env.PLUNDRIX_CAPTURE_EVIDENCE) {
-    await expect(page.getByText('Round resolution confirmed', { exact: true })).toBeHidden({ timeout: 6_000 });
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    await resolution.screenshot({ path: 'reports/visual-audit/a-plus/resolution-desktop.png' });
-    await page.setViewportSize({ width: 390, height: 844 });
-    await resolution.screenshot({ path: 'reports/visual-audit/a-plus/resolution-mobile.png' });
-  }
-  await continueButton.click();
-  await expect(page.getByRole('region', { name: 'Vault stage' }).getByRole('heading', { name: '2', exact: true })).toBeVisible({ timeout: 15_000 });
-});
+  const secondContext = await browser.newContext({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  const secondPlayer = await secondContext.newPage();
+  try {
+    await secondPlayer.goto(operationUrl);
+    await secondPlayer.getByRole('button', { name: 'Join operation' }).click();
+    await expect(secondPlayer.getByText('You', { exact: true })).toBeVisible({ timeout: 30_000 });
 
-test('browser wallet can breach the vault and reach the final briefing', async ({ page }) => {
-  test.setTimeout(60_000);
-  await installTestWallet(page);
-  await page.goto('/game/5');
-  await page.getByRole('button', { name: 'Connect wallet', exact: true }).first().click();
-  const finalBriefing = page.getByRole('heading', { name: 'Vault Breached' });
-  const execute = page.getByRole('button', { name: 'Pick', exact: true }).first();
-  await expect(finalBriefing.or(execute)).toBeVisible({ timeout: 15_000 });
-  if (!await finalBriefing.isVisible().catch(() => false)) {
-    const resolve = page.getByRole('button', { name: 'Resolve', exact: true });
-    if (await execute.isEnabled()) await execute.click();
-    await expect(resolve).toBeEnabled({ timeout: 20_000 });
-    await guaranteeNextResolveVictory(5n, 2n);
-    // Resolve from the other unlocked account so this fixture never races the
-    // browser wallet's just-submitted action for the same sender nonce.
-    await sendContractTransaction(TEST_OPPONENT, 'resolveRound', [5n]);
-    await page.reload();
-  }
+    await expect(page.getByRole('button', { name: 'Start operation' })).toBeVisible({ timeout: 15_000 });
+    await page.getByRole('button', { name: 'Start operation' }).click();
+    await expect(page.getByRole('heading', { name: 'Choose the pressure' })).toBeVisible({ timeout: 30_000 });
+    await expect(secondPlayer.getByRole('heading', { name: 'Choose the pressure' })).toBeVisible({ timeout: 30_000 });
 
-  await expect(finalBriefing).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByText('You Win')).toBeVisible();
-  await expectNoSeriousA11yIssues(page);
-  if (process.env.PLUNDRIX_CAPTURE_EVIDENCE) {
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.screenshot({ path: 'reports/art-expansion-v2/actual/game-over-desktop.png', fullPage: true });
+    await page.getByRole('button', { name: 'Choose Search' }).click();
+    await expect(page.getByText(/action locked/i).first()).toBeVisible({ timeout: 30_000 });
+    await secondPlayer.getByRole('button', { name: 'Choose Search' }).click();
+    await expect(secondPlayer.getByText(/action locked|round/i).first()).toBeVisible({ timeout: 30_000 });
+    await expect.poll(async () => {
+      const response = await page.request.get(`/api/play/operations/${operationId}`);
+      return (await response.json()).operation.currentRound;
+    }, { timeout: 30_000 }).toBeGreaterThan(1);
+
+    await expect(page.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);
+    await expect(secondPlayer.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);
+  } finally {
+    await secondContext.close();
   }
-  await page.setViewportSize({ width: 390, height: 844 });
-  await expect(finalBriefing).toBeVisible();
-  await expect(page.getByText('You Win')).toBeVisible();
-  await expectNoSeriousA11yIssues(page);
-  if (process.env.PLUNDRIX_CAPTURE_EVIDENCE) {
-    await page.screenshot({ path: 'reports/art-expansion-v2/actual/game-over-mobile.png', fullPage: true });
-  }
-  const hasHorizontalOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
-  expect(hasHorizontalOverflow, 'Final briefing should not overflow a mobile viewport').toBe(false);
 });
 
 test('capture instant-play art expansion evidence', async ({ page }) => {

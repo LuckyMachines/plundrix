@@ -82,10 +82,22 @@ assert.ok(sitemapEntries.every((entry) => /^\d{4}-\d{2}-\d{2}$/.test(entry.lastM
 assert.equal(
   (playHtml.match(/rel="modulepreload"/g) || []).length,
   1,
-  'no-wallet routes should preload only the React runtime, not wallet or query clients',
+  'instant-play routes should preload only the React runtime, not unrelated clients',
 );
 const productionAssets = await readdir(resolve(appDir, 'dist', 'assets'));
 assert.equal(productionAssets.some((filename) => filename.endsWith('.map')), false, 'production source maps should not ship');
+const infrastructureTerms = /sepolia|blockchain|on-?chain|\bwallets?\b|walletconnect|transaction hash|contract address|\brpc\b|network gas|test eth/i;
+const unexpectedInfrastructureChunks = [];
+for (const filename of productionAssets.filter((item) => item.endsWith('.js'))) {
+  if (/^(TermsPage|PrivacyPage)-/.test(filename)) continue;
+  const source = await readFile(resolve(appDir, 'dist', 'assets', filename), 'utf8');
+  if (infrastructureTerms.test(source)) unexpectedInfrastructureChunks.push(filename);
+}
+assert.deepEqual(
+  unexpectedInfrastructureChunks,
+  [],
+  'production JavaScript should keep infrastructure language confined to legal disclosures',
+);
 
 const server = spawn(process.execPath, ['scripts/serve-dist.mjs'], {
   cwd: appDir,

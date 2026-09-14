@@ -32,3 +32,6 @@
 {"approvedAt":"2026-09-13T09:11:22.774Z","buildSha":"db51f7a","reason":"Approve route-aware outcome hierarchy and retained inhabited-world response","surface":"instant-resolution"}
 {"approvedAt":"2026-09-13T11:46:40.419Z","buildSha":"bf4dbd1","reason":"Approve action-specific circuit-crossed theater after visual review","surface":"premium-theater"}
 {"approvedAt":"2026-09-13T20:21:13.103Z","buildSha":"bf4dbd1","reason":"Add complete responsive sound audition locker","surface":"audio-preview"}
+{"approvedAt":"2026-09-13T22:14:52.745Z","buildSha":"9b8eef1","reason":"Make independent sound and music controls immediately accessible at 50 percent defaults","surface":"settings"}
+{"approvedAt":"2026-09-13T22:15:58.002Z","buildSha":"9b8eef1","reason":"Align audition volume with the 50 percent game default","surface":"audio-preview"}
+{"approvedAt":"2026-09-13T22:54:28.732Z","buildSha":"9b8eef1","reason":"Add licensed background music audition","surface":"audio-preview"}

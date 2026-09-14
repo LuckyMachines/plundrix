@@ -1,8 +1,17 @@
 # Plundrix Agent Service
 
-This service gives agents and supporting app surfaces a normalized HTTP layer over the on-chain Plundrix contract.
+This is the authoritative game-service boundary for the public Plundrix app. It owns anonymous player sessions, derives server-custodied game accounts, sponsors bounded commands, and returns ordinary game-shaped JSON. The browser never receives an address, key, network name, transaction hash, RPC URL, or signing request.
 
-It is intentionally read-first:
+Its public managed-play surface provides:
+
+- opaque signed sessions in `HttpOnly`, `SameSite=Lax` cookies
+- live operation discovery, creation, joining, starting, and actions
+- persistent workshop reads, crafting, equipping, and reclaiming
+- conservative fee, command, daily budget, and reserve gates
+- serialized writes so account nonces cannot race
+- sanitized player identities, operation state, and errors
+
+It also provides:
 
 - normalized game snapshot endpoint
 - available-actions endpoint for a specific player
@@ -12,9 +21,7 @@ It is intentionally read-first:
 - profile, badges, and recent-session endpoints
 - explicit queue segmentation for open tables, mixed tables, and agent ladders
 
-By default it does not sign transactions or custody wallets. An explicitly enabled optional
-relay may pay gas for EIP-712 actions that a player-authorized session key already signed; it
-cannot choose or alter those actions.
+Managed play is opt-in and fails closed unless every required server-only credential and address is configured. Raw address-bearing API routes and the older session relay are disabled by default.
 
 The service is also the current indexing layer for:
 
@@ -34,39 +41,55 @@ The service is also the current indexing layer for:
 
 ## Endpoints
 
+- `POST /api/player/session`
+- `GET /api/player/session`
+- `GET /api/play/operations`
+- `POST /api/play/operations`
+- `GET /api/play/operations/:operationId`
+- `POST /api/play/operations/:operationId/join`
+- `POST /api/play/operations/:operationId/start`
+- `POST /api/play/operations/:operationId/actions`
+- `GET /api/play/workshop`
+- `POST /api/play/workshop`
+
 - `GET /api/weekly-vault` returns the current deterministic weekly Vault Run challenge and beta scoreboard.
 - `POST /api/weekly-vault/scores` accepts bounded, self-reported completed-run scores. The beta board is held in service memory and resets on restart.
 
 - `GET /health`
-- `GET /api/games?limit=20&offset=0`
 - `GET /api/competition/overview`
 - `GET /api/competition/leaderboard?queue=all&limit=25`
 - `GET /api/competition/agent-ladder?limit=25`
 - `GET /api/competition/sessions?state=all&queue=all&limit=20`
 - `GET /api/competition/badges`
-- `GET /api/competition/profiles/:playerAddress`
-- `GET /api/games/:gameId`
-- `GET /api/games/:gameId/available-actions/:playerAddress`
-- `GET /api/games/:gameId/history?fromBlock=...&toBlock=...`
-- `POST /api/recommend-action`
-- `POST /api/session-actions` (disabled unless the optional gas relay is configured)
+- `GET /api/competition/profiles/:operatorId`
 
-Example request body:
-
-```json
-{
-  "gameId": 1,
-  "playerAddress": "0x0000000000000000000000000000000000000001"
-}
-```
+Legacy raw game, recommendation, and relay endpoints are available only with `AGENT_ENABLE_RAW_API=true`. They must remain disabled on the public service.
 
 ## Environment
 
-- `AGENT_CONTRACT_ADDRESS` or `VITE_CONTRACT_ADDRESS`
-- `AGENT_RPC_URL` or one of `VITE_FOUNDRY_RPC_URL`, `VITE_RPC_URL`, `SEPOLIA_RPC_URL`, `ANVIL_RPC_URL`
+- `AGENT_CONTRACT_ADDRESS`
+- `AGENT_WORKSHOP_ADDRESS`
+- `AGENT_RPC_URL`
 - `AGENT_PORT` default `8787`
 - `AGENT_HISTORY_LOOKBACK_BLOCKS` default `5000`
 - `AGENT_ALLOW_ORIGIN` default `*`
+- `AGENT_ENABLE_MANAGED_PLAY` default `false`
+- `AGENT_ENABLE_RAW_API` default `false`
+- `AGENT_SPONSOR_PRIVATE_KEY` required for managed play
+- `AGENT_CUSTODY_SECRET` 32+ characters, required for managed play
+- `AGENT_SESSION_SECRET` 32+ characters, required for managed play
+- `AGENT_MANAGED_CHAIN_ID` default `11155111`
+- `AGENT_MAX_GAS_PRICE_WEI` default `2000000000`
+- `AGENT_MAX_TRANSACTION_WEI` default `500000000000000`
+- `AGENT_DAILY_BUDGET_WEI` default `10000000000000000`
+- `AGENT_SPONSOR_RESERVE_WEI` default `20000000000000000`
+- `AGENT_MIN_PLAYER_FUNDING_WEI` default `100000000000000`
+- `AGENT_MAX_PLAYER_BALANCE_WEI` default `1000000000000000`
+- `AGENT_FUNDING_MULTIPLIER` default `3`
+- `AGENT_SESSION_MAX_AGE_SECONDS` default `15552000`
+- `AGENT_SPONSOR_BUDGET_PATH` default `agent-service/data/sponsor-budget.json`
+- `AGENT_MANAGED_OPERATIONS_PATH` default `agent-service/data/managed-operations.json`
+- `AGENT_MANAGED_SWEEP_INTERVAL_MS` default `15000`
 - `AGENT_COMPETITION_CACHE_MS` default `15000`
 - `AGENT_SEASON_LENGTH_DAYS` default `30`
 - `AGENT_SEASON_EPOCH_SECONDS` default `1735689600`
@@ -113,5 +136,7 @@ npm run test:agent
 
 - staging is Sepolia-first today
 - the service should stay aligned with the free-play beta product posture
-- recommendation output is advisory only; transaction execution remains wallet-side
-- the optional session relay can pay gas only for an action already signed by a player-authorized, game-scoped session key; it rate-limits requests and cannot change the signed action
+- all public browser writes go through the managed service
+- keep sponsor, custody, and session secrets out of `VITE_*` variables and browser bundles
+- keep `AGENT_ENABLE_RAW_API=false` on the public service
+- use a dedicated low-balance sponsor wallet, not a deployer or treasury wallet

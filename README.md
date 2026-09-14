@@ -1,6 +1,6 @@
 # Plundrix
 
-Plundrix is a fully on-chain competitive vault-heist game. Two to four players race to crack five locks by choosing one action each round: `PICK`, `SEARCH`, or `SABOTAGE`.
+Plundrix is a hosted competitive vault-heist game. Two to four players race to crack five locks by choosing one action each round: `PICK`, `SEARCH`, or `SABOTAGE`. The public app uses an ordinary server-authoritative interface: players never connect a wallet, approve a transaction, hold a key, acquire test currency, or see infrastructure identifiers.
 
 The repo currently ships:
 
@@ -10,7 +10,7 @@ The repo currently ships:
 - instant Blitz, Classic, and Tactical agent matches at `/play`
 - a persistent three-stage practice roguelite with risky routes, rival grudges, mastery, and weekly seeds at `/vault-run`
 - a 32-second real-capture gameplay trailer at `/trailer`
-- an agent/competition service for recommendations, profiles, sessions, badges, and ladders
+- a managed game service for player sessions, sponsored commands, workshop state, profiles, sessions, badges, and ladders
 - KMS-backed deploy and autoloop tooling
 
 ## Current Status
@@ -29,6 +29,7 @@ The repo currently ships:
 - mainnet is not live yet
 - planned mainnet posture: free-play beta, no cash prizes, fee config present but disabled
 - session actions, paced games, the new balance rules, and the workshop linkage are deployed on Sepolia
+- the public runtime keeps Sepolia entirely behind the managed game service and sponsors bounded commands from a server wallet
 
 Launch tracking lives in [docs/go-live-checklist.md](docs/go-live-checklist.md).
 The latest read-only chain and provenance audit is in [docs/sepolia-readiness-audit.md](docs/sepolia-readiness-audit.md).
@@ -38,6 +39,7 @@ The living interface reference and review workflow are documented in [docs/desig
 The manifest-driven art direction, generation, delivery, and review workflow is documented in [docs/art-pipeline.md](docs/art-pipeline.md).
 The current implementation grade and remaining human-evidence bar are documented in [docs/product-quality-report-card.md](docs/product-quality-report-card.md).
 The one-person improvement loop, evidence tiers, scorecard, and weekly ritual are documented in [docs/improvement-system.md](docs/improvement-system.md).
+The server-authoritative player-session, custody, sponsorship, and ETH-conservation model is documented in [docs/managed-game-service.md](docs/managed-game-service.md).
 
 The solo UI review loop, canonical desktop/mobile state matrix, visual baselines, contact sheet, and approval policy are documented in [docs/ui-improvement-system.md](docs/ui-improvement-system.md). Run `npm run ui:review`; change approved references only with `npm run ui:approve -- --reason "..."`.
 
@@ -49,7 +51,7 @@ The solo UI review loop, canonical desktop/mobile state matrix, visual baselines
   - `PICK`: attempt to crack one lock; table pressure can turn it into a two-lock breach
   - `SEARCH`: find tools that improve future picks
   - `SABOTAGE`: stun a rival and steal one tool if they have one
-- round model: simultaneous submission, then onchain resolution
+- round model: simultaneous submission, then authoritative resolution
 - timeout: rounds can resolve after `5 minutes` even if not all actions are submitted
 
 ## Product Posture
@@ -57,6 +59,8 @@ The solo UI review loop, canonical desktop/mobile state matrix, visual baselines
 Plundrix is currently documented and staged as:
 
 - free-play
+- no player wallet, signing prompt, key custody, or network setup
+- infrastructure costs sponsored within strict server-side limits
 - no cash prizes or monetary rewards live
 - agent and bot participation supported
 - mainnet planned as a free-play beta, not a prize economy
@@ -193,26 +197,16 @@ Checklist:
 
 The app in `app/` is the player-facing UI.
 
-Current staging posture:
+Current public posture:
 
-- Sepolia-first
-- staging copy should say Sepolia is live
-- mainnet copy should remain free-play beta until intentionally changed
+- same-origin hosted game API
+- no chain, wallet, address, transaction, or fee concepts in the player experience
+- testnet execution is a private implementation detail, with accurate disclosure retained in Terms and Privacy
 
 Frontend env vars:
 
 ```bash
-VITE_RPC_URL
-VITE_WALLETCONNECT_PROJECT_ID
-VITE_CONTRACT_ADDRESS
-VITE_WORKSHOP_ADDRESS
 VITE_AGENT_SERVICE_URL
-VITE_FOUNDRY_RPC_URL
-VITE_ENABLE_FOUNDRY
-VITE_ENABLE_NEXT_RULES
-VITE_ENABLE_TABLE_PRESSURE # enable only after deploying the matching game implementation
-VITE_ENABLE_SESSION_KEYS
-VITE_SESSION_RELAY_URL
 VITE_ENABLE_INTERNAL_TOOLS # development-only tools; leave false for public builds
 ```
 

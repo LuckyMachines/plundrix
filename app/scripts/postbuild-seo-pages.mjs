@@ -99,7 +99,7 @@ function staticRouteBody(route, meta) {
     return `<a href="${escapeHtml(path)}">${escapeHtml(destination?.title || 'Play Plundrix')}</a>`;
   }).join('\n        ');
   const context = route === '/'
-    ? 'Choose a complete no-wallet match against three labeled agents or enter a live multiplayer table on Ethereum Sepolia. Every round resolves Pick, Search, and Sabotage together.'
+    ? 'Choose a complete instant match against three labeled agents or enter a hosted live multiplayer table. Every round resolves Pick, Search, and Sabotage together.'
     : 'Plundrix is a free-play simultaneous-action vault race. Players read the table, build tools, pressure rivals, and try to crack five locks first.';
   return `<main data-static-discovery="true">
       <nav aria-label="Discovery"><a href="${marketingOrigin}">About Plundrix</a> <a href="${SITE_ORIGIN}/">Player Hub</a></nav>
@@ -207,7 +207,7 @@ for (const route of publicStaticRoutes()) {
     jsonLd,
     image,
     imageAlt: route === '/play'
-      ? 'Plundrix instant play - Your table is ready. No wallet required.'
+      ? 'Plundrix instant play - Your table is ready.'
       : route === '/trailer'
         ? 'Plundrix gameplay trailer - One vault. No safe turn.'
         : defaultImageAlt,

@@ -19,7 +19,20 @@ not an unedited stock-sound library.
 
 See `LICENSE-KENNEY-CC0.txt` and `manifest.json` for the source/license record.
 
+## Background music
+
+`npm run music:build` downloads two full-length CC0 tracks from a pinned
+Beatscribe repository commit, verifies each source with SHA-256, normalizes the
+score to -24 LUFS with a -2 dB true-peak ceiling, and exports stereo 48 kHz
+MP3s. The originals stay in the operating system's temporary cache rather than
+inflating the repository.
+
+`SessionMusicBridge` starts the playlist after the first user interaction so it
+respects browser autoplay rules. Music and sound effects have independent mute
+and 50% default volume controls. See `LICENSE-BEATSCRIBE-CC0.txt` and
+`music-manifest.json` for the exact source, pinned revision, hashes, and rights.
+
 Open `public/audio-preview.html` through the Vite development or production
-server to audition every cue, compare all three variations, filter by family,
-and download individual rendered files. `sound:build` also regenerates the
-standalone page's JSON and JavaScript indexes.
+server to audition the background score and every cue, compare all three sound
+variations, filter by family, and download individual rendered files. The build
+scripts also regenerate the standalone page's JSON and JavaScript indexes.

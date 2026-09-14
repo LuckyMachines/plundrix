@@ -60,7 +60,7 @@ export default function CareerPage() {
         <CareerList title="Device mastery" empty="Activate a gadget in a run to begin mastery." items={mastered.slice(0, 5).map(({ gadget, mastery }) => ({ key: gadget.id, label: gadget.label, detail: `${mastery.title} / ${mastery.xp} XP` }))} to="/workshop" />
       </div>
 
-      <p className="career-footnote mt-8 text-xs leading-5 text-vault-text-dim">Practice career data is stored only in this browser. Live Sepolia results remain available in <Link className="text-tungsten underline underline-offset-4" to="/sessions">operation history</Link>.</p>
+      <p className="career-footnote mt-8 text-xs leading-5 text-vault-text-dim">Practice career data is stored only in this browser. Hosted multiplayer results remain available in <Link className="text-tungsten underline underline-offset-4" to="/sessions">operation history</Link>.</p>
     </div>
   );
 }

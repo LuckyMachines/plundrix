@@ -16,8 +16,8 @@ export default function PrivacyPage() {
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
           This Privacy Policy describes how Lucky Machines, LLC ("we", "us", "our") handles
-          information when you use Plundrix at game.plundrix.com or interact with the Plundrix
-          smart contract. We are committed to transparency about what data we collect and how
+          information when you use Plundrix at game.plundrix.com. We are committed to transparency
+          about what data we collect and how
           it is used.
         </p>
       </section>
@@ -30,24 +30,24 @@ export default function PrivacyPage() {
         <div className="space-y-4">
           <div className="border border-vault-border rounded p-3 space-y-2">
             <h3 className="font-mono text-xs text-tungsten uppercase tracking-wider">
-              Blockchain Data (Public)
+              Game Processing Records
             </h3>
             <p className="font-mono text-xs text-vault-text leading-relaxed">
-              All game actions, registrations, and transactions are recorded on the Ethereum
-              blockchain and are publicly visible. This includes your wallet address, game
-              actions, transaction hashes, and timestamps. This data is inherent to blockchain
-              technology and cannot be deleted or modified.
+              Hosted multiplayer commands may be recorded through service-controlled pseudonymous
+              accounts on a public blockchain. Those records can include game actions and timestamps
+              and may be permanent. They are not intended to contain your name, email address, IP
+              address, browser session token, or a wallet belonging to you.
             </p>
           </div>
 
           <div className="border border-vault-border rounded p-3 space-y-2">
             <h3 className="font-mono text-xs text-tungsten uppercase tracking-wider">
-              Wallet Connection
+              Managed Play Session
             </h3>
             <p className="font-mono text-xs text-vault-text leading-relaxed">
-              When you connect your wallet, we receive your public wallet address. We do not
-              access your private keys, seed phrases, or wallet balances beyond what is
-              publicly available on the blockchain.
+              We use a pseudonymous, HttpOnly session cookie to keep your hosted player identity
+              consistent. The service derives and controls a separate game account for processing
+              commands. You do not provide a wallet, private key, seed phrase, or payment account.
             </p>
           </div>
 
@@ -69,9 +69,9 @@ export default function PrivacyPage() {
             <p className="font-mono text-xs text-vault-text leading-relaxed">
               We use a self-hosted Plausible Analytics service at plausible.racerverse.com to
               measure aggregate page views, outbound-link activity, and product events such as
-              starting or completing a match, choosing a mode, sharing a challenge, or beginning
-              a wallet connection. Event properties are limited to coarse gameplay categories and
-              do not include wallet addresses, replay seeds, names, or free-form text. Plausible is configured
+              starting or completing a match, choosing a mode, or sharing a challenge. Event
+              properties are limited to coarse gameplay categories and do not include managed
+              account identifiers, session tokens, replay seeds, names, or free-form text. Plausible is configured
               without tracking cookies. The analytics service and its infrastructure may process
               request metadata such as IP address and user agent to produce aggregate statistics.
             </p>
@@ -89,7 +89,7 @@ export default function PrivacyPage() {
             'Names or personal identification',
             'Phone numbers',
             'Location data',
-            'Private keys or seed phrases',
+            'Personal wallet details, private keys, or seed phrases',
             'Off-chain financial information',
           ].map((item) => (
             <li key={item} className="font-mono text-xs text-vault-text leading-relaxed flex items-start gap-2">
@@ -107,7 +107,7 @@ export default function PrivacyPage() {
         <ul className="space-y-1">
           {[
             'Display game state, leaderboards, and session history',
-            'Identify players within games using public wallet addresses',
+            'Maintain pseudonymous players within hosted games',
             'Track agent and bot participation for disclosure purposes',
             'Monitor service health and debug technical issues',
             'Comply with legal obligations if required',
@@ -126,7 +126,7 @@ export default function PrivacyPage() {
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
           We do not sell, rent, or share personal information with third parties for marketing
-          purposes. Blockchain data is publicly accessible by nature. Hosting and infrastructure
+          purposes. Public game-processing records are accessible by nature. Hosting and infrastructure
           providers may process data as necessary to provide their services.
         </p>
       </section>
@@ -136,9 +136,9 @@ export default function PrivacyPage() {
           6. Data Retention
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
-          Blockchain data is permanent and immutable by design. Server access logs are retained
-          according to our hosting provider's standard retention policies. We do not maintain
-          additional databases of user information.
+          Public game-processing records may be permanent and immutable by design. Pseudonymous
+          session cookies expire after 180 days. Server access logs are retained according to our
+          hosting provider's standard retention policies.
         </p>
       </section>
 
@@ -149,12 +149,11 @@ export default function PrivacyPage() {
         <p className="font-mono text-xs text-vault-text leading-relaxed">
           Plundrix uses browser local storage to save versioned game and accessibility preferences,
           instant-play progression, operator names, and background-alert preferences. Preferences
-          can be reset, exported, imported, or disabled from Game Settings. Optional session keys
-          are generated locally and kept in session storage for the current browser session; they
-          are never sent to Plundrix services. Browser notifications require your explicit
-          permission. Anonymous product signals respect the Game Settings control and exclude names,
-          wallet addresses, seeds, and free text. We do not use tracking cookies. Wallet connection
-          state is managed by your wallet provider and is not stored by us.
+          can be reset, exported, imported, or disabled from Game Settings. A required HttpOnly
+          session cookie maintains your pseudonymous hosted-play identity and is not used for
+          advertising. Browser notifications require your explicit permission. Anonymous product
+          signals respect the Game Settings control and exclude names, managed account identifiers,
+          session tokens, seeds, and free text. We do not use third-party tracking cookies.
         </p>
       </section>
 
@@ -163,10 +162,9 @@ export default function PrivacyPage() {
           8. Security
         </h2>
         <p className="font-mono text-xs text-vault-text leading-relaxed">
-          We use industry-standard security practices including HTTPS encryption, HSM-backed
-          signing keys (GCP Cloud KMS) for operational transactions, and the UUPS proxy pattern
-          for contract upgradeability. However, no system is completely secure. You are
-          responsible for securing your own wallet and private keys.
+          We use HTTPS encryption, HttpOnly session cookies, rate limits, command and daily spending
+          ceilings, reserve protection, and isolated service signing credentials. Managed account
+          identifiers and signing material are never returned to the browser. No system is completely secure.
         </p>
       </section>
 

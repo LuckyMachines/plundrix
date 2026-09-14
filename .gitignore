@@ -16,6 +16,9 @@ app/*.log
 app/dist/
 app/playwright-report/
 app/test-results/
+/test-results/
+agent-service/data/sponsor-budget.json
+agent-service/data/managed-operations.json
 app/reports/balance-autopilot/*.json
 app/reports/balance-autopilot/*.csv
 app/reports/live-ops/*.json

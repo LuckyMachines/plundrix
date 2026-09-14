@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "id": "plundrix-background-music",
+  "version": "1.0.0",
+  "target": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "integratedLufs": -24,
+    "truePeakDb": -2,
+    "loudnessRange": 7,
+    "format": "mp3",
+    "bitrate": "128k"
+  },
+  "license": {
+    "name": "Creative Commons Zero 1.0",
+    "spdx": "CC0-1.0",
+    "commercialUse": true,
+    "attributionRequired": false,
+    "notice": "audio/LICENSE-BEATSCRIBE-CC0.txt"
+  },
+  "source": {
+    "creator": "Beatscribe",
+    "repository": "https://github.com/Beatscribe/homebrew_vgm",
+    "commit": "5a82f88b87bb442499685c494b7a96278121b4c7",
+    "commitUrl": "https://github.com/Beatscribe/homebrew_vgm/commit/5a82f88b87bb442499685c494b7a96278121b4c7"
+  },
+  "tracks": [
+    {
+      "id": "night-shift",
+      "title": "Night Shift",
+      "sourceTitle": "Ambient Spaceship",
+      "sourceFile": "GB/free_demos/music_wav/bs-amb-spaceship.wav",
+      "sourceSha256": "b618b2688a8ab617002909157685e4b11bbd18c3313d48df7b24e48f1e33274c",
+      "outputFile": "night-shift.mp3",
+      "duration": 60.449184,
+      "mood": "Low-pressure planning, menus, and quiet vault inspection."
+    },
+    {
+      "id": "neon-stakeout",
+      "title": "Neon Stakeout",
+      "sourceTitle": "Cyber City Night - No Drums",
+      "sourceFile": "GB/free_demos/music_wav/bs-cyb-city-night-nodrums.wav",
+      "sourceSha256": "63883349e9fb5e814042f5e56e6c0b3fbd48be2d3489597143cff2f8ff15c182",
+      "outputFile": "neon-stakeout.mp3",
+      "duration": 98.23712,
+      "mood": "Stealthy operations, route selection, and extended play."
+    }
+  ]
+}

@@ -14,19 +14,17 @@ window.addEventListener('unhandledrejection', () => {
 });
 
 const DataProvider = lazy(() => import('./components/shared/DataProvider'));
-const Web3Provider = lazy(() => import('./components/wallet/Web3Provider'));
 
 function RouteRuntime() {
   const { pathname } = useLocation();
-  const web3Enabled = pathname === '/' || pathname === '/workshop' || pathname.startsWith('/game/');
-  const dataEnabled = web3Enabled || pathname === '/sessions' || pathname === '/leaderboard' || pathname.startsWith('/profile/');
-  const application = <App web3Enabled={web3Enabled} />;
+  const dataEnabled = pathname === '/' || pathname === '/workshop' || pathname.startsWith('/game/') || pathname === '/sessions' || pathname === '/leaderboard' || pathname.startsWith('/profile/');
+  const application = <App />;
 
   if (!dataEnabled) return application;
   return (
     <Suspense fallback={<div className="min-h-screen bg-vault-dark p-8 font-mono text-xs uppercase tracking-wider text-vault-text-dim">Loading live vault...</div>}>
       <DataProvider>
-        {web3Enabled ? <Web3Provider>{application}</Web3Provider> : application}
+        {application}
       </DataProvider>
     </Suspense>
   );
