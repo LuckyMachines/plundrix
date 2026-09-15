@@ -2670,11 +2670,20 @@
   .instant-play-active[data-match-state="active"] .instant-resolution-summary {
     display: grid;
     flex: 0 0 auto;
+    grid-template-areas:
+      "label headline cause"
+      "consequence rivals rivals";
     grid-template-columns: auto auto minmax(0, 1fr);
     align-items: center;
     gap: 0.75rem;
     padding: 0.45rem 0.7rem;
   }
+
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary__label { grid-area: label; }
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary__headline { grid-area: headline; }
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary__cause { grid-area: cause; min-width: 0; }
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary__consequence { grid-area: consequence; white-space: nowrap; }
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary__rivals { grid-area: rivals; }
 
   .instant-play-active[data-match-state="active"] .instant-resolution-summary h2,
   .instant-play-active[data-match-state="active"] .instant-resolution-summary p,
@@ -2687,14 +2696,14 @@
     white-space: nowrap;
   }
 
-  .instant-play-active[data-match-state="active"] .instant-resolution-summary > div {
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary__rivals {
     display: flex;
     min-width: 0;
     gap: 0.55rem;
     overflow: hidden;
   }
 
-  .instant-play-active[data-match-state="active"] .instant-resolution-summary > div p {
+  .instant-play-active[data-match-state="active"] .instant-resolution-summary__rivals p {
     overflow: hidden;
     padding: 0;
     border: 0;

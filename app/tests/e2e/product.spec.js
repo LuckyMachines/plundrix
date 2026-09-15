@@ -205,15 +205,18 @@ test('instant play starts against agents and resolves a guided turn', async ({ p
   await expect(page.getByRole('heading', { name: 'Your table is ready.' })).toBeVisible();
   await page.getByRole('button', { name: /breach the vault/i }).click();
   await expect(page.getByRole('heading', { name: 'Round 1' })).toBeVisible();
+  await expect(page.getByText('First move / choose -> read -> commit')).toBeVisible();
   await expect(page.locator('.instant-action-option[data-action="pick"]')).toHaveAttribute('data-state', 'selected');
   await expect(page.locator('.instant-action-option[data-action="search"]')).toHaveAttribute('data-state', 'ready');
   await page.getByRole('button', { name: /^Search/i }).click();
   await expect(page.locator('.instant-action-option[data-action="pick"]')).toHaveAttribute('data-state', 'ready');
   await expect(page.locator('.instant-action-option[data-action="search"]')).toHaveAttribute('data-state', 'selected');
   await expect(page.getByText(/chance to gain a tool/i).first()).toBeVisible();
-  await page.getByRole('button', { name: /commit and reveal/i }).click();
+  await page.getByRole('button', { name: 'Commit Search', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Round 2' })).toBeVisible();
   await expect(page.getByText('Last resolution')).toBeVisible();
+  await expect(page.getByText('Because of that:', { exact: false })).toBeVisible();
+  await expect(page.getByText('First move / choose -> read -> commit')).toBeHidden();
   await expectNoSeriousA11yIssues(page);
 });
 
@@ -224,7 +227,7 @@ test('improvement events carry bounded experiment and acquisition context withou
   });
   await page.goto('/play?experiment=first-action-copy&variant=a&utm_source=press&utm_medium=referral&utm_campaign=launch-beta&utm_content=hero-link');
   await page.getByRole('button', { name: /breach the vault/i }).click();
-  await page.getByRole('button', { name: /commit and reveal/i }).click();
+  await page.getByRole('button', { name: 'Commit Pick', exact: true }).click();
   await expect.poll(() => page.evaluate(() => window.__plundrixEvents.find((event) => event.name === 'First Meaningful Action'))).toBeTruthy();
   const event = await page.evaluate(() => window.__plundrixEvents.find((item) => item.name === 'First Meaningful Action'));
   expect(event.props).toMatchObject({
@@ -243,6 +246,8 @@ test('improvement events carry bounded experiment and acquisition context withou
   expect(event.props).not.toHaveProperty('address');
   expect(event.props).not.toHaveProperty('seed');
   expect(event.props).not.toHaveProperty('name');
+  const journey = await page.evaluate(() => window.__plundrixEvents.find((item) => item.name === 'Journey Step' && item.props.step === 'first-action'));
+  expect(journey.props).toMatchObject({ mode: 'instant', step: 'first-action' });
 });
 
 test('vault run starts, exposes a meaningful route tradeoff, and resolves a gambit', async ({ page }) => {
@@ -260,6 +265,7 @@ test('vault run starts, exposes a meaningful route tradeoff, and resolves a gamb
   await page.getByRole('button', { name: /double or nothing/i }).click();
   await page.getByRole('button', { name: 'Commit Pick' }).click();
   await expect(page.getByText('Last round')).toBeVisible();
+  await expect(page.getByText('Because of that:', { exact: false })).toBeVisible();
   await expectNoSeriousA11yIssues(page);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
@@ -389,6 +395,14 @@ test('replay keyboard shortcuts are scoped to the replay viewer', async ({ page 
   await page.goto('/replay/gallery-comeback');
   const play = page.getByRole('button', { name: 'Play replay' });
   await expect(play).toBeVisible({ timeout: 15_000 });
+  await page.getByText('Replay tools', { exact: true }).click();
+  const shareCard = page.getByRole('button', { name: 'Share replay card' });
+  await expect(shareCard).toBeVisible();
+  const downloadPromise = page.waitForEvent('download');
+  await shareCard.click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/^replay-[a-z0-9-]+\.png$/);
+  await expect(page.getByRole('status')).toContainText('Replay card downloaded.');
   await page.getByRole('combobox', { name: 'Replay speed' }).focus();
   await page.keyboard.press('Space');
   await expect(play).toBeVisible();
@@ -401,7 +415,7 @@ test('replay keyboard shortcuts are scoped to the replay viewer', async ({ page 
 test('design system supports whole-game review and responsive critique', async ({ page }) => {
   test.setTimeout(60_000);
   await page.goto('/design-system');
-  await expect(page.getByRole('heading', { level: 1, name: 'Plundrix Design System' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Plundrix Design System' })).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('[data-review-status]')).toHaveCount(16);
   await expect(page.locator('#caper')).toContainText('Work surface');
   await expect(page.locator('#caper')).toContainText('Committed');
@@ -465,6 +479,8 @@ test('hosted lobby renders a sanitized crew and lets the player join', async ({ 
   await page.goto('/game/1');
   await expect(page.getByRole('heading', { name: 'Operation 1' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Assemble the crew' })).toBeVisible();
+  await expect(page.getByText(/reopen this link in the same browser/i)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Copy invite' })).toBeVisible();
   await page.getByRole('button', { name: 'Join operation' }).click();
   await expect(page.getByText(/^You \/ /).first()).toBeVisible({ timeout: 20_000 });
   await expect(page.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);
@@ -552,6 +568,7 @@ test('two anonymous players can create, join, start, and commit a hosted operati
       const response = await page.request.get(`/api/play/operations/${operationId}`);
       return (await response.json()).operation.currentRound;
     }, { timeout: 30_000 }).toBeGreaterThan(1);
+    await expect(page.getByText('Because of that:', { exact: false })).toBeVisible({ timeout: 15_000 });
 
     await expect(page.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);
     await expect(secondPlayer.locator('body')).not.toContainText(/0x[a-f0-9]{40}|wallet|sepolia|blockchain|on-?chain|transaction hash|gas fee/i);

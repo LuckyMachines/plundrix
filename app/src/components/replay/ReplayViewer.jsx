@@ -7,6 +7,8 @@ import {
   saveReplayToLibrary,
 } from '../../lib/replayDirector';
 import { copyText } from '../../lib/clipboard';
+import { shareReplayCard } from '../../lib/replayShareCard';
+import { trackJourneyStep, trackProductEvent } from '../../lib/analytics';
 
 function downloadText(filename, text, type = 'text/plain') {
   const blob = new Blob([text], { type });
@@ -62,6 +64,17 @@ export default function ReplayViewer({ replay, comparison }) {
   const saveReplay = () => {
     saveReplayToLibrary(replay);
     setToolStatus('Replay saved to this device.');
+  };
+
+  const shareCard = async () => {
+    try {
+      const result = await shareReplayCard(replay);
+      setToolStatus(result === 'shared' ? 'Replay card shared.' : 'Replay card downloaded. Share it with the replay link.');
+      trackProductEvent('Replay Card Created', { source: replay.sourceType || 'gallery', result });
+      trackJourneyStep('shared', { mode: 'replay', destination: 'share-card' });
+    } catch (error) {
+      if (error?.name !== 'AbortError') setToolStatus(error?.message || 'Replay card could not be created.');
+    }
   };
 
   useEffect(() => {
@@ -140,6 +153,9 @@ export default function ReplayViewer({ replay, comparison }) {
             </ControlButton>
             <ControlButton onClick={copyShareLink} label="Copy share link">
               Copy link
+            </ControlButton>
+            <ControlButton onClick={shareCard} label="Share replay card">
+              Share card
             </ControlButton>
             <ControlButton onClick={saveReplay} label="Save replay">
               Save

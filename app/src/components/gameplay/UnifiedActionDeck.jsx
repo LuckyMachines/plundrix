@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import DecisionPlate from './DecisionPlate';
+import FirstMoveCoach, { completeFirstMoveCoach } from './FirstMoveCoach';
 import { ACTION_STAGE_PRESETS, ActionButtonContent, ActionWaitPanel } from '../shared/ActionFeedback';
 
 export const GAMEPLAY_ACTION_ART = Object.freeze({
@@ -27,15 +29,33 @@ export default function UnifiedActionDeck({
   selectedTarget,
   onTarget,
   preview,
+  firstMoveCoach = false,
   children,
 }) {
   const resolvedKicker = kicker || `${modeLabel}${round ? ` / R${round}` : ''} / concealed move`;
+  const [coachRetired, setCoachRetired] = useState(false);
+  const selectedChoice = actions.find((action) => action.id === selectedAction);
+  const selectedIdentity = selectedChoice?.identity || selectedChoice?.id;
+  const retireCoach = () => {
+    if (firstMoveCoach && !coachRetired) {
+      completeFirstMoveCoach();
+      setCoachRetired(true);
+    }
+  };
+  const commit = () => {
+    retireCoach();
+    onCommit();
+  };
 
   return (
     <section id={id} className="instant-decision-board caper-layer caper-layer-control p-5 sm:p-7" aria-labelledby={`${id}-heading`} aria-busy={busy} data-gameplay-interface="unified" data-gameplay-mode={modeLabel.toLowerCase().replaceAll(' ', '-')}>
       <p className="font-mono text-micro uppercase tracking-brand text-tungsten">{resolvedKicker}</p>
       <h2 id={`${id}-heading`} className="instant-decision-heading">{heading}</h2>
-      {guidance && <p className="instant-first-move mt-3 border-l-2 border-oxide-green bg-oxide-green/10 px-4 py-3 text-sm leading-6 text-vault-text">{guidance}</p>}
+      {firstMoveCoach && !coachRetired ? (
+        <FirstMoveCoach action={selectedIdentity} needsTarget={selectedIdentity === 'sabotage'} hasTarget={Boolean(selectedTarget)} onComplete={() => setCoachRetired(true)} />
+      ) : guidance ? (
+        <p className="instant-first-move mt-3 border-l-2 border-oxide-green bg-oxide-green/10 px-4 py-3 text-sm leading-6 text-vault-text">{guidance}</p>
+      ) : null}
 
       <div className="instant-action-row">
         <div className="instant-action-options mt-4 grid gap-3 md:grid-cols-3">
@@ -58,7 +78,7 @@ export default function UnifiedActionDeck({
         </div>
 
         <div className="instant-action-commit">
-          <button type="button" disabled={busy} onClick={onCommit} aria-label={commitLabel} aria-busy={busy} className="min-h-[52px] flex-1 bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark disabled:cursor-wait disabled:opacity-75">
+          <button type="button" disabled={busy} onClick={commit} aria-label={commitLabel} aria-busy={busy} className="min-h-[52px] flex-1 bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark disabled:cursor-wait disabled:opacity-75">
             <ActionButtonContent active={busy} idle={commitLabel} stages={busyStages} />
           </button>
           {onAuto && <button type="button" disabled={busy} onClick={onAuto} title="The game chooses a recommended move for you this round." aria-label={autoLabel || 'Auto-play this round'} className="min-h-[52px] border border-vault-border px-4 font-mono text-xs uppercase tracking-label text-vault-text-dim disabled:opacity-50"><span className="hidden sm:inline">{autoLabel || 'Auto-play this round'}</span><span className="sm:hidden">Auto</span></button>}

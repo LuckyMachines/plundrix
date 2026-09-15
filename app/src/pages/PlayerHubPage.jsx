@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import ManagedOperations from '../components/game/ManagedOperations';
 import QuickStartPanel from '../components/game/QuickStartPanel';
 import Seo from '../components/seo/Seo';
+import { trackJourneyStep } from '../lib/analytics';
 
 export default function PlayerHubPage() {
   return (
@@ -36,7 +37,7 @@ export default function PlayerHubPage() {
               <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">
                 Pick, Search, and Sabotage through a complete match. Choose a pace, face three distinct agents, and learn by playing.
               </p>
-              <Link to="/play" className="mt-auto inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">
+              <Link to="/play" onClick={() => trackJourneyStep('mode-selected', { mode: 'instant', surface: 'player-hub' })} className="mt-auto inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">
                 Start instant match -&gt;
               </Link>
               </div>
@@ -49,7 +50,7 @@ export default function PlayerHubPage() {
                 <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Persistent practice</p>
                 <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Risk a vault run</h2>
                 <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">Carry one gadget through three escalating vaults. Choose crooked routes, build rival grudges, and chase the weekly seed.</p>
-                <Link to="/vault-run" className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/60 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-label text-oxide-green">Start vault run -&gt;</Link>
+                <Link to="/vault-run" onClick={() => trackJourneyStep('mode-selected', { mode: 'vault-run', surface: 'player-hub' })} className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/60 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-label text-oxide-green">Start vault run -&gt;</Link>
               </div>
             </article>
 
@@ -62,7 +63,7 @@ export default function PlayerHubPage() {
               <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">
                 Create or enter a 2-4 player operation. The game service saves every move while you focus on reading the table.
               </p>
-              <a href="#live-operations" className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/50 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-label text-oxide-green">
+              <a href="#live-operations" onClick={() => trackJourneyStep('mode-selected', { mode: 'live', surface: 'player-hub' })} className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/50 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-label text-oxide-green">
                 Open live operations -&gt;
               </a>
               </div>

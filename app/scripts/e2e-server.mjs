@@ -20,6 +20,10 @@ const root = resolve(appDir, '..');
 const rpcUrl = 'http://127.0.0.1:19655';
 const appUrl = 'http://127.0.0.1:5502';
 const children = new Set();
+let environmentReady = false;
+let shuttingDown = false;
+let finishLifetime;
+const lifetime = new Promise((resolveLifetime) => { finishLifetime = resolveLifetime; });
 
 const anvilMnemonic = 'test test test test test test test test test test test junk';
 
@@ -31,7 +35,13 @@ function launch(command, args, options = {}) {
     windowsHide: true,
   });
   children.add(child);
-  child.once('exit', () => children.delete(child));
+  child.once('exit', (code) => {
+    children.delete(child);
+    if (environmentReady && !shuttingDown) {
+      console.error(`${command} exited unexpectedly with code ${code}`);
+      shutdown(1);
+    }
+  });
   return child;
 }
 
@@ -169,8 +179,10 @@ async function seedGames(address) {
 }
 
 function shutdown(code = 0) {
+  if (shuttingDown) return;
+  shuttingDown = true;
   for (const child of children) child.kill();
-  process.exit(code);
+  finishLifetime(code);
 }
 
 process.once('SIGINT', () => shutdown());
@@ -216,10 +228,11 @@ try {
     env: { VITE_AGENT_PROXY_TARGET: agentUrl },
   });
   await waitForUrl(appUrl);
+  environmentReady = true;
   console.log(`Plundrix E2E environment ready at ${appUrl}`);
 } catch (error) {
   console.error(error);
   shutdown(1);
 }
 
-await new Promise(() => {});
+process.exitCode = await lifetime;

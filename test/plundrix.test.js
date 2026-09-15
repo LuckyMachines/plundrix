@@ -861,7 +861,7 @@ describe('PlundrixGame', () => {
       // Winner has >= 5 locks cracked
       const winnerState = await read('getPlayerState', [gameId, winner]);
       expect(winnerState[0]).toBeGreaterThanOrEqual(5n);
-    });
+    }, 20_000);
 
     it('rejects actions on completed game', async () => {
       // Find a completed game

@@ -553,7 +553,7 @@
         "first-run-comprehension"
       ],
       "status": "pass",
-      "diffRatio": 0.0,
+      "diffRatio": 4.670723523670083e-05,
       "diffLimit": 0.002,
       "actualPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\reports\\ui-review\\latest\\actual\\instant-resolution-laptop.png",
       "referencePath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\plundrix\\app\\tests\\e2e\\__screenshots__\\instant-resolution-laptop.png",

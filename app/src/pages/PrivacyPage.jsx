@@ -6,7 +6,7 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="font-mono text-xs text-vault-text-dim uppercase tracking-wider">
-          Effective Date: August 13, 2026
+          Effective Date: September 15, 2026
         </p>
       </div>
 
@@ -69,7 +69,8 @@ export default function PrivacyPage() {
             <p className="font-mono text-xs text-vault-text leading-relaxed">
               We use a self-hosted Plausible Analytics service at plausible.racerverse.com to
               measure aggregate page views, outbound-link activity, and product events such as
-              starting or completing a match, choosing a mode, or sharing a challenge. Event
+              starting or completing a match, choosing a mode, recovering from an error, sharing a challenge,
+              and coarse page-performance ratings such as good, needs improvement, or poor. Event
               properties are limited to coarse gameplay categories and do not include managed
               account identifiers, session tokens, replay seeds, names, or free-form text. Plausible is configured
               without tracking cookies. The analytics service and its infrastructure may process

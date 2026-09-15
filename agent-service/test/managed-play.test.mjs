@@ -6,6 +6,7 @@ import { agentConfig } from '../config.mjs';
 import {
   ManagedPlayError,
   createSignedSession,
+  safeLatestOutcomes,
   verifySignedSession,
 } from '../managed-play.mjs';
 import { publicOperatorId } from '../competition.mjs';
@@ -51,4 +52,21 @@ test('public gameplay uses the managed service rather than browser wallets', () 
   assert.match(gamePage, /ManagedGamePage/);
   assert.match(hub, /ManagedOperations/);
   assert.doesNotMatch(hub, /wallet|Sepolia|onchain/i);
+});
+
+test('managed outcome summaries preserve causality without exposing addresses', () => {
+  const own = '0x00000000000000000000000000000000000000a1';
+  const rival = '0x00000000000000000000000000000000000000b2';
+  const outcomes = safeLatestOutcomes({ events: [
+    { name: 'ActionOutcome', args: { round: 1, player: own, action: 'SEARCH', actionCode: 2, success: true, reasonCode: 4, locksCracked: 0, tools: 1 } },
+    { name: 'ActionOutcome', args: { round: 1, player: rival, sabotageTarget: own, action: 'SABOTAGE', actionCode: 3, success: true, reasonCode: 10, locksCracked: 0, tools: 0 } },
+    { name: 'ActionOutcome', args: { round: 2, player: own, action: 'PICK', actionCode: 1, success: true, reasonCode: 1, locksCracked: 1, tools: 1 } },
+  ] }, { players: [{ address: own }, { address: rival }] }, own, 'Operator TEST');
+
+  assert.equal(outcomes.length, 1);
+  assert.deepEqual(outcomes[0], {
+    id: '2-1-0', round: 2, actor: 'player-1', actorLabel: 'Operator TEST', target: '', targetLabel: '', you: true,
+    action: 'pick', actionCode: 1, success: true, reasonCode: 1, locksCracked: 1, tools: 1, stunned: false,
+  });
+  assert.doesNotMatch(JSON.stringify(outcomes), /0x[a-f0-9]{40}/i);
 });

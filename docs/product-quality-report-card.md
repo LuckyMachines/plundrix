@@ -723,3 +723,28 @@ Overall grade: **A for implementation and deterministic evidence; search-perform
 - Measure search impressions and click-through separately for Player Hub, Instant Play, and Vault Run.
 - Observe four first-time players and verify that the shared action grammar transfers between all three modes without reteaching.
 - Create a dedicated Vault Run social card only after real share data shows that route attracts meaningful discovery traffic.
+
+## v0.32.0 - Measurable first-operation journey
+
+Date: 2026-09-15
+
+Overall grade: **A for the implemented player journey and automated proof; observed comprehension and production behavior remain ungraded.**
+
+| Area | Grade | Evidence and remaining gap |
+|---|---:|---|
+| First-action clarity | A | Instant Play, Vault Run, and Live Table share one dismissible choose-read-commit coach. It retires after the first committed move and never becomes recurring tutorial furniture. |
+| Outcome comprehension | A+ | All three modes now use one cause-first result component. Practice results include before/after locks and tools; hosted results are sanitized server-side and expose no account addresses or infrastructure details. |
+| Live-table continuity | A | The lobby shows launch progress, explains persistent-seat recovery, offers one primary invite action, and provides offline, retry, reload, and practice fallbacks. |
+| Continuation loop | A | Final briefings preserve instant rematch as the primary action, promote Vault Run as the clearest progression path, retain replay access, and can generate a 1200 x 630 share card from actual replay data. |
+| Measurement system | A | One bounded `Journey Step` schema covers mode selection, start, first action, completion, continuation, recovery, and sharing. Coarse LCP, INP, and CLS ratings avoid raw identifiers and free text. |
+| Solo research workflow | A+ | The local observation recorder now includes a session timer, first-action marker, four-session progress, anonymous export, and direct import into the evidence ledger. The weekly growth fetch can produce production completion and client-error metric bundles. |
+| Visual evidence | A+ | 42/42 canonical renders and 4/4 typography/layout stress renders pass after original-resolution inspection. The changed first move, resolution, final briefing, live lobby, and live active states have written approvals. |
+| Release reliability | A+ | The final release run passed all 20 gates with zero failures and zero flaky checks, including 98 JS contract tests, 17 managed-agent tests, production build, SEO delivery, 87 passing browser checks, and 4 intentionally skipped capture-only cases. |
+| Real-player evidence | N/A | No comprehension, delight, conversion, or retention result is inferred from implementation. Four newcomer sessions, two seven-day return sessions, and production aggregate samples remain required. |
+
+### Stricter A+ bar
+
+- Observe four newcomers without coaching and import their first-action time, goal comprehension, cause comprehension, and replay intent.
+- Collect at least 30 production operation starts and completions plus 100 page views for the client-error guardrail.
+- Observe two returning players after seven days before making any retention claim.
+- Use the evidence to record a ship, iterate, revert, or stop decision for `first-run-comprehension`.

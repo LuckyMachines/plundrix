@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "startedAt": "2026-09-14T22:40:00.0000000Z",
-  "completedAt": "2026-09-14T22:56:41.3562305Z",
-  "buildSha": "39f0779",
-  "mode": "approve",
-  "reason": "Standardize mode and round action grammar, commit labels, deterministic loader evidence, and reduced-motion capture stability after original-resolution review",
-  "surface": "instant-active,instant-resolution,action-loader",
+  "startedAt": "2026-09-15T16:28:09.914Z",
+  "completedAt": "2026-09-15T16:37:38.799Z",
+  "buildSha": "a425352",
+  "mode": "compare",
+  "reason": null,
+  "surface": "all",
   "status": "pass",
   "playwrightExitCode": 0,
   "compositionExitCode": 0

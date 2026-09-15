@@ -8,6 +8,7 @@ const ALLOWED_PROPERTIES = new Set([
   'bargain', 'weekly', 'outcome', 'rival', 'source', 'chassis', 'rarity', 'protocol',
   'schema', 'release', 'ruleset', 'experiment', 'variant', 'cohort', 'latency', 'destination',
   'site', 'channel', 'medium', 'campaign', 'creative', 'landing', 'referrer',
+  'step', 'metric', 'rating', 'value', 'connection', 'pace', 'recovery',
 ]);
 
 function safeProperties(properties = {}) {
@@ -38,6 +39,10 @@ export function trackProductEvent(name, properties = {}) {
     (window.plausible.q = window.plausible.q || []).push(args);
   };
   window.plausible(name, { props });
+}
+
+export function trackJourneyStep(step, properties = {}) {
+  trackProductEvent('Journey Step', { step, ...properties });
 }
 
 export function latencyBucket(milliseconds) {

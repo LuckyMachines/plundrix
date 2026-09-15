@@ -78,6 +78,19 @@ Record an aggregate production metric without copying identifiers or free text:
 npm run improve -- --measure first-operation-completion --value 72 --sample-size 40 --tier T4 --source plausible-production --summary "Started-to-completed operation rate" --production
 ```
 
+When Plausible credentials are configured, the weekly growth fetch now also writes
+`app/reports/growth/improvement-metrics-latest.json` from the canonical cross-mode journey events.
+Review the aggregate counts, then import it from `app/`:
+
+```powershell
+npm run growth:fetch
+npm run growth:import-improvement
+```
+
+The same weekly snapshot separates mode starts, first actions, completions, continuations,
+recoveries, client errors, and coarse performance ratings. Search Console results separately
+report impressions, clicks, and click-through rate for Player Hub, Instant Play, and Vault Run.
+
 For a weekly bulk export, save this aggregate-only shape and import it with `npm run improve -- --import-metrics .\path\to\metrics.json --production`:
 
 ```json

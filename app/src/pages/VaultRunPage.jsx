@@ -6,6 +6,8 @@ import RoundTheater from '../components/gameplay/RoundTheater';
 import OperationCeremony from '../components/gameplay/OperationCeremony';
 import UnifiedActionDeck from '../components/gameplay/UnifiedActionDeck';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
+import CausalOutcomeSummary from '../components/gameplay/CausalOutcomeSummary';
+import { completeFirstMoveCoach } from '../components/gameplay/FirstMoveCoach';
 import Seo from '../components/seo/Seo';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -16,7 +18,7 @@ import {
   normalizePresentationAction,
   presentationTimings,
 } from '../data/presentationDirector';
-import { trackProductEvent } from '../lib/analytics';
+import { trackJourneyStep, trackProductEvent } from '../lib/analytics';
 import { copyText } from '../lib/clipboard';
 import { recordLocalBalanceSample } from '../lib/gadgetTelemetry';
 import {
@@ -120,6 +122,7 @@ export default function VaultRunPage() {
   const [ceremonyEvent, setCeremonyEvent] = useState(null);
   const processedPaths = useRef(run?.path.length || 0);
   const resolveTimers = useRef([]);
+  const firstActionTracked = useRef(Boolean(run?.path.length || run?.currentMatch?.roundHistory?.length));
 
   const stage = run ? VAULT_RUN_STAGES[run.stageIndex] : VAULT_RUN_STAGES[0];
   const match = run?.currentMatch;
@@ -207,6 +210,7 @@ export default function VaultRunPage() {
     trackProductEvent('Rivalry Updated', { rival: VAULT_RUN_STAGES.find((item) => item.id === entry.stageId)?.rival?.toLowerCase() || 'table', outcome: entry.won ? 'escaped' : 'bitten' });
     if (['COMPLETE', 'FAILED'].includes(run.status)) {
       trackProductEvent('Vault Run Completed', { outcome: run.status.toLowerCase(), weekly: run.weekly, gadget: run.gadget });
+      trackJourneyStep('match-completed', { mode: 'vault-run', outcome: run.status.toLowerCase(), weekly: run.weekly });
       setCeremonyEvent({ key: `vault-final-${run.runId}-${run.path.length}`, type: run.status === 'COMPLETE' ? 'victory' : 'defeat', delayMs: reducedMotion ? 20 : 1380, durationMs: reducedMotion ? 180 : 2100 });
     } else if (run.status === 'LOOT') {
       setCeremonyEvent({ key: `vault-reward-${run.runId}-${run.path.length}`, type: 'reward', delayMs: reducedMotion ? 20 : 1380, durationMs: reducedMotion ? 180 : 1700 });
@@ -214,6 +218,7 @@ export default function VaultRunPage() {
   }, [run]);
 
   const beginRun = (weekly) => {
+    const isReplay = Boolean(run);
     clearResolveTimers();
     const next = createVaultRun({
       weekly,
@@ -227,7 +232,9 @@ export default function VaultRunPage() {
     setTheaterPhase('planning');
     setTheaterOutcome(null);
     processedPaths.current = 0;
+    firstActionTracked.current = false;
     trackProductEvent('Vault Run Started', { mode: 'vault-run', weekly, gadget: equipped.chassisId });
+    trackJourneyStep(isReplay ? 'rematch-started' : 'mode-started', { mode: 'vault-run', weekly, destination: isReplay ? 'rematch' : 'vault-run' });
   };
 
   const chooseRoute = (routeId) => {
@@ -249,6 +256,12 @@ export default function VaultRunPage() {
 
   const resolve = () => {
     if (!run || resolving) return;
+    if (!firstActionTracked.current) {
+      completeFirstMoveCoach();
+      firstActionTracked.current = true;
+      trackProductEvent('First Meaningful Action', { mode: 'vault-run', action: selectedAction, stage: stage.id });
+      trackJourneyStep('first-action', { mode: 'vault-run', action: selectedAction, stage: stage.id });
+    }
     clearResolveTimers();
     const playerAction = { action: selectedAction, sabotageTarget: selectedAction === SIM_ACTION.SABOTAGE ? target : null, bargain };
     const actionMap = buildVaultActionMap(run, playerAction);
@@ -301,6 +314,7 @@ export default function VaultRunPage() {
       if (navigator.share) await navigator.share({ title: 'Plundrix Vault Run', text, url });
       else await copyText(`${text} ${url}`);
       setNotice('Challenge copied. Plausible deniability not included.');
+      trackJourneyStep('shared', { mode: 'vault-run', state: run?.status?.toLowerCase() || 'route', destination: 'share' });
     } catch (error) {
       if (error?.name !== 'AbortError') setNotice('The challenge refused to leave the building.');
     }
@@ -453,7 +467,7 @@ export default function VaultRunPage() {
               </div>
               {signatureEvent && <div className="border-t border-vault-border p-4"><SignatureMoment event={signatureEvent} actorName={match.players.find((candidate) => candidate.id === signatureEvent?.actor)?.name} reducedMotion={reducedMotion} /></div>}
             </section>
-            {lastRound && <div className="vault-last-round border border-vault-border bg-vault-dark/55 p-4"><p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Last round</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{lastRound.events.filter((event) => event.type === 'ActionOutcome').map((event) => <p key={event.id} className={`text-sm ${event.success ? 'text-oxide-green' : 'text-vault-text-dim'}`}>{event.message}</p>)}</div></div>}
+            {lastRound && <CausalOutcomeSummary outcomes={lastRound.events.filter((event) => event.type === 'ActionOutcome')} players={match.players} totalLocks={match.rules.totalLocks} headingId="vault-resolution-heading" label="Last round" />}
             <UnifiedActionDeck
               id="vault-run-actions"
               modeLabel="Vault run"
@@ -470,6 +484,7 @@ export default function VaultRunPage() {
               selectedTarget={target}
               onTarget={setTarget}
               preview={selectedAction === SIM_ACTION.SABOTAGE ? `Disrupt ${match.players.find((candidate) => candidate.id === target)?.name || 'a rival'} on the next reveal.` : ACTIONS.find((item) => item.id === selectedAction)?.detail}
+              firstMoveCoach={run.path.length === 0 && match.roundHistory.length === 0}
             >
               {selectedAction !== SIM_ACTION.SABOTAGE && <div className="mt-5"><p className="font-mono text-micro uppercase tracking-brand text-signal-red">Optional round bargain</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{availableBargains.map((item) => <button key={item.id || 'straight'} type="button" disabled={resolving} aria-pressed={bargain === item.id} onClick={() => setBargain(item.id)} className={`min-h-[68px] border px-3 py-2 text-left disabled:cursor-wait disabled:opacity-50 ${bargain === item.id ? (item.id ? 'border-signal-red bg-signal-red/10' : 'border-tungsten bg-tungsten/10') : 'border-vault-border'}`}><span className="font-mono text-micro uppercase text-vault-text">{item.label}</span><span className="mt-1 block text-xs text-vault-text-dim">{item.detail}</span></button>)}</div></div>}
             </UnifiedActionDeck>

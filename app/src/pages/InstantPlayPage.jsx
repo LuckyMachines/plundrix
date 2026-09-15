@@ -7,6 +7,8 @@ import RoundTheater from '../components/gameplay/RoundTheater';
 import OperationCeremony from '../components/gameplay/OperationCeremony';
 import UnifiedActionDeck from '../components/gameplay/UnifiedActionDeck';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
+import CausalOutcomeSummary from '../components/gameplay/CausalOutcomeSummary';
+import { completeFirstMoveCoach } from '../components/gameplay/FirstMoveCoach';
 import { ACTION_STAGE_PRESETS, ActionButtonContent } from '../components/shared/ActionFeedback';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -16,7 +18,7 @@ import {
   getGadgetById,
   getGadgetConfiguration,
 } from '../data/gadgetInventory';
-import { latencyBucket, trackProductEvent } from '../lib/analytics';
+import { latencyBucket, trackJourneyStep, trackProductEvent } from '../lib/analytics';
 import { copyText } from '../lib/clipboard';
 import {
   cuesForOutcome,
@@ -192,6 +194,7 @@ export default function InstantPlayPage() {
   const resolveTimers = useRef([]);
   const matchStartedAt = useRef(restoredMatch?.startedAt ? Date.parse(restoredMatch.startedAt) : null);
   const firstActionTracked = useRef(Boolean(restoredMatch?.state?.roundHistory?.length));
+  const restoredTracked = useRef(false);
 
   const player = state.players[0];
   const leader = state.players.reduce((current, candidate) => (
@@ -270,6 +273,13 @@ export default function InstantPlayPage() {
   };
 
   useEffect(() => () => clearResolveTimers(), []);
+
+  useEffect(() => {
+    if (!restoredMatch || restoredTracked.current) return;
+    restoredTracked.current = true;
+    trackProductEvent('Operation Recovered', { mode: 'instant', recovery: 'automatic', state: 'active' });
+    trackJourneyStep('operation-recovered', { mode: 'instant', recovery: 'automatic' });
+  }, [restoredMatch]);
 
   useEffect(() => {
     if (!intelOpen) return undefined;
@@ -377,6 +387,7 @@ export default function InstantPlayPage() {
     setProfile(activeProfile);
     localStorage.setItem(PROFILE_KEY, JSON.stringify(activeProfile));
     trackProductEvent(isRematch ? 'Instant Rematch Started' : 'Instant Match Started', { mode, cohort });
+    trackJourneyStep(isRematch ? 'rematch-started' : 'mode-started', { mode: 'instant', cohort, destination: isRematch ? 'rematch' : 'instant' });
     window.requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }));
   };
 
@@ -387,12 +398,14 @@ export default function InstantPlayPage() {
     setTheaterPhase('planning');
     setStarted(false);
     setShareStatus('');
+    trackJourneyStep('operation-exited', { mode: 'instant', state: state.state.toLowerCase() });
   };
 
   const resolve = (spectate = false) => {
     if (isResolving) return;
     clearResolveTimers();
     if (!spectate && !firstActionTracked.current) {
+      completeFirstMoveCoach();
       firstActionTracked.current = true;
       trackProductEvent('First Meaningful Action', {
         mode,
@@ -400,6 +413,7 @@ export default function InstantPlayPage() {
         cohort: playerCohort(profile),
         latency: matchStartedAt.current ? latencyBucket(Date.now() - matchStartedAt.current) : 'restored',
       });
+      trackJourneyStep('first-action', { mode: 'instant', action: selectedAction, cohort: playerCohort(profile) });
     }
     const map = buildStrategyActionMap(state, STRATEGIES, {
       aggression: 60,
@@ -450,6 +464,7 @@ export default function InstantPlayPage() {
       }
       if (next.winner) {
         trackProductEvent('Instant Match Completed', { mode, result: next.winner === 'player-1' ? 'win' : 'loss' });
+        trackJourneyStep('match-completed', { mode: 'instant', result: next.winner === 'player-1' ? 'win' : 'loss' });
         setCeremonyEvent({
           key: `final-${next.gameId}-${next.currentRound}`,
           type: next.winner === 'player-1' ? 'victory' : 'defeat',
@@ -493,6 +508,7 @@ export default function InstantPlayPage() {
       }
       setShareStatus(state.state === 'COMPLETE' ? `Challenge set: beat ${state.currentRound} rounds` : 'Challenge link ready');
       trackProductEvent('Challenge Shared', { mode, state: state.state.toLowerCase() });
+      trackJourneyStep('shared', { mode: 'instant', state: state.state.toLowerCase(), destination: 'share' });
     } catch (error) {
       if (error?.name !== 'AbortError') setShareStatus(error?.message || 'Challenge link could not be shared.');
     }
@@ -628,7 +644,7 @@ export default function InstantPlayPage() {
       )}
       <div className="instant-operation-layout grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="instant-primary-column min-w-0 space-y-5">
-          {state.state === 'ACTIVE' && latestOutcomes.length > 0 && <ResolutionSummary outcomes={latestOutcomes} />}
+          {state.state === 'ACTIVE' && latestOutcomes.length > 0 && <CausalOutcomeSummary outcomes={latestOutcomes} players={state.players} totalLocks={state.rules.totalLocks} headingId="instant-resolution-heading" />}
 
           {state.state === 'ACTIVE' && (
           <section className={`instant-round-board instant-heist-console caper-layer ${isResolving ? 'instant-resolving' : ''}`} aria-live="polite">
@@ -727,6 +743,7 @@ export default function InstantPlayPage() {
               selectedTarget={target}
               onTarget={setTarget}
               preview={preview}
+              firstMoveCoach={state.roundHistory.length === 0}
               guidance={state.roundHistory.length === 0 ? 'Pick races now. Search improves future Pick odds. Sabotage costs a rival their next turn. Everyone reveals together.' : null}
             />
           ) : (
@@ -743,14 +760,15 @@ export default function InstantPlayPage() {
               </div>
               <div className="relative z-10 mt-7 flex flex-wrap gap-3">
                 <button type="button" onClick={() => begin(`rematch-${Date.now()}`)} className="min-h-[50px] bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase text-vault-dark">Instant rematch</button>
-                {savedReplay && <Link to={`/replay/${savedReplay.id}`} onClick={() => trackProductEvent('Post Match Continued', { destination: 'own-replay' })} className="inline-flex min-h-[50px] items-center border border-oxide-green/45 px-5 font-mono text-xs uppercase text-oxide-green">Replay this operation</Link>}
+                <Link to="/vault-run" onClick={() => { trackProductEvent('Post Match Continued', { destination: 'vault-run' }); trackJourneyStep('continued', { mode: 'instant', destination: 'vault-run' }); }} className="inline-flex min-h-[50px] items-center border border-tungsten/45 px-5 font-mono text-xs uppercase text-tungsten">Take gadget to Vault Run</Link>
+                {savedReplay && <Link to={`/replay/${savedReplay.id}`} onClick={() => { trackProductEvent('Post Match Continued', { destination: 'own-replay' }); trackJourneyStep('continued', { mode: 'instant', destination: 'own-replay' }); }} className="inline-flex min-h-[50px] items-center border border-oxide-green/45 px-5 font-mono text-xs uppercase text-oxide-green">Replay this operation</Link>}
                 <details className="min-w-[180px] border border-vault-border bg-vault-dark/70">
                   <summary className="grid min-h-[50px] cursor-pointer place-items-center px-5 font-mono text-xs uppercase text-vault-text">More options</summary>
                   <div className="grid gap-1 border-t border-vault-border p-2">
                     <button type="button" onClick={share} className="min-h-[44px] px-3 text-left font-mono text-xs uppercase text-tungsten">Share score challenge</button>
-                    <Link to="/career" onClick={() => trackProductEvent('Post Match Continued', { destination: 'career' })} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-vault-text">View career</Link>
-                    <Link to="/replays" onClick={() => trackProductEvent('Post Match Continued', { destination: 'replay-gallery' })} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-vault-text">Watch replays</Link>
-                    <Link to="/workshop" onClick={() => trackProductEvent('Post Match Continued', { destination: 'workshop' })} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-oxide-green">Visit workshop</Link>
+                    <Link to="/career" onClick={() => { trackProductEvent('Post Match Continued', { destination: 'career' }); trackJourneyStep('continued', { mode: 'instant', destination: 'career' }); }} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-vault-text">View career</Link>
+                    <Link to="/replays" onClick={() => { trackProductEvent('Post Match Continued', { destination: 'replay-gallery' }); trackJourneyStep('continued', { mode: 'instant', destination: 'replay-gallery' }); }} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-vault-text">Watch replays</Link>
+                    <Link to="/workshop" onClick={() => { trackProductEvent('Post Match Continued', { destination: 'workshop' }); trackJourneyStep('continued', { mode: 'instant', destination: 'workshop' }); }} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-oxide-green">Visit workshop</Link>
                   </div>
                 </details>
               </div>
@@ -833,21 +851,5 @@ function Stat({ label, value }) {
       <p className="font-mono text-micro uppercase tracking-label text-vault-text-dim">{label}</p>
       <p className="mt-1 font-display text-2xl text-vault-text">{value}</p>
     </div>
-  );
-}
-
-function ResolutionSummary({ outcomes }) {
-  const playerOutcome = outcomes.find((event) => event.actor === 'player-1') || outcomes[0];
-  const successful = Boolean(playerOutcome?.success);
-  const route = normalizePresentationAction(playerOutcome?.action);
-  return (
-    <section className={`instant-resolution-summary border-l-2 p-4 ${successful ? 'border-oxide-green bg-oxide-green/10' : 'border-signal-red bg-signal-red/5'}`} data-route={route} data-success={successful} aria-labelledby="instant-resolution-heading">
-      <p className="font-mono text-micro uppercase tracking-brand text-vault-text-dim">Last resolution <span>/ {route}</span></p>
-      <h2 id="instant-resolution-heading" className="mt-2 font-display text-3xl uppercase text-vault-text">{successful ? 'Your move landed.' : 'The vault held.'}</h2>
-      <p className={`mt-1 text-sm ${successful ? 'text-oxide-green' : 'text-signal-red'}`}>{playerOutcome?.message}</p>
-      <div className="mt-3 grid gap-2 sm:grid-cols-3">
-        {outcomes.filter((event) => event !== playerOutcome).map((event) => <p key={event.id} className="border-t border-vault-border pt-2 text-xs text-vault-text-dim">{event.message}</p>)}
-      </div>
-    </section>
   );
 }

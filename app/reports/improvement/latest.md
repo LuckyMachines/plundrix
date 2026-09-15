@@ -1,7 +1,7 @@
 # Plundrix Improvement Loop
 
-Generated: 2026-09-13T11:49:57.803Z
-Build: bf4dbd1
+Generated: 2026-09-15T16:58:04.186Z
+Build: a425352
 Mode: solo
 
 ## Do this next
@@ -12,11 +12,11 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 
 ## Health
 
-- Process: 90/100 (A)
+- Process: 75/100 (C)
 - Real evidence: 47/100 (F)
 - Qualified metrics: 1/9
 - Active experiments: 1
-- Overdue reviews: 0
+- Overdue reviews: 1
 - Expired backlog items: 0
 - Failed automated checks: 0
 - Flaky automated checks: 0
@@ -34,11 +34,11 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 | Players who want another run or replay | missing | not measured | at-least 60% | T3 |
 | Seven-day returning-player rate | missing | not measured | at-least 20% | T4 |
 | Production client error rate | missing | not measured | at-most 2% | T4 |
-| Automated release gates passing | pass | 100% / n=16 | exactly 100% | T2 |
+| Automated release gates passing | pass | 100% / n=20 | exactly 100% | T2 |
 
 ## Experiment queue
 
-- #1 **Verify the first operation with real newcomers** - active; priority 100; requires T3.
+- #1 **Verify the first operation with real newcomers** - active; priority 110; requires T3; REVIEW OVERDUE.
 - #2 **Establish the real beta funnel baseline** - backlog; priority 61; requires T4.
 - #3 **Choose the strongest post-match return path** - backlog; priority 52; requires T3.
 - #4 **Make weekly competition survive a service restart** - backlog; priority 44; requires T2.
@@ -56,19 +56,23 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 
 ## Automated checks
 
-- PASS Improvement-system tests (3344ms)
-- PASS SEO and marketing-system tests (1204ms)
-- PASS Menu and preference-system tests (1422ms)
-- PASS UI review manifest and governance tests (3731ms)
-- PASS Art manifest validation (1796ms)
-- PASS Premium presentation-system tests (1734ms)
-- PASS Licensed normalized sound-library tests (2071ms)
-- PASS 3D world contract tests (1831ms)
-- PASS 3D world render validation (1308ms)
-- PASS Workshop inventory tests (1848ms)
-- PASS Replay-system tests (2222ms)
-- PASS Fun-system tests (5606ms)
-- PASS Telemetry tests (7622ms)
-- PASS Product-cohesion gate (12758ms)
-- PASS Production build (64674ms)
-- PASS Static SEO and delivery tests (5349ms)
+- PASS Improvement-system tests (1024ms)
+- PASS SEO and marketing-system tests (962ms)
+- PASS Menu and preference-system tests (1097ms)
+- PASS UI review manifest and governance tests (2591ms)
+- PASS Art manifest validation (1106ms)
+- PASS Premium presentation-system tests (1023ms)
+- PASS Licensed normalized sound-library tests (1375ms)
+- PASS Licensed normalized music-library tests (2059ms)
+- PASS 3D world contract tests (963ms)
+- PASS 3D world render validation (1126ms)
+- PASS Workshop inventory tests (1377ms)
+- PASS Replay-system tests (1505ms)
+- PASS Fun-system tests (1125ms)
+- PASS Telemetry tests (1247ms)
+- PASS Player journey and outcome tests (1251ms)
+- PASS Product-cohesion gate (1257ms)
+- PASS Production build (14262ms)
+- PASS Static SEO and delivery tests (1917ms)
+- PASS Contracts, agent, integration, and tournament tests (20789ms)
+- PASS Browser journeys (503505ms)

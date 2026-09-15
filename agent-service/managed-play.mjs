@@ -10,7 +10,7 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { agentConfig } from './config.mjs';
-import { getGameSnapshot, listGames } from './contract.mjs';
+import { getGameHistory, getGameSnapshot, listGames } from './contract.mjs';
 
 const gameAbi = JSON.parse(readFileSync(resolve(process.cwd(), 'abi', 'PlundrixGame.json'), 'utf8'));
 const workshopAbi = JSON.parse(readFileSync(resolve(process.cwd(), 'abi', 'PlundrixWorkshop.json'), 'utf8'));
@@ -333,6 +333,38 @@ function safeOperationSummary(game) {
   };
 }
 
+export function safeLatestOutcomes(history = {}, snapshot = {}, playerAddress = '', playerDisplayName = 'You') {
+  const rawPlayers = snapshot.players || [];
+  const ownAddress = String(playerAddress).toLowerCase();
+  const seatFor = (address) => rawPlayers.findIndex((player) => player.address.toLowerCase() === String(address || '').toLowerCase()) + 1;
+  const outcomeEvents = (history.events || []).filter((event) => event.name === 'ActionOutcome');
+  const latestRound = Math.max(0, ...outcomeEvents.map((event) => Number(event.args?.round || 0)));
+
+  return outcomeEvents
+    .filter((event) => Number(event.args?.round || 0) === latestRound)
+    .map((event, index) => {
+      const actorSeat = seatFor(event.args?.player);
+      const targetSeat = seatFor(event.args?.sabotageTarget);
+      const you = String(event.args?.player || '').toLowerCase() === ownAddress;
+      return {
+        id: `${latestRound}-${actorSeat || 'unknown'}-${index}`,
+        round: latestRound,
+        actor: you ? 'player-1' : `seat-${actorSeat || 'unknown'}`,
+        actorLabel: you ? playerDisplayName : `Operator ${actorSeat || '?'}`,
+        target: targetSeat ? (rawPlayers[targetSeat - 1]?.address.toLowerCase() === ownAddress ? 'player-1' : `seat-${targetSeat}`) : '',
+        targetLabel: targetSeat ? (rawPlayers[targetSeat - 1]?.address.toLowerCase() === ownAddress ? playerDisplayName : `Operator ${targetSeat}`) : '',
+        you,
+        action: String(event.args?.action || 'NONE').toLowerCase(),
+        actionCode: Number(event.args?.actionCode || 0),
+        success: Boolean(event.args?.success),
+        reasonCode: Number(event.args?.reasonCode || 0),
+        locksCracked: Number(event.args?.locksCracked || 0),
+        tools: Number(event.args?.tools || 0),
+        stunned: Boolean(event.args?.stunned),
+      };
+    });
+}
+
 function freshEntropy() {
   const entropy = BigInt(`0x${randomBytes(32).toString('hex')}`);
   return entropy === 0n ? 1n : entropy;
@@ -430,12 +462,21 @@ export async function getManagedOperation(gameId, session) {
     (player) => player.address.toLowerCase() === snapshot.game.winner.toLowerCase(),
   );
   const participant = players.some((player) => player.you);
+  let latestOutcomes = [];
+  if (snapshot.game.currentRound > 1 || snapshot.game.stateCode === 2) {
+    try {
+      latestOutcomes = safeLatestOutcomes(await getGameHistory(gameId), snapshot, session.account.address, session.displayName);
+    } catch (error) {
+      console.error('[managed-play-history]', gameId, error?.shortMessage || error?.message || error);
+    }
+  }
   return {
     ...safeOperationSummary(snapshot.game),
     allActionsSubmitted: snapshot.allActionsSubmitted,
     paused: snapshot.paused,
     players,
     winnerSeat: winnerIndex >= 0 ? winnerIndex + 1 : null,
+    latestOutcomes,
     participant,
     canJoin: snapshot.game.stateCode === 0
       && snapshot.game.playerCount < snapshot.constants.maxGamePlayers

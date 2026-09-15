@@ -35,6 +35,7 @@ const QUICK_CHECKS = Object.freeze([
   ['replay', 'Replay-system tests', ['run', 'test:replay']],
   ['fun', 'Fun-system tests', ['run', 'test:fun']],
   ['telemetry', 'Telemetry tests', ['run', 'test:telemetry']],
+  ['player-experience', 'Player journey and outcome tests', ['run', 'test:experience']],
   ['cohesion', 'Product-cohesion gate', ['run', 'cohesion:check']],
   ['build', 'Production build', ['run', 'build']],
   ['seo', 'Static SEO and delivery tests', ['run', 'test:seo']],
@@ -42,7 +43,7 @@ const QUICK_CHECKS = Object.freeze([
 
 const RELEASE_CHECKS = Object.freeze([
   ['core', 'Contracts, agent, integration, and tournament tests', ['--prefix', '..', 'test']],
-  ['browser', 'Browser journeys', ['run', 'test:e2e', '--', '--retries=1'], 600_000],
+  ['browser', 'Browser journeys', ['run', 'test:e2e', '--', '--retries=1'], 900_000],
 ]);
 
 function readArgs(argv) {

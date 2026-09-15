@@ -22,7 +22,7 @@ Composition -> hierarchy -> geometry -> typography/data -> state behavior -> res
 | Instant active round | laptop | pass | 0.000% |
 | Instant active round | mobile | pass | 0.000% |
 | Instant round resolution | desktop | pass | 0.000% |
-| Instant round resolution | laptop | pass | 0.000% |
+| Instant round resolution | laptop | pass | 0.005% |
 | Instant round resolution | mobile | pass | 0.000% |
 | Premium round impact | desktop | pass | 0.000% |
 | Premium round impact | laptop | pass | 0.000% |

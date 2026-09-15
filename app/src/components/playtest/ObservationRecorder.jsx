@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DELIGHT_MOMENTS, SETTINGS_TASKS, readObservations, saveObservation, summarizeObservations } from '../../lib/observationStore';
 import { readBalanceTelemetry } from '../../lib/gadgetTelemetry';
 import { emitPresentationCues } from '../../data/presentationDirector';
@@ -36,13 +36,33 @@ function downloadEvidence(records) {
 export default function ObservationRecorder() {
   const [form, setForm] = useState(INITIAL);
   const [records, setRecords] = useState(readObservations);
+  const [timerStartedAt, setTimerStartedAt] = useState(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const summary = useMemo(() => summarizeObservations(records), [records]);
   const telemetry = readBalanceTelemetry();
   const update = (key, value) => setForm((current) => ({ ...current, [key]: value }));
+  useEffect(() => {
+    if (!timerStartedAt) return undefined;
+    const tick = () => setElapsedSeconds(Math.floor((Date.now() - timerStartedAt) / 1000));
+    tick();
+    const timer = window.setInterval(tick, 250);
+    return () => window.clearInterval(timer);
+  }, [timerStartedAt]);
+
+  const startTimer = () => {
+    setTimerStartedAt(Date.now());
+    setElapsedSeconds(0);
+  };
+  const markFirstAction = () => {
+    update('secondsToFirstAction', elapsedSeconds);
+    update('completedFirstAction', true);
+  };
   const save = () => {
     const next = saveObservation(form);
     setRecords(next);
     setForm((current) => ({ ...INITIAL, audioMode: current.audioMode, participantCode: `P-${String(next.length + 1).padStart(2, '0')}` }));
+    setTimerStartedAt(null);
+    setElapsedSeconds(0);
   };
   const audition = (mode) => {
     window.localStorage.setItem('plundrix-audio-test-mode', mode);
@@ -54,13 +74,20 @@ export default function ObservationRecorder() {
   return (
     <section className="playtest-observation-suite rounded border border-oxide-green/35 bg-oxide-green/5 p-4 sm:p-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="label text-oxide-green">Real-player evidence</p><h2 className="mt-2 font-display text-3xl text-vault-text">Premium perception protocol</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-vault-text-dim">A ten-minute, one-person-friendly script. Record behavior, not identity; entries stay on this device until export.</p></div>
+        <div><p className="label text-oxide-green">Real-player evidence / {Math.min(records.length, 4)} of 4 sessions</p><h2 className="mt-2 font-display text-3xl text-vault-text">Premium perception protocol</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-vault-text-dim">A ten-minute, one-person-friendly script. Record behavior, not identity; entries stay on this device until export.</p></div>
         <button type="button" onClick={() => downloadEvidence(records)} disabled={!records.length} className="min-h-[44px] rounded border border-vault-border px-4 font-mono text-xs uppercase text-vault-text disabled:opacity-40">Export anonymous JSON</button>
       </div>
 
       <ol className="playtest-protocol mt-5 grid gap-2 lg:grid-cols-5" aria-label="Ten minute test protocol">
         {PREMIUM_PLAYTEST_PROTOCOL.map((step) => <li key={step.minute}><span>{step.minute}</span><strong>{step.task}</strong><p>{step.prompt}</p><small>{step.proof}</small></li>)}
       </ol>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3 border border-blueprint/35 bg-blueprint/5 p-3" aria-label="Playtest timer">
+        <span className="font-mono text-sm tabular-nums text-blueprint">{String(Math.floor(elapsedSeconds / 60)).padStart(2, '0')}:{String(elapsedSeconds % 60).padStart(2, '0')}</span>
+        <button type="button" onClick={startTimer} className="min-h-[44px] border border-blueprint/45 px-4 font-mono text-xs uppercase text-blueprint">{timerStartedAt ? 'Restart timer' : 'Start session timer'}</button>
+        <button type="button" onClick={markFirstAction} disabled={!timerStartedAt || form.completedFirstAction} className="min-h-[44px] border border-oxide-green/45 px-4 font-mono text-xs uppercase text-oxide-green disabled:opacity-40">{form.completedFirstAction ? `First action: ${form.secondsToFirstAction}s` : 'Mark first action'}</button>
+        <p className="text-xs text-vault-text-dim">Do not explain the first choice. Mark the moment the player commits.</p>
+      </div>
 
       <div className="mt-5 grid gap-4 xl:grid-cols-[1fr_340px]">
         <div>
@@ -88,7 +115,7 @@ export default function ObservationRecorder() {
           <button type="button" onClick={save} disabled={!form.observerConfirmed} className="mt-4 min-h-[46px] bg-oxide-green px-5 font-mono text-xs font-bold uppercase text-vault-dark disabled:cursor-not-allowed disabled:opacity-40">Save verified observation</button>
         </div>
         <aside className="grid grid-cols-2 gap-2">
-          <EvidenceMetric label="Sessions" value={summary.count} /><EvidenceMetric label="Goal clear" value={`${summary.goalRate}%`} />
+          <EvidenceMetric label="Sessions" value={`${Math.min(summary.count, 4)}/4`} /><EvidenceMetric label="Goal clear" value={`${summary.goalRate}%`} />
           <EvidenceMetric label="Action in 3s" value={`${summary.actionRecognitionRate}%`} /><EvidenceMetric label="Target in 3s" value={`${summary.targetRecognitionRate}%`} />
           <EvidenceMetric label="Outcome in 3s" value={`${summary.outcomeRecognitionRate}%`} /><EvidenceMetric label="Sound ID" value={`${summary.soundIdentityRate}%`} />
           <EvidenceMetric label="Gadget seen" value={`${summary.gadgetRate}%`} /><EvidenceMetric label="Would replay" value={`${summary.replayRate}%`} />

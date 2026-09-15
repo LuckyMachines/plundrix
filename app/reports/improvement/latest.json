@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-13T11:49:57.803Z",
-  "buildSha": "bf4dbd1",
+  "generatedAt": "2026-09-15T16:58:04.186Z",
+  "buildSha": "a425352",
   "operatingMode": "solo",
   "health": {
-    "processScore": 90,
-    "processGrade": "A",
+    "processScore": 75,
+    "processGrade": "C",
     "evidenceScore": 47,
     "evidenceGrade": "F",
     "metricCoverage": "1/9",
     "activeCount": 1,
-    "staleCount": 0,
+    "staleCount": 1,
     "expiredCount": 0,
     "failedCheckCount": 0,
     "flakyCheckCount": 0
@@ -143,10 +143,10 @@
       "latest": {
         "metricId": "automated-release-gates",
         "tier": "T2",
-        "source": "improve:verify",
+        "source": "improve:release",
         "artifact": "reports/improvement/latest.json",
-        "capturedAt": "2026-09-13T11:49:57.803Z",
-        "sampleSize": 16,
+        "capturedAt": "2026-09-15T16:58:04.186Z",
+        "sampleSize": 20,
         "value": 100
       },
       "pass": true
@@ -188,9 +188,9 @@
       ],
       "evidence": [],
       "decision": null,
-      "overdue": false,
+      "overdue": true,
       "expired": false,
-      "priorityScore": 100,
+      "priorityScore": 110,
       "rank": 1
     },
     {
@@ -397,7 +397,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 3344,
+      "durationMs": 1024,
       "outputTail": ""
     },
     {
@@ -406,7 +406,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1204,
+      "durationMs": 962,
       "outputTail": ""
     },
     {
@@ -415,7 +415,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1422,
+      "durationMs": 1097,
       "outputTail": ""
     },
     {
@@ -424,7 +424,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 3731,
+      "durationMs": 2591,
       "outputTail": ""
     },
     {
@@ -433,7 +433,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1796,
+      "durationMs": 1106,
       "outputTail": ""
     },
     {
@@ -442,7 +442,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1734,
+      "durationMs": 1023,
       "outputTail": ""
     },
     {
@@ -451,7 +451,16 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 2071,
+      "durationMs": 1375,
+      "outputTail": ""
+    },
+    {
+      "id": "music-library",
+      "label": "Licensed normalized music-library tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 2059,
       "outputTail": ""
     },
     {
@@ -460,7 +469,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1831,
+      "durationMs": 963,
       "outputTail": ""
     },
     {
@@ -469,7 +478,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1308,
+      "durationMs": 1126,
       "outputTail": ""
     },
     {
@@ -478,7 +487,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1848,
+      "durationMs": 1377,
       "outputTail": ""
     },
     {
@@ -487,7 +496,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 2222,
+      "durationMs": 1505,
       "outputTail": ""
     },
     {
@@ -496,7 +505,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 5606,
+      "durationMs": 1125,
       "outputTail": ""
     },
     {
@@ -505,7 +514,16 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 7622,
+      "durationMs": 1247,
+      "outputTail": ""
+    },
+    {
+      "id": "player-experience",
+      "label": "Player journey and outcome tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 1251,
       "outputTail": ""
     },
     {
@@ -514,7 +532,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 12758,
+      "durationMs": 1257,
       "outputTail": ""
     },
     {
@@ -523,7 +541,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 64674,
+      "durationMs": 14262,
       "outputTail": ""
     },
     {
@@ -532,7 +550,25 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 5349,
+      "durationMs": 1917,
+      "outputTail": ""
+    },
+    {
+      "id": "core",
+      "label": "Contracts, agent, integration, and tournament tests",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 20789,
+      "outputTail": ""
+    },
+    {
+      "id": "browser",
+      "label": "Browser journeys",
+      "ok": true,
+      "status": 0,
+      "flaky": false,
+      "durationMs": 503505,
       "outputTail": ""
     }
   ],

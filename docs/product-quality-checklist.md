@@ -229,3 +229,20 @@
 - [x] Record the deployment addresses, transactions, checks, and frontend handoff.
 - [ ] Publish the new implementation sources on a public verifier.
 - [ ] Run a guarded post-upgrade FREE operation with an equipped workshop gadget.
+
+## 18. v0.32 measurable first-operation journey
+
+- [x] Replace generic result banners with shared cause-and-consequence summaries in Instant Play, Vault Run, and Live Table.
+- [x] Preserve exact before/after lock and tool state in simulated action outcomes.
+- [x] Sanitize hosted onchain outcomes into seat labels without exposing addresses, transaction data, or infrastructure vocabulary.
+- [x] Add one dismissible first-move coach that retires after commitment across all three gameplay modes.
+- [x] Add persistent-seat explanation, launch progress, invitation, connection state, retry, and practice fallback to live operations.
+- [x] Give completed operations direct rematch, progression, replay, and share paths without displacing the primary action.
+- [x] Generate shareable 1200 x 630 replay cards from actual replay data.
+- [x] Instrument one bounded journey vocabulary plus coarse LCP, INP, CLS, error, and recovery signals.
+- [x] Extend the weekly growth fetch with route-level search performance and production completion/error metric bundles.
+- [x] Add a one-person playtest timer, first-action marker, four-session progress, and anonymous evidence export.
+- [x] Pass all 20 release gates with zero failures or flaky checks and pass 42/42 canonical plus 4/4 stress visual renders.
+- [ ] Observe four first-time players and import the verified sessions.
+- [ ] Observe two returning players after seven days.
+- [ ] Import production completion and client-error samples after the minimum sample thresholds are reached.

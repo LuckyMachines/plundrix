@@ -8,6 +8,7 @@ import {
   listManagedOperations,
 } from '../../lib/managedService';
 import { ACTION_STAGE_PRESETS, ActionButtonContent, ActionWaitPanel } from '../shared/ActionFeedback';
+import { trackJourneyStep, trackProductEvent } from '../../lib/analytics';
 
 const STATE_TONE = {
   OPEN: 'border-oxide-green/35 bg-oxide-green/5 text-oxide-green',
@@ -35,6 +36,8 @@ export default function ManagedOperations() {
   const create = useMutation({
     mutationFn: () => createManagedOperation(pace),
     onSuccess: (operation) => {
+      trackProductEvent('Live Operation Created', { mode: 'live', pace });
+      trackJourneyStep('mode-started', { mode: 'live', pace, surface: 'player-hub' });
       queryClient.invalidateQueries({ queryKey: ['managed-operations'] });
       navigate(`/game/${operation.id}`);
     },
@@ -62,7 +65,10 @@ export default function ManagedOperations() {
           </label>
           <button
             type="button"
-            onClick={() => create.mutate()}
+            onClick={() => {
+              trackProductEvent('Live Operation Create Started', { mode: 'live', pace });
+              create.mutate();
+            }}
             disabled={!player.isSuccess || create.isPending}
             aria-busy={create.isPending}
             className="min-h-[44px] border border-tungsten/50 bg-tungsten/10 px-5 font-mono text-xs uppercase tracking-label text-tungsten disabled:cursor-not-allowed disabled:opacity-45"
@@ -86,9 +92,13 @@ export default function ManagedOperations() {
       {create.isPending && <ActionWaitPanel eyebrow="Creating live operation" stages={ACTION_STAGE_PRESETS.create} detail="Your table is being prepared. You will enter it automatically when it is ready." compact className="m-5" />}
 
       {(player.error || catalog.error || create.error) && (
-        <p className="m-5 border border-signal-red/35 bg-signal-red/5 p-4 text-sm text-vault-text-dim" role="status">
-          {(create.error || catalog.error || player.error)?.message || 'Live operations are temporarily unavailable.'}
-        </p>
+        <div className="m-5 flex flex-wrap items-center justify-between gap-3 border border-signal-red/35 bg-signal-red/5 p-4" role="alert">
+          <div><p className="font-display text-lg uppercase text-vault-text">Live desk lost contact</p><p className="mt-1 text-sm text-vault-text-dim">{(create.error || catalog.error || player.error)?.message || 'Live operations are temporarily unavailable.'}</p></div>
+          <div className="flex gap-2">
+            <button type="button" onClick={() => { trackProductEvent('Recovery Attempted', { mode: 'live', surface: 'operations-desk' }); player.refetch(); catalog.refetch(); }} className="min-h-[44px] border border-signal-red/45 px-4 font-mono text-xs uppercase text-signal-red">Retry</button>
+            <button type="button" onClick={() => window.location.reload()} className="min-h-[44px] border border-vault-border px-4 font-mono text-xs uppercase text-vault-text">Reload</button>
+          </div>
+        </div>
       )}
 
       {catalog.isSuccess && (
@@ -99,7 +109,10 @@ export default function ManagedOperations() {
                 <button
                   key={operation.id}
                   type="button"
-                  onClick={() => navigate(`/game/${operation.id}`)}
+                  onClick={() => {
+                    trackJourneyStep('table-opened', { mode: 'live', state: operation.state.toLowerCase(), surface: 'operations-desk' });
+                    navigate(`/game/${operation.id}`);
+                  }}
                   className="alive-game-card border border-vault-border bg-vault-dark/45 p-5 text-left transition hover:border-tungsten/50"
                 >
                   <div className="flex items-center justify-between gap-3">

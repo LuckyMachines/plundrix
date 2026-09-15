@@ -7,12 +7,15 @@ import { ToastProvider } from './context/ToastContext';
 import AppErrorBoundary from './components/shared/AppErrorBoundary';
 import { ActionWaitPanel } from './components/shared/ActionFeedback';
 import { analyticsRoute, trackProductEvent } from './lib/analytics';
+import { startPerformanceTelemetry } from './lib/performanceTelemetry';
 import './index.css';
 import './styles/caper.css';
 
 window.addEventListener('unhandledrejection', () => {
   trackProductEvent('Client Error', { source: 'unhandled-promise', surface: analyticsRoute(window.location.pathname) });
 });
+
+startPerformanceTelemetry();
 
 const DataProvider = lazy(() => import('./components/shared/DataProvider'));
 

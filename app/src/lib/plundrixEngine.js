@@ -628,6 +628,8 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         reason,
         roll,
         chance,
+        locksBefore: beforePlayers.find((candidate) => candidate.id === player.id)?.locksCracked ?? player.locksCracked,
+        toolsBefore: beforePlayers.find((candidate) => candidate.id === player.id)?.tools ?? player.tools,
         locksCracked: player.locksCracked,
         tools: player.tools,
         stunned: player.stunned,
@@ -693,6 +695,8 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         reason,
         roll,
         chance,
+        locksBefore: beforePlayers.find((candidate) => candidate.id === player.id)?.locksCracked ?? player.locksCracked,
+        toolsBefore: beforePlayers.find((candidate) => candidate.id === player.id)?.tools ?? player.tools,
         locksCracked: player.locksCracked,
         tools: player.tools,
         stunned: player.stunned,
@@ -712,6 +716,8 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
     }
 
     const target = findPlayer(next, pending.sabotageTarget);
+    const playerBefore = beforePlayers.find((candidate) => candidate.id === player.id) || player;
+    const targetBefore = beforePlayers.find((candidate) => candidate.id === target?.id) || target;
     if (!target || target.id === player.id) {
       emit('ActionOutcome', {
         actor: player.id,
@@ -719,6 +725,8 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         action: SIM_ACTION.SABOTAGE,
         success: false,
         reason: SIM_OUTCOME_REASON.SABOTAGE_FAILED_INVALID_TARGET,
+        locksBefore: playerBefore.locksCracked,
+        toolsBefore: playerBefore.tools,
         locksCracked: player.locksCracked,
         tools: player.tools,
         stunned: player.stunned,
@@ -738,6 +746,9 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         action: SIM_ACTION.SABOTAGE,
         success: false,
         reason: SIM_OUTCOME_REASON.SABOTAGE_FAILED_COOLDOWN,
+        locksBefore: playerBefore.locksCracked,
+        toolsBefore: playerBefore.tools,
+        targetToolsBefore: targetBefore.tools,
         locksCracked: player.locksCracked,
         tools: player.tools,
         stunned: player.stunned,
@@ -767,6 +778,9 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
         action: SIM_ACTION.SABOTAGE,
         success: false,
         reason: SIM_OUTCOME_REASON.SABOTAGE_BLOCKED_GADGET,
+        locksBefore: playerBefore.locksCracked,
+        toolsBefore: playerBefore.tools,
+        targetToolsBefore: targetBefore.tools,
         locksCracked: player.locksCracked,
         tools: player.tools,
         stunned: player.stunned,
@@ -802,6 +816,10 @@ export function resolveSimulationRound(state, actionMap = {}, options = {}) {
       action: SIM_ACTION.SABOTAGE,
       success: true,
       reason,
+      locksBefore: playerBefore.locksCracked,
+      toolsBefore: playerBefore.tools,
+      targetToolsBefore: targetBefore.tools,
+      targetTools: target.tools,
       locksCracked: player.locksCracked,
       tools: player.tools,
       stunned: player.stunned,

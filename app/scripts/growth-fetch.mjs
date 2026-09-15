@@ -27,6 +27,7 @@ async function fetchSearchConsole(range) {
   const sitemapUrls = String(process.env.GSC_SITEMAP_URLS || 'https://plundrix.com/sitemap.xml,https://game.plundrix.com/sitemap.xml').split(',').map((item) => item.trim());
   const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
   const rows = [];
+  const pageRows = [];
   const sitemapPayloads = [];
   for (let index = 0; index < sites.length; index += 1) {
     const site = encodeURIComponent(sites[index]);
@@ -36,6 +37,12 @@ async function fetchSearchConsole(range) {
       body: JSON.stringify({ startDate: range.start, endDate: range.end, dimensions: ['query'], rowLimit: 25000 }),
     });
     rows.push(...(query.rows || []));
+    const pages = await jsonFetch(`https://searchconsole.googleapis.com/webmasters/v3/sites/${site}/searchAnalytics/query`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ startDate: range.start, endDate: range.end, dimensions: ['page'], rowLimit: 25000 }),
+    });
+    pageRows.push(...(pages.rows || []));
     const feedpath = encodeURIComponent(sitemapUrls[index] || `${sites[index].replace(/\/$/, '')}/sitemap.xml`);
     sitemapPayloads.push(await jsonFetch(`https://searchconsole.googleapis.com/webmasters/v3/sites/${site}/sitemaps/${feedpath}`, { headers }));
   }
@@ -44,6 +51,16 @@ async function fetchSearchConsole(range) {
     metrics: {
       ...indexCoverageFromSitemaps(sitemapPayloads),
       nonBrandClicks: nonBrandClicksFromSearchRows(rows),
+      routes: Object.fromEntries([
+        ['playerHub', 'https://game.plundrix.com/'],
+        ['instantPlay', 'https://game.plundrix.com/play'],
+        ['vaultRun', 'https://game.plundrix.com/vault-run'],
+      ].map(([id, route]) => {
+        const matching = pageRows.filter((row) => String(row.keys?.[0] || '').replace(/\/$/, '') === route.replace(/\/$/, ''));
+        const clicks = matching.reduce((sum, row) => sum + (Number(row.clicks) || 0), 0);
+        const impressions = matching.reduce((sum, row) => sum + (Number(row.impressions) || 0), 0);
+        return [id, { clicks, impressions, ctr: impressions ? Math.round((clicks / impressions) * 1000) / 10 : 0 }];
+      })),
     },
   };
 }
@@ -64,15 +81,39 @@ async function plausibleEventCount(eventNames, range, extraFilters = []) {
   return plausibleMetricValue(payload) || 0;
 }
 
+async function plausibleBreakdown(eventName, property, range, extraFilters = []) {
+  const endpoint = `${String(process.env.PLAUSIBLE_API_URL || 'https://plausible.racerverse.com').replace(/\/$/, '')}/api/v2/query`;
+  const payload = await jsonFetch(endpoint, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${process.env.PLAUSIBLE_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      site_id: process.env.PLAUSIBLE_SITE_ID || 'plundrix.com',
+      date_range: [range.start, range.end],
+      metrics: ['visitors'],
+      dimensions: [`event:props:${property}`],
+      filters: ['and', ['is', 'event:name', [eventName]], ...extraFilters],
+    }),
+  });
+  return Object.fromEntries((payload.results || []).map((row) => [String(row.dimensions?.[0] || row.keys?.[0] || 'unknown'), Number(row.metrics?.[0] || 0)]));
+}
+
 async function fetchPlausible(range) {
   if (!process.env.PLAUSIBLE_API_KEY) return { status: 'missing-credentials', metrics: {} };
-  const [marketingVisitors, playerHubHandoffs, attributedPlayerHubLandings, instantMatchStarts, instantMatchCompletions, challengeShares] = await Promise.all([
+  const [marketingVisitors, playerHubHandoffs, attributedPlayerHubLandings, instantMatchStarts, instantMatchCompletions, challengeShares, pageViews, clientErrors, journeyStarts, journeyFirstActions, journeyCompletions, journeyContinuations, recoveryCompletions, poorVitals] = await Promise.all([
     plausibleEventCount('marketing_page_view', range),
     plausibleEventCount(['primary_cta_click', 'secondary_cta_click', 'game_handoff_click'], range),
     plausibleEventCount('Page Viewed', range, [['is', 'event:props:landing', ['player-hub']]]),
     plausibleEventCount('Instant Match Started', range),
     plausibleEventCount('Instant Match Completed', range),
     plausibleEventCount('Challenge Shared', range),
+    plausibleEventCount('Page Viewed', range),
+    plausibleEventCount('Client Error', range),
+    plausibleBreakdown('Journey Step', 'mode', range, [['is', 'event:props:step', ['mode-started']]]),
+    plausibleBreakdown('Journey Step', 'mode', range, [['is', 'event:props:step', ['first-action']]]),
+    plausibleBreakdown('Journey Step', 'mode', range, [['is', 'event:props:step', ['match-completed']]]),
+    plausibleBreakdown('Journey Step', 'destination', range, [['is', 'event:props:step', ['continued', 'rematch-started', 'shared']]]),
+    plausibleEventCount('Recovery Completed', range),
+    plausibleEventCount('Experience Vital', range, [['is', 'event:props:rating', ['poor']]]),
   ]);
   return {
     status: 'connected',
@@ -83,6 +124,14 @@ async function fetchPlausible(range) {
       instantMatchStarts,
       instantMatchCompletions,
       challengeShares,
+      pageViews,
+      clientErrors,
+      journeyStarts,
+      journeyFirstActions,
+      journeyCompletions,
+      journeyContinuations,
+      recoveryCompletions,
+      poorVitals,
     },
   };
 }
@@ -105,5 +154,23 @@ const snapshot = {
 const reportDir = resolve('reports', 'growth');
 await mkdir(reportDir, { recursive: true });
 await writeFile(resolve(reportDir, 'metrics-latest.json'), `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8');
+if (plausible.status === 'connected') {
+  const starts = Object.values(plausible.metrics.journeyStarts || {}).reduce((sum, value) => sum + value, 0) || plausible.metrics.instantMatchStarts;
+  const completions = Object.values(plausible.metrics.journeyCompletions || {}).reduce((sum, value) => sum + value, 0) || plausible.metrics.instantMatchCompletions;
+  const pageViews = plausible.metrics.pageViews || 0;
+  const improvementMetrics = {
+    evidenceTier: 'T4',
+    production: true,
+    source: 'plausible-production',
+    capturedAt: snapshot.capturedAt,
+    buildSha: process.env.RELEASE_SHA || process.env.GITHUB_SHA || 'unknown',
+    rulesetId: process.env.RULESET_ID || 'current',
+    metrics: [
+      { id: 'first-operation-completion', value: starts ? Math.round((completions / starts) * 1000) / 10 : 0, sampleSize: starts },
+      { id: 'client-error-rate', value: pageViews ? Math.round((plausible.metrics.clientErrors / pageViews) * 1000) / 10 : 0, sampleSize: pageViews },
+    ],
+  };
+  await writeFile(resolve(reportDir, 'improvement-metrics-latest.json'), `${JSON.stringify(improvementMetrics, null, 2)}\n`, 'utf8');
+}
 console.log(`Growth metrics: Search Console ${searchConsole.status}; Plausible ${plausible.status}.`);
 console.log(`Snapshot: ${resolve(reportDir, 'metrics-latest.json')}`);

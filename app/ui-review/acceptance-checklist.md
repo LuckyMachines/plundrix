@@ -4,7 +4,7 @@ This is the strict acceptance bar for the canonical Plundrix UI matrix. The gene
 
 ## Deterministic evidence
 
-- [x] All 12 canonical surfaces render from named, repeatable fixtures.
+- [x] All 20 canonical surfaces render from named, repeatable fixtures.
 - [x] Desktop 1440 x 1000 and mobile 390 x 844 captures exist for every surface.
 - [x] Motion, caret, viewport, locale, color scheme, and device scale are controlled.
 - [x] Approved reference and current render use the same state, viewport, crop, and mask.
@@ -12,7 +12,7 @@ This is the strict acceptance bar for the canonical Plundrix UI matrix. The gene
 
 ## Objective gates
 
-- [x] All 24 visual comparisons remain within their declared threshold.
+- [x] All 42 visual comparisons remain within their declared threshold.
 - [x] No canonical state has horizontal overflow.
 - [x] Action docks and action cards do not clip their contents.
 - [x] Every visible image loads successfully.
