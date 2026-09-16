@@ -20,6 +20,7 @@ app/test-results/
 agent-service/data/sponsor-budget.json
 agent-service/data/managed-operations.json
 agent-service/data/weekly-vault-scores.json
+agent-service/data/competition-index.json
 backups/weekly-vault/
 reports/ops/
 app/reports/balance-autopilot/*.json

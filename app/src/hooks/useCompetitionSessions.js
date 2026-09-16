@@ -13,7 +13,7 @@ export function useCompetitionSessions({
         `/api/competition/sessions?state=${encodeURIComponent(state)}&queue=${encodeURIComponent(queue)}&limit=${limit}`
       ),
     enabled: AGENT_SERVICE_CONFIGURED,
-    staleTime: 10_000,
-    refetchInterval: 15_000,
+    staleTime: 60_000,
+    refetchInterval: 120_000,
   });
 }

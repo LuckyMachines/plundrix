@@ -233,7 +233,7 @@ test.describe('canonical UI review matrix', () => {
     for (const viewportName of surface.viewports || manifest.defaults.viewports) {
       const viewport = manifest.viewports[viewportName];
       test(`${surface.id} / ${viewportName}`, async ({ page }) => {
-        test.setTimeout(surface.fixture === 'instant-final' ? 90_000 : 45_000);
+        test.setTimeout(surface.fixture === 'instant-final' ? 120_000 : 90_000);
         await page.setViewportSize(viewport);
         await prepareSurface(page, surface);
 

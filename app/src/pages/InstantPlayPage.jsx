@@ -2,14 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
 import SignatureMoment from '../components/game/SignatureMoment';
-import { CrewReadinessRail, MissionStatusPanel, OperationFile } from '../components/gameplay/HeistConsolePanels';
+import { CrewReadinessRail, MissionStatusPanel, OperationFile, rivalTell } from '../components/gameplay/HeistConsolePanels';
 import RoundTheater from '../components/gameplay/RoundTheater';
 import OperationCeremony from '../components/gameplay/OperationCeremony';
-import UnifiedActionDeck from '../components/gameplay/UnifiedActionDeck';
+import UnifiedActionDeck, { MobileActionCommand } from '../components/gameplay/UnifiedActionDeck';
+import MatchCommandMenu from '../components/gameplay/MatchCommandMenu';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
 import CausalOutcomeSummary from '../components/gameplay/CausalOutcomeSummary';
 import { completeFirstMoveCoach } from '../components/gameplay/FirstMoveCoach';
-import { ACTION_STAGE_PRESETS, ActionButtonContent } from '../components/shared/ActionFeedback';
 import GadgetVisual from '../components/workshop/GadgetVisual';
 import { useAccessibility } from '../context/AccessibilityContext';
 import {
@@ -201,6 +201,10 @@ export default function InstantPlayPage() {
   const leader = state.players.reduce((current, candidate) => (
     candidate.locksCracked > current.locksCracked ? candidate : current
   ), state.players[0]);
+  const primaryRival = state.players.slice(1).reduce((current, candidate) => (
+    candidate.locksCracked > current.locksCracked || (candidate.locksCracked === current.locksCracked && candidate.tools > current.tools) ? candidate : current
+  ), state.players[1]);
+  const primaryRivalIndex = state.players.findIndex((candidate) => candidate.id === primaryRival.id);
   const leaderLocks = leader.locksCracked;
   const leadersAtTop = state.players.filter((candidate) => candidate.locksCracked === leaderLocks);
   const lockGap = Math.max(0, leaderLocks - player.locksCracked);
@@ -438,6 +442,14 @@ export default function InstantPlayPage() {
       };
     }
     const committedAction = map['player-1']?.action || selectedAction;
+    const previousPlayerAction = [...state.roundHistory].reverse()
+      .flatMap((round) => round.events || [])
+      .find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1')?.action;
+    trackProductEvent('Action Committed', {
+      mode,
+      action: spectate ? 'auto' : committedAction,
+      result: previousPlayerAction ? (previousPlayerAction === committedAction ? 'repeated' : 'switched') : 'first',
+    });
     const committedRoute = normalizePresentationAction(committedAction);
     const timings = presentationTimings(reducedMotion);
     setIsResolving(true);
@@ -493,6 +505,9 @@ export default function InstantPlayPage() {
   };
 
   const selectAction = (action) => {
+    if (action !== selectedAction) {
+      trackProductEvent('Action Changed', { mode, action, result: selectedAction });
+    }
     setSelectedAction(action);
     setTheaterAction(action);
     emitPresentationCues([`intent.${normalizePresentationAction(action)}`], { action: normalizePresentationAction(action) });
@@ -625,31 +640,12 @@ export default function InstantPlayPage() {
       />
       <OperationCeremony event={ceremonyEvent} />
       {state.state === 'ACTIVE' && (
-        <div className="instant-mobile-command" role="region" aria-label="Selected action command">
-          <a href="#instant-actions" className="instant-mobile-command__selection">
-            <span>{selectedActionChoice.metric}</span>
-            <strong>{ACTION_LABELS[selectedAction]} / change</strong>
-          </a>
-          <button
-            type="button"
-            disabled={isResolving}
-            onClick={() => resolve(false)}
-            aria-label={`Commit ${ACTION_LABELS[selectedAction]}`}
-            aria-busy={isResolving}
-            className="instant-mobile-command__commit"
-          >
-            <ActionButtonContent active={isResolving} idle={`Commit ${ACTION_LABELS[selectedAction]}`} stages={ACTION_STAGE_PRESETS.reveal} />
-          </button>
-          <button
-            type="button"
-            disabled={isResolving}
-            onClick={() => resolve(true)}
-            title="The game chooses a recommended move for you this round."
-            aria-label="Auto-play this round"
-            className="instant-mobile-command__auto"
-          >
-            Auto
-          </button>
+        <MobileActionCommand actions={actionChoices} selectedAction={selectedAction} busy={isResolving} onSelect={selectAction} onCommit={() => resolve(false)} commitLabel={`Commit ${ACTION_LABELS[selectedAction]}`} onAuto={() => resolve(true)} targets={state.players.slice(1)} selectedTarget={target} onTarget={setTarget} />
+      )}
+      {state.state === 'COMPLETE' && (
+        <div className="instant-mobile-complete" role="region" aria-label="Operation complete actions">
+          <button type="button" onClick={() => begin(`rematch-${Date.now()}`)}>Rematch</button>
+          {continuationObjective && <Link to={continuationObjective.to} onClick={() => { trackProductEvent('Post Match Continued', { destination: continuationObjective.id }); trackJourneyStep('continued', { mode: 'instant', destination: continuationObjective.id }); }}>Next: {continuationObjective.label}</Link>}
         </div>
       )}
       <div className="instant-operation-layout grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
@@ -669,10 +665,7 @@ export default function InstantPlayPage() {
                 <div><dt>Tools</dt><dd>{player.tools}/{state.rules.maxTools}</dd></div>
               </dl>
               <div className="instant-round-controls flex flex-wrap justify-end gap-2">
-                <button type="button" onClick={() => setIntelOpen(true)} aria-expanded={intelOpen} aria-controls="instant-intel-rail" className="instant-intel-toggle min-h-[44px] border border-blueprint/45 px-3 font-mono text-xs uppercase text-blueprint">Intel</button>
-                <button type="button" onClick={toggleAudio} aria-pressed={soundEnabled} className="min-h-[44px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text-dim">{soundEnabled ? 'Sound on' : 'Sound off'}</button>
-                <button type="button" onClick={share} className="min-h-[44px] border border-tungsten/45 px-3 font-mono text-micro uppercase text-tungsten"><span className="sm:hidden">Share</span><span className="hidden sm:inline">Share challenge</span></button>
-                <button type="button" onClick={abandon} className="min-h-[44px] border border-vault-border px-3 font-mono text-xs uppercase text-vault-text-dim"><span className="sm:hidden">Exit</span><span className="hidden sm:inline">Exit match</span></button>
+                <MatchCommandMenu onIntel={() => setIntelOpen(true)} onToggleAudio={toggleAudio} soundEnabled={soundEnabled} onShare={share} onExit={abandon} />
               </div>
             </header>
             {shareStatus && <p className="border-b border-vault-border bg-oxide-green/5 px-5 py-2 font-mono text-xs text-oxide-green" role="status">{shareStatus}</p>}
@@ -689,7 +682,7 @@ export default function InstantPlayPage() {
                   pressureLabel={pressureLabel}
                   pressureDetail={pressureDetail}
                 />
-                <CrewReadinessRail players={state.players} totalLocks={state.rules.totalLocks} />
+                <CrewReadinessRail players={state.players} totalLocks={state.rules.totalLocks} roundHistory={state.roundHistory} />
               </div>
 
               <div className="instant-vault-column">
@@ -729,6 +722,7 @@ export default function InstantPlayPage() {
                 selectedActionLabel={ACTION_LABELS[selectedAction]}
                 selectedActionMetric={selectedActionChoice.metric}
                 selectedActionPreview={preview}
+                rivalRead={{ name: primaryRival.name, detail: rivalTell(primaryRival, primaryRivalIndex, state.players, state.rules.totalLocks, state.roundHistory) }}
                 round={state.currentRound}
               />
             </div>
@@ -769,13 +763,13 @@ export default function InstantPlayPage() {
                 {salvageReward?.length > 0 && <div className="mt-5 border border-oxide-green/45 bg-oxide-green/10 p-4"><p className="font-mono text-micro uppercase tracking-label text-oxide-green">Workshop salvage recovered</p><div className="mt-3 flex flex-wrap gap-2">{salvageReward.map(({ materialId, amount, reason }) => { const material = CRAFTING_MATERIALS.find((item) => item.id === materialId); return <span key={materialId} title={reason} className="inline-flex items-center gap-2 border border-vault-border bg-vault-dark/70 px-3 py-2 font-mono text-xs uppercase text-vault-text"><img src={material?.image} alt="" className="h-7 w-7 object-contain" />+{amount} {material?.label}</span>; })}</div><p className="mt-3 text-xs text-vault-text-dim">{salvageReward[0]?.reason} Choose actions and Vault Run routes to pursue different materials.</p></div>}
                 {challengeTarget && <p className={`mt-3 font-mono text-xs uppercase tracking-label ${state.currentRound < challengeTarget && state.winner === 'player-1' ? 'text-oxide-green' : 'text-tungsten'}`}>{state.currentRound < challengeTarget && state.winner === 'player-1' ? `Challenge beaten by ${challengeTarget - state.currentRound} rounds` : `Challenge target: under ${challengeTarget} rounds`}</p>}
               </div>
-              <div className="relative z-10 mt-7 flex flex-wrap gap-3">
+              <div className="instant-complete-actions relative z-10 mt-7 flex flex-wrap gap-3">
                 <button type="button" onClick={() => begin(`rematch-${Date.now()}`)} className="min-h-[50px] bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase text-vault-dark">Instant rematch</button>
                 {continuationObjective && <Link to={continuationObjective.to} onClick={() => { trackProductEvent('Post Match Continued', { destination: continuationObjective.id }); trackJourneyStep('continued', { mode: 'instant', destination: continuationObjective.id }); }} className="inline-flex min-h-[50px] items-center border border-tungsten/45 px-5 font-mono text-xs uppercase text-tungsten">Next objective: {continuationObjective.label}</Link>}
-                {savedReplay && <Link to={`/replay/${savedReplay.id}`} onClick={() => { trackProductEvent('Post Match Continued', { destination: 'own-replay' }); trackJourneyStep('continued', { mode: 'instant', destination: 'own-replay' }); }} className="inline-flex min-h-[50px] items-center border border-oxide-green/45 px-5 font-mono text-xs uppercase text-oxide-green">Replay this operation</Link>}
                 <details className="min-w-[180px] border border-vault-border bg-vault-dark/70">
-                  <summary className="grid min-h-[50px] cursor-pointer place-items-center px-5 font-mono text-xs uppercase text-vault-text">More options</summary>
+                  <summary className="grid min-h-[50px] cursor-pointer place-items-center px-5 font-mono text-xs uppercase text-vault-text">Share &amp; review</summary>
                   <div className="grid gap-1 border-t border-vault-border p-2">
+                    {savedReplay && <Link to={`/replay/${savedReplay.id}`} onClick={() => { trackProductEvent('Post Match Continued', { destination: 'own-replay' }); trackJourneyStep('continued', { mode: 'instant', destination: 'own-replay' }); }} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-oxide-green">Replay this operation</Link>}
                     <button type="button" onClick={share} className="min-h-[44px] px-3 text-left font-mono text-xs uppercase text-tungsten">Share score challenge</button>
                     <Link to="/career" onClick={() => { trackProductEvent('Post Match Continued', { destination: 'career' }); trackJourneyStep('continued', { mode: 'instant', destination: 'career' }); }} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-vault-text">View career</Link>
                     <Link to="/replays" onClick={() => { trackProductEvent('Post Match Continued', { destination: 'replay-gallery' }); trackJourneyStep('continued', { mode: 'instant', destination: 'replay-gallery' }); }} className="inline-flex min-h-[44px] items-center px-3 font-mono text-xs uppercase text-vault-text">Watch replays</Link>
@@ -842,14 +836,6 @@ export default function InstantPlayPage() {
             <p className="mt-2 font-mono text-micro uppercase text-vault-text-dim">Level {Math.floor(profile.xp / 500) + 1} / next rank in {500 - (profile.xp % 500)} XP</p>
           </section>}
 
-          {state.state === 'COMPLETE' && <section className="border border-vault-border bg-vault-surface p-5">
-            <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Next operation</p>
-            <div className="mt-3 grid gap-2">
-              <Link to="/#live-operations" className="min-h-[44px] border border-tungsten/45 px-3 py-3 font-mono text-micro uppercase text-tungsten">Join a live table</Link>
-              <Link to="/trailer" className="min-h-[44px] border border-vault-border px-3 py-3 font-mono text-micro uppercase text-vault-text">Watch gameplay trailer</Link>
-              <Link to="/sessions" className="min-h-[44px] border border-vault-border px-3 py-3 font-mono text-micro uppercase text-vault-text">Spectate live sessions</Link>
-            </div>
-          </section>}
         </aside>
       </div>
     </div>

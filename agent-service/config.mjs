@@ -70,7 +70,11 @@ export const agentConfig = {
   allowOrigin: getEnvString('AGENT_ALLOW_ORIGIN') || '*',
   rawApiEnabled:
     getEnvString('AGENT_ENABLE_RAW_API')?.toLowerCase() === 'true',
-  competitionCacheMs: getEnvNumber(['AGENT_COMPETITION_CACHE_MS'], 15000),
+  competitionCacheMs: getEnvNumber(['AGENT_COMPETITION_CACHE_MS'], 60_000),
+  competitionStaleMs: getEnvNumber(['AGENT_COMPETITION_STALE_MS'], 15 * 60_000),
+  competitionSnapshotPath:
+    getEnvString('AGENT_COMPETITION_SNAPSHOT_PATH') ||
+    resolve(process.cwd(), 'agent-service', 'data', 'competition-index.json'),
   seasonLengthDays: getEnvNumber(['AGENT_SEASON_LENGTH_DAYS'], 30),
   seasonEpochSeconds: getEnvNumber(
     ['AGENT_SEASON_EPOCH_SECONDS'],

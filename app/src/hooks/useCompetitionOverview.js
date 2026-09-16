@@ -5,7 +5,7 @@ export function useCompetitionOverview() {
   return useQuery({
     queryKey: ['competition', 'overview'],
     queryFn: () => fetchAgentService('/api/competition/overview'),
-    staleTime: 10_000,
-    refetchInterval: 15_000,
+    staleTime: 60_000,
+    refetchInterval: 120_000,
   });
 }

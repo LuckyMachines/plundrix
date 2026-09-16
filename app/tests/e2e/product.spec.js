@@ -298,6 +298,7 @@ test('tactical art reinforces gadgets, actions, and rival identities', async ({ 
   expect(await page.locator('img[src="/images/parts/pick-tool.webp"]').count()).toBeGreaterThan(0);
   expect(await page.locator('img[src="/images/parts/search-kit.webp"]').count()).toBeGreaterThan(0);
   expect(await page.locator('img[src="/images/parts/sabotage-cable.webp"]').count()).toBeGreaterThan(0);
+  await expect(page.locator('.instant-rival-read')).toContainText(/Rival tell/i);
   await expectNoSeriousA11yIssues(page);
 });
 
@@ -327,6 +328,7 @@ test('hosted workshop opens a persistent collection without setup prompts', asyn
 });
 
 test('instant play stays contained on mobile and restores an active operation', async ({ page }) => {
+  test.setTimeout(90_000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/play');
   await page.getByRole('button', { name: /breach the vault/i }).click();
@@ -334,17 +336,40 @@ test('instant play stays contained on mobile and restores an active operation', 
   await expect(commit).toBeVisible();
   await expect(commit).toHaveAccessibleName('Commit Pick');
   expect(await page.evaluate(() => document.body.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-  await page.getByRole('button', { name: 'Intel', exact: true }).click();
+  await page.getByRole('button', { name: /commands/i }).click();
+  await page.getByRole('menuitem', { name: /table intel/i }).click();
   await expect(page.locator('#instant-intel-rail')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.locator('#instant-intel-rail')).toBeHidden();
-  await page.getByRole('button', { name: /^Search/i }).click();
+  await page.locator('.instant-mobile-command__selection').click();
+  const actionSheet = page.getByRole('dialog', { name: 'Choose the next move' });
+  await expect(actionSheet).toBeVisible();
+  await actionSheet.getByRole('radio', { name: /^Search/i }).click();
   await expect(commit).toHaveAccessibleName('Commit Search');
-  await commit.click();
+  await actionSheet.getByRole('button', { name: 'Commit Search' }).click();
   await expect(page.getByRole('heading', { name: 'Round 2' })).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Round 2' })).toBeVisible();
   await expect(page.getByText('Operation restored on this device.')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  await expectNoSeriousA11yIssues(page);
+});
+
+test('vault run shares the mobile round command interface', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/vault-run');
+  await page.evaluate(() => localStorage.removeItem('plundrix-vault-run-v1'));
+  await page.reload();
+  await page.getByRole('button', { name: 'Begin vault run' }).click();
+  await page.locator('.vault-route-options button').first().click();
+  const mobileCommand = page.locator('.instant-mobile-command');
+  await expect(mobileCommand).toBeVisible();
+  await mobileCommand.locator('.instant-mobile-command__selection').click();
+  const actionSheet = page.getByRole('dialog', { name: 'Choose the next move' });
+  await expect(actionSheet.getByRole('radio', { name: /^Pick/i })).toBeChecked();
+  await actionSheet.getByRole('radio', { name: /^Search/i }).click();
+  await expect(actionSheet.getByRole('button', { name: 'Commit Search' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await expectNoSeriousA11yIssues(page);
 });

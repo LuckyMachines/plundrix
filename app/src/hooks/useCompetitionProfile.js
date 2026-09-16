@@ -7,7 +7,7 @@ export function useCompetitionProfile(operatorId) {
     queryFn: () =>
       fetchAgentService(`/api/competition/profiles/${operatorId}`),
     enabled: Boolean(operatorId) && AGENT_SERVICE_CONFIGURED,
-    staleTime: 10_000,
-    refetchInterval: 15_000,
+    staleTime: 60_000,
+    refetchInterval: 120_000,
   });
 }

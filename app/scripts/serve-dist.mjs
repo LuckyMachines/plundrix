@@ -23,6 +23,7 @@ const mimeByExt = {
   '.woff2': 'font/woff2',
   '.map': 'application/json; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
+  '.mp3': 'audio/mpeg',
   '.mp4': 'video/mp4',
 };
 
@@ -85,7 +86,7 @@ async function serveFile(req, res, filePath, fallbackContentType = 'application/
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   };
 
-  if (ext === '.mp4') {
+  if (ext === '.mp4' || ext === '.mp3') {
     headers['Accept-Ranges'] = 'bytes';
     const range = req.headers.range?.match(/^bytes=(\d*)-(\d*)$/);
     if (range) {

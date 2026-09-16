@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "phases": ["planning", "sealed", "revealing", "impact", "recovery"],
   "timings": {
-    "standard": { "revealMs": 320, "impactMs": 760, "recoveryMs": 1380, "settleMs": 2180 },
-    "reduced": { "revealMs": 0, "impactMs": 20, "recoveryMs": 80, "settleMs": 120 }
+    "standard": { "revealMs": 560, "impactMs": 920, "recoveryMs": 1380, "settleMs": 2180 },
+    "reduced": { "revealMs": 480, "impactMs": 820, "recoveryMs": 1180, "settleMs": 1320 }
   },
   "actions": {
     "pick": {

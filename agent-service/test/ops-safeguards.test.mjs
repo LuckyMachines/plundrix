@@ -35,12 +35,14 @@ test('production health writes a passing machine-readable report', async (contex
   context.after(() => rmSync(directory, { recursive: true, force: true }));
   const output = join(directory, 'health.json');
   const image = Buffer.alloc(50_001);
+  const audio = Buffer.alloc(100);
   const server = createServer((request, response) => {
     if (request.url === '/health') { response.setHeader('content-type', 'application/json'); return response.end(JSON.stringify({ ok: true, service: 'plundrix-web' })); }
     if (request.url === '/api/weekly-vault') { response.setHeader('content-type', 'application/json'); return response.end(JSON.stringify({ durability: 'service-file', scores: [] })); }
     if (request.url?.startsWith('/api/competition/leaderboard')) { response.setHeader('content-type', 'application/json'); return response.end(JSON.stringify({ entries: [] })); }
     if (request.url === '/sitemap.xml') { response.setHeader('content-type', 'application/xml'); return response.end('<urlset></urlset>'); }
     if (request.url === '/images/og/plundrix-play.jpg') { response.setHeader('content-type', 'image/jpeg'); response.setHeader('content-length', image.length); return response.end(image); }
+    if (request.url === '/audio/music/caper-in-motion.mp3') { response.statusCode = 206; response.setHeader('content-type', 'audio/mpeg'); response.setHeader('content-range', 'bytes 0-99/1000'); response.setHeader('content-length', audio.length); return response.end(audio); }
     response.statusCode = 404;
     return response.end('missing');
   });
@@ -52,8 +54,9 @@ test('production health writes a passing machine-readable report', async (contex
     windowsHide: true,
     env: { ...process.env, PLUNDRIX_HEALTH_ORIGIN: `http://127.0.0.1:${address.port}`, PLUNDRIX_HEALTH_OUTPUT: output },
   });
-  assert.match(stdout, /PASS production health \/ 5\/5 checks/);
+  assert.match(stdout, /PASS production health \/ 6\/6 checks/);
   const report = JSON.parse(readFileSync(output, 'utf8'));
   assert.equal(report.pass, true);
-  assert.equal(report.checks.length, 5);
+  assert.equal(report.checks.length, 6);
+  assert.equal(report.latencyBudgetMs, 5_000);
 });

@@ -2,12 +2,95 @@ import { useState } from 'react';
 import DecisionPlate from './DecisionPlate';
 import FirstMoveCoach, { completeFirstMoveCoach } from './FirstMoveCoach';
 import { ACTION_STAGE_PRESETS, ActionButtonContent, ActionWaitPanel } from '../shared/ActionFeedback';
+import Modal from '../shared/Modal';
 
 export const GAMEPLAY_ACTION_ART = Object.freeze({
   pick: '/images/parts/pick-tool.webp',
   search: '/images/parts/search-kit.webp',
   sabotage: '/images/parts/sabotage-cable.webp',
 });
+
+export function MobileActionCommand({
+  actions,
+  selectedAction,
+  busy = false,
+  busyStages = ACTION_STAGE_PRESETS.reveal,
+  onSelect,
+  onCommit,
+  commitLabel = 'Confirm move',
+  autoLabel = 'Auto-play this round',
+  onAuto,
+  targets = [],
+  selectedTarget,
+  onTarget,
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedChoice = actions.find((action) => action.id === selectedAction) || actions[0];
+  const selectedIdentity = selectedChoice?.identity || selectedChoice?.id;
+  const commit = () => {
+    setOpen(false);
+    onCommit();
+  };
+
+  return (
+    <>
+      <div className={`instant-mobile-command ${onAuto ? '' : 'instant-mobile-command--primary-only'}`} role="region" aria-label="Round action command">
+        <button type="button" className="instant-mobile-command__selection" onClick={() => setOpen(true)} aria-haspopup="dialog">
+          <span>{selectedChoice?.metric}</span>
+          <strong>{selectedChoice?.label} / change</strong>
+        </button>
+        <button type="button" disabled={busy} onClick={commit} aria-label={commitLabel} aria-busy={busy} className="instant-mobile-command__commit">
+          <ActionButtonContent active={busy} idle={commitLabel} stages={busyStages} />
+        </button>
+        {onAuto && (
+          <button type="button" disabled={busy} onClick={onAuto} title="The game chooses a recommended move for you this round." aria-label={autoLabel} className="instant-mobile-command__auto">
+            Auto
+          </button>
+        )}
+      </div>
+      <Modal isOpen={open} onClose={() => setOpen(false)} ariaLabel="Choose the next move">
+        <div className="mobile-action-sheet">
+          <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Round command</p>
+          <h2 className="mt-2 font-display text-3xl uppercase text-vault-text">Choose the next move</h2>
+          <p className="mt-2 text-sm leading-6 text-vault-text-dim">Compare the tradeoffs, then seal one move. Everyone reveals together.</p>
+          <div className="mobile-action-sheet__choices" role="radiogroup" aria-label="Round action">
+            {actions.map((action) => (
+              <button
+                key={action.id}
+                type="button"
+                role="radio"
+                aria-checked={selectedAction === action.id}
+                disabled={busy}
+                data-selected={selectedAction === action.id}
+                data-action={action.identity || action.id}
+                onClick={() => onSelect(action.id)}
+              >
+                <img src={action.image || GAMEPLAY_ACTION_ART[action.identity || action.id]} alt="" width="96" height="96" />
+                <span><strong>{action.label}</strong><small>{action.metric}</small></span>
+                <em>{action.shortDetail || action.detail}</em>
+              </button>
+            ))}
+          </div>
+          {selectedIdentity === 'sabotage' && targets.length > 0 && (
+            <fieldset className="mobile-action-sheet__targets">
+              <legend>Choose sabotage target</legend>
+              <div>
+                {targets.map((candidate) => (
+                  <button key={candidate.id} type="button" disabled={busy} onClick={() => onTarget(candidate.id)} aria-pressed={selectedTarget === candidate.id}>
+                    {candidate.name} / {candidate.locksCracked} locks
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          )}
+          <button type="button" disabled={busy} onClick={commit} aria-busy={busy} className="mobile-action-sheet__commit">
+            <ActionButtonContent active={busy} idle={commitLabel} stages={busyStages} />
+          </button>
+        </div>
+      </Modal>
+    </>
+  );
+}
 
 export default function UnifiedActionDeck({
   id = 'gameplay-actions',

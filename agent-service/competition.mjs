@@ -1,5 +1,8 @@
 import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { agentConfig } from './config.mjs';
+import { createStaleWhileRefreshCache } from './stale-cache.mjs';
 import {
   getGameHistory,
   getGameSnapshot,
@@ -54,10 +57,35 @@ const BADGE_CATALOG = [
   },
 ];
 
-const competitionCache = {
-  expiresAt: 0,
-  value: null,
-};
+const COMPETITION_SNAPSHOT_VERSION = 1;
+
+function loadCompetitionSnapshot() {
+  const path = agentConfig.competitionSnapshotPath;
+  if (!path || !existsSync(path)) return null;
+  const stored = JSON.parse(readFileSync(path, 'utf8'));
+  if (
+    stored?.schemaVersion !== COMPETITION_SNAPSHOT_VERSION ||
+    !Number.isFinite(stored?.savedAt) ||
+    !stored?.value?.overview ||
+    !Array.isArray(stored?.value?.sessions) ||
+    !Array.isArray(stored?.value?.leaderboard)
+  ) {
+    return null;
+  }
+  return { savedAt: stored.savedAt, value: stored.value };
+}
+
+function saveCompetitionSnapshot(snapshot) {
+  const path = agentConfig.competitionSnapshotPath;
+  if (!path) return;
+  mkdirSync(dirname(path), { recursive: true });
+  const temporary = `${path}.${process.pid}.tmp`;
+  writeFileSync(temporary, `${JSON.stringify({
+    schemaVersion: COMPETITION_SNAPSHOT_VERSION,
+    ...snapshot,
+  })}\n`, 'utf8');
+  renameSync(temporary, path);
+}
 
 function toLower(address) {
   return address.toLowerCase();
@@ -539,16 +567,26 @@ async function computeCompetitionIndex() {
   );
 }
 
-export async function getCompetitionIndex() {
-  const now = Date.now();
-  if (competitionCache.value && now < competitionCache.expiresAt) {
-    return competitionCache.value;
-  }
+const competitionCache = createStaleWhileRefreshCache({
+  freshMs: agentConfig.competitionCacheMs,
+  staleMs: agentConfig.competitionStaleMs,
+  load: loadCompetitionSnapshot,
+  save: saveCompetitionSnapshot,
+  refresh: computeCompetitionIndex,
+});
 
-  const nextValue = await computeCompetitionIndex();
-  competitionCache.value = nextValue;
-  competitionCache.expiresAt = now + agentConfig.competitionCacheMs;
-  return nextValue;
+function competitionFreshness() {
+  const cache = competitionCache.status();
+  return {
+    state: cache.state,
+    source: cache.source,
+    ageSeconds: cache.ageSeconds,
+    refreshing: cache.refreshing,
+  };
+}
+
+export async function getCompetitionIndex() {
+  return competitionCache.get();
 }
 
 export async function getCompetitionOverview() {
@@ -556,6 +594,7 @@ export async function getCompetitionOverview() {
   return {
     season: index.season,
     generatedAt: index.generatedAt,
+    freshness: competitionFreshness(),
     overview: index.overview,
     featuredLeaderboard: index.leaderboard.slice(0, 5),
     featuredAgentLadder: index.agentLadder.slice(0, 5),
@@ -581,6 +620,7 @@ export async function getLeaderboard({
 
   return {
     season: index.season,
+    freshness: competitionFreshness(),
     queue,
     count: Math.min(limit, entries.length),
     entries: entries.slice(0, Math.max(1, Math.min(100, Number(limit) || 25))),
@@ -605,6 +645,7 @@ export async function getCompetitionSessions({
 
   return {
     season: index.season,
+    freshness: competitionFreshness(),
     state,
     queue,
     count: Math.min(limit, entries.length),
@@ -631,6 +672,7 @@ export async function getCompetitionProfile(address) {
 
   return {
     season: index.season,
+    freshness: competitionFreshness(),
     seasonRank,
     ladderRank,
     profile,

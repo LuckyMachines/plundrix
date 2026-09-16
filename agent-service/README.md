@@ -53,7 +53,7 @@ The service is also the current indexing layer for:
 - `POST /api/play/workshop`
 
 - `GET /api/weekly-vault` returns the current deterministic weekly Vault Run challenge and beta scoreboard.
-- `POST /api/weekly-vault/scores` accepts bounded, self-reported completed-run scores. The beta board is held in service memory and resets on restart.
+- `POST /api/weekly-vault/scores` accepts bounded, self-reported completed-run scores. The beta board is stored in the service data directory and survives restarts.
 
 - `GET /health`
 - `GET /api/competition/overview`
@@ -70,6 +70,9 @@ Legacy raw game, recommendation, and relay endpoints are available only with `AG
 - `AGENT_CONTRACT_ADDRESS`
 - `AGENT_WORKSHOP_ADDRESS`
 - `AGENT_RPC_URL`
+- `AGENT_COMPETITION_SNAPSHOT_PATH` defaults to `agent-service/data/competition-index.json`
+- `AGENT_COMPETITION_CACHE_MS` defaults to `60000`
+- `AGENT_COMPETITION_STALE_MS` defaults to `900000`
 - `AGENT_PORT` default `8787`
 - `AGENT_HISTORY_LOOKBACK_BLOCKS` default `5000`
 - `AGENT_ALLOW_ORIGIN` default `*`

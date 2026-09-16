@@ -1,6 +1,28 @@
 const CREW_TONES = ['coral', 'cyan', 'green', 'gold'];
 const CREW_DEVICES = [null, '/images/parts/rook-device.webp', '/images/parts/mara-device.webp', '/images/parts/vesper-device.webp'];
 const TABLE_STYLES = ['You', 'Leader hunter', 'Tool hoarder', 'Saboteur'];
+const RIVAL_BASE_TELLS = [
+  'Your disclosed position.',
+  'Watches whoever takes the lead.',
+  'Builds a tool edge before taking risks.',
+  'Looks for a leader to disrupt.',
+];
+
+export function rivalTell(candidate, index, players, totalLocks, roundHistory) {
+  if (candidate.id === 'player-1') return RIVAL_BASE_TELLS[0];
+  const leaderLocks = Math.max(0, ...players.map((player) => player.locksCracked));
+  const lastOutcome = [...(roundHistory || [])].reverse()
+    .flatMap((round) => round.events || [])
+    .find((event) => event.type === 'ActionOutcome' && event.actor === candidate.id);
+  if (candidate.stunned) return 'Signal jammed. Their next move is lost.';
+  if (candidate.locksCracked === totalLocks - 1) return 'One lock from the prize. Expect pressure.';
+  if (candidate.locksCracked === leaderLocks && leaderLocks > 0) return 'Protecting a live lead.';
+  if (candidate.tools >= 2) return `Tool-rich after ${lastOutcome?.action || 'preparation'}. Pick odds are climbing.`;
+  if (lastOutcome?.action === 'search') return 'Searched last round. May cash in the tool advantage.';
+  if (lastOutcome?.action === 'sabotage') return 'Disrupted last round. Cannot chain-stun the same target.';
+  if (lastOutcome?.action === 'pick') return 'Pressed the vault last round.';
+  return RIVAL_BASE_TELLS[index] || 'Intent remains concealed.';
+}
 
 function MaskInsignia({ tone = 'cyan' }) {
   return (
@@ -54,7 +76,7 @@ export function MissionStatusPanel({ round, modeLabel, objectives, pressurePerce
   );
 }
 
-export function CrewReadinessRail({ players, totalLocks }) {
+export function CrewReadinessRail({ players, totalLocks, roundHistory = [] }) {
   const leaderLocks = Math.max(0, ...players.map((candidate) => candidate.locksCracked));
   const leaders = players.filter((candidate) => candidate.locksCracked === leaderLocks);
   const tableState = leaderLocks === 0 || leaders.length > 1 ? 'Table even' : `${leaders[0].name} leads`;
@@ -66,11 +88,12 @@ export function CrewReadinessRail({ players, totalLocks }) {
       </div>
       <ul>
         {players.map((candidate, index) => (
-          <li key={candidate.id} data-current={candidate.id === 'player-1'} data-stunned={candidate.stunned}>
+          <li key={candidate.id} data-current={candidate.id === 'player-1'} data-stunned={candidate.stunned} data-persona={TABLE_STYLES[index]?.toLowerCase().replaceAll(' ', '-')}>
             <MaskInsignia tone={CREW_TONES[index]} />
             <span className="instant-crew-briefing__identity">
               <strong>{candidate.name}</strong>
               <small>{TABLE_STYLES[index]} / {candidate.locksCracked} of {totalLocks} locks / {candidate.tools} tools</small>
+              <em>{rivalTell(candidate, index, players, totalLocks, roundHistory)}</em>
             </span>
             <span className="instant-crew-briefing__signals">
               {CREW_DEVICES[index] && <img src={CREW_DEVICES[index]} alt={`${candidate.name} gadget`} width="48" height="48" />}
@@ -88,7 +111,7 @@ export function CrewReadinessRail({ players, totalLocks }) {
   );
 }
 
-export function OperationFile({ player, leader, tablePosition, totalLocks, maxTools, selectedActionLabel, selectedActionMetric, selectedActionPreview, round }) {
+export function OperationFile({ player, leader, tablePosition, totalLocks, maxTools, selectedActionLabel, selectedActionMetric, selectedActionPreview, rivalRead, round }) {
   const remaining = Math.max(0, totalLocks - player.locksCracked);
   const directive = tablePosition === 'Table even'
     ? 'The table is level. Choose whether to advance, prepare, or disrupt.'
@@ -115,6 +138,13 @@ export function OperationFile({ player, leader, tablePosition, totalLocks, maxTo
         <strong>{selectedActionMetric}</strong>
         <span>{selectedActionPreview}</span>
       </div>
+
+      {rivalRead && (
+        <div className="instant-rival-read">
+          <p>Rival tell / {rivalRead.name}</p>
+          <span>{rivalRead.detail}</span>
+        </div>
+      )}
 
       <div className="instant-file-directive">
         <div>

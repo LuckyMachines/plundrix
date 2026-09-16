@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-14T23:34:10.655Z",
+  "generatedAt": "2026-09-16T09:32:12.086Z",
   "environment": "production",
   "sites": [
     {
@@ -42,55 +42,55 @@
       "sitemapEntries": [
         {
           "url": "https://plundrix.com/",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/press",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/terms",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/privacy",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare/coin-master-alternative",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare/monopoly-go-alternative",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare/catan-online-alternative",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare/risk-online-alternative",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare/among-us-board-game-alternative",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare/munchkin-alternative",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare/onchain-board-game",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         },
         {
           "url": "https://plundrix.com/compare/pirate-nation-alternative",
-          "lastModified": "2026-09-14T19:20:43.833Z"
+          "lastModified": "2026-09-16T03:05:05.589Z"
         }
       ],
       "linkedUrls": [
@@ -111,8 +111,8 @@
             "canonical": "https://plundrix.com",
             "robots": "index, follow, max-image-preview:large, max-snippet:-1",
             "h1Count": 1,
-            "linkCount": 4,
-            "textLength": 213,
+            "linkCount": 5,
+            "textLength": 257,
             "jsonLd": [
               "{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Plundrix\",\"url\":\"https://plundrix.com\",\"description\":\"A free vault-heist strategy game where players race to crack five locks through picking, searching, gadget building, and sabotage.\",\"applicationCategory\":\"GameApplication\",\"operatingSystem\":\"Web Browser\",\"genre\":[\"Strategy\",\"Tactical\",\"Multiplayer\"],\"gamePlatform\":\"Web Browser\",\"inLanguage\":\"en\",\"datePublished\":\"2026-03-01\",\"featureList\":[\"Quick solo runs against tactical rivals\",\"Live multiplayer operations\",\"Readable simultaneous outcomes\",\"Fast game sessions\",\"Pick, search, and sabotage mechanics\",\"Replayable event history\",\"Profile and leaderboard playstyle stats\",\"Free public beta\",\"Gadget crafting and loadouts\",\"Season ladders and rival play\"],\"creator\":{\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":\"Racerverse\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}",
               "{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"LuckyMachines\",\"url\":\"https://plundrix.com\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Racerverse\"},\"description\":\"Creators of Plundrix, a mischievous vault-heist strategy game built around simultaneous choices and readable rivalries.\"}",
@@ -154,12 +154,12 @@
             {
               "id": "crawlable-copy",
               "ok": true,
-              "detail": "213 visible characters"
+              "detail": "257 visible characters"
             },
             {
               "id": "internal-links",
               "ok": true,
-              "detail": "4 links"
+              "detail": "5 links"
             },
             {
               "id": "json-ld",
@@ -1035,51 +1035,51 @@
       "sitemapEntries": [
         {
           "url": "https://game.plundrix.com/",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/play",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/vault-run",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/career",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/workshop",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/trailer",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/leaderboard",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/sessions",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/replays",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/glossary",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/terms",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         },
         {
           "url": "https://game.plundrix.com/privacy",
-          "lastModified": "2026-09-14"
+          "lastModified": "2026-09-16"
         }
       ],
       "linkedUrls": [
@@ -1105,7 +1105,7 @@
             "linkCount": 4,
             "textLength": 559,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/#webpage\",\"name\":\"Plundrix Player Hub - Choose Your Table\",\"description\":\"Play instantly against three agents or join a hosted live multiplayer operation.\",\"url\":\"https://game.plundrix.com/\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\",\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/\",\"object\":{\"@id\":\"https://game.plundrix.com/#game\"}}}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/#webpage\",\"name\":\"Plundrix Player Hub - Choose Your Table\",\"description\":\"Play instantly against three agents or join a hosted live multiplayer operation.\",\"url\":\"https://game.plundrix.com/\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\",\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/\",\"object\":{\"@id\":\"https://game.plundrix.com/#game\"}}}]}"
             ]
           },
           "checks": [
@@ -1168,9 +1168,9 @@
             "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
             "h1Count": 1,
             "linkCount": 4,
-            "textLength": 417,
+            "textLength": 585,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/play#webpage\",\"name\":\"Play Plundrix Instantly\",\"description\":\"Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup.\",\"url\":\"https://game.plundrix.com/play\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/play#webpage\",\"name\":\"Play Plundrix Instantly\",\"description\":\"Start a fast Plundrix vault race against three labeled tactical agents. Choose Pick, Search, or Sabotage with no signup.\",\"url\":\"https://game.plundrix.com/play\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\",\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\",\"object\":{\"@id\":\"https://game.plundrix.com/#game\"}}},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/play#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Instant Play\",\"item\":\"https://game.plundrix.com/play\"}]}]}"
             ]
           },
           "checks": [
@@ -1207,7 +1207,7 @@
             {
               "id": "crawlable-copy",
               "ok": true,
-              "detail": "417 visible characters"
+              "detail": "585 visible characters"
             },
             {
               "id": "internal-links",
@@ -1235,7 +1235,7 @@
             "linkCount": 4,
             "textLength": 560,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/vault-run#webpage\",\"name\":\"Vault Run - Three Vault Roguelite | Plundrix\",\"description\":\"Choose risky routes, outwit persistent rivals, and carry one workshop gadget through a three-stage Plundrix run.\",\"url\":\"https://game.plundrix.com/vault-run\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\",\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/vault-run\",\"object\":{\"@id\":\"https://game.plundrix.com/#game\"}}},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/vault-run#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Vault Run\",\"item\":\"https://game.plundrix.com/vault-run\"}]}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/vault-run#webpage\",\"name\":\"Vault Run - Three Vault Roguelite | Plundrix\",\"description\":\"Choose risky routes, outwit persistent rivals, and carry one workshop gadget through a three-stage Plundrix run.\",\"url\":\"https://game.plundrix.com/vault-run\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\",\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/vault-run\",\"object\":{\"@id\":\"https://game.plundrix.com/#game\"}}},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/vault-run#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Vault Run\",\"item\":\"https://game.plundrix.com/vault-run\"}]}]}"
             ]
           },
           "checks": [
@@ -1298,9 +1298,9 @@
             "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
             "h1Count": 1,
             "linkCount": 4,
-            "textLength": 411,
+            "textLength": 548,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/career#webpage\",\"name\":\"Local Operator Career | Plundrix\",\"description\":\"Review your local Plundrix identity, operations, rivals, collection, Vault Runs, replays, and next objectives.\",\"url\":\"https://game.plundrix.com/career\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/career#webpage\",\"name\":\"Local Operator Career | Plundrix\",\"description\":\"Review your local Plundrix identity, operations, rivals, collection, Vault Runs, replays, and next objectives.\",\"url\":\"https://game.plundrix.com/career\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/career#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Career\",\"item\":\"https://game.plundrix.com/career\"}]}]}"
             ]
           },
           "checks": [
@@ -1337,7 +1337,7 @@
             {
               "id": "crawlable-copy",
               "ok": true,
-              "detail": "411 visible characters"
+              "detail": "548 visible characters"
             },
             {
               "id": "internal-links",
@@ -1365,7 +1365,7 @@
             "linkCount": 4,
             "textLength": 567,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/workshop#webpage\",\"name\":\"Operator Workshop - 10 Signature Gadgets, 1,200 Builds | Plundrix\",\"description\":\"Choose one of ten gameplay-distinct gadgets, then assemble a visible material and calibration configuration for your next Plundrix operation.\",\"url\":\"https://game.plundrix.com/workshop\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/workshop#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Workshop\",\"item\":\"https://game.plundrix.com/workshop\"}]}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/workshop#webpage\",\"name\":\"Operator Workshop - 10 Signature Gadgets, 1,200 Builds | Plundrix\",\"description\":\"Choose one of ten gameplay-distinct gadgets, then assemble a visible material and calibration configuration for your next Plundrix operation.\",\"url\":\"https://game.plundrix.com/workshop\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/workshop#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Workshop\",\"item\":\"https://game.plundrix.com/workshop\"}]}]}"
             ]
           },
           "checks": [
@@ -1428,9 +1428,9 @@
             "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
             "h1Count": 1,
             "linkCount": 4,
-            "textLength": 346,
+            "textLength": 476,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/trailer#webpage\",\"name\":\"Plundrix Gameplay Trailer - 32 Seconds\",\"description\":\"Watch a four-player vault race swing from first move to final lock in 32 seconds.\",\"url\":\"https://game.plundrix.com/trailer\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"},{\"@type\":\"VideoObject\",\"@id\":\"https://game.plundrix.com/trailer#video\",\"name\":\"Plundrix Gameplay Trailer\",\"description\":\"A 32-second gameplay trailer assembled from real Plundrix product captures and original game art.\",\"thumbnailUrl\":\"https://game.plundrix.com/images/og/plundrix-trailer.jpg\",\"contentUrl\":\"https://game.plundrix.com/video/plundrix-gameplay-trailer.mp4\",\"embedUrl\":\"https://game.plundrix.com/trailer\",\"uploadDate\":\"2026-08-15\",\"duration\":\"PT32S\",\"inLanguage\":\"en\",\"isFamilyFriendly\":true}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/trailer#webpage\",\"name\":\"Plundrix Gameplay Trailer - 32 Seconds\",\"description\":\"Watch a four-player vault race swing from first move to final lock in 32 seconds.\",\"url\":\"https://game.plundrix.com/trailer\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/trailer#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Trailer\",\"item\":\"https://game.plundrix.com/trailer\"}]},{\"@type\":\"VideoObject\",\"@id\":\"https://game.plundrix.com/trailer#video\",\"name\":\"Plundrix Gameplay Trailer\",\"description\":\"A 32-second gameplay trailer assembled from real Plundrix product captures and original game art.\",\"thumbnailUrl\":\"https://game.plundrix.com/images/og/plundrix-trailer.jpg\",\"contentUrl\":\"https://game.plundrix.com/video/plundrix-gameplay-trailer.mp4\",\"embedUrl\":\"https://game.plundrix.com/trailer\",\"uploadDate\":\"2026-08-15\",\"duration\":\"PT32S\",\"inLanguage\":\"en\",\"isFamilyFriendly\":true}]}"
             ]
           },
           "checks": [
@@ -1467,7 +1467,7 @@
             {
               "id": "crawlable-copy",
               "ok": true,
-              "detail": "346 visible characters"
+              "detail": "476 visible characters"
             },
             {
               "id": "internal-links",
@@ -1495,7 +1495,7 @@
             "linkCount": 4,
             "textLength": 427,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/leaderboard#webpage\",\"name\":\"Plundrix Operator Ladder\",\"description\":\"Review seasonal Plundrix operators, agent ladders, points, and competitive progress.\",\"url\":\"https://game.plundrix.com/leaderboard\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/leaderboard#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Ladder\",\"item\":\"https://game.plundrix.com/leaderboard\"}]}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/leaderboard#webpage\",\"name\":\"Plundrix Operator Ladder\",\"description\":\"Review seasonal Plundrix operators, agent ladders, points, and competitive progress.\",\"url\":\"https://game.plundrix.com/leaderboard\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/leaderboard#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Ladder\",\"item\":\"https://game.plundrix.com/leaderboard\"}]}]}"
             ]
           },
           "checks": [
@@ -1558,9 +1558,9 @@
             "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
             "h1Count": 1,
             "linkCount": 4,
-            "textLength": 327,
+            "textLength": 454,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/sessions#webpage\",\"name\":\"Plundrix Operation History\",\"description\":\"Review recent Plundrix operations, operator results, and session history.\",\"url\":\"https://game.plundrix.com/sessions\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/sessions#webpage\",\"name\":\"Plundrix Operation History\",\"description\":\"Review recent Plundrix operations, operator results, and session history.\",\"url\":\"https://game.plundrix.com/sessions\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/sessions#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Sessions\",\"item\":\"https://game.plundrix.com/sessions\"}]}]}"
             ]
           },
           "checks": [
@@ -1597,7 +1597,7 @@
             {
               "id": "crawlable-copy",
               "ok": true,
-              "detail": "327 visible characters"
+              "detail": "454 visible characters"
             },
             {
               "id": "internal-links",
@@ -1625,7 +1625,7 @@
             "linkCount": 4,
             "textLength": 459,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/replays#webpage\",\"name\":\"Stories from the vault\",\"description\":\"Watch dramatic operations, close finishes, and the turns players still argue about.\",\"url\":\"https://game.plundrix.com/replays\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/replays#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Replays\",\"item\":\"https://game.plundrix.com/replays\"}]}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/replays#webpage\",\"name\":\"Stories from the vault\",\"description\":\"Watch dramatic operations, close finishes, and the turns players still argue about.\",\"url\":\"https://game.plundrix.com/replays\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/replays#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Replays\",\"item\":\"https://game.plundrix.com/replays\"}]}]}"
             ]
           },
           "checks": [
@@ -1688,9 +1688,9 @@
             "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
             "h1Count": 1,
             "linkCount": 3,
-            "textLength": 315,
+            "textLength": 403,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"CollectionPage\",\"@id\":\"https://game.plundrix.com/glossary#webpage\",\"name\":\"Plundrix Glossary\",\"description\":\"Definitions for Plundrix operations, rounds, vaults, operators, tools, sabotage, and replays.\",\"url\":\"https://game.plundrix.com/glossary\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"CollectionPage\",\"@id\":\"https://game.plundrix.com/glossary#webpage\",\"name\":\"Plundrix Glossary\",\"description\":\"Definitions for Plundrix operations, rounds, vaults, operators, tools, sabotage, and replays.\",\"url\":\"https://game.plundrix.com/glossary\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/glossary#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Glossary\",\"item\":\"https://game.plundrix.com/glossary\"}]}]}"
             ]
           },
           "checks": [
@@ -1727,7 +1727,7 @@
             {
               "id": "crawlable-copy",
               "ok": true,
-              "detail": "315 visible characters"
+              "detail": "403 visible characters"
             },
             {
               "id": "internal-links",
@@ -1755,7 +1755,7 @@
             "linkCount": 4,
             "textLength": 439,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/terms#webpage\",\"name\":\"Plundrix Terms of Service\",\"description\":\"Terms of Service for Plundrix, including eligibility, game modes, hosted processing, and beta posture.\",\"url\":\"https://game.plundrix.com/terms\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/terms#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Terms\",\"item\":\"https://game.plundrix.com/terms\"}]}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/terms#webpage\",\"name\":\"Plundrix Terms of Service\",\"description\":\"Terms of Service for Plundrix, including eligibility, game modes, hosted processing, and beta posture.\",\"url\":\"https://game.plundrix.com/terms\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/terms#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Terms\",\"item\":\"https://game.plundrix.com/terms\"}]}]}"
             ]
           },
           "checks": [
@@ -1818,9 +1818,9 @@
             "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
             "h1Count": 1,
             "linkCount": 4,
-            "textLength": 366,
+            "textLength": 474,
             "jsonLd": [
-              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/privacy#webpage\",\"name\":\"Plundrix Privacy Policy\",\"description\":\"Privacy Policy for Plundrix, including data handling, managed player sessions, analytics, and service operations.\",\"url\":\"https://game.plundrix.com/privacy\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-14\"}]}"
+              "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://game.plundrix.com/#website\",\"name\":\"Plundrix\",\"url\":\"https://game.plundrix.com/\",\"inLanguage\":\"en\",\"publisher\":{\"@id\":\"https://game.plundrix.com/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://game.plundrix.com/#organization\",\"name\":\"Lucky Machines, LLC\",\"url\":\"https://plundrix.com/\",\"sameAs\":[\"https://game.plundrix.com/\",\"https://github.com/LuckyMachines/plundrix\"]},{\"@type\":\"VideoGame\",\"@id\":\"https://game.plundrix.com/#game\",\"name\":\"Plundrix\",\"description\":\"A simultaneous-action vault-heist strategy game with Instant Play, a three-stage solo Vault Run, and hosted live tables.\",\"url\":\"https://game.plundrix.com/\",\"image\":\"https://game.plundrix.com/images/og/plundrix-home.jpg\",\"genre\":[\"Strategy\",\"Turn-based strategy\",\"Vault heist\"],\"gamePlatform\":\"Web browser\",\"playMode\":[\"SinglePlayer\",\"MultiPlayer\"],\"numberOfPlayers\":{\"@type\":\"QuantitativeValue\",\"minValue\":1,\"maxValue\":4},\"operatingSystem\":\"Any modern web browser\",\"applicationCategory\":\"Game\",\"isAccessibleForFree\":true,\"author\":{\"@id\":\"https://game.plundrix.com/#organization\"},\"potentialAction\":{\"@type\":\"PlayAction\",\"target\":\"https://game.plundrix.com/play\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"USD\"}},{\"@type\":\"WebPage\",\"@id\":\"https://game.plundrix.com/privacy#webpage\",\"name\":\"Plundrix Privacy Policy\",\"description\":\"Privacy Policy for Plundrix, including data handling, managed player sessions, analytics, and service operations.\",\"url\":\"https://game.plundrix.com/privacy\",\"isPartOf\":{\"@id\":\"https://game.plundrix.com/#website\"},\"about\":{\"@id\":\"https://game.plundrix.com/#game\"},\"mainEntity\":{\"@id\":\"https://game.plundrix.com/#game\"},\"inLanguage\":\"en\",\"dateModified\":\"2026-09-16\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://game.plundrix.com/privacy#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Player Hub\",\"item\":\"https://game.plundrix.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Privacy\",\"item\":\"https://game.plundrix.com/privacy\"}]}]}"
             ]
           },
           "checks": [
@@ -1857,7 +1857,7 @@
             {
               "id": "crawlable-copy",
               "ok": true,
-              "detail": "366 visible characters"
+              "detail": "474 visible characters"
             },
             {
               "id": "internal-links",

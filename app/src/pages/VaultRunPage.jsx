@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SignatureMoment from '../components/game/SignatureMoment';
-import { CrewReadinessRail, MissionStatusPanel, OperationFile } from '../components/gameplay/HeistConsolePanels';
+import { CrewReadinessRail, MissionStatusPanel, OperationFile, rivalTell } from '../components/gameplay/HeistConsolePanels';
 import RoundTheater from '../components/gameplay/RoundTheater';
 import OperationCeremony from '../components/gameplay/OperationCeremony';
-import UnifiedActionDeck from '../components/gameplay/UnifiedActionDeck';
+import UnifiedActionDeck, { MobileActionCommand } from '../components/gameplay/UnifiedActionDeck';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
 import CausalOutcomeSummary from '../components/gameplay/CausalOutcomeSummary';
 import CaperArtifactStage from '../components/gameplay/CaperArtifactStage';
@@ -260,6 +260,16 @@ export default function VaultRunPage() {
     trackProductEvent('Vault Contraband Chosen', { contraband: contrabandId, stage: stage.id, weekly: run.weekly });
   };
 
+  const selectRoundAction = (action) => {
+    if (action !== selectedAction) {
+      trackProductEvent('Action Changed', { mode: 'vault-run', action, result: selectedAction });
+    }
+    setSelectedAction(action);
+    setTheaterAction(action);
+    setBargain(null);
+    emitPresentationCues([`intent.${normalizePresentationAction(action)}`]);
+  };
+
   const resolve = () => {
     if (!run || resolving) return;
     if (!firstActionTracked.current) {
@@ -272,6 +282,14 @@ export default function VaultRunPage() {
     const playerAction = { action: selectedAction, sabotageTarget: selectedAction === SIM_ACTION.SABOTAGE ? target : null, bargain };
     const actionMap = buildVaultActionMap(run, playerAction);
     const committedAction = selectedAction;
+    const previousPlayerAction = [...match.roundHistory].reverse()
+      .flatMap((round) => round.events || [])
+      .find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1')?.action;
+    trackProductEvent('Action Committed', {
+      mode: 'vault-run',
+      action: committedAction,
+      result: previousPlayerAction ? (previousPlayerAction === committedAction ? 'repeated' : 'switched') : 'first',
+    });
     const committedRoute = normalizePresentationAction(committedAction);
     const committedRound = match.currentRound;
     const timings = presentationTimings(reducedMotion);
@@ -434,6 +452,19 @@ export default function VaultRunPage() {
       <Seo {...VAULT_RUN_SEO} />
       <RoundTheater phase={theaterPhase} action={theaterAction} outcome={theaterOutcome} players={match?.players || []} round={theaterRound} gadgetEvent={theaterPhase === 'impact' || theaterPhase === 'recovery' ? signatureEvent : null} />
       <OperationCeremony event={ceremonyEvent} />
+      {run.status === 'ACTIVE' && (
+        <MobileActionCommand
+          actions={actionChoices}
+          selectedAction={selectedAction}
+          busy={resolving}
+          onSelect={selectRoundAction}
+          onCommit={resolve}
+          commitLabel={`Commit ${ACTIONS.find((item) => item.id === selectedAction).label}`}
+          targets={match.players.slice(1)}
+          selectedTarget={target}
+          onTarget={setTarget}
+        />
+      )}
       <header className="flex flex-wrap items-end justify-between gap-5 border-b border-vault-border pb-6">
         <div><p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">{run.weekly ? board.challenge.title : 'Vault run'} / {stage.eyebrow}</p><h1 className="mt-2 font-display text-5xl uppercase leading-none text-vault-text sm:text-6xl">{stage.label}</h1><p className="mt-3 max-w-xl text-sm leading-6 text-vault-text-dim">{stage.note}</p></div>
         <div className="flex flex-wrap gap-5 font-mono text-xs uppercase text-vault-text-dim"><span>Lives <strong className="text-vault-text">{'X'.repeat(run.lives) || '0'}</strong></span><span>Heat <strong className="text-signal-red">{run.heat}/5 {heatState.label}</strong></span><span>Score <strong className="text-tungsten">{run.score}</strong></span></div>
@@ -466,10 +497,10 @@ export default function VaultRunPage() {
               <div className="instant-heist-grid">
                 <div className="instant-heist-left">
                   <MissionStatusPanel round={match.currentRound} modeLabel="Vault run" objectives={[{ label: `Crack ${match.rules.totalLocks} vault locks`, complete: player.locksCracked >= match.rules.totalLocks }, { label: 'Keep at least one life', complete: run.lives > 0 }, { label: 'Beat every rival to the breach', complete: player.locksCracked > Math.max(...match.players.slice(1).map((candidate) => candidate.locksCracked)) }]} pressurePercent={Math.round((leaderLocks / match.rules.totalLocks) * 100)} pressureValue={leaderLocks} pressureMax={match.rules.totalLocks} pressureLabel={tablePosition} pressureDetail={!leaderLocks ? 'No locks cracked yet' : `${leader.name} sets the pace / ${leaderLocks} of ${match.rules.totalLocks}`} />
-                  <CrewReadinessRail players={match.players} totalLocks={match.rules.totalLocks} />
+                  <CrewReadinessRail players={match.players} totalLocks={match.rules.totalLocks} roundHistory={match.roundHistory} />
                 </div>
-                <div className="instant-vault-column"><VaultMechanism cracked={player.locksCracked} total={match.rules.totalLocks} resolving={resolving} selectedAction={selectedAction} actions={actionChoices} players={match.players} latestOutcome={latestPlayerOutcome} round={match.currentRound} onSelectAction={(action) => { setSelectedAction(action); setTheaterAction(action); setBargain(null); }} label={stage.label} /></div>
-                <OperationFile player={player} leader={leader} tablePosition={tablePosition} totalLocks={match.rules.totalLocks} maxTools={match.rules.maxTools} selectedActionLabel={selectedChoice.label} selectedActionMetric={selectedChoice.metric} selectedActionPreview={selectedChoice.detail} round={match.currentRound} />
+                <div className="instant-vault-column"><VaultMechanism cracked={player.locksCracked} total={match.rules.totalLocks} resolving={resolving} selectedAction={selectedAction} actions={actionChoices} players={match.players} latestOutcome={latestPlayerOutcome} round={match.currentRound} onSelectAction={selectRoundAction} label={stage.label} /></div>
+                <OperationFile player={player} leader={leader} tablePosition={tablePosition} totalLocks={match.rules.totalLocks} maxTools={match.rules.maxTools} selectedActionLabel={selectedChoice.label} selectedActionMetric={selectedChoice.metric} selectedActionPreview={selectedChoice.detail} rivalRead={{ name: match.players[1].name, detail: rivalTell(match.players[1], 1, match.players, match.rules.totalLocks, match.roundHistory) }} round={match.currentRound} />
               </div>
               {signatureEvent && <div className="border-t border-vault-border p-4"><SignatureMoment event={signatureEvent} actorName={match.players.find((candidate) => candidate.id === signatureEvent?.actor)?.name} reducedMotion={reducedMotion} /></div>}
             </section>
@@ -483,7 +514,7 @@ export default function VaultRunPage() {
               actions={actionChoices}
               selectedAction={selectedAction}
               busy={resolving}
-              onSelect={(action) => { setSelectedAction(action); setTheaterAction(action); setBargain(null); emitPresentationCues([`intent.${normalizePresentationAction(action)}`]); }}
+              onSelect={selectRoundAction}
               onCommit={resolve}
               commitLabel={`Commit ${ACTIONS.find((item) => item.id === selectedAction).label}`}
               targets={match.players.slice(1)}

@@ -38,7 +38,7 @@ The default ceilings are intentionally conservative:
 | Maximum derived-account balance | 0.001 ETH | Limit stranded value per anonymous session |
 | Funding multiplier | 3x | Amortize top-up gas without materially overfunding |
 
-The daily ledger is written atomically to `agent-service/data/sponsor-budget.json` and resets by UTC date. Managed operation IDs are stored in `agent-service/data/managed-operations.json` so the service can finish fully submitted and timed-out rounds. Verified weekly scores are stored atomically in `agent-service/data/weekly-vault-scores.json`; eight challenge weeks and 250 submissions per week are retained. Persist all three paths across container replacements. If storage is ephemeral, point `AGENT_SPONSOR_BUDGET_PATH`, `AGENT_MANAGED_OPERATIONS_PATH`, and `AGENT_WEEKLY_VAULT_SCORES_PATH` at a mounted volume.
+The daily ledger is written atomically to `agent-service/data/sponsor-budget.json` and resets by UTC date. Managed operation IDs are stored in `agent-service/data/managed-operations.json` so the service can finish fully submitted and timed-out rounds. Verified weekly scores are stored atomically in `agent-service/data/weekly-vault-scores.json`; eight challenge weeks and 250 submissions per week are retained. The public competition index keeps a last-known-good snapshot in `agent-service/data/competition-index.json`, so public pages can start quickly while fresh chain data is rebuilt in the background. Persist all four paths across container replacements. If storage is ephemeral, point `AGENT_SPONSOR_BUDGET_PATH`, `AGENT_MANAGED_OPERATIONS_PATH`, `AGENT_WEEKLY_VAULT_SCORES_PATH`, and `AGENT_COMPETITION_SNAPSHOT_PATH` at a mounted volume.
 
 Tune limits from measured receipts, not guesses. Lower the daily budget after observing normal traffic; raise the per-command ceiling only when a known contract call demonstrably needs it. A rejected command must fail before any player-funded write.
 
@@ -58,6 +58,8 @@ AGENT_SPONSOR_PRIVATE_KEY=<dedicated-low-balance-key>
 AGENT_CUSTODY_SECRET=<32+-character-random-secret>
 AGENT_SESSION_SECRET=<different-32+-character-random-secret>
 AGENT_WEEKLY_VAULT_SCORES_PATH=/data/plundrix/weekly-vault-scores.json
+AGENT_COMPETITION_SNAPSHOT_PATH=/data/plundrix/competition-index.json
+PLUNDRIX_HEALTH_MAX_LATENCY_MS=5000
 ```
 
 Use same-origin `/api` proxying in production. Set `VITE_AGENT_SERVICE_URL` to blank for same-origin or to the exact public origin. Do not configure browser RPC, contract, workshop, WalletConnect, relay, or session-key variables in the production frontend build.
@@ -71,7 +73,7 @@ Use same-origin `/api` proxying in production. Set `VITE_AGENT_SERVICE_URL` to b
 - Confirm the session cookie is `HttpOnly`, `SameSite=Lax`, `Secure` in production, and scoped to `/`.
 - Confirm a wrong `Origin`, expired or tampered session, excessive request rate, fee spike, oversized command, exhausted daily budget, wrong chain ID, or low sponsor reserve fails closed.
 - Monitor service error classes and remaining sponsor balance without sending secrets, derived addresses, or session tokens to analytics.
-- Run `npm run ops:health` after deployment and on the scheduled GitHub workflow. It checks the site, durable weekly board, public leaderboard, sitemap, and social card without using player credentials.
+- Run `npm run ops:health` after deployment and on the scheduled GitHub workflow. It checks the site, durable weekly board, public leaderboard, sitemap, social card, and byte-range music delivery without using player credentials. Every probe must also finish inside `PLUNDRIX_HEALTH_MAX_LATENCY_MS`.
 - Keep GitHub Actions failure notifications enabled for the repository. The scheduled workflow retains its machine-readable health report for 14 days.
 - Run `npm run ops:backup-competition` from the service host or against a mounted copy of the score store. Preserve the JSON export and adjacent SHA-256 record outside the container.
 

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-16T04:07:07.309Z",
-  "buildSha": "ab23c64",
+  "generatedAt": "2026-09-16T11:00:15.569Z",
+  "buildSha": "2dd3a9f",
   "operatingMode": "solo",
   "health": {
-    "processScore": 75,
-    "processGrade": "C",
+    "processScore": 100,
+    "processGrade": "A+",
     "evidenceScore": 47,
     "evidenceGrade": "F",
     "metricCoverage": "1/9",
     "activeCount": 1,
-    "staleCount": 1,
+    "staleCount": 0,
     "expiredCount": 0,
     "failedCheckCount": 0,
     "flakyCheckCount": 0
@@ -145,7 +145,7 @@
         "tier": "T2",
         "source": "improve:verify",
         "artifact": "reports/improvement/latest.json",
-        "capturedAt": "2026-09-16T04:07:07.309Z",
+        "capturedAt": "2026-09-16T11:00:15.569Z",
         "sampleSize": 18,
         "value": 100
       },
@@ -180,17 +180,17 @@
       "urgency": 5,
       "effort": 2,
       "createdAt": "2026-09-07T00:00:00.000Z",
-      "lastReviewedAt": "2026-09-07T00:00:00.000Z",
-      "reviewBy": "2026-09-14T23:59:59.000Z",
+      "lastReviewedAt": "2026-09-16T11:00:00.000Z",
+      "reviewBy": "2026-09-23T23:59:59.000Z",
       "guardrails": [
         "Do not coach the first decision",
         "Record behavior without names or wallet addresses"
       ],
       "evidence": [],
       "decision": null,
-      "overdue": true,
+      "overdue": false,
       "expired": false,
-      "priorityScore": 110,
+      "priorityScore": 100,
       "rank": 1
     },
     {
@@ -244,32 +244,6 @@
       "expired": false,
       "priorityScore": 52,
       "rank": 3
-    },
-    {
-      "id": "weekly-board-durability",
-      "title": "Make weekly competition survive a service restart",
-      "status": "backlog",
-      "surface": "weekly challenge",
-      "hypothesis": "A durable score store preserves verified weekly submissions across restart without weakening replay verification.",
-      "primaryMetric": "automated-release-gates",
-      "requiredEvidenceTier": "T2",
-      "impact": 4,
-      "confidence": 5,
-      "urgency": 2,
-      "effort": 4,
-      "createdAt": "2026-09-07T00:00:00.000Z",
-      "lastReviewedAt": "2026-09-07T00:00:00.000Z",
-      "reviewBy": "2026-10-05T23:59:59.000Z",
-      "guardrails": [
-        "Keep exact-replay verification at the write boundary",
-        "Retain a local development fallback"
-      ],
-      "evidence": [],
-      "decision": null,
-      "overdue": false,
-      "expired": false,
-      "priorityScore": 44,
-      "rank": 4
     }
   ],
   "evidenceDebt": [
@@ -397,7 +371,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1010,
+      "durationMs": 458,
       "outputTail": ""
     },
     {
@@ -406,7 +380,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1115,
+      "durationMs": 453,
       "outputTail": ""
     },
     {
@@ -415,7 +389,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 920,
+      "durationMs": 617,
       "outputTail": ""
     },
     {
@@ -424,7 +398,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 2082,
+      "durationMs": 945,
       "outputTail": ""
     },
     {
@@ -433,7 +407,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1059,
+      "durationMs": 672,
       "outputTail": ""
     },
     {
@@ -442,7 +416,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 724,
+      "durationMs": 528,
       "outputTail": ""
     },
     {
@@ -451,7 +425,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 2448,
+      "durationMs": 2409,
       "outputTail": ""
     },
     {
@@ -460,7 +434,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 2136,
+      "durationMs": 1158,
       "outputTail": ""
     },
     {
@@ -469,7 +443,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1053,
+      "durationMs": 529,
       "outputTail": ""
     },
     {
@@ -478,7 +452,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1152,
+      "durationMs": 568,
       "outputTail": ""
     },
     {
@@ -487,7 +461,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1050,
+      "durationMs": 637,
       "outputTail": ""
     },
     {
@@ -496,7 +470,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1065,
+      "durationMs": 594,
       "outputTail": ""
     },
     {
@@ -505,7 +479,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 894,
+      "durationMs": 623,
       "outputTail": ""
     },
     {
@@ -514,7 +488,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1322,
+      "durationMs": 696,
       "outputTail": ""
     },
     {
@@ -523,7 +497,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 880,
+      "durationMs": 691,
       "outputTail": ""
     },
     {
@@ -532,7 +506,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1167,
+      "durationMs": 575,
       "outputTail": ""
     },
     {
@@ -541,7 +515,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 11851,
+      "durationMs": 17521,
       "outputTail": ""
     },
     {
@@ -550,7 +524,7 @@
       "ok": true,
       "status": 0,
       "flaky": false,
-      "durationMs": 1700,
+      "durationMs": 869,
       "outputTail": ""
     }
   ],

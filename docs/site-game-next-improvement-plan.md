@@ -15,7 +15,7 @@ Make the first Plundrix operation easier to choose, more memorable to finish, an
 | Core game systems | A | Simulation is strong; observed human fun remains ungraded. |
 | First-time experience | B+ | The journey is coached, but no current newcomer sample exists. |
 | Visual world | B+ | The active table is distinctive; secondary surfaces rely more heavily on flat panels. |
-| Retention | C+ | Exact replays and local progression exist, but weekly submissions are process-memory only. |
+| Retention | B | Exact replays, local progression, and restart-durable weekly submissions exist; seven-day return evidence is still missing. |
 | Growth evidence | F | Only one of nine behavioral metrics has qualified evidence. |
 
 ## Sequenced implementation checklist

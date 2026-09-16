@@ -128,8 +128,8 @@
       "urgency": 5,
       "effort": 2,
       "createdAt": "2026-09-07T00:00:00.000Z",
-      "lastReviewedAt": "2026-09-07T00:00:00.000Z",
-      "reviewBy": "2026-09-14T23:59:59.000Z",
+      "lastReviewedAt": "2026-09-16T11:00:00.000Z",
+      "reviewBy": "2026-09-23T23:59:59.000Z",
       "guardrails": ["Do not coach the first decision", "Record behavior without names or wallet addresses"],
       "evidence": [],
       "decision": null
@@ -175,7 +175,7 @@
     {
       "id": "weekly-board-durability",
       "title": "Make weekly competition survive a service restart",
-      "status": "backlog",
+      "status": "decided",
       "surface": "weekly challenge",
       "hypothesis": "A durable score store preserves verified weekly submissions across restart without weakening replay verification.",
       "primaryMetric": "automated-release-gates",
@@ -185,11 +185,25 @@
       "urgency": 2,
       "effort": 4,
       "createdAt": "2026-09-07T00:00:00.000Z",
-      "lastReviewedAt": "2026-09-07T00:00:00.000Z",
+      "lastReviewedAt": "2026-09-16T11:00:00.000Z",
       "reviewBy": "2026-10-05T23:59:59.000Z",
       "guardrails": ["Keep exact-replay verification at the write boundary", "Retain a local development fallback"],
-      "evidence": [],
-      "decision": null
+      "evidence": [
+        {
+          "tier": "T2",
+          "source": "automated-weekly-durability-suite",
+          "artifact": "agent-service/test/weekly-challenge.test.mjs",
+          "summary": "Exact-replay-verified weekly submissions persist to an atomic file, hydrate after an in-process storage reload, reject duplicate replay proofs, and have a checksum-verified backup path.",
+          "capturedAt": "2026-09-16T11:00:00.000Z",
+          "buildSha": "2dd3a9f",
+          "rulesetId": "current"
+        }
+      ],
+      "decision": {
+        "outcome": "ship",
+        "reason": "The required T2 durability and replay-verification tests pass, and the operational backup plus health probes cover the production seam.",
+        "decidedAt": "2026-09-16T11:00:00.000Z"
+      }
     }
   ]
 }

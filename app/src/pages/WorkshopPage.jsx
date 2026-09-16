@@ -63,6 +63,7 @@ export default function WorkshopPage() {
   const [lookup, setLookup] = useState('');
   const [compareIds, setCompareIds] = useState([]);
   const [status, setStatus] = useState('Choose a chassis, then make its material and calibration your own.');
+  const [assemblyMoment, setAssemblyMoment] = useState(null);
   const selected = useMemo(() => getGadgetConfiguration(chassisId, finishId, calibrationId), [calibrationId, chassisId, finishId]);
   const materialById = useMemo(() => Object.fromEntries(CRAFTING_MATERIALS.map((material) => [material.id, material])), []);
   const favoriteIds = inventory.favoriteIds || [];
@@ -72,6 +73,13 @@ export default function WorkshopPage() {
   const selectedMastery = getGadgetMastery(localInventory, selected.chassisId);
   const equippedMastery = equipped ? getGadgetMastery(localInventory, equipped.chassisId) : null;
   const setters = { setChassis, setFinish, setCalibration };
+  const recommended = useMemo(() => {
+    const owned = inventory.ownedIds.map(getGadgetById).find(Boolean);
+    if (owned) return { gadget: owned, reason: 'Already in your locker and ready to equip.', action: 'equip' };
+    const craftable = GADGET_CATALOG.find((gadget) => canCraftGadget(inventory, gadget));
+    if (craftable) return { gadget: craftable, reason: 'Your current salvage covers this complete recipe.', action: 'craft' };
+    return { gadget: getGadgetById(STARTER_GADGET_IDS[0]), reason: 'A clear first build for learning the Pick, Search, and Sabotage rhythm.', action: 'preview' };
+  }, [inventory.materials, inventory.ownedIds]);
 
   useEffect(() => {
     trackProductEvent('Workshop Viewed', { mode: managedMode ? 'managed' : 'local' });
@@ -105,6 +113,7 @@ export default function WorkshopPage() {
   const selectGadget = (gadget, scroll = true) => {
     selectFromGadget(gadget, setters);
     setLookup('');
+    setAssemblyMoment(null);
     if (scroll) requestAnimationFrame(() => document.querySelector('#builder')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   };
 
@@ -114,6 +123,7 @@ export default function WorkshopPage() {
       try {
         await workshop.craftBlueprint(selected.id);
         setStatus(`${selected.name} assembled. It is ready to equip.`);
+        setAssemblyMoment({ id: selected.id, name: selected.name, effect: selected.effectName });
         trackProductEvent('Gadget Crafted', { chassis: selected.chassisId, rarity: selected.rarity, mode: 'managed' });
       } catch (error) {
         setStatus(error.message || 'Assembly failed.');
@@ -123,6 +133,7 @@ export default function WorkshopPage() {
     const result = craftGadgetState(inventory, selected.id);
     if (result.ok) {
       commitInventory(result.next);
+      setAssemblyMoment({ id: selected.id, name: selected.name, effect: selected.effectName });
       trackProductEvent('Gadget Crafted', { chassis: selected.chassisId, rarity: selected.rarity, mode: 'local' });
     }
     setStatus(result.message);
@@ -210,7 +221,7 @@ export default function WorkshopPage() {
               <GadgetVisual gadget={equipped} masteryLevel={equippedMastery.level} className="mt-3 min-h-[210px]" />
               <div className="mt-4 flex items-start justify-between gap-3"><div><h2 className="font-display text-2xl uppercase text-vault-text">{equipped.name}</h2><p className="mt-1 text-sm text-vault-text-dim">{equipped.effectName}: {equipped.protocolLabel}</p></div><span className="font-mono text-xs text-vault-text-dim">{equipped.serial}</span></div>
               <div className="mt-4 border-t border-vault-border pt-4"><div className="flex items-center justify-between gap-3"><p className="font-mono text-micro uppercase tracking-label text-oxide-green">Device mastery {equippedMastery.level} / {equippedMastery.title}</p><span className="font-mono text-micro text-vault-text-dim">{equippedMastery.xp} XP</span></div><div className="mt-2 h-1.5 bg-vault-surface"><div className="h-full bg-oxide-green" style={{ width: `${equippedMastery.progress}%` }} /></div></div>
-            </> : <div className="grid min-h-[250px] place-content-center text-center"><h2 className="font-display text-3xl uppercase text-vault-text">No build equipped</h2><p className="mt-3 text-sm text-vault-text-dim">Choose one below.</p></div>}
+            </> : <div className="grid min-h-[250px] grid-cols-[104px_minmax(0,1fr)] content-center items-center gap-4 text-left"><GadgetVisual gadget={recommended.gadget} compact className="min-h-24" /><div><p className="font-mono text-micro uppercase tracking-label text-oxide-green">Handler recommendation</p><h2 className="mt-2 font-display text-2xl uppercase text-vault-text">{recommended.gadget.name}</h2><p className="mt-2 text-xs leading-5 text-vault-text-dim">{recommended.reason}</p><button type="button" onClick={() => selectGadget(recommended.gadget)} className="mt-3 min-h-[44px] font-mono text-xs uppercase text-tungsten">{recommended.action === 'equip' ? 'Prepare to equip' : recommended.action === 'craft' ? 'Preview first assembly' : 'Preview recommended build'} -&gt;</button></div></div>}
           </article>
         </div>
       </section>
@@ -300,7 +311,7 @@ export default function WorkshopPage() {
               </div>
             </section>
 
-            {workshop.pendingAction ? <ActionWaitPanel active stages={ACTION_STAGE_PRESETS.workshop} eyebrow={`${workshop.pendingAction.operation} build`} detail="Your collection is updating. This panel will close when the new state is saved." compact /> : <p className={`min-h-6 text-sm ${workshop.error && managedMode ? 'text-signal-red' : 'text-oxide-green'}`} role="status" aria-live="polite">{workshop.error && managedMode ? workshop.error.message : status}</p>}
+            {workshop.pendingAction ? <ActionWaitPanel active stages={ACTION_STAGE_PRESETS.workshop} eyebrow={`${workshop.pendingAction.operation} build`} detail="Your collection is updating. This panel will close when the new state is saved." compact /> : assemblyMoment?.id === selected.id ? <section className="workshop-assembly-moment" role="status" aria-live="polite"><span aria-hidden="true">OK</span><div><p>Assembly complete / {selected.serial}</p><h3>{assemblyMoment.name} is on the bench.</h3><small>{assemblyMoment.effect} is ready. Equip it to carry this signature into your next operation.</small></div></section> : <p className={`min-h-6 text-sm ${workshop.error && managedMode ? 'text-signal-red' : 'text-oxide-green'}`} role="status" aria-live="polite">{workshop.error && managedMode ? workshop.error.message : status}</p>}
 
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
               <button type="button" onClick={craft} disabled={transactionPending || selectedOwned || !selectedCraftable} aria-busy={workshop.pendingAction?.operation === 'craft'} className="min-h-[48px] border border-tungsten/45 px-3 font-mono text-xs uppercase text-tungsten disabled:cursor-not-allowed disabled:border-vault-border disabled:text-vault-text-dim"><ActionButtonContent active={workshop.pendingAction?.operation === 'craft'} idle={selectedOwned ? 'Assembled' : selectedCraftable ? 'Assemble' : 'Need salvage'} stages={ACTION_STAGE_PRESETS.workshop} /></button>

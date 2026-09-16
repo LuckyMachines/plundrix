@@ -146,6 +146,14 @@ try {
   assert.equal(videoResponse.headers.get('content-type'), 'video/mp4');
   assert.match(videoResponse.headers.get('content-range') || '', /^bytes 0-99\//);
   assert.equal((await videoResponse.arrayBuffer()).byteLength, 100);
+
+  const audioResponse = await fetch(`${origin}/audio/music/caper-in-motion.mp3`, {
+    headers: { Range: 'bytes=0-99' },
+  });
+  assert.equal(audioResponse.status, 206);
+  assert.equal(audioResponse.headers.get('content-type'), 'audio/mpeg');
+  assert.match(audioResponse.headers.get('content-range') || '', /^bytes 0-99\//);
+  assert.equal((await audioResponse.arrayBuffer()).byteLength, 100);
 } finally {
   server.kill();
 }

@@ -18,8 +18,15 @@ assert.deepEqual(Object.keys(PREMIUM_PRESENTATION.actions), ['pick', 'search', '
 assert.equal(normalizePresentationAction(1), 'pick');
 assert.equal(normalizePresentationAction(2), 'search');
 assert.equal(normalizePresentationAction(3), 'sabotage');
-assert.ok(presentationTimings(false).recoveryMs <= PREMIUM_PRESENTATION.budgets.maxBlockingSequenceMs);
-assert.ok(presentationTimings(true).settleMs < presentationTimings(false).revealMs);
+const standardTimings = presentationTimings(false);
+const reducedTimings = presentationTimings(true);
+assert.ok(standardTimings.recoveryMs <= PREMIUM_PRESENTATION.budgets.maxBlockingSequenceMs);
+assert.ok(reducedTimings.recoveryMs <= PREMIUM_PRESENTATION.budgets.maxBlockingSequenceMs);
+assert.ok(reducedTimings.settleMs < standardTimings.settleMs);
+assert.ok(reducedTimings.revealMs >= 300, 'Reduced motion must preserve readable state copy');
+assert.ok(reducedTimings.revealMs < reducedTimings.impactMs);
+assert.ok(reducedTimings.impactMs < reducedTimings.recoveryMs);
+assert.ok(reducedTimings.recoveryMs < reducedTimings.settleMs);
 assert.equal(Object.keys(GADGET_CINEMATICS).length, GADGET_CHASSIS.length);
 assert.ok(GADGET_CHASSIS.every(({ id }) => GADGET_CINEMATICS[id]), 'Every gadget needs bespoke cinematic direction');
 
