@@ -42,3 +42,7 @@
 {"approvedAt":"2026-09-15T16:24:42.806Z","buildSha":"a425352","reason":"Promote Vault Run as the clear post-match progression path while preserving rematch primacy and replay access on mobile.","surface":"instant-final"}
 {"approvedAt":"2026-09-15T16:26:01.911Z","buildSha":"a425352","reason":"Add a compact launch-progress rail, persistent-seat reassurance, and one nonduplicated invite action while retaining join-action dominance.","surface":"live-lobby"}
 {"approvedAt":"2026-09-15T16:27:10.801Z","buildSha":"a425352","reason":"Expose the active-table invite control without changing the shared vault/action hierarchy or mobile containment.","surface":"live-active"}
+{"approvedAt":"2026-09-16T00:14:26.165Z","buildSha":"fda780e","reason":"Make Instant Play the dominant first operation and keep live paths secondary","surface":"player-hub"}
+{"approvedAt":"2026-09-16T00:16:13.816Z","buildSha":"fda780e","reason":"Show one truthful defining moment and the strongest unfinished objective after every match","surface":"instant-final"}
+{"approvedAt":"2026-09-16T00:17:08.536Z","buildSha":"fda780e","reason":"Carry the physical route-board language into the Vault Run decision state","surface":"vault-route"}
+{"approvedAt":"2026-09-16T00:18:01.876Z","buildSha":"fda780e","reason":"Present progression as an operator dossier with one prominent continuation action","surface":"career"}

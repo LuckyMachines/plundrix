@@ -54,12 +54,14 @@ async function expectNoSeriousA11yIssues(page) {
 test('player hub separates instant play from live operations', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1, name: 'Choose your breach.' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Play instantly' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Join a live table' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Learn the heist by playing it.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Risk a Vault Run' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Open a Live Table' })).toBeVisible();
   await expect(page.getByRole('link', { name: /start instant match/i })).toHaveAttribute('href', '/play');
-  await expect(page.getByRole('link', { name: /open live operations/i })).toHaveAttribute('href', '#live-operations');
-  await expect(page.getByRole('heading', { name: 'Live operations', exact: true }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: /learn the rules/i })).toHaveAttribute('href', 'https://plundrix.com/#how-it-works');
+  await expect(page.getByRole('link', { name: /open live desk/i })).toHaveAttribute('href', '#live-operations');
+  await expect(page.getByRole('heading', { name: 'Reopen a table or assemble a crew' })).toBeVisible();
+  await page.getByText('How a live table works', { exact: true }).click();
+  await expect(page.getByRole('button', { name: /field manual/i })).toBeVisible();
   await expect(page.getByText('Straight answers.')).toHaveCount(0);
   await expectNoSeriousA11yIssues(page);
 });
@@ -184,6 +186,7 @@ test('unknown routes show a useful noindex recovery page', async ({ page }) => {
 
 test('field manual behaves like a keyboard modal and restores focus', async ({ page }) => {
   await page.goto('/');
+  await page.getByText('How a live table works', { exact: true }).click();
   const trigger = page.getByRole('button', { name: /field manual/i });
   await trigger.click();
   await expect(page.getByRole('dialog', { name: 'Plundrix field manual' })).toBeVisible();
@@ -275,7 +278,7 @@ test('local career gathers progression and names the next objective', async ({ p
   await page.goto('/career');
   await expect(page.getByRole('heading', { name: 'Operator' })).toBeVisible();
   await expect(page.getByText('Next objectives')).toBeVisible();
-  await expect(page.getByText('Complete your first operation')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Complete your first operation' })).toBeVisible();
   await expect(page.getByText('Local operator record / this device')).toBeVisible();
   await expectNoSeriousA11yIssues(page);
 });

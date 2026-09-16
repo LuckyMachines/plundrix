@@ -182,7 +182,10 @@ function actionText(item) {
   const actor = item.playerName || 'A player';
   const target = item.targetName ? ` ${item.targetName}` : '';
   if (item.action === SIM_ACTION.PICK && item.success) {
-    if (item.after?.locksCracked >= item.rules.totalLocks - 1) {
+    if (item.after?.locksCracked >= item.rules.totalLocks) {
+      return `${actor} cracked the final lock and breached the vault.`;
+    }
+    if (item.after?.locksCracked === item.rules.totalLocks - 1) {
       return `${actor} cracked lock ${item.after.locksCracked} and moved within one of victory.`;
     }
     return `${actor} cracked a lock.`;
@@ -436,6 +439,34 @@ export function detectReplayHighlights(state, timeline = buildReplayTimeline(sta
   return highlights.sort((a, b) => b.importance - a.importance);
 }
 
+const DEFINING_MOMENT_TYPES = Object.freeze([
+  'clutchPick',
+  'sabotageSwing',
+  'comebackStart',
+  'closeFinish',
+  'failedClutchPick',
+  'leadChange',
+  'nearWin',
+  'fastWin',
+  'longStall',
+  'firstLock',
+  'finalRound',
+]);
+
+export function selectDefiningMoment(highlights = []) {
+  const moment = DEFINING_MOMENT_TYPES
+    .map((type) => highlights.find((highlight) => highlight.type === type))
+    .find(Boolean) || highlights[0] || null;
+  if (!moment) return null;
+  return Object.freeze({
+    type: moment.type,
+    round: moment.round,
+    label: moment.replayLabel || 'Defining moment',
+    socialLabel: moment.socialLabel || moment.replayLabel || 'Vault turn',
+    text: moment.text || 'The table turned in one move.',
+  });
+}
+
 export function isCloseFinish(state) {
   const finalRound = state.roundHistory[state.roundHistory.length - 1];
   if (!finalRound) return false;
@@ -578,6 +609,7 @@ export function buildReplayFromSimulation(state, options = {}) {
   const ghostHighlights = options.ghostMatch ? buildGhostHighlights(options.ghostMatch) : [];
   const highlights = [...detectReplayHighlights(state, timeline), ...ghostHighlights]
     .sort((a, b) => b.importance - a.importance);
+  const definingMoment = selectDefiningMoment(highlights);
   const dramaticScore = scoreReplayDrama(state, timeline, highlights);
   const beats = extractReplayBeats(state, timeline, highlights);
   const id = getReplayId({ ...config, actionDigest: proof.rounds });
@@ -603,6 +635,7 @@ export function buildReplayFromSimulation(state, options = {}) {
     description: buildReplaySummary(state, highlights, dramaticScore),
     timeline,
     highlights,
+    definingMoment,
     beats,
     momentTags,
     funTelemetry: funProof.telemetry,

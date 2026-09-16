@@ -15,7 +15,7 @@ import {
 } from './contract.mjs';
 import { buildAvailableActions, recommendAction } from './strategy.mjs';
 import { relaySessionAction } from './session-relay.mjs';
-import { getWeeklyVaultBoard, submitWeeklyVaultScore } from './weekly-challenge.mjs';
+import { getWeeklyVaultBoard, submitWeeklyVaultScore, weeklyVaultStorageStatus } from './weekly-challenge.mjs';
 import {
   createManagedOperation,
   createManagedSession,
@@ -147,6 +147,7 @@ const server = createServer(async (req, res) => {
         ok: true,
         service: 'plundrix-game-service',
         play: managedPlayStatus(),
+        weeklyVault: weeklyVaultStorageStatus(),
       });
       return;
     }

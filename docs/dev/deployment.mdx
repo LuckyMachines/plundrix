@@ -261,9 +261,14 @@ VITE_WALLETCONNECT_PROJECT_ID=<public WalletConnect project ID>
 AGENT_CONTRACT_ADDRESS=0x1ff715d46470b4024d88a12838e08a60855f0ae2
 AGENT_RPC_URL=<production Sepolia RPC>
 AGENT_ALLOW_ORIGIN=https://game.plundrix.com
+AGENT_SPONSOR_BUDGET_PATH=/data/plundrix/sponsor-budget.json
+AGENT_MANAGED_OPERATIONS_PATH=/data/plundrix/managed-operations.json
+AGENT_WEEKLY_VAULT_SCORES_PATH=/data/plundrix/weekly-vault-scores.json
 AGENT_PORT=8787
 PORT=8080
 ```
 
+Mount a persistent Coolify volume at `/data/plundrix`. The application writes budgets, managed-operation recovery IDs, and verified weekly scores atomically inside that volume. A process restart recovers automatically; `npm run ops:backup-competition` produces a checksum-backed weekly-score export for off-host retention.
+
 After a push, verify `/health`, `/llms.txt`, an `/images/og/*` asset, and
-`/api/competition/leaderboard?queue=all&limit=3` on the canonical host.
+`/api/competition/leaderboard?queue=all&limit=3` on the canonical host. `npm run ops:health` performs the complete bounded probe and writes `reports/ops/production-health-latest.json`.

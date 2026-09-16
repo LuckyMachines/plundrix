@@ -1,7 +1,14 @@
 import { rebuildStateFromReplayProof } from '../app/src/lib/replayDirector.js';
 import { GADGET_CHASSIS_BY_ID } from '../app/src/data/gadgetInventory.js';
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { agentConfig } from './config.mjs';
 
 const submissions = new Map();
+const STORAGE_VERSION = 1;
+const MAX_STORED_CHALLENGES = 8;
+let storagePath = agentConfig.weeklyVaultScoresPath;
+let hydratedPath = null;
 
 const STAGES = Object.freeze([
   { id: 'outer-ring', locks: 3 },
@@ -46,13 +53,70 @@ const BUILT_INS = Object.freeze([
   { alias: 'Rook', score: 5510, rounds: 17, verified: 'house-rival' },
 ]);
 
+function validStoredEntry(entry) {
+  return entry
+    && /^[A-Za-z0-9_-]{8,80}$/.test(String(entry.runId || ''))
+    && /^[A-Za-z0-9 _-]{1,20}$/.test(String(entry.alias || ''))
+    && Number.isInteger(entry.score) && entry.score >= 0 && entry.score <= 1_000_000
+    && Number.isInteger(entry.rounds) && entry.rounds >= 1 && entry.rounds <= 200
+    && entry.verified === 'exact-replay';
+}
+
+function hydrateSubmissions() {
+  if (hydratedPath === storagePath) return;
+  submissions.clear();
+  hydratedPath = storagePath;
+  if (!storagePath || !existsSync(storagePath)) return;
+  try {
+    const stored = JSON.parse(readFileSync(storagePath, 'utf8'));
+    if (stored.schemaVersion !== STORAGE_VERSION || !stored.challenges || typeof stored.challenges !== 'object') return;
+    Object.entries(stored.challenges).sort(([left], [right]) => left.localeCompare(right)).slice(-MAX_STORED_CHALLENGES).forEach(([challengeId, entries]) => {
+      if (!/^\d{4}-w\d{2}$/.test(challengeId) || !Array.isArray(entries)) return;
+      submissions.set(challengeId, entries.filter(validStoredEntry).slice(-250));
+    });
+  } catch {
+    // A malformed file must never prevent the game service from starting.
+  }
+}
+
+function persistSubmissions() {
+  if (!storagePath) return;
+  mkdirSync(dirname(storagePath), { recursive: true });
+  const challenges = Object.fromEntries([...submissions.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .slice(-MAX_STORED_CHALLENGES));
+  const temporary = `${storagePath}.${process.pid}.tmp`;
+  writeFileSync(temporary, `${JSON.stringify({
+    schemaVersion: STORAGE_VERSION,
+    updatedAt: new Date().toISOString(),
+    challenges,
+  }, null, 2)}\n`, 'utf8');
+  renameSync(temporary, storagePath);
+}
+
+export function configureWeeklyVaultStorage(nextPath = null) {
+  storagePath = nextPath;
+  hydratedPath = null;
+  submissions.clear();
+}
+
+export function weeklyVaultStorageStatus() {
+  hydrateSubmissions();
+  return {
+    durable: Boolean(storagePath),
+    state: storagePath ? 'file-backed' : 'memory-only',
+    challengeCount: submissions.size,
+  };
+}
+
 function boardPayload(date = new Date()) {
+  hydrateSubmissions();
   const challenge = weeklyChallengeForDate(date);
   const playerScores = submissions.get(challenge.id) || [];
   return {
     challenge,
     scores: [...BUILT_INS, ...playerScores].sort((a, b) => b.score - a.score || a.rounds - b.rounds).slice(0, 100),
-    durability: 'service-session-beta',
+    durability: storagePath ? 'service-file' : 'service-session-beta',
     verification: 'exact-replay-verified',
   };
 }
@@ -62,6 +126,7 @@ export function getWeeklyVaultBoard(date = new Date()) {
 }
 
 export function submitWeeklyVaultScore(body, date = new Date()) {
+  hydrateSubmissions();
   const challenge = weeklyChallengeForDate(date);
   if (!body || body.challengeId !== challenge.id) throw new Error('Challenge is not the current weekly vault');
   if (!/^[A-Za-z0-9_-]{8,80}$/.test(String(body.runId || ''))) throw new Error('Invalid run id');
@@ -78,6 +143,7 @@ export function submitWeeklyVaultScore(body, date = new Date()) {
   if (current.some((entry) => entry.runId === body.runId)) throw new Error('This run was already submitted');
   current.push({ runId: body.runId, alias, score, rounds, verified: 'exact-replay' });
   submissions.set(challenge.id, current.slice(-250));
+  persistSubmissions();
   return boardPayload(date);
 }
 
@@ -181,6 +247,8 @@ function contrabandOffers(seed, stageId, pathLength) {
   return [0, 2, 5].map((offset) => CONTRABAND[(start + offset) % CONTRABAND.length]);
 }
 
-export function resetWeeklyVaultScores() {
+export function resetWeeklyVaultScores({ removeStorage = false } = {}) {
   submissions.clear();
+  hydratedPath = storagePath;
+  if (removeStorage && storagePath) rmSync(storagePath, { force: true });
 }

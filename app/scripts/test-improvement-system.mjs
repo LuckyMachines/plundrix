@@ -17,7 +17,7 @@ import {
 } from '../src/lib/improvementLoop.js';
 import { latencyBucket } from '../src/lib/analytics.js';
 import { normalizeObservation, summarizeObservations } from '../src/lib/observationStore.js';
-import { createLocalProfile, markProfilePlayed, playerCohort } from '../src/lib/playerCareer.js';
+import { createLocalProfile, markProfilePlayed, nextCareerObjective, playerCohort } from '../src/lib/playerCareer.js';
 
 const ledger = JSON.parse(await readFile(resolve('improvement', 'ledger.json'), 'utf8'));
 const fixedNow = '2026-09-08T00:00:00.000Z';
@@ -49,6 +49,20 @@ assert.equal(observationSummary.averageImpact, 5);
 const firstProfile = markProfilePlayed(createLocalProfile(), '2026-09-01T00:00:00.000Z');
 assert.equal(playerCohort(firstProfile, '2026-09-01T00:00:00.000Z'), 'new');
 assert.equal(playerCohort({ ...firstProfile, games: 1 }, '2026-09-08T00:00:00.000Z'), 'returning-7d');
+const firstCraft = nextCareerObjective({
+  profile: { ...firstProfile, games: 1 },
+  inventory: { craftedCount: 0, ownedIds: [] },
+  replays: [{}],
+  runs: [],
+}, { exclude: ['win-streak', 'replay'], priority: ['first-craft', 'vault-run'] });
+assert.equal(firstCraft.id, 'first-craft');
+const firstRun = nextCareerObjective({
+  profile: { ...firstProfile, games: 1 },
+  inventory: { craftedCount: 1, ownedIds: ['starter'] },
+  replays: [{}],
+  runs: [],
+}, { exclude: ['win-streak', 'replay'], priority: ['first-craft', 'vault-run', 'collection'] });
+assert.equal(firstRun.id, 'vault-run');
 
 let next = activateExperiment(ledger, 'production-funnel-baseline', fixedNow);
 assert.equal(next.experiments.find((item) => item.id === 'production-funnel-baseline').status, 'active');

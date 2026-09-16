@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
+import CaperArtifactStage from '../components/gameplay/CaperArtifactStage';
 import { GADGET_CHASSIS } from '../data/gadgetInventory';
 import { getGadgetMastery, readInventory } from '../lib/inventoryStore';
 import { readChronicle } from '../lib/playerChronicle';
@@ -25,10 +26,9 @@ export default function CareerPage() {
     <div className="career-page mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14">
       <Seo title="Local Operator Career | Plundrix" description="Review your Plundrix identity, operations, rivals, collection, Vault Runs, and next objectives on this device." path="/career" />
       <header className="career-header border-b border-vault-border pb-8">
-        <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">Local operator record / this device</p>
-        <div className="mt-3 flex flex-wrap items-end justify-between gap-5">
-          <div><h1 className="font-display text-6xl uppercase leading-none text-vault-text sm:text-8xl">{profile.name}</h1><p className="mt-3 font-mono text-xs uppercase tracking-label text-tungsten">Rank {rank.level} / {rank.title}</p></div>
-          <Link to="/play" className="inline-flex min-h-[50px] items-center bg-tungsten-bright px-6 font-mono text-xs font-bold uppercase tracking-label text-vault-dark">Play next operation -&gt;</Link>
+        <div className="grid items-end gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div><p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">Local operator record / this device</p><h1 className="mt-3 font-display text-6xl uppercase leading-none text-vault-text sm:text-8xl">{profile.name}</h1><p className="mt-3 font-mono text-xs uppercase tracking-label text-tungsten">Rank {rank.level} / {rank.title}</p><Link to={objectives[0].to} className="mt-6 inline-flex min-h-[50px] items-center bg-tungsten-bright px-6 font-mono text-xs font-bold uppercase tracking-label text-vault-dark">Continue: {objectives[0].label} -&gt;</Link></div>
+          <CaperArtifactStage kind="dossier" label={`Rank ${rank.level} dossier`} status={`${profile.games} operations / ${profile.wins} escapes`} />
         </div>
       </header>
 

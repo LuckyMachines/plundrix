@@ -13,6 +13,7 @@ import { AGENT_SERVICE_CONFIGURED } from '../config/service';
 import { commandManagedOperation, getManagedOperation } from '../lib/managedService';
 import { trackJourneyStep, trackProductEvent } from '../lib/analytics';
 import { copyText } from '../lib/clipboard';
+import { rememberOperation } from '../lib/operationContinuity';
 
 const ACTION_COPY = {
   pick: ['Pick', 'Crack the next lock', 'Press a lock with your tools and timing.'],
@@ -100,6 +101,10 @@ export default function ManagedGamePage() {
     trackJourneyStep('match-completed', { mode: 'live', result: data.winnerSeat === self?.seat ? 'win' : 'loss' });
   }, [data?.state, data?.winnerSeat, gameId, self?.seat]);
 
+  useEffect(() => {
+    if (data?.participant) rememberOperation(data);
+  }, [data]);
+
   const opponents = data?.players.filter((player) => !player.you) || [];
   const uiPlayers = useMemo(() => (data?.players || []).map((player) => ({
     ...player,
@@ -177,8 +182,9 @@ export default function ManagedGamePage() {
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               {data.canJoin && <button type="button" onClick={() => command.mutate({ name: 'join', body: {} })} disabled={command.isPending} aria-busy={command.isPending} className="min-h-[50px] min-w-[190px] bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark disabled:cursor-wait disabled:opacity-75"><ActionButtonContent active={command.isPending} idle="Join operation" stages={ACTION_STAGE_PRESETS.join} /></button>}
               {data.canStart && <button type="button" onClick={() => command.mutate({ name: 'start', body: {} })} disabled={command.isPending} aria-busy={command.isPending} className="min-h-[50px] min-w-[190px] border border-oxide-green/55 bg-oxide-green/10 px-6 font-mono text-xs uppercase tracking-label text-oxide-green disabled:cursor-wait disabled:opacity-75"><ActionButtonContent active={command.isPending} idle="Start operation" stages={ACTION_STAGE_PRESETS.start} /></button>}
-              {data.participant && !data.canStart && <p className="self-center font-mono text-xs uppercase text-vault-text-dim">Waiting for one more operator...</p>}
+              {data.participant && !data.canStart && <p className="self-center font-mono text-xs uppercase text-vault-text-dim">Waiting for one more operator. Your seat is saved.</p>}
               <button type="button" onClick={shareOperation} className="min-h-[50px] border border-vault-border px-6 font-mono text-xs uppercase tracking-label text-vault-text">Copy invite</button>
+              {data.participant && !data.canStart && <Link to="/play" onClick={() => trackJourneyStep('continued', { mode: 'live', destination: 'instant-wait-fallback' })} className="inline-flex min-h-[50px] items-center border border-oxide-green/45 px-6 font-mono text-xs uppercase tracking-label text-oxide-green">Practice with agents -&gt;</Link>}
             </div>
             {command.isPending && <ActionWaitPanel active stages={commandStages(command.variables?.name)} eyebrow={command.variables?.name === 'join' ? 'Joining live operation' : 'Starting live operation'} detail="Your request was received. The table will open automatically when it is ready." compact className="mx-auto mt-5 max-w-2xl text-left" />}
           </section>

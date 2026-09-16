@@ -1,16 +1,25 @@
-import test from 'node:test';
+import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import {
+  configureWeeklyVaultStorage,
   getIsoWeek,
   getWeeklyVaultBoard,
   resetWeeklyVaultScores,
   submitWeeklyVaultScore,
+  weeklyVaultStorageStatus,
   weeklyChallengeForDate,
 } from '../weekly-challenge.mjs';
 import { SIM_ACTION, createInitialSimulation, resolveSimulationRound } from '../../app/src/lib/plundrixEngine.js';
 import { buildReplayProof } from '../../app/src/lib/replayDirector.js';
 
 const NOW = new Date('2026-09-06T12:00:00.000Z');
+const tempDirectory = mkdtempSync(join(tmpdir(), 'plundrix-weekly-'));
+const storagePath = join(tempDirectory, 'weekly.json');
+configureWeeklyVaultStorage(storagePath);
+after(() => rmSync(tempDirectory, { recursive: true, force: true }));
 
 const CONTRABAND = ['tension-ratchet', 'whisper-lens', 'false-bottom', 'cooling-vial', 'spare-alibi', 'insulated-line'];
 
@@ -94,4 +103,38 @@ test('weekly board rejects unsafe or impossible submissions', () => {
   assert.throws(() => submitWeeklyVaultScore({ challengeId: challenge.id, runId: 'vr-no-proof-001', alias: 'No Proof', score: 5000, rounds: 12, result: 'complete' }, NOW), /proof/);
   assert.throws(() => submitWeeklyVaultScore(unknownGadget, NOW), /gadget/);
   assert.equal(getWeeklyVaultBoard(NOW).scores.length, 3);
+});
+
+test('weekly submissions survive an in-process storage reload', () => {
+  resetWeeklyVaultScores({ removeStorage: true });
+  const challenge = weeklyChallengeForDate(NOW);
+  const entry = exactWeeklyEntry(challenge);
+  submitWeeklyVaultScore(entry, NOW);
+  assert.equal(weeklyVaultStorageStatus().state, 'file-backed');
+  assert.equal(JSON.parse(readFileSync(storagePath, 'utf8')).schemaVersion, 1);
+
+  configureWeeklyVaultStorage(storagePath);
+  const restored = getWeeklyVaultBoard(NOW);
+  assert.equal(restored.durability, 'service-file');
+  assert.equal(restored.scores.find((score) => score.runId === entry.runId)?.alias, 'Brass Fox');
+  assert.throws(() => submitWeeklyVaultScore(entry, NOW), /already submitted/);
+});
+
+test('weekly storage hydrates only the newest eight valid challenge weeks', () => {
+  const validEntry = { runId: 'stored-run-0001', alias: 'Archive Fox', score: 4200, rounds: 18, verified: 'exact-replay' };
+  const challenges = Object.fromEntries(Array.from({ length: 10 }, (_, index) => [
+    `2026-w${String(index + 1).padStart(2, '0')}`,
+    [validEntry, { ...validEntry, runId: 'bad', score: -1 }],
+  ]));
+  writeFileSync(storagePath, JSON.stringify({ schemaVersion: 1, challenges }), 'utf8');
+  configureWeeklyVaultStorage(storagePath);
+  assert.equal(weeklyVaultStorageStatus().challengeCount, 8);
+});
+
+test('malformed weekly storage recovers as an empty board', () => {
+  writeFileSync(storagePath, '{broken', 'utf8');
+  configureWeeklyVaultStorage(storagePath);
+  const board = getWeeklyVaultBoard(NOW);
+  assert.equal(board.scores.length, 3);
+  assert.equal(weeklyVaultStorageStatus().challengeCount, 0);
 });

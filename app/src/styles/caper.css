@@ -4028,3 +4028,92 @@ html.reduced-motion-ui .premium-resolve-sequence::before { transition: none; }
 html.reduced-motion-ui .plundrix-spinner,
 html.reduced-motion-ui .plundrix-spinner > span:nth-child(3),
 html.reduced-motion-ui .action-button-feedback__dots i { animation-duration: 3s; }
+
+/* Shared physical artifact: the same caper world follows players beyond the main table. */
+.caper-artifact-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 15rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--caper-brass) 42%, var(--color-vault-border));
+  background:
+    radial-gradient(circle at 50% 44%, rgba(196,149,106,0.14), transparent 33%),
+    linear-gradient(145deg, rgba(14,18,23,0.96), rgba(7,10,14,0.92));
+  box-shadow: inset 0 1px rgba(255,255,255,0.045), inset 0 0 3rem rgba(0,0,0,0.35), 0 1.1rem 2.5rem rgba(0,0,0,0.22);
+}
+.caper-artifact-stage__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.38;
+  background-image: linear-gradient(rgba(102,196,210,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(102,196,210,0.08) 1px, transparent 1px);
+  background-size: 1.75rem 1.75rem;
+  mask-image: linear-gradient(to bottom, #000, transparent 88%);
+}
+.caper-artifact-stage__mechanism {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  width: 8.2rem;
+  height: 8.2rem;
+  border: 1px solid rgba(196,149,106,0.52);
+  border-radius: 50%;
+  transform: translate(-50%, -55%);
+  box-shadow: 0 0 0 1rem rgba(196,149,106,0.035), 0 0 0 2rem rgba(102,196,210,0.025), inset 0 0 2rem rgba(0,0,0,0.72);
+}
+.caper-artifact-stage__mechanism::before,
+.caper-artifact-stage__mechanism::after {
+  content: "";
+  position: absolute;
+  inset: 0.8rem;
+  border: 1px dashed rgba(102,196,210,0.4);
+  border-radius: inherit;
+}
+.caper-artifact-stage__mechanism::after { inset: 2.15rem; border-style: solid; border-color: rgba(196,149,106,0.5); }
+.caper-artifact-stage__mechanism > i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.48rem;
+  height: 0.48rem;
+  border: 1px solid var(--caper-brass);
+  background: #111820;
+  border-radius: 50%;
+  transform: translateY(-3.35rem);
+  transform-origin: 0 0;
+}
+.caper-artifact-stage__mechanism > i:nth-child(1) { transform: rotate(0deg) translateY(-3.35rem); }
+.caper-artifact-stage__mechanism > i:nth-child(2) { transform: rotate(72deg) translateY(-3.35rem); }
+.caper-artifact-stage__mechanism > i:nth-child(3) { transform: rotate(144deg) translateY(-3.35rem); }
+.caper-artifact-stage__mechanism > i:nth-child(4) { transform: rotate(216deg) translateY(-3.35rem); }
+.caper-artifact-stage__mechanism > i:nth-child(5) { transform: rotate(288deg) translateY(-3.35rem); }
+.caper-artifact-stage__mechanism > b { position: absolute; inset: 3.15rem; border-radius: 50%; background: var(--caper-search); box-shadow: 0 0 1.2rem rgba(89,151,121,0.48); }
+.caper-artifact-stage__trace { position: absolute; inset: 1rem; }
+.caper-artifact-stage__trace > i { position: absolute; width: 0.45rem; height: 0.45rem; border: 1px solid var(--caper-cyan); background: #0b1118; transform: rotate(45deg); }
+.caper-artifact-stage__trace > i:nth-child(1) { left: 8%; top: 62%; }
+.caper-artifact-stage__trace > i:nth-child(2) { left: 26%; top: 35%; }
+.caper-artifact-stage__trace > i:nth-child(3) { right: 22%; top: 26%; }
+.caper-artifact-stage__trace > i:nth-child(4) { right: 8%; top: 58%; }
+.caper-artifact-stage figcaption { position: absolute; inset: auto 0 0; display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--color-vault-border); background: rgba(7,10,14,0.9); padding: 0.7rem 0.85rem; font-family: var(--font-mono); font-size: var(--text-micro); letter-spacing: var(--tracking-interface); text-transform: uppercase; }
+.caper-artifact-stage figcaption span { color: var(--color-vault-text-dim); }
+.caper-artifact-stage figcaption strong { color: var(--caper-brass); font-weight: 500; text-align: right; }
+.caper-artifact-stage--route .caper-artifact-stage__mechanism { width: 4.4rem; height: 4.4rem; left: 78%; }
+.caper-artifact-stage--route .caper-artifact-stage__mechanism > i { display: none; }
+.caper-artifact-stage--route .caper-artifact-stage__trace::after { content: ""; position: absolute; left: 9%; right: 9%; top: 46%; height: 2px; background: linear-gradient(90deg, var(--caper-cyan), var(--caper-search), var(--caper-brass)); transform: rotate(-8deg); transform-origin: center; box-shadow: 0 0 1rem rgba(102,196,210,0.28); }
+.caper-artifact-stage--dossier .caper-artifact-stage__mechanism { width: 7rem; height: 9rem; border-radius: 0; transform: translate(-50%, -58%) rotate(-2deg); box-shadow: 0.75rem 0.75rem 0 rgba(196,149,106,0.055), -0.6rem 0.55rem 0 rgba(102,196,210,0.045); }
+.caper-artifact-stage--dossier .caper-artifact-stage__mechanism::before { inset: 1rem; border-radius: 0; border-style: solid; }
+.caper-artifact-stage--dossier .caper-artifact-stage__mechanism::after { inset: 2.1rem 1.4rem 4.7rem; border-radius: 50%; }
+.caper-artifact-stage--dossier .caper-artifact-stage__mechanism > i { display: none; }
+.caper-artifact-stage--crew .caper-artifact-stage__mechanism { width: 7rem; height: 7rem; }
+.caper-artifact-stage--crew .caper-artifact-stage__mechanism > i:nth-child(5) { display: none; }
+.caper-artifact-stage--compact { min-height: 8.5rem; }
+.caper-artifact-stage--compact .caper-artifact-stage__mechanism { transform: translate(-50%, -62%) scale(0.62); }
+.caper-artifact-stage--compact figcaption { padding: 0.5rem 0.65rem; }
+
+@media (max-width: 767px) {
+  .hub-choice-card--primary { min-height: 42rem; }
+  .hub-choice-card--primary .caper-artifact-stage { min-height: 12rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caper-artifact-stage *, .caper-artifact-stage *::before, .caper-artifact-stage *::after { transition: none !important; animation: none !important; }
+}

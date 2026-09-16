@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AGENT_SERVICE_CONFIGURED } from '../../config/service';
 import {
   createManagedOperation,
@@ -9,6 +9,8 @@ import {
 } from '../../lib/managedService';
 import { ACTION_STAGE_PRESETS, ActionButtonContent, ActionWaitPanel } from '../shared/ActionFeedback';
 import { trackJourneyStep, trackProductEvent } from '../../lib/analytics';
+import CaperArtifactStage from '../gameplay/CaperArtifactStage';
+import { readRecentOperation, rememberOperation } from '../../lib/operationContinuity';
 
 const STATE_TONE = {
   OPEN: 'border-oxide-green/35 bg-oxide-green/5 text-oxide-green',
@@ -36,6 +38,7 @@ export default function ManagedOperations() {
   const create = useMutation({
     mutationFn: () => createManagedOperation(pace),
     onSuccess: (operation) => {
+      rememberOperation(operation);
       trackProductEvent('Live Operation Created', { mode: 'live', pace });
       trackJourneyStep('mode-started', { mode: 'live', pace, surface: 'player-hub' });
       queryClient.invalidateQueries({ queryKey: ['managed-operations'] });
@@ -44,16 +47,20 @@ export default function ManagedOperations() {
   });
 
   const operations = catalog.data || [];
-  const live = operations.filter((operation) => operation.state !== 'COMPLETE');
+  const recentOperation = readRecentOperation();
+  const live = operations
+    .filter((operation) => operation.state !== 'COMPLETE')
+    .sort((left, right) => Number(right.id === recentOperation?.id) - Number(left.id === recentOperation?.id));
 
   return (
     <section className="border border-vault-border bg-vault-surface" aria-labelledby="live-operations-heading">
-      <div className="grid gap-5 border-b border-vault-border p-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:p-6">
+      <div className="grid gap-5 border-b border-vault-border p-5 lg:grid-cols-[minmax(0,1fr)_220px_auto] lg:items-end lg:p-6">
         <div>
-          <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Live operations</p>
-          <h2 id="live-operations-heading" className="mt-2 font-display text-3xl uppercase text-vault-text">Choose a table or open your own</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-vault-text-dim">The game service handles setup and saves every move. You choose the tactics; Plundrix handles the machinery.</p>
+          <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Live operations desk</p>
+          <h2 id="live-operations-heading" className="mt-2 font-display text-3xl uppercase text-vault-text">Reopen a table or assemble a crew</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-vault-text-dim">Seats and moves stay saved. If nobody is waiting, practice against agents immediately while your invitation travels.</p>
         </div>
+        <CaperArtifactStage kind="crew" compact className="hidden lg:block" />
         <div className="flex flex-wrap items-end gap-2">
           <label className="grid gap-1 font-mono text-micro uppercase tracking-label text-vault-text-dim">
             Round pace
@@ -110,6 +117,7 @@ export default function ManagedOperations() {
                   key={operation.id}
                   type="button"
                   onClick={() => {
+                    rememberOperation(operation);
                     trackJourneyStep('table-opened', { mode: 'live', state: operation.state.toLowerCase(), surface: 'operations-desk' });
                     navigate(`/game/${operation.id}`);
                   }}
@@ -123,14 +131,15 @@ export default function ManagedOperations() {
                     <div><p className="font-mono text-micro uppercase text-vault-text-dim">Operators</p><p className="mt-1 font-display text-2xl text-vault-text">{operation.playerCount} / 4</p></div>
                     <div><p className="font-mono text-micro uppercase text-vault-text-dim">Round</p><p className="mt-1 font-display text-2xl text-vault-text">{operation.currentRound || '-'}</p></div>
                   </div>
-                  <span className="mt-5 block font-mono text-micro uppercase tracking-label text-oxide-green">Enter operation -&gt;</span>
+                  <span className="mt-5 block font-mono text-micro uppercase tracking-label text-oxide-green">{operation.id === recentOperation?.id ? 'Reopen recent table' : 'Enter operation'} -&gt;</span>
                 </button>
               ))}
             </div>
           ) : (
             <div className="border border-oxide-green/25 bg-oxide-green/5 px-5 py-9 text-center">
               <p className="font-display text-2xl uppercase text-vault-text">The first table is yours</p>
-              <p className="mt-2 text-sm text-vault-text-dim">Choose a pace and create an operation. Plundrix handles the rest.</p>
+              <p className="mt-2 text-sm text-vault-text-dim">Choose a pace and create an operation, or start against agents while the live desk waits.</p>
+              <Link to="/play" className="mt-4 inline-flex min-h-[44px] items-center border border-tungsten/45 px-4 font-mono text-xs uppercase tracking-label text-tungsten">Play against agents now -&gt;</Link>
             </div>
           )}
         </div>

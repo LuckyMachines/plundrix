@@ -48,10 +48,11 @@ def locate(directory: Path, name: str) -> Path | None:
     return matches[0] if matches else None
 
 
-def changed_ratio(reference: Image.Image, actual: Image.Image, tolerance: int = 8) -> float | None:
+def changed_ratio(reference: Image.Image, actual: Image.Image, pixel_threshold: float = 0.2) -> float | None:
     if reference.size != actual.size:
         return None
     difference = ImageChops.difference(reference.convert("RGB"), actual.convert("RGB"))
+    tolerance = round(max(0.0, min(1.0, pixel_threshold)) * 255)
     mask = difference.convert("L").point(lambda value: 255 if value > tolerance else 0)
     changed = mask.histogram()[255]
     return changed / max(1, reference.width * reference.height)
@@ -146,7 +147,8 @@ def main() -> None:
             if reference_path and actual_path:
                 reference = Image.open(reference_path)
                 actual = Image.open(actual_path)
-                ratio = changed_ratio(reference, actual)
+                pixel_threshold = surface.get("pixelThreshold", manifest["defaults"]["pixelThreshold"])
+                ratio = changed_ratio(reference, actual, pixel_threshold)
                 comparison_path = comparisons / name
                 labeled_pair(reference_path, actual_path, comparison_path)
             limit = surface.get("maxDiffPixelRatio", manifest["defaults"]["maxDiffPixelRatio"])
@@ -196,7 +198,7 @@ def main() -> None:
             if reference_path and actual_path:
                 reference = Image.open(reference_path)
                 actual = Image.open(actual_path)
-                ratio = changed_ratio(reference, actual)
+                ratio = changed_ratio(reference, actual, manifest["defaults"]["pixelThreshold"])
                 comparison_path = comparisons / name
                 labeled_pair(reference_path, actual_path, comparison_path)
             typography = result.get("typography", {})

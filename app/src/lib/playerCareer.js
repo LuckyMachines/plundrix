@@ -64,3 +64,9 @@ export function careerObjectives({ profile, inventory, replays = [], runs = [] }
       : { id: 'replay', label: 'Review your latest operation', detail: `${replays.length} replay${replays.length === 1 ? '' : 's'} saved locally.`, to: `/replay/${replays[0].id}` },
   ];
 }
+
+export function nextCareerObjective(progress, { exclude = [], priority = [] } = {}) {
+  const excluded = new Set(exclude);
+  const available = careerObjectives(progress).filter((objective) => !excluded.has(objective.id));
+  return priority.map((id) => available.find((objective) => objective.id === id)).find(Boolean) || available[0] || null;
+}

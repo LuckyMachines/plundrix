@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom';
 import ManagedOperations from '../components/game/ManagedOperations';
 import QuickStartPanel from '../components/game/QuickStartPanel';
+import CaperArtifactStage from '../components/gameplay/CaperArtifactStage';
 import Seo from '../components/seo/Seo';
 import { trackJourneyStep } from '../lib/analytics';
+import { readRecentOperation } from '../lib/operationContinuity';
 
 export default function PlayerHubPage() {
+  const recentOperation = readRecentOperation();
+  const canResumeOperation = recentOperation && recentOperation.state !== 'COMPLETE';
+
   return (
     <>
       <Seo
@@ -27,71 +32,44 @@ export default function PlayerHubPage() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            <article className="hub-choice-card relative min-h-[320px] overflow-hidden border border-tungsten/50 bg-vault-dark p-6 sm:p-8">
+          {canResumeOperation && <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border border-oxide-green/45 bg-oxide-green/5 px-5 py-4"><div><p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Your seat is saved</p><p className="mt-1 text-sm text-vault-text-dim">Operation OP-{String(recentOperation.id).padStart(3, '0')} is ready to reopen.</p></div><Link to={`/game/${recentOperation.id}`} onClick={() => trackJourneyStep('operation-resumed', { mode: 'live', surface: 'player-hub' })} className="inline-flex min-h-[44px] items-center border border-oxide-green/45 px-4 font-mono text-xs uppercase tracking-label text-oxide-green">Reopen operation -&gt;</Link></div>}
+
+          <div className="hub-briefing-grid mt-8 grid gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(300px,.75fr)]">
+            <article className="hub-choice-card hub-choice-card--primary relative min-h-[390px] overflow-hidden border border-tungsten/60 bg-vault-dark p-6 sm:p-8 lg:p-10">
               <img src="/images/plundrix-instant-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-55" />
               <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/35" />
-              <div className="relative flex h-full flex-col items-start">
-              <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Instant table</p>
-              <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Play instantly</h2>
-              <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">
-                Pick, Search, and Sabotage through a complete match. Choose a pace, face three distinct agents, and learn by playing.
-              </p>
-              <Link to="/play" onClick={() => trackJourneyStep('mode-selected', { mode: 'instant', surface: 'player-hub' })} className="mt-auto inline-flex min-h-[52px] items-center bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">
-                Start instant match -&gt;
-              </Link>
+              <div className="relative grid h-full items-end gap-7 md:grid-cols-[minmax(0,1fr)_minmax(230px,.72fr)]">
+                <div className="flex h-full max-w-xl flex-col items-start">
+                  <div className="flex flex-wrap items-center gap-3"><p className="font-mono text-micro uppercase tracking-brand text-tungsten">First operation / recommended</p><span className="border border-oxide-green/45 bg-oxide-green/10 px-2 py-1 font-mono text-micro uppercase tracking-interface text-oxide-green">Starts now</span></div>
+                  <h2 className="mt-4 font-display text-5xl uppercase leading-none text-vault-text sm:text-6xl">Learn the heist by playing it.</h2>
+                  <p className="mt-5 max-w-lg text-base leading-7 text-vault-text-dim">Race three distinct agents through one complete match. Pick, Search, or Sabotage; every reveal explains exactly what changed.</p>
+                  <Link to="/play" onClick={() => trackJourneyStep('mode-selected', { mode: 'instant', surface: 'player-hub' })} className="mt-auto inline-flex min-h-[54px] items-center bg-tungsten-bright px-7 font-mono text-xs font-semibold uppercase tracking-label text-vault-dark">Start instant match -&gt;</Link>
+                </div>
+                <CaperArtifactStage kind="vault" label="First-operation vault" status="No account / no waiting" />
               </div>
             </article>
 
-            <article className="hub-choice-card relative min-h-[320px] overflow-hidden border border-oxide-green/45 bg-vault-dark p-6 sm:p-8">
-              <img src="/images/victory-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-48" />
-              <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/30" />
-              <div className="relative flex h-full flex-col items-start">
-                <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Persistent practice</p>
-                <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Risk a vault run</h2>
-                <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">Carry one gadget through three escalating vaults. Choose crooked routes, build rival grudges, and chase the weekly seed.</p>
-                <Link to="/vault-run" onClick={() => trackJourneyStep('mode-selected', { mode: 'vault-run', surface: 'player-hub' })} className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/60 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-label text-oxide-green">Start vault run -&gt;</Link>
-              </div>
-            </article>
+            <div className="grid gap-4">
+              <article className="hub-choice-card relative min-h-[188px] overflow-hidden border border-oxide-green/45 bg-vault-dark p-6">
+                <img src="/images/victory-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/92 to-vault-dark/45" />
+                <div className="relative flex h-full flex-col items-start"><p className="font-mono text-micro uppercase tracking-brand text-oxide-green">After your first match</p><h2 className="mt-2 font-display text-3xl uppercase text-vault-text">Risk a Vault Run</h2><p className="mt-2 text-sm leading-6 text-vault-text-dim">Carry one gadget through three escalating vaults and the shared weekly seed.</p><Link to="/vault-run" onClick={() => trackJourneyStep('mode-selected', { mode: 'vault-run', surface: 'player-hub' })} className="mt-auto font-mono text-xs uppercase tracking-label text-oxide-green">Open route board -&gt;</Link></div>
+              </article>
 
-            <article className="hub-choice-card relative min-h-[320px] overflow-hidden border border-vault-border bg-vault-dark p-6 sm:p-8">
-              <img src="/images/plundrix-live-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-52" />
-              <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/90 to-vault-dark/35" />
-              <div className="relative flex h-full flex-col items-start">
-              <p className="font-mono text-micro uppercase tracking-brand text-oxide-green">Hosted live play</p>
-              <h2 className="mt-3 font-display text-4xl uppercase text-vault-text">Join a live table</h2>
-              <p className="mt-4 max-w-md text-base leading-7 text-vault-text-dim">
-                Create or enter a 2-4 player operation. The game service saves every move while you focus on reading the table.
-              </p>
-              <a href="#live-operations" onClick={() => trackJourneyStep('mode-selected', { mode: 'live', surface: 'player-hub' })} className="mt-auto inline-flex min-h-[52px] items-center border border-oxide-green/50 bg-vault-dark/70 px-6 font-mono text-xs font-semibold uppercase tracking-label text-oxide-green">
-                Open live operations -&gt;
-              </a>
-              </div>
-            </article>
+              <article className="hub-choice-card relative min-h-[188px] overflow-hidden border border-vault-border bg-vault-dark p-6">
+                <img src="/images/plundrix-live-breach.webp" alt="" width="1024" height="1024" className="absolute inset-0 h-full w-full object-cover object-center opacity-30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-vault-dark via-vault-dark/92 to-vault-dark/45" />
+                <div className="relative flex h-full flex-col items-start"><p className="font-mono text-micro uppercase tracking-brand text-oxide-green">When your crew is ready</p><h2 className="mt-2 font-display text-3xl uppercase text-vault-text">Open a Live Table</h2><p className="mt-2 text-sm leading-6 text-vault-text-dim">Saved 2-4 player operations with paced simultaneous rounds.</p><a href="#live-operations" onClick={() => trackJourneyStep('mode-selected', { mode: 'live', surface: 'player-hub' })} className="mt-auto font-mono text-xs uppercase tracking-label text-oxide-green">Open live desk -&gt;</a></div>
+              </article>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="live-operations" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-14 sm:px-8 lg:px-10 lg:py-20">
-        <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-          <div>
-            <p className="font-mono text-micro uppercase tracking-beacon text-oxide-green">Hosted multiplayer</p>
-            <h2 className="mt-3 font-display text-4xl font-semibold uppercase text-vault-text sm:text-5xl">Live operations</h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-vault-text-dim">
-              Create a free operation or open a table waiting for another operator. No setup, account, or payment is required.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2" aria-label="Live play capabilities">
-              {['Free play', 'Saved progress', 'Paced rounds', 'Persistent workshop'].map((label) => <span key={label} className="border border-oxide-green/40 bg-oxide-green/5 px-2 py-1 font-mono text-micro uppercase tracking-interface text-oxide-green">{label}</span>)}
-            </div>
-          </div>
-          <a href="https://plundrix.com/#how-it-works" className="font-mono text-xs uppercase tracking-label text-tungsten hover:text-tungsten-bright">
-            New here? Learn the rules -&gt;
-          </a>
-        </div>
-
-        <div className="space-y-5">
+      <section id="live-operations" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
+        <div className="space-y-4">
           <ManagedOperations />
-          <QuickStartPanel />
+          <details className="border border-vault-border bg-vault-surface/55"><summary className="cursor-pointer px-5 py-4 font-mono text-xs uppercase tracking-label text-vault-text-dim">How a live table works</summary><div className="border-t border-vault-border"><QuickStartPanel /></div></details>
         </div>
       </section>
 

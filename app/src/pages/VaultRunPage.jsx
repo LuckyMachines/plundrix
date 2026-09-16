@@ -7,6 +7,7 @@ import OperationCeremony from '../components/gameplay/OperationCeremony';
 import UnifiedActionDeck from '../components/gameplay/UnifiedActionDeck';
 import VaultMechanism from '../components/gameplay/VaultMechanism';
 import CausalOutcomeSummary from '../components/gameplay/CausalOutcomeSummary';
+import CaperArtifactStage from '../components/gameplay/CaperArtifactStage';
 import { completeFirstMoveCoach } from '../components/gameplay/FirstMoveCoach';
 import Seo from '../components/seo/Seo';
 import GadgetVisual from '../components/workshop/GadgetVisual';
@@ -30,6 +31,7 @@ import {
 } from '../lib/inventoryStore';
 import { readChronicle, recordRivalryMatch, rivalDirective, rivalTaunt, writeChronicle } from '../lib/playerChronicle';
 import { SIM_ACTION, getPickChance, getSearchChance, getTablePressure } from '../lib/plundrixEngine';
+import { buildReplayFromSimulation } from '../lib/replayDirector';
 import {
   VAULT_CONTRABAND,
   VAULT_ROUTES,
@@ -151,6 +153,10 @@ export default function VaultRunPage() {
   const tablePosition = !leaderLocks || leadersAtTop.length > 1 ? 'Table even' : leader?.id === player?.id ? 'You lead' : `${Math.max(0, leaderLocks - (player?.locksCracked || 0))} locks behind`;
   const selectedChoice = actionChoices.find((action) => action.id === selectedAction) || actionChoices[0];
   const latestPlayerOutcome = lastRound?.events?.find((event) => event.type === 'ActionOutcome' && event.actor === 'player-1') || null;
+  const definingMoment = useMemo(() => {
+    if (!match || !['COMPLETE', 'FAILED'].includes(run?.status)) return null;
+    return buildReplayFromSimulation(match, { sourceType: 'vault run stage' }).definingMoment;
+  }, [match, run?.status]);
 
   const clearResolveTimers = () => {
     resolveTimers.current.forEach((activeTimer) => window.clearTimeout(activeTimer));
@@ -377,6 +383,7 @@ export default function VaultRunPage() {
           <h1 className="mt-4 font-display text-6xl uppercase leading-none text-vault-text sm:text-8xl">{run.status === 'COMPLETE' ? 'Vaults emptied.' : 'Caught beautifully.'}</h1>
           <p className="mt-6 text-xl text-vault-text-dim">Final score <strong className="text-vault-text">{run.score.toLocaleString()}</strong>. {run.status === 'COMPLETE' ? 'The getaway cart is mostly on fire.' : 'The rivals will be unbearable about this.'}</p>
           <p className="mt-2 font-mono text-micro uppercase tracking-label text-tungsten">Personal best {bestScore.toLocaleString()} / {runHistory.length} run{runHistory.length === 1 ? '' : 's'} archived</p>
+          {definingMoment && <div className="mt-6 border-l-2 border-tungsten bg-vault-dark/60 px-4 py-3"><p className="font-mono text-micro uppercase tracking-label text-tungsten">Defining breach / round {definingMoment.round}</p><p className="mt-2 font-display text-2xl uppercase text-vault-text">{definingMoment.label}</p><p className="mt-1 text-sm leading-6 text-vault-text-dim">{definingMoment.text}</p></div>}
           <div className="mt-8 grid gap-3 md:grid-cols-3">{run.path.map((entry, index) => <article key={`${entry.stageId}-${index}`} className="border border-vault-border bg-vault-dark/60 p-4"><p className="font-mono text-micro uppercase text-vault-text-dim">Attempt {index + 1}</p><p className="mt-2 font-display text-2xl uppercase text-vault-text">{VAULT_RUN_STAGES.find((item) => item.id === entry.stageId)?.label}</p><p className="mt-2 text-sm text-vault-text-dim">{entry.won ? 'Cleared' : 'Repelled'} / {entry.rounds} rounds / +{entry.score}</p></article>)}</div>
           {notice && <p className="mt-6 text-sm text-oxide-green" role="status">{notice}</p>}
           <div className="mt-7 flex flex-wrap gap-3">
@@ -439,8 +446,7 @@ export default function VaultRunPage() {
         <main className="mt-8 grid min-w-0 gap-6 lg:grid-cols-[1fr_320px]">
           <section className="vault-route-stage min-w-0">
             {run.path.length > 0 && <div className="mb-5 border-l-2 border-oxide-green bg-oxide-green/10 p-4 text-sm text-vault-text">{notice}</div>}
-            <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Choose your approach</p>
-            <h2 className="vault-route-heading mt-2 font-display text-4xl uppercase text-vault-text">Every route leaves fingerprints.</h2>
+            <div className="grid items-end gap-4 md:grid-cols-[minmax(0,1fr)_260px]"><div><p className="font-mono text-micro uppercase tracking-brand text-tungsten">Choose your approach</p><h2 className="vault-route-heading mt-2 font-display text-4xl uppercase text-vault-text">Every route leaves fingerprints.</h2></div><CaperArtifactStage kind="route" label={`${stage.label} route board`} status={`Heat ${run.heat}/5 / ${run.lives} lives`} compact /></div>
             <p className="mt-3 font-mono text-micro uppercase tracking-label text-vault-text-dim md:hidden">Swipe to compare all three routes -&gt;</p>
             <div className="vault-route-options mt-6 flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible md:pb-0">
               {VAULT_ROUTES.map((route) => <button key={route.id} type="button" onClick={() => chooseRoute(route.id)} className="group min-h-[260px] min-w-[250px] snap-start border border-vault-border bg-vault-surface p-5 text-left transition hover:-translate-y-1 hover:border-tungsten/60 focus-visible:border-tungsten md:min-w-0"><span className="flex items-start justify-between gap-4"><span className="font-mono text-micro uppercase tracking-brand text-signal-red">{route.tone}</span><img src={ROUTE_ART[route.id]} alt="" width="512" height="512" className="h-14 w-14 object-contain drop-shadow-[0_6px_10px_rgba(0,0,0,0.55)]" /></span><span className="mt-2 block font-display text-3xl uppercase text-vault-text">{route.label}</span><span className="mt-4 block text-sm leading-6 text-vault-text-dim">{route.trade}</span><span className="mt-6 block font-mono text-micro uppercase text-tungsten">Take this route -&gt;</span></button>)}
@@ -506,7 +512,7 @@ function RivalSidebar({ chronicle, board, run }) {
     <aside className="space-y-4">
       <section className={`border p-4 ${directive.active ? 'border-signal-red/50 bg-signal-red/5' : 'border-vault-border bg-vault-dark/35'}`}><p className={`font-mono text-micro uppercase tracking-label ${directive.active ? 'text-signal-red' : 'text-vault-text-dim'}`}>{directive.label}</p><p className="mt-2 text-xs leading-5 text-vault-text-dim">{directive.detail}</p></section>
       <section className="border border-vault-border bg-vault-surface p-5"><p className="font-mono text-micro uppercase tracking-brand text-tungsten">Rival dossier</p><div className="mt-4 space-y-4">{Object.entries(chronicle.rivals).map(([name, record]) => <article key={name} className="border-t border-vault-border pt-3"><div className="flex justify-between"><p className="font-display text-xl uppercase text-vault-text">{name}</p><span className="font-mono text-micro text-signal-red" aria-label={`${record.grudge} of 5 grudge`}>{'X'.repeat(record.grudge)}{'-'.repeat(5 - record.grudge)}</span></div><p className="mt-1 font-mono text-micro uppercase text-vault-text-dim">Record {record.playerWins}-{record.rivalWins} / tools taken {record.toolsStolen}</p><p className="mt-2 text-xs italic leading-5 text-vault-text-dim">"{rivalTaunt(name, record)}"</p></article>)}</div></section>
-      {run.weekly && <section className="border border-oxide-green/35 bg-oxide-green/5 p-5"><p className="font-mono text-micro uppercase tracking-brand text-oxide-green">{board.challenge.title}</p><p className="mt-2 text-xs leading-5 text-vault-text-dim">{board.challenge.modifier}: {board.challenge.note}</p><ol className="mt-4 space-y-2">{board.scores.slice(0, 5).map((score, index) => <li key={`${score.alias}-${index}`} className="flex justify-between border-t border-vault-border pt-2 font-mono text-micro uppercase text-vault-text"><span>{index + 1}. {score.alias}</span><span className="text-tungsten">{score.score}</span></li>)}</ol><p className="mt-4 font-mono text-micro uppercase tracking-interface text-vault-text-dim">{board.durability === 'service-session-beta' ? 'Beta board / session durable' : 'Local preview board'}</p></section>}
+      {run.weekly && <section className="border border-oxide-green/35 bg-oxide-green/5 p-5"><p className="font-mono text-micro uppercase tracking-brand text-oxide-green">{board.challenge.title}</p><p className="mt-2 text-xs leading-5 text-vault-text-dim">{board.challenge.modifier}: {board.challenge.note}</p><ol className="mt-4 space-y-2">{board.scores.slice(0, 5).map((score, index) => <li key={`${score.alias}-${index}`} className="flex justify-between border-t border-vault-border pt-2 font-mono text-micro uppercase text-vault-text"><span>{index + 1}. {score.alias}</span><span className="text-tungsten">{score.score}</span></li>)}</ol><p className="mt-4 font-mono text-micro uppercase tracking-interface text-vault-text-dim">{board.durability === 'service-file' ? 'Verified board / restart durable' : board.durability === 'service-session-beta' ? 'Beta board / session durable' : 'Local preview board'}</p></section>}
     </aside>
   );
 }

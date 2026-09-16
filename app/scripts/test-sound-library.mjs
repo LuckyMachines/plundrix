@@ -27,6 +27,14 @@ for (const [cue, recipe] of Object.entries(manifest.cues)) {
   }
 }
 
+const identityCues = ['intent.pick', 'intent.search', 'intent.sabotage', 'lock.resist', 'game.win', 'tool.found'];
+const identitySignatures = identityCues.map((cue) => {
+  const recipe = manifest.cues[cue];
+  assert.ok(recipe, `Missing identity cue: ${cue}`);
+  return `${recipe.family}:${recipe.duration}:${recipe.layers.map((layer) => layer.source).join('+')}`;
+});
+assert.equal(new Set(identitySignatures).size, identitySignatures.length, 'Core action, failure, reward, and breach cues need distinct sound signatures');
+
 const notice = readFileSync(resolve(appDir, manifest.license.notice), 'utf8');
 assert.match(notice, /Creative Commons Zero 1\.0/i);
 assert.match(notice, /commercial/i);

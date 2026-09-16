@@ -29,8 +29,9 @@ import {
 import { getGadgetMastery, grantGadgetMasteryState, grantMatchSalvageState, readInventory, writeInventory } from '../lib/inventoryStore';
 import { recordLocalBalanceSample } from '../lib/gadgetTelemetry';
 import { readChronicle, recordRivalryMatch, writeChronicle } from '../lib/playerChronicle';
-import { INSTANT_PROFILE_KEY, markProfilePlayed, playerCohort, readLocalProfile } from '../lib/playerCareer';
-import { buildReplayFromSimulation, saveReplayToLibrary } from '../lib/replayDirector';
+import { INSTANT_PROFILE_KEY, markProfilePlayed, nextCareerObjective, playerCohort, readLocalProfile } from '../lib/playerCareer';
+import { buildReplayFromSimulation, listReplayLibrary, saveReplayToLibrary } from '../lib/replayDirector';
+import { readVaultRunHistory } from '../lib/vaultRun';
 import {
   SIM_ACTION,
   SIM_GADGETS,
@@ -266,6 +267,15 @@ export default function InstantPlayPage() {
   );
   const challengeTarget = Number(params.get('target')) || null;
   const rank = rankForXp(profile.xp);
+  const continuationObjective = useMemo(() => nextCareerObjective({
+    profile,
+    inventory: readInventory(),
+    replays: savedReplay ? [savedReplay, ...listReplayLibrary().filter((item) => item.id !== savedReplay.id)] : listReplayLibrary(),
+    runs: readVaultRunHistory(),
+  }, {
+    exclude: ['first-operation', 'win-streak', 'replay'],
+    priority: ['first-craft', 'vault-run', 'weekly', 'collection'],
+  }), [profile, salvageReward, savedReplay]);
 
   const clearResolveTimers = () => {
     resolveTimers.current.forEach((timer) => window.clearTimeout(timer));
@@ -754,13 +764,14 @@ export default function InstantPlayPage() {
                 <p className="font-mono text-micro uppercase tracking-brand text-tungsten">Final briefing</p>
                 <h2 className="mt-3 font-display text-5xl uppercase leading-display text-vault-text">{winner?.name} breached the vault</h2>
                 <p className="mt-4 max-w-xl leading-6 text-vault-text-dim">Completed in {state.currentRound} rounds. {state.winner === 'player-1' ? `You earned 125 XP and defended your ${rank} rank.` : `${winner?.name} stole the final opening. You earned 50 XP and new intel for the rematch.`}</p>
+                {savedReplay?.definingMoment && <div className="mt-5 border-l-2 border-tungsten bg-tungsten/10 px-4 py-3"><p className="font-mono text-micro uppercase tracking-label text-tungsten">Defining moment / round {savedReplay.definingMoment.round}</p><p className="mt-2 font-display text-2xl uppercase text-vault-text">{savedReplay.definingMoment.label}</p><p className="mt-1 text-sm leading-6 text-vault-text-dim">{savedReplay.definingMoment.text}</p></div>}
                 <p className="mt-3 font-mono text-micro uppercase tracking-label text-signal-red">Rivalry chronicle updated. They will remember this.</p>
                 {salvageReward?.length > 0 && <div className="mt-5 border border-oxide-green/45 bg-oxide-green/10 p-4"><p className="font-mono text-micro uppercase tracking-label text-oxide-green">Workshop salvage recovered</p><div className="mt-3 flex flex-wrap gap-2">{salvageReward.map(({ materialId, amount, reason }) => { const material = CRAFTING_MATERIALS.find((item) => item.id === materialId); return <span key={materialId} title={reason} className="inline-flex items-center gap-2 border border-vault-border bg-vault-dark/70 px-3 py-2 font-mono text-xs uppercase text-vault-text"><img src={material?.image} alt="" className="h-7 w-7 object-contain" />+{amount} {material?.label}</span>; })}</div><p className="mt-3 text-xs text-vault-text-dim">{salvageReward[0]?.reason} Choose actions and Vault Run routes to pursue different materials.</p></div>}
                 {challengeTarget && <p className={`mt-3 font-mono text-xs uppercase tracking-label ${state.currentRound < challengeTarget && state.winner === 'player-1' ? 'text-oxide-green' : 'text-tungsten'}`}>{state.currentRound < challengeTarget && state.winner === 'player-1' ? `Challenge beaten by ${challengeTarget - state.currentRound} rounds` : `Challenge target: under ${challengeTarget} rounds`}</p>}
               </div>
               <div className="relative z-10 mt-7 flex flex-wrap gap-3">
                 <button type="button" onClick={() => begin(`rematch-${Date.now()}`)} className="min-h-[50px] bg-tungsten-bright px-6 font-mono text-xs font-semibold uppercase text-vault-dark">Instant rematch</button>
-                <Link to="/vault-run" onClick={() => { trackProductEvent('Post Match Continued', { destination: 'vault-run' }); trackJourneyStep('continued', { mode: 'instant', destination: 'vault-run' }); }} className="inline-flex min-h-[50px] items-center border border-tungsten/45 px-5 font-mono text-xs uppercase text-tungsten">Take gadget to Vault Run</Link>
+                {continuationObjective && <Link to={continuationObjective.to} onClick={() => { trackProductEvent('Post Match Continued', { destination: continuationObjective.id }); trackJourneyStep('continued', { mode: 'instant', destination: continuationObjective.id }); }} className="inline-flex min-h-[50px] items-center border border-tungsten/45 px-5 font-mono text-xs uppercase text-tungsten">Next objective: {continuationObjective.label}</Link>}
                 {savedReplay && <Link to={`/replay/${savedReplay.id}`} onClick={() => { trackProductEvent('Post Match Continued', { destination: 'own-replay' }); trackJourneyStep('continued', { mode: 'instant', destination: 'own-replay' }); }} className="inline-flex min-h-[50px] items-center border border-oxide-green/45 px-5 font-mono text-xs uppercase text-oxide-green">Replay this operation</Link>}
                 <details className="min-w-[180px] border border-vault-border bg-vault-dark/70">
                   <summary className="grid min-h-[50px] cursor-pointer place-items-center px-5 font-mono text-xs uppercase text-vault-text">More options</summary>

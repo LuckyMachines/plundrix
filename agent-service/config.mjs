@@ -102,6 +102,9 @@ export const agentConfig = {
   managedOperationsPath:
     getEnvString('AGENT_MANAGED_OPERATIONS_PATH') ||
     resolve(process.cwd(), 'agent-service', 'data', 'managed-operations.json'),
+  weeklyVaultScoresPath:
+    getEnvString('AGENT_WEEKLY_VAULT_SCORES_PATH') ||
+    resolve(process.cwd(), 'agent-service', 'data', 'weekly-vault-scores.json'),
   managedSweepIntervalMs: getEnvNumber(['AGENT_MANAGED_SWEEP_INTERVAL_MS'], 15_000),
 };
 

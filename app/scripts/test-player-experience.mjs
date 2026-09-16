@@ -3,6 +3,7 @@ import { buildOutcomeNarrative } from '../src/lib/outcomeNarrative.js';
 import { performanceBucket, performanceRating } from '../src/lib/performanceTelemetry.js';
 import { SIM_ACTION, SIM_OUTCOME_REASON } from '../src/lib/plundrixEngine.js';
 import { buildReplayCardModel } from '../src/lib/replayShareCard.js';
+import { RECENT_OPERATION_KEY, readRecentOperation, rememberOperation } from '../src/lib/operationContinuity.js';
 
 const players = [
   { id: 'player-1', name: 'Operator' },
@@ -54,5 +55,22 @@ assert.deepEqual(buildReplayCardModel({
   title: 'The quiet breach', subtitle: 'Last-lock reversal', winner: 'Operator', rounds: 7,
   score: 84.3, moment: 'Search became a final double breach.',
 });
+
+assert.equal(buildReplayCardModel({
+  title: 'Operation', summary: { winnerName: 'Operator', rounds: 9 },
+  definingMoment: { socialLabel: 'The table turned', text: 'A round-six sabotage erased the lead.' },
+  highlights: [{ socialLabel: 'Final vault crack', text: 'Operator won.' }],
+}).moment, 'A round-six sabotage erased the lead.');
+
+const continuityStorage = new Map();
+const storage = { getItem: (key) => continuityStorage.get(key) || null, setItem: (key, value) => continuityStorage.set(key, value) };
+assert.equal(rememberOperation({ id: 118, state: 'ACTIVE' }, storage).id, 118);
+const rememberedOperation = readRecentOperation(storage);
+assert.equal(rememberedOperation.id, 118);
+assert.equal(rememberedOperation.state, 'ACTIVE');
+assert.match(rememberedOperation.savedAt, /^\d{4}-\d{2}-\d{2}T/);
+assert.equal(rememberOperation({ id: 0 }, storage), null);
+storage.setItem(RECENT_OPERATION_KEY, JSON.stringify({ id: 118, state: 'ACTIVE', savedAt: '2026-09-01T00:00:00.000Z' }));
+assert.equal(readRecentOperation(storage, Date.parse('2026-09-09T00:00:00.000Z')), null);
 
 console.log('Player experience tests passed');

@@ -1,7 +1,7 @@
 # Plundrix Improvement Loop
 
-Generated: 2026-09-15T16:58:04.186Z
-Build: a425352
+Generated: 2026-09-16T00:46:30.816Z
+Build: fda780e
 Mode: solo
 
 ## Do this next
@@ -34,7 +34,7 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 | Players who want another run or replay | missing | not measured | at-least 60% | T3 |
 | Seven-day returning-player rate | missing | not measured | at-least 20% | T4 |
 | Production client error rate | missing | not measured | at-most 2% | T4 |
-| Automated release gates passing | pass | 100% / n=20 | exactly 100% | T2 |
+| Automated release gates passing | pass | 100% / n=18 | exactly 100% | T2 |
 
 ## Experiment queue
 
@@ -56,23 +56,21 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 
 ## Automated checks
 
-- PASS Improvement-system tests (1024ms)
-- PASS SEO and marketing-system tests (962ms)
-- PASS Menu and preference-system tests (1097ms)
-- PASS UI review manifest and governance tests (2591ms)
-- PASS Art manifest validation (1106ms)
-- PASS Premium presentation-system tests (1023ms)
-- PASS Licensed normalized sound-library tests (1375ms)
-- PASS Licensed normalized music-library tests (2059ms)
-- PASS 3D world contract tests (963ms)
-- PASS 3D world render validation (1126ms)
-- PASS Workshop inventory tests (1377ms)
-- PASS Replay-system tests (1505ms)
-- PASS Fun-system tests (1125ms)
-- PASS Telemetry tests (1247ms)
-- PASS Player journey and outcome tests (1251ms)
-- PASS Product-cohesion gate (1257ms)
-- PASS Production build (14262ms)
-- PASS Static SEO and delivery tests (1917ms)
-- PASS Contracts, agent, integration, and tournament tests (20789ms)
-- PASS Browser journeys (503505ms)
+- PASS Improvement-system tests (2003ms)
+- PASS SEO and marketing-system tests (9887ms)
+- PASS Menu and preference-system tests (13652ms)
+- PASS UI review manifest and governance tests (30326ms)
+- PASS Art manifest validation (12646ms)
+- PASS Premium presentation-system tests (1442ms)
+- PASS Licensed normalized sound-library tests (2296ms)
+- PASS Licensed normalized music-library tests (10315ms)
+- PASS 3D world contract tests (2201ms)
+- PASS 3D world render validation (1156ms)
+- PASS Workshop inventory tests (7484ms)
+- PASS Replay-system tests (2021ms)
+- PASS Fun-system tests (1812ms)
+- PASS Telemetry tests (8051ms)
+- PASS Player journey and outcome tests (2516ms)
+- PASS Product-cohesion gate (4118ms)
+- PASS Production build (57110ms)
+- PASS Static SEO and delivery tests (4727ms)

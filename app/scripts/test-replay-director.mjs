@@ -10,6 +10,7 @@ import {
   loadReplayFromSearch,
   parseReplayPayload,
   scoreReplayDrama,
+  selectDefiningMoment,
   validateReplay,
 } from '../src/lib/replayDirector.js';
 import { runSimulation } from '../src/lib/plundrixEngine.js';
@@ -26,6 +27,9 @@ assert.ok(replay.highlights.length > 0, 'highlights created');
 assert.ok(replay.dramaticScore >= 0, 'dramatic score created');
 assert.ok(replay.funScore.score >= 0, 'fun score created');
 assert.ok(replay.momentTags.length > 0, 'moment tags created');
+assert.ok(replay.definingMoment?.text, 'one truthful defining moment created');
+assert.notEqual(replay.definingMoment?.type, 'finalRound', 'a distinctive event outranks the generic finish when available');
+if (replay.definingMoment?.type === 'clutchPick') assert.match(replay.definingMoment.text, /final lock and breached the vault/);
 assert.ok(replay.shareUrl.includes('replay='), 'share url encodes replay');
 
 const payload = parseReplayPayload(replay.shareUrl.slice(replay.shareUrl.indexOf('?')));
@@ -42,6 +46,12 @@ const state = runSimulation({ seed: 'timeline-test', scenarioId: 'new-player-tab
 const timeline = buildReplayTimeline(state);
 assert.ok(timeline.every((item) => item.round >= 1), 'timeline rounds valid');
 assert.equal(typeof scoreReplayDrama(state, timeline), 'number');
+assert.deepEqual(selectDefiningMoment([
+  { type: 'finalRound', round: 8, replayLabel: 'Final round', socialLabel: 'Final vault crack', text: 'Operator won.' },
+  { type: 'sabotageSwing', round: 5, replayLabel: 'Sabotage swing', socialLabel: 'Sabotage changes everything', text: 'Rook stole the leader\'s tool.' },
+]), {
+  type: 'sabotageSwing', round: 5, label: 'Sabotage swing', socialLabel: 'Sabotage changes everything', text: 'Rook stole the leader\'s tool.',
+});
 
 const markdown = exportReplayMarkdown(replay);
 const json = exportReplayJson(replay);

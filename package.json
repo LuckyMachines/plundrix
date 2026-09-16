@@ -40,6 +40,8 @@
     "growth:review": "npm --prefix app run growth:review --",
     "growth:weekly": "npm --prefix app run growth:weekly --",
     "growth:link": "npm --prefix app run growth:link --",
+    "ops:health": "node ops/production-health.mjs",
+    "ops:backup-competition": "node ops/backup-competition.mjs",
     "dev": "cd app && npm run dev"
   },
   "author": "Max Meier",

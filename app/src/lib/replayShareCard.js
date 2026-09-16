@@ -3,14 +3,14 @@ function safeText(value, fallback = '') {
 }
 
 export function buildReplayCardModel(replay = {}) {
-  const highlight = replay.highlights?.[0];
+  const highlight = replay.definingMoment || replay.highlights?.[0];
   return {
     title: safeText(replay.title, 'Plundrix operation'),
     subtitle: safeText(highlight?.socialLabel || replay.subtitle, 'A vault race worth replaying'),
     winner: safeText(replay.summary?.winnerName, 'No clean winner'),
     rounds: Math.max(0, Number(replay.summary?.rounds) || 0),
     score: Math.round((Number(replay.dramaticScore) || 0) * 10) / 10,
-    moment: safeText(highlight?.description || replay.beats?.[0]?.text || replay.description, 'The table turned in one move.'),
+    moment: safeText(highlight?.text || highlight?.description || replay.beats?.[0]?.text || replay.description, 'The table turned in one move.'),
   };
 }
 
