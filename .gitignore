@@ -21,6 +21,7 @@ agent-service/data/sponsor-budget.json
 agent-service/data/managed-operations.json
 agent-service/data/weekly-vault-scores.json
 backups/weekly-vault/
+reports/ops/
 app/reports/balance-autopilot/*.json
 app/reports/balance-autopilot/*.csv
 app/reports/live-ops/*.json
