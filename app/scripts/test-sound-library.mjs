@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import manifest from '../audio/manifest.json' with { type: 'json' };
 
 const appDir = resolve(process.cwd());
 assert.equal(manifest.schemaVersion, 1);
 assert.equal(manifest.license.spdx, 'CC0-1.0');
 assert.equal(manifest.license.commercialUse, true);
-assert.equal(manifest.target.integratedLufs, -18);
+assert.equal(manifest.target.integratedLufs, -20);
 assert.equal(manifest.target.truePeakDb, -1.5);
 assert.equal(manifest.target.pitchVariants.length, 3);
 assert.ok(Object.keys(manifest.cues).length >= 21);
@@ -19,11 +20,28 @@ for (const [id, source] of Object.entries(manifest.sources)) {
 
 for (const [cue, recipe] of Object.entries(manifest.cues)) {
   assert.ok(recipe.layers.length >= 1, `${cue} needs at least one layer`);
+  assert.ok(recipe.layers.length <= 2, `${cue} has too many simultaneous layers`);
   assert.ok(recipe.layers.every((layer) => manifest.sources[layer.source]), `${cue} has an unknown layer source`);
   for (let index = 1; index <= manifest.target.pitchVariants.length; index += 1) {
     const path = resolve(appDir, 'public', 'audio', 'sfx', `${cue.replaceAll('.', '-')}-${index}.mp3`);
     assert.ok(existsSync(path), `Missing rendered cue: ${path}`);
     assert.ok(statSync(path).size > 1000, `Rendered cue is unexpectedly small: ${path}`);
+    if (index === 2) {
+      const probe = spawnSync('ffprobe', [
+        '-v', 'error',
+        '-select_streams', 'a:0',
+        '-show_entries', 'stream=codec_name,sample_rate,channels:format=duration',
+        '-of', 'json',
+        path,
+      ], { cwd: appDir, encoding: 'utf8', windowsHide: true });
+      assert.equal(probe.status, 0, `ffprobe failed for ${path}: ${probe.stderr}`);
+      const media = JSON.parse(probe.stdout);
+      assert.equal(media.streams[0].codec_name, 'mp3');
+      assert.equal(Number(media.streams[0].sample_rate), manifest.target.sampleRate);
+      assert.equal(Number(media.streams[0].channels), manifest.target.channels);
+      assert.ok(Number(media.format.duration) >= 0.15, `${cue} is too short to read as feedback`);
+      assert.ok(Number(media.format.duration) <= recipe.duration + 0.1, `${cue} exceeds its declared cue envelope`);
+    }
   }
 }
 
@@ -41,6 +59,9 @@ assert.match(notice, /commercial/i);
 const bridge = readFileSync(resolve(appDir, 'src/components/shared/SessionAudioBridge.jsx'), 'utf8');
 assert.match(bridge, /audioManifest/);
 assert.match(bridge, /decodeAudioData/);
+assert.doesNotMatch(bridge, /createOscillator|createBuffer\(1, frameCount/);
+assert.match(bridge, /MAX_CUES_PER_EVENT = 2/);
+assert.match(bridge, /REPEAT_COOLDOWN_MS/);
 const previewPath = resolve(appDir, 'public', 'audio-preview.html');
 const libraryPath = resolve(appDir, 'public', 'audio', 'sfx', 'library.json');
 const libraryScriptPath = resolve(appDir, 'public', 'audio', 'sfx', 'library.js');
@@ -57,4 +78,4 @@ assert.match(preview, /Play visible/);
 assert.match(preview, /library\.js/);
 assert.ok(existsSync(resolve(appDir, 'public', 'audio', 'LICENSE-KENNEY-CC0.txt')), 'Missing public CC0 license record');
 
-console.log(`Sound library passed: ${Object.keys(manifest.sources).length} CC0 sources / ${Object.keys(manifest.cues).length} composite cues / ${Object.keys(manifest.cues).length * manifest.target.pitchVariants.length} rendered variations`);
+console.log(`Sound library passed: ${Object.keys(manifest.sources).length} CC0 sources / ${Object.keys(manifest.cues).length} sampled cues / ${Object.keys(manifest.cues).length * manifest.target.pitchVariants.length} rendered variations`);

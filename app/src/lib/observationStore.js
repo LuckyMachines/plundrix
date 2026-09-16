@@ -28,7 +28,7 @@ export function normalizeObservation(input = {}) {
     recognizedTarget3s: Boolean(input.recognizedTarget3s),
     recognizedOutcome3s: Boolean(input.recognizedOutcome3s),
     soundIdentityCorrect: Boolean(input.soundIdentityCorrect),
-    audioMode: ['hybrid', 'sampled', 'procedural'].includes(input.audioMode) ? input.audioMode : 'hybrid',
+    audioMode: ['hybrid', 'sampled', 'procedural'].includes(input.audioMode) ? input.audioMode : 'sampled',
     preferredAudio: ['hybrid', 'sampled', 'procedural', 'no-preference'].includes(input.preferredAudio) ? input.preferredAudio : 'no-preference',
     impactScore: Math.max(1, Math.min(5, Math.floor(Number(input.impactScore) || 3))),
     settingsTask: SETTINGS_TASKS.includes(input.settingsTask) ? input.settingsTask : 'not-tested',

@@ -8,7 +8,7 @@ const INITIAL = {
   participantCode: 'P-01', observerConfirmed: false, returningPlayer: false, completedFirstAction: false,
   understoodGoal: false, understoodWhy: false, noticedGadget: false, wantedReplay: false, foundSettings: false,
   completedSettingsTask: false, understoodSettingsPersistence: false, recognizedAction3s: false,
-  recognizedTarget3s: false, recognizedOutcome3s: false, soundIdentityCorrect: false, audioMode: 'hybrid',
+  recognizedTarget3s: false, recognizedOutcome3s: false, soundIdentityCorrect: false, audioMode: 'sampled',
   preferredAudio: 'no-preference', impactScore: 3, settingsTask: 'not-tested', joyScore: 3,
   delightMoment: 'none-yet', friction: 'none', secondsToFirstAction: 0, secondsToSettings: 0,
 };
@@ -65,8 +65,6 @@ export default function ObservationRecorder() {
     setElapsedSeconds(0);
   };
   const audition = (mode) => {
-    window.localStorage.setItem('plundrix-audio-test-mode', mode);
-    window.dispatchEvent(new CustomEvent('plundrix:audio-mode', { detail: { mode } }));
     update('audioMode', mode);
     emitPresentationCues(['intent.sabotage', 'sabotage.hit'], { source: 'playtest-audition', mode });
   };
@@ -99,9 +97,9 @@ export default function ObservationRecorder() {
           </div>
 
           <div className="playtest-audio-lab mt-4">
-            <div><p className="label">Blind sound A/B</p><p>Counterbalance the order. Ask what happened before asking which version feels better.</p></div>
-            <div>{AUDIO_TEST_MODES.map((mode) => <button key={mode} type="button" data-selected={form.audioMode === mode} onClick={() => audition(mode)}>Play {mode}</button>)}</div>
-            <Field label="Preferred audio"><select value={form.preferredAudio} onChange={(event) => update('preferredAudio', event.target.value)}>{[...AUDIO_TEST_MODES, 'no-preference'].map((item) => <option key={item}>{item}</option>)}</select></Field>
+            <div><p className="label">Blind sound check</p><p>Play the current mix without showing its label. Ask what happened, then whether it sounded clean.</p></div>
+            <div>{AUDIO_TEST_MODES.map((mode) => <button key={mode} type="button" data-selected={form.audioMode === mode} onClick={() => audition(mode)}>Play current mix</button>)}</div>
+            <Field label="Sound verdict"><select value={form.preferredAudio} onChange={(event) => update('preferredAudio', event.target.value)}>{[...AUDIO_TEST_MODES, 'no-preference'].map((item) => <option key={item}>{item}</option>)}</select></Field>
           </div>
 
           <div className="mt-4 grid gap-2 sm:grid-cols-2">{CHECKS.map(([key, label]) => <label key={key} className="flex min-h-[48px] items-center gap-3 rounded border border-vault-border bg-vault-dark/55 px-3 text-sm text-vault-text"><input type="checkbox" checked={form[key]} onChange={(event) => update(key, event.target.checked)} />{label}</label>)}</div>

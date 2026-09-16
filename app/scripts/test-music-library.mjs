@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, statSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import manifest from '../audio/music-manifest.json' with { type: 'json' };
 
@@ -17,6 +17,8 @@ assert.equal(manifest.target.truePeakDb, -2);
 assert.equal(manifest.target.sampleRate, 48000);
 assert.equal(manifest.target.channels, 2);
 assert.equal(manifest.tracks.length, 2);
+assert.match(manifest.source.repository, /SoundSafari\/CC0-1\.0-Music/);
+assert.doesNotMatch(JSON.stringify(manifest.tracks), /ambient|spaceship|engine/i, 'The score must not use drone-like ambience');
 
 for (const track of manifest.tracks) {
   assert.match(track.sourceSha256, /^[a-f0-9]{64}$/, `${track.id} needs a pinned source hash`);
@@ -51,7 +53,7 @@ for (const track of manifest.tracks) {
 
 const libraryPath = resolve(outputDir, 'library.json');
 const libraryScriptPath = resolve(outputDir, 'library.js');
-const publicNoticePath = resolve(appDir, 'public', 'audio', 'LICENSE-BEATSCRIBE-CC0.txt');
+const publicNoticePath = resolve(appDir, 'public', 'audio', basename(manifest.license.notice));
 assert.ok(existsSync(libraryPath), 'Missing generated music index');
 assert.ok(existsSync(libraryScriptPath), 'Missing file-compatible music index');
 assert.ok(existsSync(publicNoticePath), 'Missing public CC0 music license record');
@@ -59,15 +61,20 @@ const library = JSON.parse(readFileSync(libraryPath, 'utf8'));
 assert.deepEqual(library.tracks.map((track) => track.outputFile), manifest.tracks.map((track) => track.outputFile));
 assert.equal(library.source.commit, manifest.source.commit);
 assert.match(readFileSync(publicNoticePath, 'utf8'), /Creative Commons Zero v?1\.0/i);
+assert.equal(existsSync(resolve(outputDir, 'night-shift.mp3')), false, 'Obsolete spaceship ambience should not ship');
+assert.equal(existsSync(resolve(outputDir, 'neon-stakeout.mp3')), false, 'Obsolete ambient score should not ship');
 
 const bridge = readFileSync(resolve(appDir, 'src', 'components', 'shared', 'SessionMusicBridge.jsx'), 'utf8');
 assert.match(bridge, /musicManifest/);
 assert.match(bridge, /musicEnabled/);
 assert.match(bridge, /musicVolume/);
 assert.match(bridge, /data-audio-channel/);
+assert.match(bridge, /MUSIC_OUTPUT_SCALE/);
+assert.match(bridge, /plundrix:music-duck/);
 
 const preview = readFileSync(resolve(appDir, 'public', 'audio-preview.html'), 'utf8');
 assert.match(preview, /Background score/);
 assert.match(preview, /PLUNDRIX_MUSIC_LIBRARY/);
+assert.match(preview, /LICENSE-SOUNDSAFARI-CC0\.txt/);
 
 console.log(`Music library passed: ${manifest.tracks.length} CC0 tracks / ${manifest.target.sampleRate / 1000} kHz stereo / ${manifest.target.integratedLufs} LUFS target`);

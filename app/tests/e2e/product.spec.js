@@ -93,6 +93,10 @@ test('settings persist, recover safely, and remain keyboard accessible', async (
   const musicAudio = page.locator('audio[data-audio-channel="music"]');
   await expect(dialog).toBeVisible();
   await expect(musicAudio).toHaveCount(1);
+  await expect(musicAudio).toHaveAttribute('src', /caper-in-motion\.mp3/);
+  await expect.poll(() => musicAudio.evaluate((element) => element.volume)).toBe(0.5);
+  await page.evaluate(() => window.dispatchEvent(new CustomEvent('plundrix:music-duck', { detail: { duration: 800, depth: 0.4 } })));
+  await expect.poll(() => musicAudio.evaluate((element) => element.volume)).toBe(0.2);
   await expect.poll(() => musicAudio.evaluate((element) => element.volume)).toBe(0.5);
   await expect(dialog.getByRole('button', { name: 'Close settings' })).toBeFocused();
   await expect(page.locator('html')).toHaveAttribute('data-preference-schema', '3');

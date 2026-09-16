@@ -1,7 +1,7 @@
 # Plundrix Improvement Loop
 
-Generated: 2026-09-16T00:46:30.816Z
-Build: fda780e
+Generated: 2026-09-16T04:07:07.309Z
+Build: ab23c64
 Mode: solo
 
 ## Do this next
@@ -56,21 +56,21 @@ Keep one experiment active. Spend no more than 30 minutes on the weekly review; 
 
 ## Automated checks
 
-- PASS Improvement-system tests (2003ms)
-- PASS SEO and marketing-system tests (9887ms)
-- PASS Menu and preference-system tests (13652ms)
-- PASS UI review manifest and governance tests (30326ms)
-- PASS Art manifest validation (12646ms)
-- PASS Premium presentation-system tests (1442ms)
-- PASS Licensed normalized sound-library tests (2296ms)
-- PASS Licensed normalized music-library tests (10315ms)
-- PASS 3D world contract tests (2201ms)
-- PASS 3D world render validation (1156ms)
-- PASS Workshop inventory tests (7484ms)
-- PASS Replay-system tests (2021ms)
-- PASS Fun-system tests (1812ms)
-- PASS Telemetry tests (8051ms)
-- PASS Player journey and outcome tests (2516ms)
-- PASS Product-cohesion gate (4118ms)
-- PASS Production build (57110ms)
-- PASS Static SEO and delivery tests (4727ms)
+- PASS Improvement-system tests (1010ms)
+- PASS SEO and marketing-system tests (1115ms)
+- PASS Menu and preference-system tests (920ms)
+- PASS UI review manifest and governance tests (2082ms)
+- PASS Art manifest validation (1059ms)
+- PASS Premium presentation-system tests (724ms)
+- PASS Licensed normalized sound-library tests (2448ms)
+- PASS Licensed normalized music-library tests (2136ms)
+- PASS 3D world contract tests (1053ms)
+- PASS 3D world render validation (1152ms)
+- PASS Workshop inventory tests (1050ms)
+- PASS Replay-system tests (1065ms)
+- PASS Fun-system tests (894ms)
+- PASS Telemetry tests (1322ms)
+- PASS Player journey and outcome tests (880ms)
+- PASS Product-cohesion gate (1167ms)
+- PASS Production build (11851ms)
+- PASS Static SEO and delivery tests (1700ms)

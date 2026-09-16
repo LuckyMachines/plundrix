@@ -1,0 +1,24 @@
+PLUNDRIX BACKGROUND MUSIC - SOURCE AND LICENSE RECORD
+
+Source collection: SoundSafari CC0-1.0 Music
+Original collection group: FreePD
+Source repository: https://github.com/SoundSafari/CC0-1.0-Music
+Pinned source commit: 655388f987eacf6d08d73080fcc3e727f267bfde
+License: Creative Commons Zero v1.0 Universal (CC0-1.0)
+License text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+The repository describes itself as a collection of public-domain and
+CC0-1.0-licensed music. Its root LICENSE applies CC0-1.0, permits commercial
+use, and does not require attribution. This notice retains the source trail
+even though attribution is optional.
+
+Selected source masters:
+
+- freepd.com/Patron Saint of Heists.mp3
+  SHA-256: b82e8b44ce3dbd44c05d70d87130cef0eb323ee3a0d29ea3f92ad45f2c72fd9d
+- freepd.com/A Good Bass for Gambling.mp3
+  SHA-256: dfaea2fa74a35bcbccd64eed8b47a5058f358a2aa1ea976eebaf654344e6ce10
+
+Downloaded and verified for Plundrix on 2026-09-15. Production files are
+filtered, faded, loudness-normalized, and transcoded derivatives of these
+pinned masters.

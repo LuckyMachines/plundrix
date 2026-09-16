@@ -13,7 +13,8 @@ Use `/audio-preview.html` with sound and music at their default 50 percent level
 ## Acceptance bar
 
 - Pick, Search, and Sabotage are identified correctly in at least 80 percent of observed trials.
-- Failure, reward, and breach use distinct source-layer signatures.
+- Failure, reward, and breach use distinct sampled signatures.
+- No oscillator, generated-noise, engine-drone, or overlapping cue pile-up is audible.
 - Speech-level playback is comfortable at 50 percent on both output types.
 - No required state depends on sound; muted play remains fully understandable.
 - Any change is rebuilt through `npm run sound:build` and rechecked with `npm run test:sound`.

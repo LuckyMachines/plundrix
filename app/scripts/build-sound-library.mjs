@@ -33,6 +33,8 @@ for (const [cue, recipe] of Object.entries(manifest.cues)) {
     inputArgs.push('-i', resolve(appDir, 'audio', source.file));
     const filters = [
       `atrim=start=0:end=${recipe.duration}`,
+      `apad=pad_dur=${recipe.duration}`,
+      `atrim=start=0:end=${recipe.duration}`,
       'asetpts=PTS-STARTPTS',
       `highpass=f=${layer.highpass || 40}`,
       `lowpass=f=${layer.lowpass || 12000}`,

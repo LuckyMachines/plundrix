@@ -32,7 +32,7 @@ assert.equal(evidenceIsValid({ tier: 'T4', source: 'analytics', capturedAt: fixe
 assert.equal(latencyBucket(29_000), '0-30s');
 assert.equal(latencyBucket(61_000), '61-120s');
 
-const normalizedObservation = normalizeObservation({ observerConfirmed: true, understoodWhy: true, foundSettings: true, completedSettingsTask: true, recognizedAction3s: true, recognizedTarget3s: true, recognizedOutcome3s: true, soundIdentityCorrect: true, preferredAudio: 'hybrid', impactScore: 5, settingsTask: 'adjust-sound', joyScore: 9, secondsToFirstAction: 42, secondsToSettings: 18 });
+const normalizedObservation = normalizeObservation({ observerConfirmed: true, understoodWhy: true, foundSettings: true, completedSettingsTask: true, recognizedAction3s: true, recognizedTarget3s: true, recognizedOutcome3s: true, soundIdentityCorrect: true, preferredAudio: 'sampled', impactScore: 5, settingsTask: 'adjust-sound', joyScore: 9, secondsToFirstAction: 42, secondsToSettings: 18 });
 assert.equal(normalizedObservation.joyScore, 5);
 assert.equal(normalizedObservation.understoodWhy, true);
 const observationSummary = summarizeObservations([normalizedObservation]);

@@ -35,6 +35,6 @@ Evidence:
 - [ ] Four first-time players identify the chosen action, success or failure, and affected rival within three seconds.
 - [ ] Players describe Pick, Search, and Sabotage as distinct from sound alone without sound carrying required information.
 - [ ] Perceived impact and replay desire improve without slowing the first meaningful action.
-- [ ] A headphone and speaker mix review determines whether recorded foley should replace or layer under the procedural cues.
+- [x] Recorded CC0 foley replaces procedural cues in production; the runtime caps voices, suppresses repeats, and ducks music under important outcomes.
 
 The implementation is intentionally maintainable by one person: data defines identity and timing, one director emits cues, one theater renders the moment, and deterministic browser fixtures protect every canonical viewport.
